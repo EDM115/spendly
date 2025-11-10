@@ -1,0 +1,54 @@
+{
+  "admin": {
+    "backup": {
+      "title": "Export de la base de données",
+      "export-csv": "CSV",
+      "export-json": "JSON",
+      "export-sql": "SQL",
+      "export-sqlite": "SQLite"
+    },
+    "icons": {
+      "add-icon": "Ajouter une icône",
+      "delete-cancel": "Annuler",
+      "delete-confirm": "Supprimer",
+      "delete-description": "Êtes-vous sûr de vouloir supprimer cette icône ?",
+      "delete-title": "Confirmation de suppression",
+      "edit-icon": "Modifier l'icône",
+      "icon": "Icône",
+      "name": "Nom",
+      "title": "Gestion des icônes"
+    },
+    "title": "Paramètres",
+    "users": {
+      "add-user": "Ajouter un utilisateur",
+      "delete-cancel": "Annuler",
+      "delete-confirm": "Supprimer",
+      "delete-description": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+      "delete-title": "Confirmation de suppression",
+      "edit-user": "Modifier l'utilisateur",
+      "password": "Mot de passe",
+      "role": "Rôle",
+      "title": "Gestion des utilisateurs",
+      "username": "Nom d'utilisateur"
+    }
+  },
+  "error": {
+    "more-infos": "Informations supplémentaires",
+    "redirect-to-home": "Redirection vers la page d'accueil..."
+  },
+  "login": {
+    "github": "Source / Aide",
+    "login": "Se connecter",
+    "password": "Mot de passe",
+    "title": "Connexion",
+    "username": "Nom d'utilisateur"
+  },
+  "main": {
+    "description": "Gérez votre budget avec facilité. Réalisé pour ma copine",
+    "title": "Spendly"
+  },
+  "navbar": {
+    "connect": "Connexion",
+    "disconnect": "Déconnexion"
+  }
+}

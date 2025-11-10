@@ -1,0 +1,54 @@
+{
+  "admin": {
+    "backup": {
+      "title": "Database backup",
+      "export-csv": "CSV",
+      "export-json": "JSON",
+      "export-sql": "SQL",
+      "export-sqlite": "SQLite"
+    },
+    "icons": {
+      "add-icon": "Add an icon",
+      "delete-cancel": "Cancel",
+      "delete-confirm": "Delete",
+      "delete-description": "Are you sure you want to delete this icon ?",
+      "delete-title": "Delete confirmation",
+      "edit-icon": "Edit the icon",
+      "icon": "Icon",
+      "name": "Name",
+      "title": "Icon management"
+    },
+    "title": "Settings",
+    "users": {
+      "add-user": "Add a user",
+      "delete-cancel": "Cancel",
+      "delete-confirm": "Delete",
+      "delete-description": "Are you sure you want to delete this user ?",
+      "delete-title": "Delete confirmation",
+      "edit-user": "Edit the user",
+      "password": "Password",
+      "role": "Role",
+      "title": "User management",
+      "username": "Username"
+    }
+  },
+  "error": {
+    "more-infos": "More information",
+    "redirect-to-home": "Redirecting to home page..."
+  },
+  "login": {
+    "github": "Source / Help",
+    "login": "Log in",
+    "password": "Password",
+    "title": "Login",
+    "username": "Username"
+  },
+  "main": {
+    "description": "Manage your budget with ease. Made for my gf",
+    "title": "Spendly"
+  },
+  "navbar": {
+    "connect": "Connect",
+    "disconnect": "Disconnect"
+  }
+}

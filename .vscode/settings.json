@@ -1,0 +1,56 @@
+{
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "yzhang.markdown-all-in-one"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar"
+  },
+  "editor.tabSize": 2,
+  "eslint.format.enable": true,
+  "eslint.ignoreUntitled": true,
+  "eslint.options": {
+    "flags": ["unstable_ts_config"]
+  },
+  "eslint.useFlatConfig": true,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "nuxt.config.*": "app.config.*, error.vue, tsconfig.json, .env, .nuxtignore",
+    "Dockerfile": ".dockerignore",
+    "eslint.config.ts": ".oxlintrc.json, .eslintcache, eslint.*.config.ts",
+    "package.json": "package-lock.json, pnpm*",
+    "README.md": "LICENSE, .gitignore, renovate.json, .node-version",
+    "tsconfig.json": "tsconfig.*.json, *.tsbuildinfo, *.d.ts, *.d.mts"
+  },
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "gremlins.showInProblemPane": true,
+  "importCost.fontStyle": "italic",
+  "importCost.largePackageDarkColor": "#FF5555",
+  "importCost.largePackageLightColor": "#FF5555",
+  "importCost.mediumPackageLightColor": "#50FA7B",
+  "importCost.smallPackageDarkColor": "#50FA7B",
+  "importCost.smallPackageLightColor": "#50FA7B",
+  "oxc.enable": true,
+  "oxc.typeAware": true,
+  "oxc.unusedDisableDirectives": "warn",
+  "search.exclude": {
+    "**/*.svg": true,
+    "pnpm-lock.yaml": true
+  },
+  "styled-colors.decoration_type": "background",
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "vue.autoInsert.dotValue": true,
+  "vue.editor.focusMode": true,
+  "vue.inlayHints.destructuredProps": true,
+  "vue.inlayHints.inlineHandlerLeading": true,
+  "vue.inlayHints.missingProps": true,
+  "vue.inlayHints.optionsWrapper": true,
+  "vue.inlayHints.vBindShorthand": true,
+  "vue.suggest.propNameCasing": "preferCamelCase"
+}

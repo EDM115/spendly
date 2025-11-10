@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "extends": ["./node_modules/edm115-lint/.oxlintrc.base.json"],
+  "plugins": [
+    "vue"
+  ],
+  "env": {
+    "es2025": true,
+    "browser": true,
+    "shared-node-browser": true
+  },
+  "ignorePatterns": [
+    "**/.nuxt/",
+    "**/.output/",
+    "**/dist/",
+    "**/node_modules/"
+  ]
+}

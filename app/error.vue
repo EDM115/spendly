@@ -1,0 +1,45 @@
+<template>
+  <v-app>
+    <v-main>
+      <LayoutNavBar />
+      <v-container
+        class="fill-height"
+      >
+        <v-col align="center">
+          <v-row
+            align="center"
+            align-content="center"
+            justify="center"
+          >
+            <NuxtLink to="/">
+              <NuxtImg
+                src="/images/logo.webp"
+                width="300px"
+                height="300px"
+                alt="Spendly"
+                preload
+              />
+            </NuxtLink>
+          </v-row>
+          <v-row
+            align="center"
+            align-content="center"
+            justify="center"
+          >
+            <NuxtLink to="/">
+              {{ $t("error.redirect-to-home") }}
+            </NuxtLink>
+          </v-row>
+        </v-col>
+      </v-container>
+    </v-main>
+  </v-app>
+</template>
+
+<script lang="ts" setup>
+const router = useRouter()
+
+onMounted(() => {
+  router.push("/")
+})
+</script>
