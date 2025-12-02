@@ -13,8 +13,8 @@
 const store = useMainStore()
 const hasLoaded = ref(false)
 
-if (store.isUserEmpty) {
-  await navigateTo("/", { redirectCode: 302 })
+if (store.getUser === null) {
+  await navigateTo("/", { redirectCode: 401 })
 }
 </script>
 

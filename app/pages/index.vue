@@ -28,4 +28,9 @@
 
 <script lang="ts" setup>
 const { smAndUp } = useVDisplay()
+const store = useMainStore()
+
+if (store.getUser !== null) {
+  await navigateTo("/app", { redirectCode: 302 })
+}
 </script>
