@@ -40,6 +40,7 @@ export const useMainStore = defineStore("main", {
         return
       }
 
+      // oxlint-disable-next-line no-unsafe-type-assertion
       const storedI18n = localStorage.getItem("i18n") as "fr" | "en" | null
 
       if (storedI18n) {
@@ -53,6 +54,7 @@ export const useMainStore = defineStore("main", {
         return
       }
 
+      // oxlint-disable-next-line no-unsafe-type-assertion
       let storedTheme = localStorage.getItem("theme") as "dark" | "light" | null
 
       if (storedTheme) {

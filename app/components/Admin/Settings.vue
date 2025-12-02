@@ -357,8 +357,15 @@ type Icon = {
 
 const store = useMainStore()
 
-const users = ref<User[]>([])
-const icons = ref<Icon[]>([])
+type Props = {
+  initialUsers?: User[];
+  initialIcons?: Icon[];
+}
+
+const props = defineProps<Props>()
+
+const users = ref<User[]>(props.initialUsers ?? [])
+const icons = ref<Icon[]>(props.initialIcons ?? [])
 const exporting = ref(false)
 
 const showDeleteDialog = ref(false)
@@ -618,9 +625,7 @@ const downloadBackup = async (format: "csv" | "json" | "sql" | "sqlite") => {
   }
 }
 
-onMounted(async () => {
-  await fetchData()
-
+onMounted(() => {
   icons.value.forEach((icon) => {
     isValidEditIcons[icon.id] = true
   })

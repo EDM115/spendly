@@ -11,16 +11,11 @@
 
 <script setup lang="ts">
 const store = useMainStore()
-const router = useRouter()
 const hasLoaded = ref(false)
 
-onMounted(async () => {
-  await nextTick()
-
-  if (store.isUserEmpty) {
-    router.push("/")
-  }
-})
+if (store.isUserEmpty) {
+  await navigateTo("/", { redirectCode: 302 })
+}
 </script>
 
 <style>

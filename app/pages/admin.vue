@@ -10,23 +10,66 @@
         align="center"
         class="align-content-center"
       >
-        <AdminSettings />
+        <AdminSettings
+          v-if="data"
+          :initial-users="data.users"
+          :initial-icons="data.icons"
+        />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts" setup>
+type User = {
+  id: number;
+  username: string;
+  role: string;
+}
+
+type Icon = {
+  id: number;
+  name: string;
+  color: string;
+  icon: string;
+}
+
 const store = useMainStore()
-const router = useRouter()
 
 const { smAndUp } = useVDisplay()
 
-onMounted(async () => {
-  await nextTick()
+if (store.isUserEmpty || (!store.isUserEmpty && store.getUser.role !== "admin")) {
+  await navigateTo("/", { redirectCode: 302 })
+}
 
-  if (store.isUserEmpty || (!store.isUserEmpty && store.getUser.role !== "admin")) {
-    router.push("/")
+const { data } = await useAsyncData<{
+  users: User[];
+  icons: Icon[];
+}>("admin-page-data", async () => {
+  const token = store.getUser?.token
+  const adminId = store.getUser?.id
+
+  if (!token || !adminId) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: "Unauthorized",
+    })
+  }
+
+  const [ usersData, iconsData ] = await Promise.all([
+    $fetch<{ body: { users?: User[] } }>("/api/admin/user", {
+      params: { admin_id: adminId },
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+    $fetch<{ body: { icons?: Icon[] } }>("/api/admin/icon", {
+      params: { admin_id: adminId },
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+  ])
+
+  return {
+    users: usersData.body.users ?? [],
+    icons: iconsData.body.icons ?? [],
   }
 })
 </script>

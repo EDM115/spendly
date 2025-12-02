@@ -16,7 +16,9 @@
                 src="/images/logo.webp"
                 width="300px"
                 height="300px"
+                sizes="300px"
                 alt="Spendly"
+                :placeholder="[150, 150, 50, 5]"
                 preload
               />
             </NuxtLink>

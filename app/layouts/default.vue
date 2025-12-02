@@ -37,7 +37,10 @@ useHead({
       rel: "icon", type: "image/webp", href: "/images/logo.webp",
     },
   ],
-  htmlAttrs: { lang: i18nHead.value.htmlAttrs.lang ?? "fr" },
+  htmlAttrs: {
+    lang: i18nHead.value.htmlAttrs.lang ?? "fr",
+    translate: "no",
+  },
 })
 
 useSeoMeta({

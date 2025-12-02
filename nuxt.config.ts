@@ -100,8 +100,10 @@ export default defineNuxtConfig({
   },
   i18n: {
     baseUrl: "/",
+    // oxlint-disable-next-line no-unsafe-type-assertion
     defaultLocale: process.env.DEFAULT_UI_LANG as "en" | "fr" | undefined,
     detectBrowserLanguage: {
+      // oxlint-disable-next-line no-unsafe-type-assertion
       fallbackLocale: process.env.DEFAULT_UI_LANG as "en" | "fr" | undefined,
       useCookie: false,
     },
