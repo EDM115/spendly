@@ -8,7 +8,7 @@
   >
     <template #prepend>
       <NuxtLink
-        to="/"
+        :to="store.getUser ? '/app' : '/'"
         class="flex items-center"
       >
         <NuxtImg
@@ -25,7 +25,7 @@
     </template>
     <v-app-bar-title v-if="smAndUp">
       <NuxtLink
-        to="/"
+        :to="store.getUser ? '/app' : '/'"
         class="text-h6"
       >
         Spendly

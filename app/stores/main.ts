@@ -1,5 +1,3 @@
-import { set } from "@vueuse/core"
-
 function ssrSafe() {
   return import.meta.client
     && typeof window !== "undefined"

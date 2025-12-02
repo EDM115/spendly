@@ -38,10 +38,6 @@ const store = useMainStore()
 
 const { smAndUp } = useVDisplay()
 
-if (store.getUser === null || store.getUser.role !== "admin") {
-  await navigateTo("/", { redirectCode: 403 })
-}
-
 const { data } = await useAsyncData<{
   users: User[];
   icons: Icon[];
@@ -70,6 +66,12 @@ const { data } = await useAsyncData<{
   return {
     users: usersData.body.users ?? [],
     icons: iconsData.body.icons ?? [],
+  }
+})
+
+onMounted(async () => {
+  if (store.getUser === null || store.getUser.role !== "admin") {
+    await navigateTo("/", { redirectCode: 403 })
   }
 })
 </script>

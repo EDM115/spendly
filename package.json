@@ -58,7 +58,7 @@
   "scripts": {
     "build": "dotenvx run -- nuxt build",
     "cleanup": "nuxt cleanup",
-    "dev": "nuxt dev --no-clear --no-fork",
+    "dev": "nuxt dev --no-clear",
     "lint": "run-p lint:oxlint lint:eslint",
     "lint:fix": "run-s lint:fix:oxlint lint:fix:eslint",
     "lint:eslint": "eslint --cache --cache-location .eslintcache --concurrency=auto .",

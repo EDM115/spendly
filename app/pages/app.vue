@@ -13,9 +13,11 @@
 const store = useMainStore()
 const hasLoaded = ref(false)
 
-if (store.getUser === null) {
-  await navigateTo("/", { redirectCode: 401 })
-}
+onMounted(async () => {
+  if (store.getUser === null) {
+    await navigateTo("/", { redirectCode: 401 })
+  }
+})
 </script>
 
 <style>
