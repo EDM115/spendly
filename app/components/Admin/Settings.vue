@@ -154,8 +154,8 @@
                 <v-col cols="12">
                   <v-color-picker
                     v-model="icon.color"
-                    hide-inputs
                     mode="hex"
+                    :modes="['hex']"
                   />
                 </v-col>
               </v-row>
@@ -215,7 +215,7 @@
                 <v-color-picker
                   v-model="newIcon.color"
                   mode="hex"
-                  hide-inputs
+                  :modes="['hex']"
                 />
               </v-col>
               <v-col
@@ -355,12 +355,12 @@ type Icon = {
   icon: string;
 }
 
-const store = useMainStore()
-
 type Props = {
   initialUsers?: User[];
   initialIcons?: Icon[];
 }
+
+const store = useMainStore()
 
 const props = defineProps<Props>()
 
@@ -459,17 +459,18 @@ const updateUser = async (userId: number, role: string) => {
   await fetchData()
 }
 
-const deleteUser = async (userId: number) => {
+const deleteUser = async () => {
   await $fetch("/api/admin/user", {
     method: "DELETE",
     body: {
-      id: userId, admin_id: store.getUser?.id,
+      id: userToDelete.value, admin_id: store.getUser?.id,
     },
     headers: {
       Authorization: `Bearer ${store.getUser?.token}`,
     },
   })
   showDeleteDialog.value = false
+  userToDelete.value = null
   await fetchData()
 }
 
@@ -583,6 +584,7 @@ const deleteIcon = async () => {
     },
   })
   showIconDeleteDialog.value = false
+  iconToDelete.value = null
   await fetchData()
 }
 

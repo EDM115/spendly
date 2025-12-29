@@ -36,7 +36,7 @@
         <v-btn
           v-if="store.getUser?.role === 'admin'"
           icon="mdi-shield-account-outline"
-          :variant="router.currentRoute.value.path === '/admin' ? 'outlined' : 'text'"
+          :variant="route.path === '/admin' ? 'outlined' : 'text'"
         />
       </NuxtLink>
     </v-app-bar-title>
@@ -47,7 +47,7 @@
         <v-btn
           v-if="store.getUser?.role === 'admin'"
           icon="mdi-shield-account-outline"
-          :variant="router.currentRoute.value.path === '/admin' ? 'outlined' : 'text'"
+          :variant="route.path === '/admin' ? 'outlined' : 'text'"
         />
       </NuxtLink>
     </v-app-bar-title>
@@ -102,9 +102,8 @@
 </template>
 
 <script lang="ts" setup>
-const router = useRouter()
 const store = useMainStore()
-
+const route = useRoute()
 const { toggleTheme } = useCustomTheme()
 const { smAndUp } = useVDisplay()
 const {
@@ -115,7 +114,6 @@ const {
 
 const i18nSwitch = ref(false)
 const userLocale = computed(() => store.getI18n)
-
 const accountIcon = ref("mdi-login")
 const connected = computed(() => store.getUser !== null)
 const accountText = computed(() => (connected.value
@@ -147,12 +145,12 @@ const getFlagEmoji = (l: string): string => {
   }
 }
 
-function handleConnect() {
+async function handleConnect() {
   if (connected.value) {
     store.logout()
   }
 
-  router.push("/")
+  await navigateTo("/")
 }
 </script>
 

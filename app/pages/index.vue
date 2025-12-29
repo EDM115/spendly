@@ -27,8 +27,8 @@
 </template>
 
 <script lang="ts" setup>
-const { smAndUp } = useVDisplay()
 const store = useMainStore()
+const { smAndUp } = useVDisplay()
 
 onMounted(async () => {
   if (store.getUser !== null) {

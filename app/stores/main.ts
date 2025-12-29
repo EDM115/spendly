@@ -6,10 +6,10 @@ function ssrSafe() {
 
 export const useMainStore = defineStore("main", () => {
   type User = {
-    id: number,
-    username: string,
-    token: string,
-    role: string,
+    id: number;
+    username: string;
+    token: string;
+    role: string;
   } | null
 
   const i18n = ref<"fr" | "en">("fr")
