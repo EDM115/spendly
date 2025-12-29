@@ -32,6 +32,98 @@
       "username": "Nom d'utilisateur"
     }
   },
+  "app": {
+    "budget-tracker": {
+      "add": "Ajouter un budget",
+      "delete": "Supprimer le budget",
+      "delete-confirm": "Supprimer",
+      "delete-cancel": "Annuler",
+      "delete-description": "Êtes-vous sûr de vouloir supprimer ce budget ? Toutes les transactions associées seront supprimées.",
+      "delete-title": "Confirmation de suppression",
+      "edit": "Modifier le budget",
+      "name": "Nom",
+      "no-tracker": "Aucun budget pour le moment",
+      "select": "Sélectionner un budget",
+      "share": "Partager",
+      "title": "Budgets",
+      "users": "Utilisateurs partagés",
+      "add-user": "Ajouter un utilisateur",
+      "remove-user": "Retirer l'utilisateur",
+      "username": "Nom d'utilisateur",
+      "role": "Rôle",
+      "change-role": "Changer le rôle",
+      "roles": {
+        "owner": "Propriétaire",
+        "admin": "Admin",
+        "editor": "Éditeur",
+        "viewer": "Lecteur"
+      },
+      "no-permission-edit": "Vous n'avez pas la permission de modifier ce budget",
+      "no-permission-delete": "Seul le propriétaire peut supprimer ce budget"
+    },
+    "category": {
+      "add": "Ajouter une catégorie",
+      "delete": "Supprimer la catégorie",
+      "delete-confirm": "Supprimer",
+      "delete-cancel": "Annuler",
+      "delete-description": "Êtes-vous sûr de vouloir supprimer cette catégorie ?",
+      "delete-title": "Confirmation de suppression",
+      "edit": "Modifier la catégorie",
+      "name": "Nom",
+      "icon": "Icône",
+      "select": "Sélectionner une catégorie",
+      "title": "Catégories",
+      "manage": "Gérer les catégories"
+    },
+    "charts": {
+      "area": "Évolution",
+      "bar": "Comparaison",
+      "balance": "Solde au fil du temps",
+      "doughnut": "Distribution",
+      "income-vs-expense": "Revenus vs Dépenses",
+      "no-data": "Aucune donnée disponible pour les graphiques",
+      "pie": "Répartition par catégorie",
+      "title": "Graphiques & Analyses",
+      "top-categories": "Top catégories de dépenses",
+      "export": "Exporter le graphique",
+      "export-svg": "SVG",
+      "export-png": "PNG",
+      "export-pdf": "PDF"
+    },
+    "spending": {
+      "add": "Ajouter une transaction",
+      "amount": "Montant",
+      "category": "Catégorie",
+      "date": "Date",
+      "delete": "Supprimer la transaction",
+      "delete-confirm": "Supprimer",
+      "delete-cancel": "Annuler",
+      "delete-description": "Êtes-vous sûr de vouloir supprimer cette transaction ?",
+      "delete-title": "Confirmation de suppression",
+      "edit": "Modifier la transaction",
+      "income": "Revenu",
+      "expense": "Dépense",
+      "name": "Description",
+      "no-spending": "Aucune transaction pour le moment",
+      "title": "Transactions",
+      "total-income": "Total Revenus",
+      "total-expense": "Total Dépenses",
+      "balance": "Solde",
+      "type": "Type",
+      "export": "Exporter les données",
+      "export-json": "JSON",
+      "export-csv": "CSV"
+    },
+    "time-range": {
+      "all": "Tout",
+      "day": "Jour",
+      "month": "Mois",
+      "week": "Semaine",
+      "year": "Année",
+      "custom": "Personnalisé"
+    },
+    "welcome": "Bienvenue"
+  },
   "error": {
     "more-infos": "Informations supplémentaires",
     "redirect-to-home": "Redirection vers la page d'accueil..."

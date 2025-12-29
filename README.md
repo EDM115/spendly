@@ -1,5 +1,5 @@
 # spendly
-[WIP] Budget tracker for my gf
+[WIP] A budget tracker with tables, stats and charts. Made for my gf
 
 ## DB Schema
 
@@ -27,6 +27,7 @@ erDiagram
   UserBudgetTracker {
     INTEGER user_id FK
     INTEGER budget_tracker_id FK
+    TEXT role
   }
 
   Category {

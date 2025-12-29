@@ -16,6 +16,7 @@
     "better-sqlite3": "~12.5.0",
     "chart.js": "~4.5.1",
     "jsonwebtoken": "~9.0.3",
+    "jspdf": "3.0.4",
     "nuxt": "~4.2.2",
     "nuxt-svgo": "~4.2.6",
     "pinia": "~3.0.4",
@@ -71,5 +72,5 @@
     "typecheck": "nuxt typecheck"
   },
   "type": "module",
-  "version": "0.0.1"
+  "version": "0.1.0"
 }

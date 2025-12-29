@@ -40,6 +40,51 @@ function initDatabase() {
   `)
     .run()
 
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS BudgetTracker (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL
+    );
+  `)
+    .run()
+
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS UserBudgetTracker (
+      user_id INTEGER NOT NULL,
+      budget_tracker_id INTEGER NOT NULL,
+      role TEXT NOT NULL DEFAULT 'viewer',
+      PRIMARY KEY (user_id, budget_tracker_id),
+      FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE,
+      FOREIGN KEY (budget_tracker_id) REFERENCES BudgetTracker(id) ON DELETE CASCADE
+    );
+  `)
+    .run()
+
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS Category (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      icon_id INTEGER NOT NULL,
+      FOREIGN KEY (icon_id) REFERENCES Icon(id) ON DELETE CASCADE
+    );
+  `)
+    .run()
+
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS Spending (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      budget_tracker_id INTEGER NOT NULL,
+      value REAL NOT NULL,
+      is_spending INTEGER NOT NULL DEFAULT 1,
+      category_id INTEGER NOT NULL,
+      date TEXT NOT NULL,
+      FOREIGN KEY (budget_tracker_id) REFERENCES BudgetTracker(id) ON DELETE CASCADE,
+      FOREIGN KEY (category_id) REFERENCES Category(id) ON DELETE CASCADE
+    );
+  `)
+    .run()
+
   console.log("\n✅ Database initialized\n")
 
   return db

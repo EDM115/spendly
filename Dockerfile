@@ -1,4 +1,4 @@
-FROM node:24-alpine AS builder
+FROM dhi.io/node:24-alpine AS builder
 
 ARG PORT=76000
 ENV PORT=${PORT}
@@ -39,10 +39,10 @@ RUN pnpm build
 
 ###
 
-FROM node:24-alpine
+FROM dhi.io/node:24-alpine
 
 LABEL org.opencontainers.image.authors="EDM115 <docker@edm115.dev>"
-LABEL org.opencontainers.image.base.name="node:24-alpine"
+LABEL org.opencontainers.image.base.name="dhi.io/node:24-alpine"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.source="https://github.com/EDM115/spendly.git"
 LABEL org.opencontainers.image.title="Spendly"

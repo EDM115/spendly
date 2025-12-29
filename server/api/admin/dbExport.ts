@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
   const tempDir = path.join(process.cwd(), "temp")
 
   await fs.mkdir(tempDir, { recursive: true })
-  const tables = [ "User", "Icon" ]
+  const tables = [ "User", "Icon", "BudgetTracker", "UserBudgetTracker", "Category", "Spending" ]
 
   if (format === "sql") {
     const dumpPath = path.join(tempDir, `backup_${timestamp}.sql`)

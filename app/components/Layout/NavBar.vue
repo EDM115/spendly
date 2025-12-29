@@ -115,7 +115,7 @@ const {
 const i18nSwitch = ref(false)
 const userLocale = computed(() => store.getI18n)
 const accountIcon = ref("mdi-login")
-const connected = computed(() => store.getUser !== null)
+const connected = computed(() => store.getUser !== null && !store.getIsValidatingToken)
 const accountText = computed(() => (connected.value
   ? t("navbar.disconnect")
   : t("navbar.connect")))
@@ -127,6 +127,12 @@ watch(connected, (value) => {
   accountIcon.value = value
     ? "mdi-logout"
     : "mdi-login"
+})
+
+onMounted(async () => {
+  if (store.getUser?.token) {
+    await store.validateToken()
+  }
 })
 
 const switchLocale = (newLocale: "fr" | "en") => {

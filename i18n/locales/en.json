@@ -32,6 +32,98 @@
       "username": "Username"
     }
   },
+  "app": {
+    "budget-tracker": {
+      "add": "Add budget tracker",
+      "delete": "Delete budget tracker",
+      "delete-confirm": "Delete",
+      "delete-cancel": "Cancel",
+      "delete-description": "Are you sure you want to delete this budget tracker? All associated spendings will be deleted.",
+      "delete-title": "Delete confirmation",
+      "edit": "Edit budget tracker",
+      "name": "Name",
+      "no-tracker": "No budget tracker yet",
+      "select": "Select a budget tracker",
+      "share": "Share",
+      "title": "Budget Trackers",
+      "users": "Shared users",
+      "add-user": "Add user",
+      "remove-user": "Remove user",
+      "username": "Username",
+      "role": "Role",
+      "change-role": "Change role",
+      "roles": {
+        "owner": "Owner",
+        "admin": "Admin",
+        "editor": "Editor",
+        "viewer": "Viewer"
+      },
+      "no-permission-edit": "You don't have permission to edit this budget tracker",
+      "no-permission-delete": "Only the owner can delete this budget tracker"
+    },
+    "category": {
+      "add": "Add category",
+      "delete": "Delete category",
+      "delete-confirm": "Delete",
+      "delete-cancel": "Cancel",
+      "delete-description": "Are you sure you want to delete this category?",
+      "delete-title": "Delete confirmation",
+      "edit": "Edit category",
+      "name": "Name",
+      "icon": "Icon",
+      "select": "Select a category",
+      "title": "Categories",
+      "manage": "Manage categories"
+    },
+    "charts": {
+      "area": "Evolution",
+      "bar": "Comparison",
+      "balance": "Balance over time",
+      "doughnut": "Distribution",
+      "income-vs-expense": "Income vs Expenses",
+      "no-data": "No data available for charts",
+      "pie": "Repartition by category",
+      "title": "Charts & Analytics",
+      "top-categories": "Top spending categories",
+      "export": "Export chart",
+      "export-svg": "SVG",
+      "export-png": "PNG",
+      "export-pdf": "PDF"
+    },
+    "spending": {
+      "add": "Add transaction",
+      "amount": "Amount",
+      "category": "Category",
+      "date": "Date",
+      "delete": "Delete transaction",
+      "delete-confirm": "Delete",
+      "delete-cancel": "Cancel",
+      "delete-description": "Are you sure you want to delete this transaction?",
+      "delete-title": "Delete confirmation",
+      "edit": "Edit transaction",
+      "income": "Income",
+      "expense": "Expense",
+      "name": "Description",
+      "no-spending": "No transactions yet",
+      "title": "Transactions",
+      "total-income": "Total Income",
+      "total-expense": "Total Expenses",
+      "balance": "Balance",
+      "type": "Type",
+      "export": "Export data",
+      "export-json": "JSON",
+      "export-csv": "CSV"
+    },
+    "time-range": {
+      "all": "All time",
+      "day": "Day",
+      "month": "Month",
+      "week": "Week",
+      "year": "Year",
+      "custom": "Custom"
+    },
+    "welcome": "Welcome"
+  },
   "error": {
     "more-infos": "More information",
     "redirect-to-home": "Redirecting to home page..."

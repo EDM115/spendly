@@ -71,6 +71,15 @@ const { data } = await useAsyncData<{
 onMounted(async () => {
   if (store.getUser === null || store.getUser.role !== "admin") {
     await navigateTo("/", { redirectCode: 403 })
+
+    return
+  }
+
+  // Validate the token
+  const isValid = await store.validateToken()
+
+  if (!isValid) {
+    await navigateTo("/", { redirectCode: 401 })
   }
 })
 </script>

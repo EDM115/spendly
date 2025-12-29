@@ -3,7 +3,7 @@ import db from "@@/server/api/db"
 import jwt from "jsonwebtoken"
 
 export default defineEventHandler(async (event) => {
-  if ((/^\/api(\/(?!login).*)?$/).test(event.node.req.url ?? "")) {
+  if ((/^\/api(\/(?!login|auth\/validate).*)?$/).test(event.node.req.url ?? "")) {
     const authHeader = event.node.req.headers.authorization
 
     if (!authHeader) {
