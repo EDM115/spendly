@@ -20,10 +20,18 @@ export default defineEventHandler((event) => {
 
   const [ , token ] = authHeader.split(" ")
 
+  if (!token) {
+    return {
+      status: 200,
+      body: { valid: false },
+    }
+  }
+
   try {
     // oxlint-disable-next-line no-unsafe-type-assertion
     const payload = jwt.verify(token, JWT_SECRET) as {
-      id: number; username: string;
+      id: string;
+      username: string;
     }
 
     return {

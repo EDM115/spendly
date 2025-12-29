@@ -1,6 +1,9 @@
+import type { User } from "~/types"
+
 import db from "@@/server/api/db"
 
 import { hash } from "bcryptjs"
+import { randomUUID } from "node:crypto"
 
 const SALT_ROUNDS = 10
 
@@ -21,11 +24,7 @@ export default defineEventHandler(async (event) => {
           SELECT * FROM User
           WHERE id = ?
         `)
-          .get(user_id) as {
-            id: number;
-            username: string;
-            role: string;
-          } | undefined
+          .get(user_id) as User | undefined
 
         if (!user) {
           throw createError({
@@ -46,11 +45,7 @@ export default defineEventHandler(async (event) => {
         const users = db.prepare(`
           SELECT * FROM User
         `)
-          .all() as {
-          id: number;
-          username: string;
-          role: string;
-        }[]
+          .all() as User[]
 
         return {
           status: 200,
@@ -72,19 +67,20 @@ export default defineEventHandler(async (event) => {
         })
       }
 
+      const userId = randomUUID()
       const hashed = await hash(password, SALT_ROUNDS)
 
-      const newUser = db.prepare(`
-        INSERT INTO User (username, password, role)
-        VALUES (?, ?, ?)
+      db.prepare(`
+        INSERT INTO User (id, username, password, role)
+        VALUES (?, ?, ?, ?)
       `)
-        .run(username, hashed, role)
+        .run(userId, username, hashed, role)
 
       return {
         status: 201,
         body: {
           success: "User created",
-          id: newUser.lastInsertRowid,
+          id: userId,
         },
       }
     }

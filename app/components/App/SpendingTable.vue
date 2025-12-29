@@ -342,33 +342,15 @@
 </template>
 
 <script lang="ts" setup>
-type Spending = {
-  id: number;
-  name: string;
-  budget_tracker_id: number;
-  value: number;
-  is_spending: number;
-  category_id: number;
-  date: string;
-  category_name: string;
-  icon_name: string;
-  icon_color: string;
-  icon: string;
-}
-
-type Category = {
-  id: number;
-  name: string;
-  icon_id: number;
-  icon_name: string;
-  icon_color: string;
-  icon: string;
-}
+import type {
+  Category,
+  Spending,
+} from "~/types"
 
 const props = defineProps<{
   spendings: Spending[];
   categories: Category[];
-  budgetTrackerId: number;
+  budgetTrackerId: string;
 }>()
 
 const emit = defineEmits<{
@@ -389,7 +371,7 @@ const spendingForm = ref({
   name: "",
   value: 0,
   is_spending: true,
-  category_id: null as number | null,
+  category_id: null as string | null,
   date: new Date()
     .toISOString()
     .split("T")[0],

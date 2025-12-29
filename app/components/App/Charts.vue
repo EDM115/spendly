@@ -138,25 +138,33 @@
 </template>
 
 <script lang="ts" setup>
+import type { Spending } from "~/types"
+
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
   ArcElement,
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Filler,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
-  Filler,
 } from "chart.js"
 import {
-  Line,
-  Pie,
   Bar,
   Doughnut,
+  Line,
+  Pie,
 } from "vue-chartjs"
+
+type ChartComponentRef = {
+  chart?: {
+    canvas?: HTMLCanvasElement;
+  };
+} | null
 
 ChartJS.register(
   CategoryScale,
@@ -171,20 +179,6 @@ ChartJS.register(
   Filler,
 )
 
-type Spending = {
-  id: number;
-  name: string;
-  budget_tracker_id: number;
-  value: number;
-  is_spending: number;
-  category_id: number;
-  date: string;
-  category_name: string;
-  icon_name: string;
-  icon_color: string;
-  icon: string;
-}
-
 const props = defineProps<{
   spendings: Spending[];
   timeRange: string;
@@ -198,12 +192,6 @@ const areaChartInstance = ref<InstanceType<typeof Line> | null>(null)
 const pieChartInstance = ref<InstanceType<typeof Pie> | null>(null)
 const barChartInstance = ref<InstanceType<typeof Bar> | null>(null)
 const doughnutChartInstance = ref<InstanceType<typeof Doughnut> | null>(null)
-
-type ChartComponentRef = {
-  chart?: {
-    canvas?: HTMLCanvasElement;
-  };
-} | null
 
 const isDark = computed(() => store.getTheme === "dark")
 const textColor = computed(() => (isDark.value
@@ -530,16 +518,12 @@ const doughnutChartOptions = computed(() => ({
 const getCurrentChartInstance = (): ChartComponentRef => {
   switch (activeTab.value) {
     case "area":
-      // oxlint-disable-next-line no-unsafe-type-assertion
       return areaChartInstance.value as ChartComponentRef
     case "pie":
-      // oxlint-disable-next-line no-unsafe-type-assertion
       return pieChartInstance.value as ChartComponentRef
     case "bar":
-      // oxlint-disable-next-line no-unsafe-type-assertion
       return barChartInstance.value as ChartComponentRef
     case "doughnut":
-      // oxlint-disable-next-line no-unsafe-type-assertion
       return doughnutChartInstance.value as ChartComponentRef
     default:
       return null

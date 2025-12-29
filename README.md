@@ -1,48 +1,48 @@
 # spendly
-[WIP] A budget tracker with tables, stats and charts. Made for my gf
+**WIP** A budget tracker with tables, stats and charts. Made for my gf
 
 ## DB Schema
 
 ```mermaid
 erDiagram
   User {
-    INTEGER id PK
+    TEXT id PK
     TEXT username
     TEXT password
     TEXT role
   }
 
   Icon {
-    INTEGER id PK
+    TEXT id PK
     TEXT name
     TEXT color
     TEXT icon
   }
 
   BudgetTracker {
-    INTEGER id PK
+    TEXT id PK
     TEXT name
   }
 
   UserBudgetTracker {
-    INTEGER user_id FK
-    INTEGER budget_tracker_id FK
+    TEXT user_id FK
+    TEXT budget_tracker_id FK
     TEXT role
   }
 
   Category {
-    INTEGER id PK
+    TEXT id PK
     TEXT name
-    INTEGER icon_id FK
+    TEXT icon_id FK
   }
 
   Spending {
-    INTEGER id PK
+    TEXT id PK
     TEXT name
-    INTEGER budget_tracker_id FK
+    TEXT budget_tracker_id FK
     REAL value
     BOOLEAN is_spending
-    INTEGER category_id FK
+    TEXT category_id FK
     DATETIME date
   }
 

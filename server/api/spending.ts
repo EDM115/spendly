@@ -1,27 +1,13 @@
+import type {
+  BudgetTrackerRole,
+  Spending,
+} from "~/types"
+
 import db from "@@/server/api/db"
 
-type Spending = {
-  id: number;
-  name: string;
-  budget_tracker_id: number;
-  value: number;
-  is_spending: number;
-  category_id: number;
-  date: string;
-}
+import { randomUUID } from "node:crypto"
 
-type SpendingWithCategory = Spending & {
-  category_name: string;
-  icon_name: string;
-  icon_color: string;
-  icon: string;
-}
-
-type UserBudgetTrackerRole = {
-  role: string;
-}
-
-function canEditSpending(role: string): boolean {
+function canEditSpending(role: Exclude<BudgetTrackerRole, null>): boolean {
   return [ "owner", "admin", "editor" ].includes(role)
 }
 
@@ -73,7 +59,7 @@ export default defineEventHandler(async (event) => {
           WHERE s.id = ? AND s.budget_tracker_id = ?
         `)
           // oxlint-disable-next-line no-unsafe-type-assertion
-          .get(spending_id, budget_tracker_id) as SpendingWithCategory | undefined
+          .get(spending_id, budget_tracker_id) as Spending | undefined
 
         if (!spending) {
           throw createError({
@@ -97,7 +83,8 @@ export default defineEventHandler(async (event) => {
           INNER JOIN Icon i ON c.icon_id = i.id
           WHERE s.budget_tracker_id = ?
         `
-        const params: (string | number)[] = [Number(budget_tracker_id)]
+        // oxlint-disable-next-line no-unsafe-type-assertion
+        const params: string[] = [budget_tracker_id as string]
 
         if (start_date && typeof start_date === "string") {
           query += " AND s.date >= ?"
@@ -113,7 +100,7 @@ export default defineEventHandler(async (event) => {
 
         // oxlint-disable-next-line no-unsafe-type-assertion
         const spendings = db.prepare(query)
-          .all(...params) as SpendingWithCategory[]
+          .all(...params) as Spending[]
 
         return {
           status: 200,
@@ -140,7 +127,7 @@ export default defineEventHandler(async (event) => {
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
         // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(userId, budget_tracker_id) as UserBudgetTrackerRole | undefined
+        .get(userId, budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
 
       if (!userAccess) {
         throw createError({
@@ -165,11 +152,13 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const newSpending = db.prepare(`
-        INSERT INTO Spending (name, budget_tracker_id, value, is_spending, category_id, date)
-        VALUES (?, ?, ?, ?, ?, ?)
+      const spendingId = randomUUID()
+
+      db.prepare(`
+        INSERT INTO Spending (id, name, budget_tracker_id, value, is_spending, category_id, date)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
       `)
-        .run(name, budget_tracker_id, value, is_spending
+        .run(spendingId, name, budget_tracker_id, value, is_spending
           ? 1
           : 0, category_id, date)
 
@@ -177,7 +166,7 @@ export default defineEventHandler(async (event) => {
         status: 201,
         body: {
           success: "Spending created",
-          id: newSpending.lastInsertRowid,
+          id: spendingId,
         },
       }
     }
@@ -197,7 +186,7 @@ export default defineEventHandler(async (event) => {
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
         // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(userId, budget_tracker_id) as UserBudgetTrackerRole | undefined
+        .get(userId, budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
 
       if (!userAccess) {
         throw createError({
@@ -254,7 +243,7 @@ export default defineEventHandler(async (event) => {
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
         // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(userId, budget_tracker_id) as UserBudgetTrackerRole | undefined
+        .get(userId, budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
 
       if (!userAccess) {
         throw createError({

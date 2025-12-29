@@ -1,4 +1,8 @@
+import type { Icon } from "~/types"
+
 import db from "@@/server/api/db"
+
+import { randomUUID } from "node:crypto"
 
 export default defineEventHandler(async (event) => {
   if (![ "GET", "POST", "PUT", "DELETE" ].includes(event.method)) {
@@ -13,12 +17,7 @@ export default defineEventHandler(async (event) => {
       const icons = db.prepare(`
         SELECT * FROM Icon
       `)
-        .all() as {
-        id: number;
-        name: string;
-        color: string;
-        icon: string;
-      }[]
+        .all() as Icon[]
 
       return {
         status: 200,
@@ -39,17 +38,19 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const newIcon = db.prepare(`
-        INSERT INTO Icon (name, color, icon)
-        VALUES (?, ?, ?)
+      const iconId = randomUUID()
+
+      db.prepare(`
+        INSERT INTO Icon (id, name, color, icon)
+        VALUES (?, ?, ?, ?)
       `)
-        .run(name, color, icon)
+        .run(iconId, name, color, icon)
 
       return {
         status: 201,
         body: {
           success: "Icon created",
-          id: newIcon.lastInsertRowid,
+          id: iconId,
         },
       }
     }

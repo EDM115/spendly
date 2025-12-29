@@ -296,32 +296,25 @@
 </template>
 
 <script lang="ts" setup>
-type BudgetTracker = {
-  id: number;
-  name: string;
-  role: string;
-}
-
-type SharedUser = {
-  user_id: number;
-  username: string;
-  role: string;
-}
+import type {
+  BudgetTracker,
+  SharedUser,
+} from "~/types"
 
 const props = defineProps<{
   budgetTrackers: BudgetTracker[];
-  modelValue: number | null;
+  modelValue: string | null;
 }>()
 
 const emit = defineEmits<{
-  "update:modelValue": [value: number | null];
+  "update:modelValue": [value: string | null];
   "refresh": [];
 }>()
 
 const { t } = useI18n()
 const store = useMainStore()
 
-const selectedTracker = ref<number | null>(props.modelValue)
+const selectedTracker = ref<string | null>(props.modelValue)
 const showAddDialog = ref(false)
 const showEditDialog = ref(false)
 const showDeleteDialog = ref(false)
@@ -384,9 +377,8 @@ watch(() => props.modelValue, (newVal) => {
   selectedTracker.value = newVal
 })
 
-const onTrackerChange = (value: number | null) => {
+const onTrackerChange = (value: string | null) => {
   const tracker = props.budgetTrackers.find((t) => t.id === value)
-  // oxlint-disable-next-line no-unsafe-type-assertion
   const role = (tracker?.role ?? null) as "owner" | "admin" | "editor" | "viewer" | null
 
   store.setSelectedBudgetTracker(value, role)
@@ -419,7 +411,7 @@ const addTracker = async () => {
     emit("refresh")
 
     if ("id" in response.body && response.body.id) {
-      emit("update:modelValue", Number(response.body.id))
+      emit("update:modelValue", String(response.body.id))
     }
   } catch (error) {
     console.error("Failed to add tracker:", error)
@@ -508,7 +500,7 @@ const addUser = async () => {
   }
 }
 
-const updateUserRole = async (userId: number, role: string) => {
+const updateUserRole = async (userId: string, role: string) => {
   if (!selectedTracker.value) {
     return
   }
@@ -529,7 +521,7 @@ const updateUserRole = async (userId: number, role: string) => {
   }
 }
 
-const removeUser = async (userId: number) => {
+const removeUser = async (userId: string) => {
   if (!selectedTracker.value) {
     return
   }

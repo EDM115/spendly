@@ -158,21 +158,10 @@
 </template>
 
 <script lang="ts" setup>
-type Category = {
-  id: number;
-  name: string;
-  icon_id: number;
-  icon_name: string;
-  icon_color: string;
-  icon: string;
-}
-
-type Icon = {
-  id: number;
-  name: string;
-  color: string;
-  icon: string;
-}
+import type {
+  Category,
+  Icon,
+} from "~/types"
 
 const props = defineProps<{
   categories: Category[];
@@ -192,7 +181,7 @@ const editingCategory = ref<Category | null>(null)
 const deletingCategory = ref<Category | null>(null)
 const categoryForm = ref({
   name: "",
-  icon_id: null as number | null,
+  icon_id: null as string | null,
 })
 
 const openEditDialog = (category: Category) => {

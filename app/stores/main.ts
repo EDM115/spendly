@@ -1,3 +1,10 @@
+import type {
+  BudgetTrackerRole,
+  Language,
+  StoreUser,
+  Theme,
+} from "~/types"
+
 function ssrSafe() {
   return import.meta.client
     && typeof window !== "undefined"
@@ -5,19 +12,10 @@ function ssrSafe() {
 }
 
 export const useMainStore = defineStore("main", () => {
-  type User = {
-    id: number;
-    username: string;
-    token: string;
-    role: string;
-  } | null
-
-  type BudgetTrackerRole = "owner" | "admin" | "editor" | "viewer" | null
-
-  const i18n = ref<"fr" | "en">("fr")
-  const theme = ref<"dark" | "light">("dark")
-  const user = ref<User>(null)
-  const selectedBudgetTrackerId = ref<number | null>(null)
+  const i18n = ref<Language>("fr")
+  const theme = ref<Theme>("dark")
+  const user = ref<StoreUser>(null)
+  const selectedBudgetTrackerId = ref<string | null>(null)
   const currentBudgetTrackerRole = ref<BudgetTrackerRole>(null)
   const isValidatingToken = ref(false)
 
@@ -38,7 +36,7 @@ export const useMainStore = defineStore("main", () => {
     }
 
     // oxlint-disable-next-line no-unsafe-type-assertion
-    const storedI18n = localStorage.getItem("i18n") as "fr" | "en" | null
+    const storedI18n = localStorage.getItem("i18n") as Language | null
 
     setI18n(storedI18n ?? "fr")
   }
@@ -49,7 +47,7 @@ export const useMainStore = defineStore("main", () => {
     }
 
     // oxlint-disable-next-line no-unsafe-type-assertion
-    const storedTheme = localStorage.getItem("theme") as "dark" | "light" | null
+    const storedTheme = localStorage.getItem("theme") as Theme | null
 
     if (storedTheme) {
       setTheme(storedTheme)
@@ -87,7 +85,6 @@ export const useMainStore = defineStore("main", () => {
         headers: { Authorization: `Bearer ${user.value.token}` },
       })
 
-      // oxlint-disable-next-line no-unsafe-type-assertion
       const body = (response as { body: { valid: boolean } }).body
 
       if (!body.valid) {
@@ -106,7 +103,7 @@ export const useMainStore = defineStore("main", () => {
     }
   }
 
-  function setI18n(i18nParam: "fr" | "en") {
+  function setI18n(i18nParam: Language) {
     if (!ssrSafe()) {
       return
     }
@@ -115,7 +112,7 @@ export const useMainStore = defineStore("main", () => {
     localStorage.setItem("i18n", i18n.value)
   }
 
-  function setTheme(themeParam: "dark" | "light") {
+  function setTheme(themeParam: Theme) {
     if (!ssrSafe()) {
       return
     }
@@ -124,7 +121,7 @@ export const useMainStore = defineStore("main", () => {
     localStorage.setItem("theme", theme.value)
   }
 
-  function setUser(userParam: User) {
+  function setUser(userParam: StoreUser) {
     if (!ssrSafe()) {
       return
     }
@@ -145,13 +142,13 @@ export const useMainStore = defineStore("main", () => {
     localStorage.removeItem("selectedBudgetTrackerId")
   }
 
-  function setSelectedBudgetTracker(id: number | null, role: BudgetTrackerRole = null) {
+  function setSelectedBudgetTracker(id: string | null, role: BudgetTrackerRole = null) {
     selectedBudgetTrackerId.value = id
     currentBudgetTrackerRole.value = role
 
     if (ssrSafe()) {
       if (id !== null) {
-        localStorage.setItem("selectedBudgetTrackerId", String(id))
+        localStorage.setItem("selectedBudgetTrackerId", id)
       } else {
         localStorage.removeItem("selectedBudgetTrackerId")
       }
@@ -166,7 +163,7 @@ export const useMainStore = defineStore("main", () => {
     const storedId = localStorage.getItem("selectedBudgetTrackerId")
 
     if (storedId) {
-      selectedBudgetTrackerId.value = Number(storedId)
+      selectedBudgetTrackerId.value = storedId
     }
   }
 

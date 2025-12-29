@@ -1,16 +1,8 @@
+import type { Category } from "~/types"
+
 import db from "@@/server/api/db"
 
-type Category = {
-  id: number;
-  name: string;
-  icon_id: number;
-}
-
-type CategoryWithIcon = Category & {
-  icon_name: string;
-  icon_color: string;
-  icon: string;
-}
+import { randomUUID } from "node:crypto"
 
 export default defineEventHandler(async (event) => {
   if (![ "GET", "POST", "PUT", "DELETE" ].includes(event.method)) {
@@ -39,7 +31,7 @@ export default defineEventHandler(async (event) => {
           WHERE c.id = ?
         `)
           // oxlint-disable-next-line no-unsafe-type-assertion
-          .get(category_id) as CategoryWithIcon | undefined
+          .get(category_id) as Category | undefined
 
         if (!category) {
           throw createError({
@@ -62,7 +54,7 @@ export default defineEventHandler(async (event) => {
           FROM Category c
           INNER JOIN Icon i ON c.icon_id = i.id
         `)
-          .all() as CategoryWithIcon[]
+          .all() as Category[]
 
         return {
           status: 200,
@@ -95,17 +87,19 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const newCategory = db.prepare(`
-        INSERT INTO Category (name, icon_id)
-        VALUES (?, ?)
+      const categoryId = randomUUID()
+
+      db.prepare(`
+        INSERT INTO Category (id, name, icon_id)
+        VALUES (?, ?, ?)
       `)
-        .run(name, icon_id)
+        .run(categoryId, name, icon_id)
 
       return {
         status: 201,
         body: {
           success: "Category created",
-          id: newCategory.lastInsertRowid,
+          id: categoryId,
         },
       }
     }

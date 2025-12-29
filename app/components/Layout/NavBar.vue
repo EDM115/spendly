@@ -102,6 +102,8 @@
 </template>
 
 <script lang="ts" setup>
+import type { Language } from "~/types"
+
 const store = useMainStore()
 const route = useRoute()
 const { toggleTheme } = useCustomTheme()
@@ -135,7 +137,7 @@ onMounted(async () => {
   }
 })
 
-const switchLocale = (newLocale: "fr" | "en") => {
+const switchLocale = (newLocale: Language) => {
   setLocale(newLocale)
   store.setI18n(newLocale)
 }

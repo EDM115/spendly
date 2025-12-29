@@ -1,8 +1,10 @@
+import type { Theme } from "~/types"
+
 export function useCustomTheme() {
   const vtheme = useVTheme()
   const store = useMainStore()
 
-  function changeTheme(theme: "dark" | "light") {
+  function changeTheme(theme: Theme) {
     vtheme.change(theme)
     store.setTheme(theme)
   }

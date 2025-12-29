@@ -21,18 +21,10 @@
 </template>
 
 <script lang="ts" setup>
-type User = {
-  id: number;
-  username: string;
-  role: string;
-}
-
-type Icon = {
-  id: number;
-  name: string;
-  color: string;
-  icon: string;
-}
+import type {
+  Icon,
+  User,
+} from "~/types"
 
 const store = useMainStore()
 const { smAndUp } = useVDisplay()

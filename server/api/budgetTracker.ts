@@ -1,23 +1,17 @@
+import type {
+  BudgetTracker,
+  BudgetTrackerRole,
+} from "~/types"
+
 import db from "@@/server/api/db"
 
-type BudgetTracker = {
-  id: number;
-  name: string;
-}
+import { randomUUID } from "node:crypto"
 
-type BudgetTrackerWithRole = BudgetTracker & {
-  role: string;
-}
-
-type UserBudgetTrackerRole = {
-  role: string;
-}
-
-function canEditTracker(role: string): boolean {
+function canEditTracker(role: Exclude<BudgetTrackerRole, null>): boolean {
   return [ "owner", "admin" ].includes(role)
 }
 
-function canDeleteTracker(role: string): boolean {
+function canDeleteTracker(role: Exclude<BudgetTrackerRole, null>): boolean {
   return role === "owner"
 }
 
@@ -47,7 +41,7 @@ export default defineEventHandler(async (event) => {
           WHERE bt.id = ? AND ubt.user_id = ?
         `)
           // oxlint-disable-next-line no-unsafe-type-assertion
-          .get(budget_tracker_id, userId) as BudgetTrackerWithRole | undefined
+          .get(budget_tracker_id, userId) as BudgetTracker | undefined
 
         if (!budgetTracker) {
           throw createError({
@@ -70,7 +64,7 @@ export default defineEventHandler(async (event) => {
           INNER JOIN UserBudgetTracker ubt ON bt.id = ubt.budget_tracker_id
           WHERE ubt.user_id = ?
         `)
-          .all(userId) as BudgetTrackerWithRole[]
+          .all(userId) as BudgetTracker[]
 
         return {
           status: 200,
@@ -90,13 +84,13 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const newBudgetTracker = db.prepare(`
-        INSERT INTO BudgetTracker (name)
-        VALUES (?)
-      `)
-        .run(name)
+      const budgetTrackerId = randomUUID()
 
-      const budgetTrackerId = newBudgetTracker.lastInsertRowid
+      db.prepare(`
+        INSERT INTO BudgetTracker (id, name)
+        VALUES (?, ?)
+      `)
+        .run(budgetTrackerId, name)
 
       db.prepare(`
         INSERT INTO UserBudgetTracker (user_id, budget_tracker_id, role)
@@ -128,7 +122,7 @@ export default defineEventHandler(async (event) => {
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
         // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(userId, id) as UserBudgetTrackerRole | undefined
+        .get(userId, id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
 
       if (!userAccess) {
         throw createError({
@@ -170,7 +164,7 @@ export default defineEventHandler(async (event) => {
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
         // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(userId, id) as UserBudgetTrackerRole | undefined
+        .get(userId, id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
 
       if (!userAccess) {
         throw createError({

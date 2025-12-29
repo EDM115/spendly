@@ -1,3 +1,5 @@
+import type { User } from "~/types"
+
 import db from "@@/server/api/db"
 
 import jwt from "jsonwebtoken"
@@ -14,9 +16,11 @@ export default defineEventHandler(async (event) => {
   }
 
   const {
-    username, password,
+    username,
+    password,
   }: {
-    username: string; password: string;
+    username: string;
+    password: string;
   } = await readBody(event)
 
   const stmt = db.prepare(`
@@ -25,9 +29,7 @@ export default defineEventHandler(async (event) => {
     WHERE username = ?
   `)
   // oxlint-disable-next-line no-unsafe-type-assertion
-  const user = stmt.get(username) as {
-    id: number; username: string; password: string; role: string;
-  } | undefined
+  const user = stmt.get(username) as User & { password: string } | undefined
 
   if (!user) {
     throw createError({
@@ -45,7 +47,8 @@ export default defineEventHandler(async (event) => {
 
   const token = jwt.sign(
     {
-      id: user.id, username: user.username,
+      id: user.id,
+      username: user.username,
     },
     JWT_SECRET,
     { expiresIn: "1d" },
@@ -56,7 +59,10 @@ export default defineEventHandler(async (event) => {
     body: {
       success: "User connected",
       user: {
-        id: user.id, username: user.username, token, role: user.role,
+        id: user.id,
+        username: user.username,
+        token,
+        role: user.role,
       },
     },
   }

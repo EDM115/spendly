@@ -25,13 +25,13 @@
     "vuetify-nuxt-module": "~0.19.1"
   },
   "devDependencies": {
-    "@dotenvx/dotenvx": "~1.51.2",
+    "@dotenvx/dotenvx": "~1.51.3",
     "@nuxt/eslint": "~1.12.1",
     "@stylistic/eslint-plugin": "~5.6.1",
     "@types/better-sqlite3": "^7.6.13",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "latest",
-    "@typescript-eslint/parser": "~8.50.1",
+    "@typescript-eslint/parser": "~8.51.0",
     "country-flag-emoji-polyfill": "~0.1.8",
     "edm115-lint": "~0.1.6",
     "eslint": "~9.39.2",
@@ -39,7 +39,7 @@
     "globals": "~16.5.0",
     "jiti": "~2.6.1",
     "lightningcss": "~1.30.2",
-    "oxlint": "~1.35.0",
+    "oxlint": "~1.36.0",
     "oxlint-tsgolint": "~0.10.0",
     "sass-embedded": "~1.97.1",
     "sass-loader": "~16.0.6",
@@ -72,5 +72,5 @@
     "typecheck": "nuxt typecheck"
   },
   "type": "module",
-  "version": "0.1.0"
+  "version": "0.2.0"
 }

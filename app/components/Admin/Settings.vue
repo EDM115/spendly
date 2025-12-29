@@ -340,29 +340,18 @@
 </template>
 
 <script lang="ts" setup>
+import type {
+  Icon,
+  User,
+} from "~/types"
 import type { VIcon } from "vuetify/components"
-
-type User = {
-  id: number;
-  username: string;
-  role: string;
-}
-
-type Icon = {
-  id: number;
-  name: string;
-  color: string;
-  icon: string;
-}
-
-type Props = {
-  initialUsers?: User[];
-  initialIcons?: Icon[];
-}
 
 const store = useMainStore()
 
-const props = defineProps<Props>()
+const props = defineProps<{
+  initialUsers?: User[];
+  initialIcons?: Icon[];
+}>()
 
 const users = ref<User[]>(props.initialUsers ?? [])
 const icons = ref<Icon[]>(props.initialIcons ?? [])
@@ -371,11 +360,11 @@ const exporting = ref(false)
 const showDeleteDialog = ref(false)
 const showIconDeleteDialog = ref(false)
 
-const userToDelete = ref<number | null>(null)
-const iconToDelete = ref<number | null>(null)
+const userToDelete = ref<string | null>(null)
+const iconToDelete = ref<string | null>(null)
 
 const testIcon = ref<InstanceType<typeof VIcon> | HTMLElement | null>(null)
-const editIconRefs = reactive<Record<number, HTMLElement | null>>({})
+const editIconRefs = reactive<Record<string, HTMLElement | null>>({})
 
 const newUser = ref({
   username: "", password: "", role: "user",
@@ -384,7 +373,7 @@ const newIcon = ref({
   name: "", color: "#FF0000", icon: "",
 })
 const isValidNewIcon = ref(false)
-const isValidEditIcons = reactive<Record<number, boolean>>({})
+const isValidEditIcons = reactive<Record<string, boolean>>({})
 
 const resetNewUser = () => {
   const resetValue = {
@@ -446,7 +435,7 @@ const addUser = async () => {
   await fetchData()
 }
 
-const updateUser = async (userId: number, role: string) => {
+const updateUser = async (userId: string, role: string) => {
   await $fetch("/api/admin/user", {
     method: "PUT",
     body: {
@@ -479,7 +468,7 @@ const showUserDeleteDialog = (user: User) => {
   showDeleteDialog.value = true
 }
 
-const validateIcon = async (iconName: string, iconId?: number) => {
+const validateIcon = async (iconName: string, iconId?: string) => {
   const okBasic = iconName.startsWith("mdi-") && iconName.length >= 5
 
   if (!okBasic) {
@@ -530,7 +519,7 @@ const validateIcon = async (iconName: string, iconId?: number) => {
   }
 }
 
-const updateIcon = async (iconId: number, name: string, color: string, icon: string) => {
+const updateIcon = async (iconId: string, name: string, color: string, icon: string) => {
   await $fetch("/api/admin/icon", {
     method: "PUT",
     body: {
@@ -543,7 +532,7 @@ const updateIcon = async (iconId: number, name: string, color: string, icon: str
   await fetchData()
 }
 
-const validateAndUpdateIcon = async (iconId: number, name: string, color: string, icon: string) => {
+const validateAndUpdateIcon = async (iconId: string, name: string, color: string, icon: string) => {
   validateIcon(icon)
 
   if (isValidEditIcons[iconId]) {

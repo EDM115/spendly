@@ -74,12 +74,7 @@
 </template>
 
 <script lang="ts" setup>
-type ErrorType = {
-  data?: {
-    message: string;
-    statusMessage: string;
-  };
-} | string
+import type { ErrorType } from "~/types"
 
 const store = useMainStore()
 

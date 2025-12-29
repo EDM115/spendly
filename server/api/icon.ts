@@ -1,3 +1,5 @@
+import type { Icon } from "~/types"
+
 import db from "@@/server/api/db"
 
 export default defineEventHandler(async (event) => {
@@ -11,12 +13,7 @@ export default defineEventHandler(async (event) => {
   const icons = db.prepare(`
     SELECT * FROM Icon
   `)
-    .all() as {
-      id: number;
-      name: string;
-      color: string;
-      icon: string;
-    }[] | undefined
+    .all() as Icon[] | undefined
 
   if (!icons) {
     throw createError({

@@ -1,22 +1,21 @@
+import type {
+  BudgetTrackerRole,
+  SharedUser,
+} from "~/types"
+
 import db from "@@/server/api/db"
-
-type UserAccess = {
-  user_id: number;
-  username: string;
-  role: string;
-}
-
-type UserBudgetTrackerRole = {
-  role: string;
-}
 
 const VALID_ROLES = new Set([ "viewer", "editor", "admin" ])
 
-function canManageUsers(role: string): boolean {
+function canManageUsers(role: Exclude<BudgetTrackerRole, null>): boolean {
   return [ "owner", "admin" ].includes(role)
 }
 
-function canChangeRole(currentUserRole: string, targetRole: string, newRole: string): boolean {
+function canChangeRole(
+  currentUserRole: Exclude<BudgetTrackerRole, null>,
+  targetRole: Exclude<BudgetTrackerRole, null>,
+  newRole: Exclude<BudgetTrackerRole, null>
+): boolean {
   if (currentUserRole === "owner") {
     return true
   }
@@ -71,7 +70,7 @@ export default defineEventHandler(async (event) => {
         INNER JOIN UserBudgetTracker ubt ON u.id = ubt.user_id
         WHERE ubt.budget_tracker_id = ?
       `)
-        .all(budget_tracker_id) as UserAccess[]
+        .all(budget_tracker_id) as SharedUser[]
 
       return {
         status: 200,
@@ -103,7 +102,7 @@ export default defineEventHandler(async (event) => {
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
         // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(userId, budget_tracker_id) as UserBudgetTrackerRole | undefined
+        .get(userId, budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
 
       if (!userAccess) {
         throw createError({
@@ -121,7 +120,7 @@ export default defineEventHandler(async (event) => {
         SELECT id FROM User WHERE username = ?
       `)
         // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(username) as { id: number } | undefined
+        .get(username) as { id: string } | undefined
 
       if (!targetUser) {
         throw createError({
@@ -176,7 +175,7 @@ export default defineEventHandler(async (event) => {
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
         // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(userId, budget_tracker_id) as UserBudgetTrackerRole | undefined
+        .get(userId, budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
 
       if (!userAccess) {
         throw createError({
@@ -189,7 +188,7 @@ export default defineEventHandler(async (event) => {
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
         // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(target_user_id, budget_tracker_id) as UserBudgetTrackerRole | undefined
+        .get(target_user_id, budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
 
       if (!targetUserAccess) {
         throw createError({
@@ -239,7 +238,7 @@ export default defineEventHandler(async (event) => {
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
         // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(userId, budget_tracker_id) as UserBudgetTrackerRole | undefined
+        .get(userId, budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
 
       if (!userAccess) {
         throw createError({
@@ -247,7 +246,7 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      if (Number(target_user_id) === userId) {
+      if (target_user_id === userId) {
         throw createError({
           status: 400, message: "Cannot remove yourself from budget tracker",
         })
@@ -258,7 +257,7 @@ export default defineEventHandler(async (event) => {
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
         // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(target_user_id, budget_tracker_id) as UserBudgetTrackerRole | undefined
+        .get(target_user_id, budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
 
       if (!targetUserAccess) {
         throw createError({

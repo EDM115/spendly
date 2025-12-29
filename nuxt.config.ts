@@ -1,3 +1,5 @@
+import type { Language } from "./app/types"
+
 export default defineNuxtConfig({
   modules: [
     "@nuxt/eslint",
@@ -101,10 +103,10 @@ export default defineNuxtConfig({
   i18n: {
     baseUrl: "/",
     // oxlint-disable-next-line no-unsafe-type-assertion
-    defaultLocale: process.env.DEFAULT_UI_LANG as "en" | "fr" | undefined,
+    defaultLocale: process.env.DEFAULT_UI_LANG as Language | undefined,
     detectBrowserLanguage: {
       // oxlint-disable-next-line no-unsafe-type-assertion
-      fallbackLocale: process.env.DEFAULT_UI_LANG as "en" | "fr" | undefined,
+      fallbackLocale: process.env.DEFAULT_UI_LANG as Language | undefined,
       useCookie: false,
     },
     experimental: { typedOptionsAndMessages: "all" },

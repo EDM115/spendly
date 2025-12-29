@@ -104,46 +104,17 @@
 </template>
 
 <script setup lang="ts">
-type BudgetTracker = {
-  id: number;
-  name: string;
-  role: string;
-}
-
-type Category = {
-  id: number;
-  name: string;
-  icon_id: number;
-  icon_name: string;
-  icon_color: string;
-  icon: string;
-}
-
-type Icon = {
-  id: number;
-  name: string;
-  color: string;
-  icon: string;
-}
-
-type Spending = {
-  id: number;
-  name: string;
-  budget_tracker_id: number;
-  value: number;
-  is_spending: number;
-  category_id: number;
-  date: string;
-  category_name: string;
-  icon_name: string;
-  icon_color: string;
-  icon: string;
-}
+import type {
+  BudgetTracker,
+  Category,
+  Icon,
+  Spending,
+} from "~/types"
 
 const store = useMainStore()
 const hasLoaded = ref(false)
 
-const selectedBudgetTrackerId = ref<number | null>(store.getSelectedBudgetTrackerId)
+const selectedBudgetTrackerId = ref<string | null>(store.getSelectedBudgetTrackerId)
 const budgetTrackers = ref<BudgetTracker[]>([])
 const categories = ref<Category[]>([])
 const icons = ref<Icon[]>([])
@@ -168,7 +139,6 @@ const fetchBudgetTrackers = async () => {
       if (storedId && trackerExists) {
         selectedBudgetTrackerId.value = storedId
         const tracker = budgetTrackers.value.find((t) => t.id === storedId)
-        // oxlint-disable-next-line no-unsafe-type-assertion
         const role = (tracker?.role ?? null) as "owner" | "admin" | "editor" | "viewer" | null
 
         store.setSelectedBudgetTracker(storedId, role)
@@ -176,7 +146,6 @@ const fetchBudgetTrackers = async () => {
         const firstTracker = budgetTrackers.value[0]
 
         selectedBudgetTrackerId.value = firstTracker?.id ?? null
-        // oxlint-disable-next-line no-unsafe-type-assertion
         const role = (firstTracker?.role ?? null) as "owner" | "admin" | "editor" | "viewer" | null
 
         store.setSelectedBudgetTracker(firstTracker?.id ?? null, role)
