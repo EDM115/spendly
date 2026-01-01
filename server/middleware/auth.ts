@@ -17,7 +17,10 @@ export default defineEventHandler(async (event) => {
 
     try {
       // oxlint-disable-next-line no-unsafe-type-assertion
-      const payload = jwt.verify(token, process.env.JWT_SECRET ?? "secret") as { id: string }
+      const payload = jwt.verify(token, process.env.JWT_SECRET ?? "secret") as {
+        id: string;
+        username: string;
+      }
 
       event.context.auth = { userId: payload.id }
     } catch {
@@ -28,22 +31,20 @@ export default defineEventHandler(async (event) => {
     }
 
     if ((/^\/api\/admin(\/.*)?$/).test(event.node.req.url ?? "")) {
-      const { admin_id } = event.method === "GET"
-        ? getQuery(event)
-        : await readBody(event)
+      const userId = event.context.auth?.userId
 
-      if (!admin_id) {
+      if (!userId) {
         return sendError(event, createError({
-          statusCode: 403,
-          statusMessage: "Admin ID is required",
+          statusCode: 401,
+          statusMessage: "Unauthorized",
         }))
       }
 
       const admin = db.prepare(`
-          SELECT * FROM User
+          SELECT 1 FROM User
           WHERE id = ? AND role = 'admin'
         `)
-        .get(admin_id)
+        .get(userId)
 
       if (!admin) {
         return sendError(event, createError({

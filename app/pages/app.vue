@@ -132,17 +132,17 @@ const fetchBudgetTrackers = async () => {
     }
 
     // Restore from store or select first tracker
-    if (budgetTrackers.value.length > 0) {
-      const storedId = store.getSelectedBudgetTrackerId
-      const trackerExists = budgetTrackers.value.some((t) => t.id === storedId)
+    const storedId = store.getSelectedBudgetTrackerId
+    const trackerExists = budgetTrackers.value.some((t) => t.id === storedId)
 
+    if (budgetTrackers.value.length > 0) {
       if (storedId && trackerExists) {
         selectedBudgetTrackerId.value = storedId
         const tracker = budgetTrackers.value.find((t) => t.id === storedId)
         const role = (tracker?.role ?? null) as "owner" | "admin" | "editor" | "viewer" | null
 
         store.setSelectedBudgetTracker(storedId, role)
-      } else if (!selectedBudgetTrackerId.value) {
+      } else {
         const firstTracker = budgetTrackers.value[0]
 
         selectedBudgetTrackerId.value = firstTracker?.id ?? null
@@ -150,6 +150,9 @@ const fetchBudgetTrackers = async () => {
 
         store.setSelectedBudgetTracker(firstTracker?.id ?? null, role)
       }
+    } else {
+      selectedBudgetTrackerId.value = null
+      store.setSelectedBudgetTracker(null, null)
     }
   } catch (error) {
     console.error("Failed to fetch budget trackers:", error)

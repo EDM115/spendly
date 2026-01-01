@@ -395,13 +395,11 @@ const resetNewIcon = () => {
 const fetchData = async () => {
   const [ usersData, iconsData ] = await Promise.all([
     $fetch("/api/admin/user", {
-      params: { admin_id: store.getUser?.id },
       headers: {
         Authorization: `Bearer ${store.getUser?.token}`,
       },
     }),
     $fetch("/api/admin/icon", {
-      params: { admin_id: store.getUser?.id },
       headers: {
         Authorization: `Bearer ${store.getUser?.token}`,
       },
@@ -424,9 +422,7 @@ const fetchData = async () => {
 const addUser = async () => {
   await $fetch("/api/admin/user", {
     method: "POST",
-    body: {
-      ...newUser.value, admin_id: store.getUser?.id,
-    },
+    body: newUser.value,
     headers: {
       Authorization: `Bearer ${store.getUser?.token}`,
     },
@@ -439,7 +435,7 @@ const updateUser = async (userId: string, role: string) => {
   await $fetch("/api/admin/user", {
     method: "PUT",
     body: {
-      id: userId, role, admin_id: store.getUser?.id,
+      id: userId, role,
     },
     headers: {
       Authorization: `Bearer ${store.getUser?.token}`,
@@ -452,7 +448,7 @@ const deleteUser = async () => {
   await $fetch("/api/admin/user", {
     method: "DELETE",
     body: {
-      id: userToDelete.value, admin_id: store.getUser?.id,
+      id: userToDelete.value,
     },
     headers: {
       Authorization: `Bearer ${store.getUser?.token}`,
@@ -523,7 +519,7 @@ const updateIcon = async (iconId: string, name: string, color: string, icon: str
   await $fetch("/api/admin/icon", {
     method: "PUT",
     body: {
-      id: iconId, name, color, icon, admin_id: store.getUser?.id,
+      id: iconId, name, color, icon,
     },
     headers: {
       Authorization: `Bearer ${store.getUser?.token}`,
@@ -547,9 +543,7 @@ const addIcon = async () => {
 
   await $fetch("/api/admin/icon", {
     method: "POST",
-    body: {
-      ...newIcon.value, admin_id: store.getUser?.id,
-    },
+    body: newIcon.value,
     headers: {
       Authorization: `Bearer ${store.getUser?.token}`,
     },
@@ -566,7 +560,7 @@ const deleteIcon = async () => {
   await $fetch("/api/admin/icon", {
     method: "DELETE",
     body: {
-      id: iconToDelete.value, admin_id: store.getUser?.id,
+      id: iconToDelete.value,
     },
     headers: {
       Authorization: `Bearer ${store.getUser?.token}`,
@@ -586,9 +580,7 @@ const downloadBackup = async (format: "csv" | "json" | "sql" | "sqlite") => {
   try {
     exporting.value = true
     const response = await $fetch("/api/admin/dbExport", {
-      params: {
-        format, admin_id: store.getUser?.id,
-      },
+      params: { format },
       headers: { Authorization: `Bearer ${store.getUser?.token}` },
     })
 

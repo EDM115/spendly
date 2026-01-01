@@ -14,7 +14,7 @@ function canManageUsers(role: Exclude<BudgetTrackerRole, null>): boolean {
 function canChangeRole(
   currentUserRole: Exclude<BudgetTrackerRole, null>,
   targetRole: Exclude<BudgetTrackerRole, null>,
-  newRole: Exclude<BudgetTrackerRole, null>
+  newRole: Exclude<BudgetTrackerRole, null>,
 ): boolean {
   if (currentUserRole === "owner") {
     return true

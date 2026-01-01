@@ -411,7 +411,10 @@ const addTracker = async () => {
     emit("refresh")
 
     if ("id" in response.body && response.body.id) {
-      emit("update:modelValue", String(response.body.id))
+      const newId = String(response.body.id)
+
+      store.setSelectedBudgetTracker(newId, "owner")
+      emit("update:modelValue", newId)
     }
   } catch (error) {
     console.error("Failed to add tracker:", error)
@@ -451,6 +454,7 @@ const deleteTracker = async () => {
       headers: { Authorization: `Bearer ${store.getUser?.token}` },
     })
     showDeleteDialog.value = false
+    store.setSelectedBudgetTracker(null, null)
     emit("update:modelValue", null)
     emit("refresh")
   } catch (error) {
