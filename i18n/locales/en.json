@@ -129,14 +129,39 @@
     "redirect-to-home": "Redirecting to home page..."
   },
   "login": {
-    "github": "Source / Help",
     "login": "Log in",
     "password": "Password",
     "title": "Login",
     "username": "Username"
   },
+  "landing": {
+    "hero": {
+      "title": "Master your money with Spendly",
+      "subtitle": "Simple, powerful, and free budget tracking for everyone"
+    },
+    "features": {
+      "title": "Why Spendly ?",
+      "tracking": {
+        "title": "Easy tracking",
+        "desc": "Log your income and expenses in seconds"
+      },
+      "charts": {
+        "title": "Visual analytics",
+        "desc": "Understand your spending habits with beautiful charts"
+      },
+      "free": {
+        "title": "Forever free",
+        "desc": "No hidden fees, no subscriptions, open source"
+      }
+    },
+    "join": {
+      "title": "Ready to join ?",
+      "text": "To create an account, simply send an email to"
+    },
+    "github": "View on GitHub"
+  },
   "main": {
-    "description": "Manage your budget with ease. Made for my gf",
+    "description": "Simple, powerful, and free budget tracking for everyone",
     "title": "Spendly"
   },
   "navbar": {

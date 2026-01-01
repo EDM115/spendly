@@ -52,24 +52,6 @@
         />
       </v-col>
     </v-row>
-    <v-row>
-      <v-col
-        class="text-center"
-      >
-        <NuxtLink
-          target="_blank"
-          to="https://github.com/EDM115/spendly#readme"
-        >
-          <v-btn
-            prepend-icon="mdi-github"
-            color="warning"
-            variant="tonal"
-            theme="dark"
-            :text="$t('login.github')"
-          />
-        </NuxtLink>
-      </v-col>
-    </v-row>
   </v-form>
 </template>
 

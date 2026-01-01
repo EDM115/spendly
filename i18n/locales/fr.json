@@ -129,14 +129,39 @@
     "redirect-to-home": "Redirection vers la page d'accueil..."
   },
   "login": {
-    "github": "Source / Aide",
     "login": "Se connecter",
     "password": "Mot de passe",
     "title": "Connexion",
     "username": "Nom d'utilisateur"
   },
+  "landing": {
+    "hero": {
+      "title": "Maîtrisez votre budget avec Spendly",
+      "subtitle": "Suivi budgétaire simple, puissant et gratuit pour tous"
+    },
+    "features": {
+      "title": "Pourquoi Spendly ?",
+      "tracking": {
+        "title": "Suivi facile",
+        "desc": "Enregistrez vos revenus et dépenses en quelques secondes"
+      },
+      "charts": {
+        "title": "Analyses visuelles",
+        "desc": "Comprenez vos habitudes de dépenses avec de beaux graphiques"
+      },
+      "free": {
+        "title": "Toujours gratuit",
+        "desc": "Pas de frais cachés, pas d'abonnements, open source"
+      }
+    },
+    "join": {
+      "title": "Prêt à nous rejoindre ?",
+      "text": "Pour créer un compte, envoyez simplement un email à"
+    },
+    "github": "Voir sur GitHub"
+  },
   "main": {
-    "description": "Gérez votre budget avec facilité. Réalisé pour ma copine",
+    "description": "Suivi budgétaire simple, puissant et gratuit pour tous",
     "title": "Spendly"
   },
   "navbar": {
