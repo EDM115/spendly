@@ -370,7 +370,7 @@ const newUser = ref({
   username: "", password: "", role: "user",
 })
 const newIcon = ref({
-  name: "", color: "#FF0000", icon: "",
+  name: "", color: "#4ADE80", icon: "",
 })
 const isValidNewIcon = ref(false)
 const isValidEditIcons = reactive<Record<string, boolean>>({})
@@ -385,7 +385,7 @@ const resetNewUser = () => {
 
 const resetNewIcon = () => {
   const resetValue = {
-    name: "", color: "#FF0000", icon: "",
+    name: "", color: "#4ADE80", icon: "",
   }
 
   newIcon.value = resetValue

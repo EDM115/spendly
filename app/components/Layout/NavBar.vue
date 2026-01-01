@@ -53,7 +53,6 @@
     </v-app-bar-title>
     <v-spacer />
     <v-btn
-      v-if="connected"
       :prepend-icon="smAndUp ? accountIcon : undefined"
       :icon="smAndUp ? undefined : accountIcon"
       :text="smAndUp ? accountText : undefined"
@@ -156,9 +155,10 @@ const getFlagEmoji = (l: string): string => {
 async function handleConnect() {
   if (connected.value) {
     store.logout()
+    await navigateTo("/")
+  } else {
+    await navigateTo("/login")
   }
-
-  await navigateTo("/")
 }
 </script>
 

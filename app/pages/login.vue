@@ -20,12 +20,19 @@
         />
       </v-col>
       <v-col align="center">
-        <h1>Welcome to Spendly</h1>
+        <Login />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts" setup>
+const store = useMainStore()
 const { smAndUp } = useVDisplay()
+
+onMounted(async () => {
+  if (store.getUser !== null) {
+    await navigateTo("/app", { redirectCode: 302 })
+  }
+})
 </script>

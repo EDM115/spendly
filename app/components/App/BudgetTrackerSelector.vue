@@ -351,11 +351,11 @@ const availableRoles = computed(() => [
 const getRoleColor = (role: string) => {
   switch (role) {
     case "owner":
-      return "purple"
+      return "accent"
     case "admin":
-      return "error"
+      return "primary"
     case "editor":
-      return "warning"
+      return "secondary"
     default:
       return "info"
   }

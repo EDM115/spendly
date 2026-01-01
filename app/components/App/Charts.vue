@@ -195,11 +195,11 @@ const doughnutChartInstance = ref<InstanceType<typeof Doughnut> | null>(null)
 
 const isDark = computed(() => store.getTheme === "dark")
 const textColor = computed(() => (isDark.value
-  ? "#F8F8F2"
-  : "#070B1A"))
+  ? "#f0fdf4"
+  : "#022c22"))
 const gridColor = computed(() => (isDark.value
-  ? "rgba(248, 248, 242, 0.1)"
-  : "rgba(7, 11, 26, 0.1)"))
+  ? "rgba(240, 253, 244, 0.1)"
+  : "rgba(2, 44, 34, 0.1)"))
 
 const filteredSpendings = computed(() => {
   const now = new Date()
@@ -272,24 +272,36 @@ const areaChartData = computed(() => {
       {
         label: t("app.charts.balance"),
         data: balanceData,
-        borderColor: "#53B9C8",
-        backgroundColor: "rgba(83, 185, 200, 0.2)",
+        borderColor: isDark.value
+          ? "#3b82f6"
+          : "#2563eb",
+        backgroundColor: isDark.value
+          ? "rgba(59, 130, 246, 0.2)"
+          : "rgba(37, 99, 235, 0.2)",
         fill: true,
         tension: 0.4,
       },
       {
         label: t("app.spending.income"),
         data: incomeData,
-        borderColor: "#50FA7B",
-        backgroundColor: "rgba(80, 250, 123, 0.2)",
+        borderColor: isDark.value
+          ? "#22c55e"
+          : "#16a34a",
+        backgroundColor: isDark.value
+          ? "rgba(34, 197, 94, 0.2)"
+          : "rgba(22, 163, 74, 0.2)",
         fill: true,
         tension: 0.4,
       },
       {
         label: t("app.spending.expense"),
         data: expenseData,
-        borderColor: "#EE3124",
-        backgroundColor: "rgba(238, 49, 36, 0.2)",
+        borderColor: isDark.value
+          ? "#ef4444"
+          : "#dc2626",
+        backgroundColor: isDark.value
+          ? "rgba(239, 68, 68, 0.2)"
+          : "rgba(220, 38, 38, 0.2)",
         fill: true,
         tension: 0.4,
       },
@@ -356,8 +368,8 @@ const pieChartData = computed(() => {
         backgroundColor: backgroundColors,
         borderWidth: 2,
         borderColor: isDark.value
-          ? "#020613"
-          : "#DFDFD2",
+          ? "#051e11"
+          : "#f0fdf4",
       },
     ],
   }
@@ -415,15 +427,23 @@ const barChartData = computed(() => {
       {
         label: t("app.spending.income"),
         data: incomeData,
-        backgroundColor: "rgba(80, 250, 123, 0.8)",
-        borderColor: "#50FA7B",
+        backgroundColor: isDark.value
+          ? "rgba(34, 197, 94, 0.8)"
+          : "rgba(22, 163, 74, 0.8)",
+        borderColor: isDark.value
+          ? "#22c55e"
+          : "#16a34a",
         borderWidth: 1,
       },
       {
         label: t("app.spending.expense"),
         data: expenseData,
-        backgroundColor: "rgba(238, 49, 36, 0.8)",
-        borderColor: "#EE3124",
+        backgroundColor: isDark.value
+          ? "rgba(239, 68, 68, 0.8)"
+          : "rgba(220, 38, 38, 0.8)",
+        borderColor: isDark.value
+          ? "#ef4444"
+          : "#dc2626",
         borderWidth: 1,
       },
     ],
@@ -490,8 +510,8 @@ const doughnutChartData = computed(() => {
         backgroundColor: backgroundColors,
         borderWidth: 2,
         borderColor: isDark.value
-          ? "#020613"
-          : "#DFDFD2",
+          ? "#051e11"
+          : "#f0fdf4",
       },
     ],
   }
