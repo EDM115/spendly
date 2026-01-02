@@ -31,7 +31,7 @@
           </p>
           <div class="d-flex justify-center ga-4 flex-wrap">
             <v-btn
-              color="primary"
+              color="secondary"
               size="large"
               to="/login"
               prepend-icon="mdi-login"
@@ -41,6 +41,7 @@
             <v-btn
               variant="outlined"
               size="large"
+              color="accent"
               href="https://github.com/EDM115/spendly#readme"
               target="_blank"
               prepend-icon="mdi-github"
@@ -74,9 +75,9 @@
             color="surface"
           >
             <v-icon
-              icon="mdi-flash"
+              icon="mdi-progress-check"
               size="64"
-              color="accent"
+              color="secondary"
               class="mb-4"
             />
             <h3 class="text-h5 font-weight-bold mb-2">
@@ -97,9 +98,9 @@
             color="surface"
           >
             <v-icon
-              icon="mdi-chart-box"
+              icon="mdi-chart-box-multiple-outline"
               size="64"
-              color="secondary"
+              color="accent"
               class="mb-4"
             />
             <h3 class="text-h5 font-weight-bold mb-2">

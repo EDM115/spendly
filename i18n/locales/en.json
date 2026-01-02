@@ -23,20 +23,19 @@
   },
   "app": {
     "budget-tracker": {
-      "add": "Add budget tracker",
-      "delete": "Delete budget tracker",
-      "delete-confirm": "Delete",
-      "delete-cancel": "Cancel",
+      "add": "Add",
+      "delete": "Delete",
+      "cancel": "Cancel",
       "delete-description": "Are you sure you want to delete this budget tracker? All associated spendings will be deleted.",
       "delete-title": "Delete confirmation",
-      "edit": "Edit budget tracker",
+      "edit": "Edit",
       "name": "Name",
       "no-tracker": "No budget tracker yet",
       "select": "Select a budget tracker",
       "share": "Share",
+      "share-close": "Close",
       "title": "Budget Trackers",
       "users": "Shared users",
-      "add-user": "Add user",
       "remove-user": "Remove user",
       "username": "Username",
       "role": "Role",
@@ -51,18 +50,16 @@
       "no-permission-delete": "Only the owner can delete this budget tracker"
     },
     "category": {
-      "add": "Add category",
-      "delete": "Delete category",
-      "delete-confirm": "Delete",
-      "delete-cancel": "Cancel",
-      "delete-description": "Are you sure you want to delete this category?",
+      "add": "Add",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "delete-description": "Are you sure you want to delete this category? Warning, all associated transactions will also be deleted.",
       "delete-title": "Delete confirmation",
-      "edit": "Edit category",
+      "edit": "Edit",
       "name": "Name",
       "icon": "Icon (mdi-)",
-      "select": "Select a category",
-      "title": "Categories",
-      "manage": "Manage categories"
+      "empty": "Add a category to start organizing your expenses",
+      "title": "Categories"
     },
     "charts": {
       "area": "Evolution",
@@ -74,32 +71,32 @@
       "pie": "Repartition by category",
       "title": "Charts & Analytics",
       "top-categories": "Top spending categories",
-      "export": "Export chart",
+      "export": "Download",
       "export-svg": "SVG",
       "export-png": "PNG",
       "export-pdf": "PDF"
     },
     "spending": {
-      "add": "Add transaction",
+      "actions": "Actions",
+      "add": "Add",
       "amount": "Amount",
       "category": "Category",
       "date": "Date",
-      "delete": "Delete transaction",
-      "delete-confirm": "Delete",
-      "delete-cancel": "Cancel",
+      "delete": "Delete",
+      "cancel": "Cancel",
       "delete-description": "Are you sure you want to delete this transaction?",
       "delete-title": "Delete confirmation",
-      "edit": "Edit transaction",
+      "edit": "Edit",
       "income": "Income",
       "expense": "Expense",
       "name": "Description",
       "no-spending": "No transactions yet",
       "title": "Transactions",
-      "total-income": "Total Income",
-      "total-expense": "Total Expenses",
+      "total-income": "Total income",
+      "total-expense": "Total expenses",
       "balance": "Balance",
       "type": "Type",
-      "export": "Export data",
+      "export": "Export",
       "export-json": "JSON",
       "export-csv": "CSV"
     },
@@ -153,7 +150,7 @@
     "title": "Spendly"
   },
   "navbar": {
-    "connect": "Connect",
-    "disconnect": "Disconnect"
+    "connect": "Log in",
+    "disconnect": "Log out"
   }
 }

@@ -13,38 +13,41 @@
             :key="user.id"
           >
             <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-list-item-title>{{ user.username }}</v-list-item-title>
+              <v-row
+                align="center"
+                no-gutters
+              >
+                <v-col>
+                  <v-list-item-title class="mr-4">{{ user.username }}</v-list-item-title>
                 </v-col>
-                <v-col cols="12">
+                <v-col>
                   <v-select
                     v-model="user.role"
+                    hide-details
                     :disabled="user.id === store.getUser?.id"
                     :items="['user', 'admin']"
                     density="compact"
                     :label="$t('admin.users.role')"
                   />
                 </v-col>
+                <v-col>
+                  <v-btn
+                    :disabled="user.id === store.getUser?.id"
+                    color="primary"
+                    class="mr-4"
+                    icon="mdi-pencil-outline"
+                    @click="updateUser(user.id, user.role)"
+                  />
+                  <v-btn
+                    :disabled="user.id === store.getUser?.id"
+                    icon="mdi-delete-outline"
+                    color="error"
+                    variant="outlined"
+                    @click="showUserDeleteDialog(user)"
+                  />
+                </v-col>
               </v-row>
             </v-container>
-            <template #append>
-              <div class="d-flex gap-2">
-                <v-btn
-                  color="primary"
-                  size="small"
-                  icon="mdi-pencil"
-                  @click="updateUser(user.id, user.role)"
-                />
-                <v-btn
-                  :disabled="user.id === store.getUser?.id"
-                  icon="mdi-delete"
-                  color="error"
-                  variant="text"
-                  @click="showUserDeleteDialog(user)"
-                />
-              </div>
-            </template>
           </v-list-item>
         </v-list>
         <v-divider class="my-2" />
@@ -56,7 +59,7 @@
             <v-row>
               <v-col
                 cols="12"
-                :sm="3"
+                :sm="4"
               >
                 <v-text-field
                   v-model="newUser.username"
@@ -67,7 +70,7 @@
               </v-col>
               <v-col
                 cols="12"
-                :sm="3"
+                :sm="4"
               >
                 <v-text-field
                   v-model="newUser.password"
@@ -79,7 +82,7 @@
               </v-col>
               <v-col
                 cols="12"
-                :sm="2"
+                :sm="3"
               >
                 <v-select
                   v-model="newUser.role"
@@ -90,7 +93,7 @@
               </v-col>
               <v-col
                 cols="12"
-                :sm="2"
+                :sm="1"
               >
                 <v-btn
                   color="primary"
@@ -106,8 +109,10 @@
     </v-expansion-panel>
   </v-expansion-panels>
 
-  <v-card class="mt-4">
-    <v-card-title>{{ $t('admin.backup.title') }}</v-card-title>
+  <v-card class="mt-4 pa-2">
+    <v-card-title class="mb-4">
+      {{ $t('admin.backup.title') }}
+    </v-card-title>
     <v-card-text>
       <v-row>
         <v-col>

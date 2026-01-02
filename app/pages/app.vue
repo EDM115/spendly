@@ -4,22 +4,22 @@
     fluid
   >
     <v-row v-if="!hasLoaded">
-      <v-col cols="12">
+      <v-col cols="6">
         <v-skeleton-loader
-          type="card"
+          type="heading,table-thead,table-tbody"
           class="mb-4"
         />
+      </v-col>
+      <v-col cols="6">
         <v-skeleton-loader
-          type="table"
+          type="heading,image"
           class="mb-4"
         />
-        <v-skeleton-loader type="card" />
       </v-col>
     </v-row>
 
     <template v-else>
-      <!-- Welcome Message -->
-      <v-row class="mb-4">
+      <v-row class="mb-4 pa-1">
         <v-col cols="12">
           <h1 class="text-h4">
             {{ $t("app.welcome") }}, {{ store.getUser?.username }} 👋
@@ -27,7 +27,6 @@
         </v-col>
       </v-row>
 
-      <!-- Budget Tracker Selector -->
       <v-row>
         <v-col cols="12">
           <AppBudgetTrackerSelector
@@ -38,14 +37,39 @@
         </v-col>
       </v-row>
 
-      <!-- Main Content (only when a budget tracker is selected) -->
       <template v-if="selectedBudgetTrackerId">
-        <v-row>
-          <v-col
-            cols="12"
-            lg="8"
-          >
-            <!-- Spending Table -->
+        <v-tabs
+          v-model="selectedTab"
+          fixed-tabs
+          color="primary"
+        >
+          <v-tab value="spendings">
+            <v-icon
+              icon="mdi-format-list-bulleted"
+              class="mr-2"
+            />
+            {{ $t("app.spending.title") }}
+          </v-tab>
+          <v-tab value="categories">
+            <v-icon
+              icon="mdi-shape-outline"
+              class="mr-2"
+            />
+            {{ $t("app.category.title") }}
+          </v-tab>
+          <v-tab value="charts">
+            <v-icon
+              icon="mdi-chart-box-multiple-outline"
+              class="mr-2"
+            />
+            {{ $t("app.charts.title") }}
+          </v-tab>
+        </v-tabs>
+
+        <v-divider class="my-2" />
+
+        <v-tabs-window v-model="selectedTab">
+          <v-tabs-window-item value="spendings">
             <AppSpendingTable
               :spendings="spendings"
               :categories="categories"
@@ -53,31 +77,22 @@
               @refresh="fetchSpendings"
               @update:time-range="timeRange = $event"
             />
-          </v-col>
-          <v-col
-            cols="12"
-            lg="4"
-          >
-            <!-- Category Manager -->
+          </v-tabs-window-item>
+          <v-tabs-window-item value="categories">
             <AppCategoryManager
               :categories="categories"
               @refresh="fetchCategories"
             />
-          </v-col>
-        </v-row>
-
-        <!-- Charts -->
-        <v-row>
-          <v-col cols="12">
+          </v-tabs-window-item>
+          <v-tabs-window-item value="charts">
             <AppCharts
               :spendings="spendings"
               :time-range="timeRange"
             />
-          </v-col>
-        </v-row>
+          </v-tabs-window-item>
+        </v-tabs-window>
       </template>
 
-      <!-- No Budget Tracker Selected -->
       <v-row v-else>
         <v-col cols="12">
           <v-card>
@@ -117,6 +132,7 @@ const budgetTrackers = ref<BudgetTracker[]>([])
 const categories = ref<Category[]>([])
 const spendings = ref<Spending[]>([])
 const timeRange = ref("month")
+const selectedTab = ref<string | null>(null)
 
 const fetchBudgetTrackers = async () => {
   try {
@@ -203,7 +219,6 @@ onMounted(async () => {
     return
   }
 
-  // Validate the token before fetching data
   const isValid = await store.validateToken()
 
   if (!isValid) {
@@ -223,8 +238,6 @@ onMounted(async () => {
 
 <style>
 .v-skeleton-loader__image {
-  height: 80% !important;
-  border-radius: 32px !important;
-  margin: 1em !important;
+  height: 47.5vh;
 }
 </style>

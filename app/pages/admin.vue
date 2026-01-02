@@ -55,7 +55,6 @@ onMounted(async () => {
     return
   }
 
-  // Validate the token
   const isValid = await store.validateToken()
 
   if (!isValid) {

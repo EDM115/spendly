@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mb-4">
+  <v-card class="mb-4 pa-1">
     <v-card-title class="d-flex align-center justify-space-between">
       <div class="d-flex align-center">
         <v-icon
@@ -17,7 +17,7 @@
         {{ $t("app.category.add") }}
       </v-btn>
     </v-card-title>
-    <v-card-text>
+    <v-card-text class="pt-4">
       <v-list v-if="categories.length > 0">
         <v-list-item
           v-for="category in categories"
@@ -31,22 +31,39 @@
           </template>
           <v-list-item-title>{{ category.name }}</v-list-item-title>
           <template #append>
-            <v-btn
-              v-if="canEdit"
-              icon="mdi-pencil"
-              variant="text"
-              size="small"
-              color="primary"
-              @click="openEditDialog(category)"
-            />
-            <v-btn
-              v-if="canEdit"
-              icon="mdi-delete"
-              variant="text"
-              size="small"
-              color="error"
-              @click="openDeleteDialog(category)"
-            />
+            <v-tooltip
+              location="top"
+              :text="$t('app.category.edit')"
+            >
+              <template #activator="{ props: tooltipProps }">
+                <v-btn
+                  v-if="canEdit"
+                  v-bind="tooltipProps"
+                  icon="mdi-pencil-outline"
+                  variant="text"
+                  size="small"
+                  color="secondary"
+                  @click="openEditDialog(category)"
+                />
+              </template>
+            </v-tooltip>
+
+            <v-tooltip
+              location="top"
+              :text="$t('app.category.delete')"
+            >
+              <template #activator="{ props: tooltipProps }">
+                <v-btn
+                  v-if="canEdit"
+                  v-bind="tooltipProps"
+                  icon="mdi-delete-outline"
+                  variant="text"
+                  size="small"
+                  color="error"
+                  @click="openDeleteDialog(category)"
+                />
+              </template>
+            </v-tooltip>
           </template>
         </v-list-item>
       </v-list>
@@ -55,18 +72,17 @@
         type="info"
         variant="tonal"
       >
-        {{ $t("app.category.select") }}
+        {{ $t("app.category.empty") }}
       </v-alert>
     </v-card-text>
   </v-card>
 
-  <!-- Add/Edit Dialog -->
   <v-dialog
     v-model="showAddDialog"
     max-width="500"
     persistent
   >
-    <v-card>
+    <v-card class="pa-1">
       <v-card-title>
         {{ editingCategory ? $t("app.category.edit") : $t("app.category.add") }}
       </v-card-title>
@@ -110,7 +126,7 @@
           color="secondary"
           @click="closeDialog"
         >
-          {{ $t("app.category.delete-cancel") }}
+          {{ $t("app.category.cancel") }}
         </v-btn>
         <v-btn
           color="primary"
@@ -123,13 +139,12 @@
     </v-card>
   </v-dialog>
 
-  <!-- Delete Dialog -->
   <v-dialog
     v-model="showDeleteDialog"
     max-width="500"
     persistent
   >
-    <v-card>
+    <v-card class="pa-1">
       <v-card-title class="text-h5">
         {{ $t("app.category.delete-title") }}
       </v-card-title>
@@ -142,13 +157,13 @@
           color="secondary"
           @click="showDeleteDialog = false"
         >
-          {{ $t("app.category.delete-cancel") }}
+          {{ $t("app.category.cancel") }}
         </v-btn>
         <v-btn
           color="error"
           @click="deleteCategory"
         >
-          {{ $t("app.category.delete-confirm") }}
+          {{ $t("app.category.delete") }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -187,6 +202,7 @@ const validateIcon = async (iconName: string) => {
 
   if (!okBasic) {
     isValidIcon.value = false
+
     if (!iconName.startsWith("mdi-")) {
       if (iconName.length >= 4) {
         categoryForm.value.icon = "mdi-" + iconName
@@ -194,6 +210,7 @@ const validateIcon = async (iconName: string) => {
         categoryForm.value.icon = "mdi-"
       }
     }
+
     return
   }
 
@@ -205,6 +222,7 @@ const validateIcon = async (iconName: string) => {
 
   if (!el) {
     isValidIcon.value = false
+
     return
   }
 
@@ -294,3 +312,9 @@ const deleteCategory = async () => {
   }
 }
 </script>
+
+<style scoped>
+.v-color-picker {
+  width: auto;
+}
+</style>

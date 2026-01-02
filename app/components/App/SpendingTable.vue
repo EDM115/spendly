@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mb-4">
+  <v-card class="mb-4 pa-1">
     <v-card-title class="d-flex align-center justify-space-between flex-wrap gap-2">
       <div class="d-flex align-center">
         <v-icon
@@ -12,6 +12,7 @@
         <v-btn-toggle
           v-model="timeRange"
           mandatory
+          class="mr-4"
           color="primary"
           density="compact"
         >
@@ -46,12 +47,21 @@
             {{ $t("app.time-range.all") }}
           </v-btn>
         </v-btn-toggle>
+        <v-btn
+          v-if="canEdit"
+          color="primary"
+          class="mr-4"
+          prepend-icon="mdi-plus"
+          @click="showAddDialog = true"
+        >
+          {{ $t("app.spending.add") }}
+        </v-btn>
         <v-menu>
           <template #activator="{ props: menuProps }">
             <v-btn
               v-bind="menuProps"
               color="info"
-              prepend-icon="mdi-download"
+              prepend-icon="mdi-download-outline"
             >
               {{ $t("app.spending.export") }}
             </v-btn>
@@ -65,24 +75,15 @@
             </v-list-item>
             <v-list-item @click="exportCSV">
               <template #prepend>
-                <v-icon icon="mdi-file-delimited" />
+                <v-icon icon="mdi-file-delimited-outline" />
               </template>
               <v-list-item-title>{{ $t("app.spending.export-csv") }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
-        <v-btn
-          v-if="canEdit"
-          color="success"
-          prepend-icon="mdi-plus"
-          @click="showAddDialog = true"
-        >
-          {{ $t("app.spending.add") }}
-        </v-btn>
       </div>
     </v-card-title>
-    <v-card-text>
-      <!-- Summary Cards -->
+    <v-card-text class="pt-4">
       <v-row class="mb-4">
         <v-col
           cols="12"
@@ -140,7 +141,6 @@
         </v-col>
       </v-row>
 
-      <!-- Data Table -->
       <v-data-table
         :headers="headers"
         :items="filteredSpendings"
@@ -175,34 +175,50 @@
           {{ formatDate(item.date) }}
         </template>
         <template #[`item.actions`]="{ item }">
-          <v-btn
-            v-if="canEdit"
-            icon="mdi-pencil"
-            variant="text"
-            size="small"
-            color="primary"
-            @click="openEditDialog(item)"
-          />
-          <v-btn
-            v-if="canEdit"
-            icon="mdi-delete"
-            variant="text"
-            size="small"
-            color="error"
-            @click="openDeleteDialog(item)"
-          />
+          <v-tooltip
+            location="top"
+            :text="$t('app.spending.edit')"
+          >
+            <template #activator="{ props: tooltipProps }">
+              <v-btn
+                v-if="canEdit"
+                v-bind="tooltipProps"
+                icon="mdi-pencil-outline"
+                variant="text"
+                size="small"
+                color="secondary"
+                @click="openEditDialog(item)"
+              />
+            </template>
+          </v-tooltip>
+
+          <v-tooltip
+            location="top"
+            :text="$t('app.spending.delete')"
+          >
+            <template #activator="{ props: tooltipProps }">
+              <v-btn
+                v-if="canEdit"
+                v-bind="tooltipProps"
+                icon="mdi-delete-outline"
+                variant="text"
+                size="small"
+                color="error"
+                @click="openDeleteDialog(item)"
+              />
+            </template>
+          </v-tooltip>
         </template>
       </v-data-table>
     </v-card-text>
   </v-card>
 
-  <!-- Add/Edit Dialog -->
   <v-dialog
     v-model="showAddDialog"
     max-width="600"
     persistent
   >
-    <v-card>
+    <v-card class="pa-1">
       <v-card-title>
         {{ editingSpending ? $t("app.spending.edit") : $t("app.spending.add") }}
       </v-card-title>
@@ -221,13 +237,13 @@
               cols="12"
               sm="6"
             >
-              <v-text-field
+              <v-number-input
                 v-model.number="spendingForm.value"
                 :label="$t('app.spending.amount')"
-                type="number"
+                inset
                 variant="outlined"
-                min="0"
-                step="0.01"
+                :min="0"
+                :precision="2"
                 :rules="[v => v > 0 || 'Must be positive']"
               />
             </v-col>
@@ -279,13 +295,35 @@
               cols="12"
               sm="6"
             >
-              <v-text-field
-                v-model="spendingForm.date"
-                :label="$t('app.spending.date')"
-                type="date"
-                variant="outlined"
-                :rules="[v => !!v || 'Required']"
-              />
+              <v-menu
+                v-model="dateMenu"
+                :close-on-content-click="false"
+                location="top"
+              >
+                <template #activator="{ props: activatorProps }">
+                  <v-text-field
+                    v-model="spendingForm.date"
+                    v-bind="activatorProps"
+                    :label="$t('app.spending.date')"
+                    variant="outlined"
+                    readonly
+                    append-inner-icon="mdi-calendar-outline"
+                    :rules="[v => !!v || 'Required']"
+                  />
+                </template>
+
+                <v-date-picker
+                  v-model="tempDate"
+                  control-variant="modal"
+                  header-date-format="fullDateWithWeekday"
+                  :landscape="smAndUp"
+                  :location="lgAndUp ? 'top' : undefined"
+                  show-adjacent-months
+                  weekday-format="short"
+                  weeks-in-month="dynamic"
+                  @update:model-value="spendingForm.date = new Date(tempDate ?? '').toISOString().split('T')[0]; dateMenu = false"
+                />
+              </v-menu>
             </v-col>
           </v-row>
         </v-form>
@@ -296,7 +334,7 @@
           color="secondary"
           @click="closeDialog"
         >
-          {{ $t("app.spending.delete-cancel") }}
+          {{ $t("app.spending.cancel") }}
         </v-btn>
         <v-btn
           color="primary"
@@ -309,13 +347,12 @@
     </v-card>
   </v-dialog>
 
-  <!-- Delete Dialog -->
   <v-dialog
     v-model="showDeleteDialog"
     max-width="500"
     persistent
   >
-    <v-card>
+    <v-card class="pa-1">
       <v-card-title class="text-h5">
         {{ $t("app.spending.delete-title") }}
       </v-card-title>
@@ -328,13 +365,13 @@
           color="secondary"
           @click="showDeleteDialog = false"
         >
-          {{ $t("app.spending.delete-cancel") }}
+          {{ $t("app.spending.cancel") }}
         </v-btn>
         <v-btn
           color="error"
           @click="deleteSpending"
         >
-          {{ $t("app.spending.delete-confirm") }}
+          {{ $t("app.spending.delete") }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -358,13 +395,22 @@ const emit = defineEmits<{
   "update:timeRange": [value: string];
 }>()
 
-const { t } = useI18n()
+const {
+  locale,
+  t,
+} = useI18n()
 const store = useMainStore()
+const {
+  lgAndUp,
+  smAndUp,
+} = useVDisplay()
 
 const canEdit = computed(() => store.canEditData)
 const timeRange = ref("month")
 const showAddDialog = ref(false)
 const showDeleteDialog = ref(false)
+const dateMenu = ref(false)
+const tempDate = ref<string | null>(null)
 const editingSpending = ref<Spending | null>(null)
 const deletingSpending = ref<Spending | null>(null)
 const spendingForm = ref({
@@ -400,7 +446,7 @@ const headers = computed(() => [
     title: t("app.spending.date"), key: "date", sortable: true,
   },
   {
-    title: "", key: "actions", sortable: false,
+    title: t("app.spending.actions"), key: "actions", sortable: false,
   },
 ])
 
@@ -457,10 +503,25 @@ const formatCurrency = (value: number) => new Intl.NumberFormat("fr-FR", {
 })
   .format(value)
 
-const formatDate = (date: string) => new Date(date)
-  .toLocaleDateString()
+const formatDate = (dateStr: string) => {
+  if (!dateStr) {
+    return ""
+  }
+
+  const date = new Date(dateStr)
+
+  return date.toLocaleDateString(locale.value === "fr"
+    ? "fr-FR"
+    : "en-US", {
+    day: "2-digit",
+    weekday: "long",
+    month: "long",
+    year: "numeric",
+  })
+}
 
 const openEditDialog = (spending: Spending) => {
+  dateMenu.value = false
   editingSpending.value = spending
   spendingForm.value = {
     name: spending.name,
@@ -479,6 +540,7 @@ const openDeleteDialog = (spending: Spending) => {
 
 const closeDialog = () => {
   showAddDialog.value = false
+  dateMenu.value = false
   editingSpending.value = null
   spendingForm.value = {
     name: "",
@@ -595,3 +657,17 @@ const exportCSV = () => {
   URL.revokeObjectURL(url)
 }
 </script>
+
+<style lang="scss" scoped>
+.v-btn-group--horizontal {
+  overflow-x: clip;
+}
+
+.v-data-table__tr > .v-data-table__td:nth-child(2) {
+  max-width: 40vw;
+}
+
+:deep(.v-data-table-footer__items-per-page > .v-select) {
+  width: auto;
+}
+</style>

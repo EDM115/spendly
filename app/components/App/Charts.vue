@@ -1,9 +1,9 @@
 <template>
-  <v-card>
+  <v-card class="mb-4 pa-1">
     <v-card-title class="d-flex align-center justify-space-between">
       <div class="d-flex align-center">
         <v-icon
-          icon="mdi-chart-areaspline"
+          icon="mdi-chart-box-multiple-outline"
           class="mr-2"
         />
         {{ $t("app.charts.title") }}
@@ -13,7 +13,7 @@
           <v-btn
             v-bind="menuProps"
             color="info"
-            prepend-icon="mdi-download"
+            prepend-icon="mdi-download-outline"
           >
             {{ $t("app.charts.export") }}
           </v-btn>
@@ -27,7 +27,7 @@
           </v-list-item>
           <v-list-item @click="exportPNG">
             <template #prepend>
-              <v-icon icon="mdi-file-image" />
+              <v-icon icon="mdi-file-image-outline" />
             </template>
             <v-list-item-title>{{ $t("app.charts.export-png") }}</v-list-item-title>
           </v-list-item>
@@ -40,7 +40,10 @@
         </v-list>
       </v-menu>
     </v-card-title>
-    <v-card-text v-if="spendings.length === 0">
+    <v-card-text
+      v-if="spendings.length === 0"
+      class="pt-4"
+    >
       <v-alert
         type="info"
         variant="tonal"
@@ -48,22 +51,25 @@
         {{ $t("app.charts.no-data") }}
       </v-alert>
     </v-card-text>
-    <v-card-text v-else>
+    <v-card-text
+      v-else
+      class="pt-4"
+    >
       <v-tabs
         v-model="activeTab"
-        color="primary"
+        color="secondary"
         align-tabs="center"
       >
         <v-tab value="area">
           <v-icon
-            icon="mdi-chart-line"
+            icon="mdi-chart-areaspline-variant"
             class="mr-2"
           />
           {{ $t("app.charts.area") }}
         </v-tab>
         <v-tab value="pie">
           <v-icon
-            icon="mdi-chart-pie"
+            icon="mdi-chart-pie-outline"
             class="mr-2"
           />
           {{ $t("app.charts.pie") }}
