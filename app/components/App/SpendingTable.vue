@@ -608,9 +608,7 @@ const exportJSON = () => {
   const a = document.createElement("a")
 
   a.href = url
-  a.download = `transactions-${props.timeRange}-${new Date()
-    .toISOString()
-    .split("T")[0]}.json`
+  a.download = `transactions-${props.timeRange}-${anchorDateModel.value}.json`
   a.click()
   URL.revokeObjectURL(url)
 }
@@ -633,9 +631,7 @@ const exportCSV = () => {
   const a = document.createElement("a")
 
   a.href = url
-  a.download = `transactions-${props.timeRange}-${new Date()
-    .toISOString()
-    .split("T")[0]}.csv`
+  a.download = `transactions-${props.timeRange}-${anchorDateModel.value}.csv`
   a.click()
   URL.revokeObjectURL(url)
 }

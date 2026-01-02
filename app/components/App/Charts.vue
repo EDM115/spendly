@@ -166,6 +166,7 @@ import {
   PointElement,
   Title,
   Tooltip,
+  type TooltipItem,
 } from "chart.js"
 import {
   Bar,
@@ -192,6 +193,8 @@ ChartJS.register(
   Legend,
   Filler,
 )
+
+ChartJS.defaults.font.family = '"Inter", sans-serif'
 
 const props = defineProps<{
   spendings: Spending[];
@@ -400,6 +403,17 @@ const pieChartOptions = computed(() => ({
       text: t("app.charts.pie"),
       color: textColor.value,
     },
+    tooltip: {
+      callbacks: {
+        label: (ctx: TooltipItem<"pie">) => {
+          const label = ctx.label ?? ""
+          const value = Number(ctx.raw ?? 0)
+          const total = (ctx.dataset.data as number[]).reduce((a, b) => a + Number(b), 0) || 1
+          const pct = (value / total) * 100
+          return `${label} : ${value.toFixed(2)} (${pct.toFixed(1)}%)`
+        },
+      },
+    },
   },
 }))
 
@@ -487,41 +501,57 @@ const barChartOptions = computed(() => ({
   },
 }))
 
-// Doughnut Chart Data - Top spending categories
+// Doughnut Chart Data - Cashflow overview
 const doughnutChartData = computed(() => {
-  const categoryTotals = new Map<string, {
-    total: number; color: string;
-  }>()
+  let income = 0
+  let expense = 0
 
-  for (const spending of filteredSpendings.value) {
-    if (spending.is_spending) {
-      const existing = categoryTotals.get(spending.category_name) || {
-        total: 0,
-        color: spending.icon_color,
-      }
-
-      existing.total += spending.value
-      categoryTotals.set(spending.category_name, existing)
-    }
+  for (const s of filteredSpendings.value) {
+    if (s.is_spending) {expense += s.value}
+    else {income += s.value}
   }
 
-  const sorted = Array.from(categoryTotals.entries())
-    .toSorted((a, b) => b[1].total - a[1].total)
-    .slice(0, 5)
-  const labels = sorted.map(([name]) => name)
-  const data = sorted.map(([ , value ]) => value.total)
-  const backgroundColors = sorted.map(([ , value ]) => value.color)
+  const net = income - expense
+  const isPositive = net >= 0
+
+  const netAbs = Math.abs(net)
+
+  // percent base: savings vs income, deficit vs expense
+  const base = isPositive ? income : expense
+  const shown = base > 0 ? Math.min(netAbs, base) : 0
+  const remainder = base > 0 ? Math.max(base - shown, 0) : 0
 
   return {
-    labels,
+    // Labels are mainly for the OUTER ring (legend uses dataset 0 by default)
+    labels: [
+      t("app.spending.income"),
+      t("app.spending.expense"),
+    ],
     datasets: [
+      // OUTER ring: income vs expense
       {
-        data,
-        backgroundColor: backgroundColors,
+        data: [income, expense],
+        backgroundColor: [
+          isDark.value ? "rgba(34,197,94,0.85)" : "rgba(22,163,74,0.85)",
+          isDark.value ? "rgba(239,68,68,0.85)" : "rgba(220,38,38,0.85)",
+        ],
         borderWidth: 2,
-        borderColor: isDark.value
-          ? "#051e11"
-          : "#f0fdf4",
+        borderColor: isDark.value ? "#051e11" : "#f0fdf4",
+        weight: 2, // thicker outer ring
+      },
+
+      // INNER ring: savings/deficit percent wedge + transparent remainder
+      {
+        data: [shown, remainder],
+        backgroundColor: [
+          isPositive
+            ? (isDark.value ? "rgba(59,130,246,0.85)" : "rgba(37,99,235,0.85)") // savings color
+            : (isDark.value ? "rgba(245,158,11,0.85)" : "rgba(217,119,6,0.85)"), // deficit color
+          "rgba(0,0,0,0)", // transparent remainder
+        ],
+        borderWidth: 0,
+        hoverOffset: 0,
+        weight: 1, // thinner inner ring
       },
     ],
   }
@@ -530,17 +560,63 @@ const doughnutChartData = computed(() => {
 const doughnutChartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
+  cutout: "45%",
   plugins: {
     legend: {
       position: "right" as const,
-      labels: {
-        color: textColor.value,
-      },
+      labels: { color: textColor.value },
     },
     title: {
       display: true,
-      text: t("app.charts.top-categories"),
+      text: t("app.charts.cashflow"),
       color: textColor.value,
+    },
+    tooltip: {
+      callbacks: {
+        label: (ctx: TooltipItem<"doughnut">) => {
+          console.log(ctx, typeof ctx)
+          const datasetIndex = ctx.datasetIndex
+          const dataIndex = ctx.dataIndex
+
+          // Outer ring (income/expense)
+          if (datasetIndex === 0) {
+            const label = ctx.label ?? ""
+            const value = Number(ctx.raw ?? 0)
+            return `${label}: ${value.toFixed(2)}`
+          }
+
+          // Inner ring: only show tooltip for the first slice (shown)
+          if (datasetIndex === 1) {
+            if (dataIndex === 1 || !ctx.chart.data.datasets[0]) {return ""} // ignore transparent remainder
+
+            const [income, expense] = ctx.chart.data.datasets[0].data as number[]
+            if (income === undefined || expense === undefined) {
+              return ""
+            }
+            const net = income - expense
+            const isPositive = net >= 0
+            const base = isPositive ? income : expense
+            const shown = Number(ctx.raw ?? 0)
+            const pct = base > 0 ? (shown / base) * 100 : 0
+
+            const label = isPositive
+              ? t("app.charts.savings")
+              : t("app.charts.deficit")
+            
+            const ofText = isPositive
+              ? t("app.charts.of-singular")
+              : t("app.charts.of-plural")
+
+            const ofWhat = isPositive
+              ? t("app.spending.income")
+              : `${t("app.spending.expense")}s`
+
+            return `${label} : ${pct.toFixed(1)}% ${ofText} ${ofWhat}`
+          }
+
+          return ""
+        },
+      },
     },
   },
 }))
@@ -575,9 +651,7 @@ const exportPNG = () => {
 
   const link = document.createElement("a")
 
-  link.download = `chart-${activeTab.value}-${new Date()
-    .toISOString()
-    .split("T")[0]}.png`
+  link.download = `chart-${activeTab.value}-${anchorDateModel.value}.png`
   link.href = canvas.toDataURL("image/png")
   link.click()
 }
@@ -609,9 +683,7 @@ const exportSVG = () => {
   const url = URL.createObjectURL(blob)
   const link = document.createElement("a")
 
-  link.download = `chart-${activeTab.value}-${new Date()
-    .toISOString()
-    .split("T")[0]}.svg`
+  link.download = `chart-${activeTab.value}-${anchorDateModel.value}.svg`
   link.href = url
   link.click()
   URL.revokeObjectURL(url)
@@ -635,9 +707,7 @@ const exportPDF = async () => {
   })
 
   pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height)
-  pdf.save(`chart-${activeTab.value}-${new Date()
-    .toISOString()
-    .split("T")[0]}.pdf`)
+  pdf.save(`chart-${activeTab.value}-${anchorDateModel.value}.pdf`)
 }
 </script>
 
