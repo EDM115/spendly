@@ -669,8 +669,8 @@ const exportCSV = () => {
   overflow-x: clip;
 }
 
-.v-data-table__tr > .v-data-table__td:nth-child(2) {
-  max-width: 40vw;
+:deep(.v-data-table__tr > .v-data-table__td:nth-child(2)) {
+  max-width: 50vw;
 }
 
 :deep(.v-data-table-footer__items-per-page > .v-select) {
