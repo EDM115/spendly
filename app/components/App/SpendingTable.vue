@@ -239,7 +239,7 @@
               sm="6"
             >
               <v-number-input
-                v-model.number="spendingForm.value"
+                v-model="spendingForm.value"
                 :label="$t('app.spending.amount')"
                 inset
                 variant="outlined"
@@ -322,7 +322,7 @@
                   show-adjacent-months
                   weekday-format="short"
                   weeks-in-month="dynamic"
-                  @update:model-value="spendingForm.date = new Date(tempDate ?? '').toISOString().split('T')[0]; dateMenu = false"
+                  @update:model-value="spendingForm.date = new Date(new Date(tempDate ?? '').getTime() + (24 * 60 * 60 * 1000)).toISOString().split('T')[0]; dateMenu = false"
                 />
               </v-menu>
             </v-col>
@@ -393,7 +393,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   "refresh": [];
-  "update:timeRange": [value: string];
+  "update:time-range": [value: string];
 }>()
 
 const {
@@ -454,29 +454,38 @@ const headers = computed(() => [
 const filteredSpendings = computed(() => {
   const now = new Date()
   let startDate: Date
+  let endDate: Date
 
   switch (timeRange.value) {
     case "day":
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
 
       break
     case "week":
       startDate = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000))
+      endDate = new Date(now.getTime() + (1 * 24 * 60 * 60 * 1000))
 
       break
     case "month":
       startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+      endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1)
 
       break
     case "year":
       startDate = new Date(now.getFullYear(), 0, 1)
+      endDate = new Date(now.getFullYear() + 1, 0, 1)
 
       break
     default:
       return props.spendings
   }
 
-  return props.spendings.filter((s) => new Date(s.date) >= startDate)
+  return props.spendings.filter((s) => {
+    const spendingDate = new Date(s.date)
+
+    return spendingDate >= startDate && spendingDate < endDate
+  })
 })
 
 const totalIncome = computed(() => filteredSpendings.value
@@ -495,7 +504,7 @@ const isFormValid = computed(() => Boolean(spendingForm.value.name.trim()
   && spendingForm.value.date))
 
 watch(timeRange, (newVal) => {
-  emit("update:timeRange", newVal)
+  emit("update:time-range", newVal)
 })
 
 const formatCurrency = (value: number) => new Intl.NumberFormat(locale.value === "fr"

@@ -127,7 +127,7 @@ import type {
 const store = useMainStore()
 const hasLoaded = ref(false)
 
-const selectedBudgetTrackerId = ref<string | null>(store.getSelectedBudgetTrackerId)
+const selectedBudgetTrackerId = ref<string | null>(null)
 const budgetTrackers = ref<BudgetTracker[]>([])
 const categories = ref<Category[]>([])
 const spendings = ref<Spending[]>([])
