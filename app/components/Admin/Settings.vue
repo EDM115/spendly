@@ -18,7 +18,9 @@
                 no-gutters
               >
                 <v-col>
-                  <v-list-item-title class="mr-4">{{ user.username }}</v-list-item-title>
+                  <v-list-item-title class="mr-4">
+                    {{ user.username }}
+                  </v-list-item-title>
                 </v-col>
                 <v-col>
                   <v-select

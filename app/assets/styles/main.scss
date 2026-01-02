@@ -52,7 +52,8 @@ h2,
 h3,
 h4,
 h5,
-h6 {
+h6,
+[class^="text-h"] {
   font-family: "Twemoji Country Flags", "Nunito", sans-serif !important;
   font-feature-settings: "liga" 1, "calt" 1, "case" 1, "ccmp" 1, "frac" 0,
     "ss01" 0, "ss02" 0;

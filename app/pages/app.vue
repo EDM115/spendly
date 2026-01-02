@@ -71,11 +71,12 @@
         <v-tabs-window v-model="selectedTab">
           <v-tabs-window-item value="spendings">
             <AppSpendingTable
+              v-model:time-range="timeRange"
+              v-model:anchor-date="anchorDate"
               :spendings="spendings"
               :categories="categories"
               :budget-tracker-id="selectedBudgetTrackerId"
               @refresh="fetchSpendings"
-              @update:time-range="timeRange = $event"
             />
           </v-tabs-window-item>
           <v-tabs-window-item value="categories">
@@ -86,8 +87,9 @@
           </v-tabs-window-item>
           <v-tabs-window-item value="charts">
             <AppCharts
+              v-model:time-range="timeRange"
+              v-model:anchor-date="anchorDate"
               :spendings="spendings"
-              :time-range="timeRange"
             />
           </v-tabs-window-item>
         </v-tabs-window>
@@ -132,6 +134,10 @@ const budgetTrackers = ref<BudgetTracker[]>([])
 const categories = ref<Category[]>([])
 const spendings = ref<Spending[]>([])
 const timeRange = ref("month")
+const now0 = new Date()
+const anchorDate = ref(`${now0.getFullYear()}-${String(now0.getMonth() + 1)
+  .padStart(2, "0")}-${String(now0.getDate())
+  .padStart(2, "0")}`)
 const selectedTab = ref<string | null>(null)
 
 const fetchBudgetTrackers = async () => {

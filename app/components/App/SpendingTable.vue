@@ -8,45 +8,13 @@
         />
         {{ $t("app.spending.title") }}
       </div>
-      <div class="d-flex gap-2 flex-wrap">
-        <v-btn-toggle
-          v-model="timeRange"
-          mandatory
-          class="mr-4"
-          color="primary"
-          density="compact"
-        >
-          <v-btn
-            value="day"
-            size="small"
-          >
-            {{ $t("app.time-range.day") }}
-          </v-btn>
-          <v-btn
-            value="week"
-            size="small"
-          >
-            {{ $t("app.time-range.week") }}
-          </v-btn>
-          <v-btn
-            value="month"
-            size="small"
-          >
-            {{ $t("app.time-range.month") }}
-          </v-btn>
-          <v-btn
-            value="year"
-            size="small"
-          >
-            {{ $t("app.time-range.year") }}
-          </v-btn>
-          <v-btn
-            value="all"
-            size="small"
-          >
-            {{ $t("app.time-range.all") }}
-          </v-btn>
-        </v-btn-toggle>
+
+      <div class="d-flex gap-2 flex-wrap align-center">
+        <AppDateRangeFilter
+          v-model:time-range="timeRangeModel"
+          v-model:anchor-date="anchorDateModel"
+        />
+
         <v-btn
           v-if="canEdit"
           color="primary"
@@ -91,6 +59,7 @@
         >
           <v-card
             color="success"
+            rounded="lg"
             variant="tonal"
           >
             <v-card-text class="text-center">
@@ -109,6 +78,7 @@
         >
           <v-card
             color="error"
+            rounded="lg"
             variant="tonal"
           >
             <v-card-text class="text-center">
@@ -127,6 +97,7 @@
         >
           <v-card
             :color="balance >= 0 ? 'info' : 'warning'"
+            rounded="lg"
             variant="tonal"
           >
             <v-card-text class="text-center">
@@ -322,7 +293,25 @@
                   show-adjacent-months
                   weekday-format="short"
                   weeks-in-month="dynamic"
-                  @update:model-value="spendingForm.date = new Date(new Date(tempDate ?? '').getTime() + (24 * 60 * 60 * 1000)).toISOString().split('T')[0]; dateMenu = false"
+                  @update:model-value="(val) => {
+                    const v = Array.isArray(val)
+                      ? val[0]
+                      : val
+
+                    if (!v) {
+                      return
+                    }
+
+                    if (typeof v === 'string') {
+                      spendingForm.date = v.split('T')[0] ?? ''
+                    } else {
+                      const d = v instanceof Date ? v : new Date(v)
+
+                      spendingForm.date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+                    }
+
+                    dateMenu = false
+                  }"
                 />
               </v-menu>
             </v-col>
@@ -389,11 +378,14 @@ const props = defineProps<{
   spendings: Spending[];
   categories: Category[];
   budgetTrackerId: string;
+  timeRange: string;
+  anchorDate: string;
 }>()
 
 const emit = defineEmits<{
   "refresh": [];
   "update:time-range": [value: string];
+  "update:anchor-date": [value: string];
 }>()
 
 const {
@@ -407,7 +399,6 @@ const {
 } = useVDisplay()
 
 const canEdit = computed(() => store.canEditData)
-const timeRange = ref("month")
 const showAddDialog = ref(false)
 const showDeleteDialog = ref(false)
 const dateMenu = ref(false)
@@ -422,6 +413,14 @@ const spendingForm = ref({
   date: new Date()
     .toISOString()
     .split("T")[0],
+})
+const timeRangeModel = computed({
+  get: () => props.timeRange,
+  set: (v: string) => emit("update:time-range", v),
+})
+const anchorDateModel = computed({
+  get: () => props.anchorDate,
+  set: (v: string) => emit("update:anchor-date", v),
 })
 
 const typeItems = computed(() => [
@@ -452,63 +451,13 @@ const headers = computed(() => [
 ])
 
 const filteredSpendings = computed(() => {
-  const now = new Date()
-  let startDateStr: string
-  let endDateStr: string
+  const win = getDateWindow(timeRangeModel.value, anchorDateModel.value)
 
-  switch (timeRange.value) {
-    case "day": {
-      const start = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-      const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
-
-      startDateStr =
-        `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}-${String(start.getDate()).padStart(2, "0")}`
-      endDateStr =
-        `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, "0")}-${String(end.getDate()).padStart(2, "0")}`
-
-      break
-    } case "week": {
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-      const day = today.getDay()
-      const diffToMonday = (day + 6) % 7
-
-      const start = new Date(today)
-      start.setDate(today.getDate() - diffToMonday)
-
-      const end = new Date(start)
-      end.setDate(start.getDate() + 7)
-
-      startDateStr =
-        `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}-${String(start.getDate()).padStart(2, "0")}`
-      endDateStr =
-        `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, "0")}-${String(end.getDate()).padStart(2, "0")}`
-
-      break
-    } case "month": {
-      const start = new Date(now.getFullYear(), now.getMonth(), 1)
-      const end = new Date(now.getFullYear(), now.getMonth() + 1, 1)
-
-      startDateStr =
-        `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}-${String(start.getDate()).padStart(2, "0")}`
-      endDateStr =
-        `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, "0")}-${String(end.getDate()).padStart(2, "0")}`
-
-      break
-    } case "year": {
-      const start = new Date(now.getFullYear(), 0, 1)
-      const end = new Date(now.getFullYear() + 1, 0, 1)
-
-      startDateStr =
-        `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}-${String(start.getDate()).padStart(2, "0")}`
-      endDateStr =
-        `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, "0")}-${String(end.getDate()).padStart(2, "0")}`
-
-      break
-    } default:
-      return props.spendings
+  if (!win) {
+    return props.spendings
   }
 
-  return props.spendings.filter((s) => s.date >= startDateStr && s.date < endDateStr)
+  return props.spendings.filter((s) => s.date >= win.start && s.date < win.end)
 })
 
 const totalIncome = computed(() => filteredSpendings.value
@@ -526,13 +475,9 @@ const isFormValid = computed(() => Boolean(spendingForm.value.name.trim()
   && spendingForm.value.category_id
   && spendingForm.value.date))
 
-watch(timeRange, (newVal) => {
-  emit("update:time-range", newVal)
-})
-
 const formatCurrency = (value: number) => new Intl.NumberFormat(locale.value === "fr"
-    ? "fr-FR"
-    : "en-US", {
+  ? "fr-FR"
+  : "en-US", {
   style: "currency",
   currency: locale.value === "fr"
     ? "EUR"
@@ -546,7 +491,7 @@ const formatDate = (dateStr: string) => {
     return ""
   }
 
-  const date = new Date(dateStr)
+  const date = new Date(`${dateStr}T00:00:00Z`)
 
   return date.toLocaleDateString(locale.value === "fr"
     ? "fr-FR"
@@ -663,7 +608,7 @@ const exportJSON = () => {
   const a = document.createElement("a")
 
   a.href = url
-  a.download = `transactions-${timeRange.value}-${new Date()
+  a.download = `transactions-${props.timeRange}-${new Date()
     .toISOString()
     .split("T")[0]}.json`
   a.click()
@@ -688,7 +633,7 @@ const exportCSV = () => {
   const a = document.createElement("a")
 
   a.href = url
-  a.download = `transactions-${timeRange.value}-${new Date()
+  a.download = `transactions-${props.timeRange}-${new Date()
     .toISOString()
     .split("T")[0]}.csv`
   a.click()
@@ -697,10 +642,6 @@ const exportCSV = () => {
 </script>
 
 <style lang="scss" scoped>
-.v-btn-group--horizontal {
-  overflow-x: clip;
-}
-
 :deep(.v-data-table__tr > .v-data-table__td:nth-child(2)) {
   max-width: 50vw;
 }

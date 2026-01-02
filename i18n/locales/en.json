@@ -76,6 +76,14 @@
       "export-png": "PNG",
       "export-pdf": "PDF"
     },
+    "date-range-filter": {
+      "cancel": "Cancel",
+      "prev": "Back",
+      "next": "Next",
+      "year": "Year",
+      "month": "Month",
+      "validate": "Validate"
+    },
     "spending": {
       "actions": "Actions",
       "add": "Add",

@@ -8,37 +8,45 @@
         />
         {{ $t("app.charts.title") }}
       </div>
-      <v-menu v-if="spendings.length > 0">
-        <template #activator="{ props: menuProps }">
-          <v-btn
-            v-bind="menuProps"
-            color="info"
-            prepend-icon="mdi-download-outline"
-          >
-            {{ $t("app.charts.export") }}
-          </v-btn>
-        </template>
-        <v-list>
-          <v-list-item @click="exportSVG">
-            <template #prepend>
-              <v-icon icon="mdi-svg" />
-            </template>
-            <v-list-item-title>{{ $t("app.charts.export-svg") }}</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="exportPNG">
-            <template #prepend>
-              <v-icon icon="mdi-file-image-outline" />
-            </template>
-            <v-list-item-title>{{ $t("app.charts.export-png") }}</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="exportPDF">
-            <template #prepend>
-              <v-icon icon="mdi-file-pdf-box" />
-            </template>
-            <v-list-item-title>{{ $t("app.charts.export-pdf") }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+
+      <div class="d-flex gap-2 flex-wrap align-center">
+        <AppDateRangeFilter
+          v-model:time-range="timeRangeModel"
+          v-model:anchor-date="anchorDateModel"
+        />
+
+        <v-menu v-if="spendings.length > 0">
+          <template #activator="{ props: menuProps }">
+            <v-btn
+              v-bind="menuProps"
+              color="info"
+              prepend-icon="mdi-download-outline"
+            >
+              {{ $t("app.charts.export") }}
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item @click="exportSVG">
+              <template #prepend>
+                <v-icon icon="mdi-svg" />
+              </template>
+              <v-list-item-title>{{ $t("app.charts.export-svg") }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="exportPNG">
+              <template #prepend>
+                <v-icon icon="mdi-file-image-outline" />
+              </template>
+              <v-list-item-title>{{ $t("app.charts.export-png") }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="exportPDF">
+              <template #prepend>
+                <v-icon icon="mdi-file-pdf-box" />
+              </template>
+              <v-list-item-title>{{ $t("app.charts.export-pdf") }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
     </v-card-title>
     <v-card-text
       v-if="spendings.length === 0"
@@ -188,11 +196,25 @@ ChartJS.register(
 const props = defineProps<{
   spendings: Spending[];
   timeRange: string;
+  anchorDate: string;
+}>()
+
+const emit = defineEmits<{
+  "update:time-range": [value: string];
+  "update:anchor-date": [value: string];
 }>()
 
 const { t } = useI18n()
 const store = useMainStore()
 const activeTab = ref("area")
+const timeRangeModel = computed({
+  get: () => props.timeRange,
+  set: (v: string) => emit("update:time-range", v),
+})
+const anchorDateModel = computed({
+  get: () => props.anchorDate,
+  set: (v: string) => emit("update:anchor-date", v),
+})
 
 const areaChartInstance = ref<InstanceType<typeof Line> | null>(null)
 const pieChartInstance = ref<InstanceType<typeof Pie> | null>(null)
@@ -208,31 +230,13 @@ const gridColor = computed(() => (isDark.value
   : "rgba(2, 44, 34, 0.1)"))
 
 const filteredSpendings = computed(() => {
-  const now = new Date()
-  let startDate: Date
+  const win = getDateWindow(timeRangeModel.value, anchorDateModel.value)
 
-  switch (props.timeRange) {
-    case "day":
-      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-
-      break
-    case "week":
-      startDate = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000))
-
-      break
-    case "month":
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1)
-
-      break
-    case "year":
-      startDate = new Date(now.getFullYear(), 0, 1)
-
-      break
-    default:
-      return props.spendings
+  if (!win) {
+    return props.spendings
   }
 
-  return props.spendings.filter((s) => new Date(s.date) >= startDate)
+  return props.spendings.filter((s) => s.date >= win.start && s.date < win.end)
 })
 
 // Area/Line Chart Data - Balance evolution over time
