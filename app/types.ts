@@ -4,13 +4,6 @@ export type User = {
   role: string;
 }
 
-export type Icon = {
-  id: string;
-  name: string;
-  color: string;
-  icon: string;
-}
-
 export type BudgetTracker = {
   id: string;
   name: string;
@@ -26,10 +19,8 @@ export type SharedUser = {
 export type Category = {
   id: string;
   name: string;
-  icon_id: string;
-  icon_name: string;
-  icon_color: string;
   icon: string;
+  color: string;
 }
 
 export type Spending = {
@@ -41,7 +32,6 @@ export type Spending = {
   category_id: string;
   date: string;
   category_name: string;
-  icon_name: string;
   icon_color: string;
   icon: string;
 }
@@ -65,3 +55,5 @@ export type BudgetTrackerRole = "owner" | "admin" | "editor" | "viewer" | null
 export type Language = "en" | "fr"
 
 export type Theme = "light" | "dark"
+
+export type ExportFormat = "csv" | "json" | "sql" | "sqlite"

@@ -26,11 +26,10 @@
           <template #prepend>
             <v-icon
               :icon="category.icon"
-              :color="category.icon_color"
+              :color="category.color"
             />
           </template>
           <v-list-item-title>{{ category.name }}</v-list-item-title>
-          <v-list-item-subtitle>{{ category.icon_name }}</v-list-item-subtitle>
           <template #append>
             <v-btn
               v-if="canEdit"
@@ -78,33 +77,32 @@
           variant="outlined"
           class="mb-4"
         />
-        <v-select
-          v-model="categoryForm.icon_id"
-          :items="icons"
-          item-title="name"
-          item-value="id"
-          :label="$t('app.category.icon')"
-          variant="outlined"
-        >
-          <template #item="{ item, props: itemProps }">
-            <v-list-item v-bind="itemProps">
-              <template #prepend>
-                <v-icon
-                  :icon="item.raw.icon"
-                  :color="item.raw.color"
-                />
-              </template>
-            </v-list-item>
-          </template>
-          <template #selection="{ item }">
+        <v-row class="align-center mb-4">
+          <v-col cols="auto">
             <v-icon
-              :icon="item.raw.icon"
-              :color="item.raw.color"
-              class="mr-2"
+              ref="testIcon"
+              :icon="categoryForm.icon"
+              :color="categoryForm.color"
+              size="large"
             />
-            {{ item.raw.name }}
-          </template>
-        </v-select>
+          </v-col>
+          <v-col>
+            <v-text-field
+              v-model="categoryForm.icon"
+              :label="$t('app.category.icon')"
+              variant="outlined"
+              hide-details
+              :error="!isValidIcon"
+              @update:model-value="validateIcon"
+            />
+          </v-col>
+        </v-row>
+        <v-color-picker
+          v-model="categoryForm.color"
+          mode="hex"
+          :modes="['hex']"
+          class="mb-4"
+        />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -116,7 +114,7 @@
         </v-btn>
         <v-btn
           color="primary"
-          :disabled="!categoryForm.name.trim() || !categoryForm.icon_id"
+          :disabled="!categoryForm.name.trim() || !isValidIcon"
           @click="saveCategory"
         >
           {{ editingCategory ? $t("app.category.edit") : $t("app.category.add") }}
@@ -158,14 +156,11 @@
 </template>
 
 <script lang="ts" setup>
-import type {
-  Category,
-  Icon,
-} from "~/types"
+import type { Category } from "~/types"
+import type { VIcon } from "vuetify/components"
 
 const props = defineProps<{
   categories: Category[];
-  icons: Icon[];
 }>()
 
 const emit = defineEmits<{
@@ -181,15 +176,56 @@ const editingCategory = ref<Category | null>(null)
 const deletingCategory = ref<Category | null>(null)
 const categoryForm = ref({
   name: "",
-  icon_id: null as string | null,
+  icon: "mdi-",
+  color: "#4ADE80",
 })
+const isValidIcon = ref(false)
+const testIcon = ref<InstanceType<typeof VIcon> | HTMLElement | null>(null)
+
+const validateIcon = async (iconName: string) => {
+  const okBasic = iconName.startsWith("mdi-") && iconName.length >= 5
+
+  if (!okBasic) {
+    isValidIcon.value = false
+    if (!iconName.startsWith("mdi-")) {
+      if (iconName.length >= 4) {
+        categoryForm.value.icon = "mdi-" + iconName
+      } else {
+        categoryForm.value.icon = "mdi-"
+      }
+    }
+    return
+  }
+
+  const el = testIcon.value instanceof HTMLElement
+    ? testIcon.value
+    : testIcon.value?.$el
+
+  await nextTick()
+
+  if (!el) {
+    isValidIcon.value = false
+    return
+  }
+
+  await nextTick()
+
+  const content = window
+    .getComputedStyle(el, "::before")
+    .getPropertyValue("content")
+    .replace(/"/g, "")
+
+  isValidIcon.value = Boolean(content) && content !== "none" && content !== "normal"
+}
 
 const openEditDialog = (category: Category) => {
   editingCategory.value = category
   categoryForm.value = {
     name: category.name,
-    icon_id: category.icon_id,
+    icon: category.icon,
+    color: category.color,
   }
+  isValidIcon.value = true
   showAddDialog.value = true
 }
 
@@ -203,12 +239,14 @@ const closeDialog = () => {
   editingCategory.value = null
   categoryForm.value = {
     name: "",
-    icon_id: null,
+    icon: "mdi-",
+    color: "#4ADE80",
   }
+  isValidIcon.value = false
 }
 
 const saveCategory = async () => {
-  if (!categoryForm.value.name.trim() || !categoryForm.value.icon_id) {
+  if (!categoryForm.value.name.trim() || !isValidIcon.value) {
     return
   }
 

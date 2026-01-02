@@ -104,136 +104,6 @@
         </v-container>
       </v-expansion-panel-text>
     </v-expansion-panel>
-
-    <v-expansion-panel>
-      <v-expansion-panel-title>{{ $t("admin.icons.title") }}</v-expansion-panel-title>
-      <v-expansion-panel-text>
-        <v-list>
-          <v-list-item
-            v-for="icon in icons"
-            :key="icon.id"
-          >
-            <v-text-field
-              v-model="icon.name"
-              density="compact"
-              hide-details
-              :label="$t('admin.icons.name')"
-              class="mx-2"
-              required
-              :error="!icon.name.trim()"
-            />
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-row class="align-center">
-                    <v-col cols="auto">
-                      <v-icon
-                        :ref="el => {
-                          if (!el) {
-                            delete editIconRefs[icon.id]
-                            return
-                          }
-                          editIconRefs[icon.id] = (el as any).$el ?? el
-                        }"
-                        :icon="icon.icon"
-                        :color="icon.color"
-                      />
-                    </v-col>
-                    <v-col>
-                      <v-text-field
-                        v-model="icon.icon"
-                        density="compact"
-                        :label="$t('admin.icons.icon')"
-                        :error="!isValidEditIcons[icon.id]"
-                        required
-                        @update:model-value="value => validateIcon(value, icon.id)"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-col>
-                <v-col cols="12">
-                  <v-color-picker
-                    v-model="icon.color"
-                    mode="hex"
-                    :modes="['hex']"
-                  />
-                </v-col>
-              </v-row>
-            </v-container>
-            <template #append>
-              <div class="d-flex gap-2">
-                <v-btn
-                  color="primary"
-                  size="small"
-                  icon="mdi-pencil"
-                  :disabled="!isValidEditIcons[icon.id] || !icon.name.trim()"
-                  @click="validateAndUpdateIcon(icon.id, icon.name, icon.color, icon.icon)"
-                />
-                <v-btn
-                  icon="mdi-delete"
-                  color="error"
-                  variant="text"
-                  @click="triggerShowIconDeleteDialog(icon)"
-                />
-              </div>
-            </template>
-            <v-divider class="my-4" />
-          </v-list-item>
-        </v-list>
-        <v-divider class="my-2" />
-        <v-container>
-          <v-form @submit.prevent="addIcon">
-            <v-row>
-              <v-col cols="12">
-                <v-text-field
-                  v-model="newIcon.name"
-                  :label="$t('admin.icons.name')"
-                  required
-                  :error="!newIcon.name.trim()"
-                />
-              </v-col>
-              <v-col cols="12">
-                <v-row class="align-center px-3">
-                  <v-icon
-                    ref="testIcon"
-                    v-model="newIcon.icon"
-                    :icon="newIcon.icon"
-                    class="mr-4"
-                    size="32"
-                    :color="newIcon.color"
-                  />
-                  <v-text-field
-                    v-model="newIcon.icon"
-                    :label="$t('admin.icons.icon')"
-                    required
-                    :error="!isValidNewIcon"
-                    @update:model-value="validateIcon"
-                  />
-                </v-row>
-              </v-col>
-              <v-col cols="12">
-                <v-color-picker
-                  v-model="newIcon.color"
-                  mode="hex"
-                  :modes="['hex']"
-                />
-              </v-col>
-              <v-col
-                cols="12"
-                class="d-flex justify-end"
-              >
-                <v-btn
-                  color="primary"
-                  icon="mdi-shape-square-rounded-plus"
-                  type="submit"
-                  :disabled="!isValidNewIcon || !newIcon.name.trim()"
-                />
-              </v-col>
-            </v-row>
-          </v-form>
-        </v-container>
-      </v-expansion-panel-text>
-    </v-expansion-panel>
   </v-expansion-panels>
 
   <v-card class="mt-4">
@@ -310,70 +180,30 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
-
-  <v-dialog
-    v-model="showIconDeleteDialog"
-    persistent
-  >
-    <v-card>
-      <v-card-title class="text-h5">
-        {{ $t('admin.icons.delete-title') }}
-      </v-card-title>
-      <v-card-text>
-        {{ $t('admin.icons.delete-description') }}
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer />
-        <v-btn
-          color="error"
-          :text="$t('admin.icons.delete-confirm')"
-          @click="deleteIcon"
-        />
-        <v-btn
-          color="secondary"
-          :text="$t('admin.icons.delete-cancel')"
-          @click="showIconDeleteDialog = false"
-        />
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
 </template>
 
 <script lang="ts" setup>
 import type {
-  Icon,
+  ExportFormat,
   User,
 } from "~/types"
-import type { VIcon } from "vuetify/components"
 
 const store = useMainStore()
 
 const props = defineProps<{
   initialUsers?: User[];
-  initialIcons?: Icon[];
 }>()
 
 const users = ref<User[]>(props.initialUsers ?? [])
-const icons = ref<Icon[]>(props.initialIcons ?? [])
 const exporting = ref(false)
 
 const showDeleteDialog = ref(false)
-const showIconDeleteDialog = ref(false)
 
 const userToDelete = ref<string | null>(null)
-const iconToDelete = ref<string | null>(null)
-
-const testIcon = ref<InstanceType<typeof VIcon> | HTMLElement | null>(null)
-const editIconRefs = reactive<Record<string, HTMLElement | null>>({})
 
 const newUser = ref({
   username: "", password: "", role: "user",
 })
-const newIcon = ref({
-  name: "", color: "#4ADE80", icon: "",
-})
-const isValidNewIcon = ref(false)
-const isValidEditIcons = reactive<Record<string, boolean>>({})
 
 const resetNewUser = () => {
   const resetValue = {
@@ -383,39 +213,17 @@ const resetNewUser = () => {
   newUser.value = resetValue
 }
 
-const resetNewIcon = () => {
-  const resetValue = {
-    name: "", color: "#4ADE80", icon: "",
-  }
-
-  newIcon.value = resetValue
-}
-
-
 const fetchData = async () => {
-  const [ usersData, iconsData ] = await Promise.all([
-    $fetch("/api/admin/user", {
-      headers: {
-        Authorization: `Bearer ${store.getUser?.token}`,
-      },
-    }),
-    $fetch("/api/admin/icon", {
-      headers: {
-        Authorization: `Bearer ${store.getUser?.token}`,
-      },
-    }),
-  ])
+  const usersData = await $fetch("/api/admin/user", {
+    headers: {
+      Authorization: `Bearer ${store.getUser?.token}`,
+    },
+  })
 
   if ("users" in usersData.body) {
     users.value = usersData.body.users
   } else {
     users.value = []
-  }
-
-  if ("icons" in iconsData.body) {
-    icons.value = iconsData.body.icons
-  } else {
-    icons.value = []
   }
 }
 
@@ -464,119 +272,7 @@ const showUserDeleteDialog = (user: User) => {
   showDeleteDialog.value = true
 }
 
-const validateIcon = async (iconName: string, iconId?: string) => {
-  const okBasic = iconName.startsWith("mdi-") && iconName.length >= 5
-
-  if (!okBasic) {
-    if (iconId !== undefined) {
-      isValidEditIcons[iconId] = false
-    } else {
-      isValidNewIcon.value = false
-    }
-
-    return
-  }
-
-  let el: HTMLElement | null = null
-
-  if (iconId !== undefined && editIconRefs[iconId] !== undefined) {
-    el = editIconRefs[iconId]
-  } else {
-    el = testIcon.value instanceof HTMLElement
-      ? testIcon.value
-      : testIcon.value?.$el
-  }
-
-  await nextTick()
-
-  if (!el) {
-    if (iconId !== undefined) {
-      isValidEditIcons[iconId] = false
-    } else {
-      isValidNewIcon.value = false
-    }
-
-    return
-  }
-
-  await nextTick()
-
-  const content = window
-    .getComputedStyle(el, "::before")
-    .getPropertyValue("content")
-    .replace(/"/g, "")
-
-  const valid = Boolean(content) && content !== "none" && content !== "normal"
-
-  if (iconId !== undefined) {
-    isValidEditIcons[iconId] = valid
-  } else {
-    isValidNewIcon.value = valid
-  }
-}
-
-const updateIcon = async (iconId: string, name: string, color: string, icon: string) => {
-  await $fetch("/api/admin/icon", {
-    method: "PUT",
-    body: {
-      id: iconId, name, color, icon,
-    },
-    headers: {
-      Authorization: `Bearer ${store.getUser?.token}`,
-    },
-  })
-  await fetchData()
-}
-
-const validateAndUpdateIcon = async (iconId: string, name: string, color: string, icon: string) => {
-  validateIcon(icon)
-
-  if (isValidEditIcons[iconId]) {
-    await updateIcon(iconId, name, color, icon)
-  }
-}
-
-const addIcon = async () => {
-  if (!isValidNewIcon.value) {
-    return
-  }
-
-  await $fetch("/api/admin/icon", {
-    method: "POST",
-    body: newIcon.value,
-    headers: {
-      Authorization: `Bearer ${store.getUser?.token}`,
-    },
-  })
-  resetNewIcon()
-  await fetchData()
-}
-
-const deleteIcon = async () => {
-  if (iconToDelete.value === null) {
-    return
-  }
-
-  await $fetch("/api/admin/icon", {
-    method: "DELETE",
-    body: {
-      id: iconToDelete.value,
-    },
-    headers: {
-      Authorization: `Bearer ${store.getUser?.token}`,
-    },
-  })
-  showIconDeleteDialog.value = false
-  iconToDelete.value = null
-  await fetchData()
-}
-
-const triggerShowIconDeleteDialog = (icon: Icon) => {
-  iconToDelete.value = icon.id
-  showIconDeleteDialog.value = true
-}
-
-const downloadBackup = async (format: "csv" | "json" | "sql" | "sqlite") => {
+const downloadBackup = async (format: ExportFormat) => {
   try {
     exporting.value = true
     const response = await $fetch("/api/admin/dbExport", {
@@ -607,10 +303,4 @@ const downloadBackup = async (format: "csv" | "json" | "sql" | "sqlite") => {
     exporting.value = false
   }
 }
-
-onMounted(() => {
-  icons.value.forEach((icon) => {
-    isValidEditIcons[icon.id] = true
-  })
-})
 </script>

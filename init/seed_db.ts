@@ -1,7 +1,4 @@
-import type {
-  Icon,
-  User,
-} from "./app/types"
+import type { User } from "./app/types"
 
 import Database from "better-sqlite3"
 
@@ -37,16 +34,6 @@ function initDatabase() {
     .run()
 
   db.prepare(`
-    CREATE TABLE IF NOT EXISTS Icon (
-      id TEXT PRIMARY KEY NOT NULL,
-      name TEXT NOT NULL,
-      color TEXT NOT NULL,
-      icon TEXT NOT NULL
-    );
-  `)
-    .run()
-
-  db.prepare(`
     CREATE TABLE IF NOT EXISTS BudgetTracker (
       id TEXT PRIMARY KEY NOT NULL,
       name TEXT NOT NULL
@@ -70,8 +57,8 @@ function initDatabase() {
     CREATE TABLE IF NOT EXISTS Category (
       id TEXT PRIMARY KEY NOT NULL,
       name TEXT NOT NULL,
-      icon_id TEXT NOT NULL,
-      FOREIGN KEY (icon_id) REFERENCES Icon(id) ON DELETE CASCADE
+      icon TEXT NOT NULL,
+      color TEXT NOT NULL
     );
   `)
     .run()
@@ -127,41 +114,12 @@ async function seedUsers(db: Database.Database) {
   console.log("\n✅ User seeding completed\n")
 }
 
-async function seedIcons(db: Database.Database) {
-  const raw = process.env.SEED_ICONS || "[]"
-  let icons: Array<Omit<Icon, "id">>
-
-  try {
-    icons = JSON.parse(raw)
-  } catch (e) {
-    console.error("❌ failed to parse SEED_ICONS :", e)
-    icons = []
-  }
-
-  const insert = db.prepare(`
-    INSERT OR IGNORE INTO Icon (id, name, color, icon)
-    VALUES (?, ?, ?, ?)
-  `)
-
-  await Promise.all(icons.map(async ({
-    name, color, icon,
-  }) => {
-    const id = randomUUID()
-
-    insert.run(id, name, color, icon)
-    console.log(`Seeded icon : ${name}`)
-  }))
-
-  console.log("\n✅ Icon seeding completed\n")
-}
-
 async function main() {
   if (process.env.SEED === "true") {
     const db = initDatabase()
 
     try {
       await seedUsers(db)
-      await seedIcons(db)
     } catch (e) {
       console.error("❌ Error seeding database :", e)
     } finally {

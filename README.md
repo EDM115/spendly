@@ -2,7 +2,6 @@
 **WIP** A budget tracker with tables, stats and charts. Made for my gf
 
 ## DB Schema
-
 ```mermaid
 erDiagram
   User {
@@ -10,13 +9,6 @@ erDiagram
     TEXT username
     TEXT password
     TEXT role
-  }
-
-  Icon {
-    TEXT id PK
-    TEXT name
-    TEXT color
-    TEXT icon
   }
 
   BudgetTracker {
@@ -33,7 +25,8 @@ erDiagram
   Category {
     TEXT id PK
     TEXT name
-    TEXT icon_id FK
+    TEXT icon
+    TEXT color
   }
 
   Spending {
@@ -50,5 +43,4 @@ erDiagram
   BudgetTracker ||--o{ UserBudgetTracker : has
   BudgetTracker ||--o{ Spending : contains
   Category ||--o{ Spending : classifies
-  Icon ||--o{ Category : represents
 ```

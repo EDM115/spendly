@@ -52,10 +52,9 @@ export default defineEventHandler(async (event) => {
 
       if (spending_id) {
         const spending = db.prepare(`
-          SELECT s.*, c.name as category_name, i.name as icon_name, i.color as icon_color, i.icon
+          SELECT s.*, c.name as category_name, c.color as icon_color, c.icon
           FROM Spending s
           INNER JOIN Category c ON s.category_id = c.id
-          INNER JOIN Icon i ON c.icon_id = i.id
           WHERE s.id = ? AND s.budget_tracker_id = ?
         `)
           // oxlint-disable-next-line no-unsafe-type-assertion
@@ -77,10 +76,9 @@ export default defineEventHandler(async (event) => {
         }
       } else {
         let query = `
-          SELECT s.*, c.name as category_name, i.name as icon_name, i.color as icon_color, i.icon
+          SELECT s.*, c.name as category_name, c.color as icon_color, c.icon
           FROM Spending s
           INNER JOIN Category c ON s.category_id = c.id
-          INNER JOIN Icon i ON c.icon_id = i.id
           WHERE s.budget_tracker_id = ?
         `
         // oxlint-disable-next-line no-unsafe-type-assertion

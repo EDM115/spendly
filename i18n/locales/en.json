@@ -7,17 +7,6 @@
       "export-sql": "SQL",
       "export-sqlite": "SQLite"
     },
-    "icons": {
-      "add-icon": "Add an icon",
-      "delete-cancel": "Cancel",
-      "delete-confirm": "Delete",
-      "delete-description": "Are you sure you want to delete this icon ?",
-      "delete-title": "Delete confirmation",
-      "edit-icon": "Edit the icon",
-      "icon": "Icon",
-      "name": "Name",
-      "title": "Icon management"
-    },
     "title": "Settings",
     "users": {
       "add-user": "Add a user",
@@ -70,7 +59,7 @@
       "delete-title": "Delete confirmation",
       "edit": "Edit category",
       "name": "Name",
-      "icon": "Icon",
+      "icon": "Icon (mdi-)",
       "select": "Select a category",
       "title": "Categories",
       "manage": "Manage categories"
@@ -125,8 +114,7 @@
     "welcome": "Welcome"
   },
   "error": {
-    "more-infos": "More information",
-    "redirect-to-home": "Redirecting to home page..."
+    "back": "Go back home"
   },
   "login": {
     "login": "Log in",

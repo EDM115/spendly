@@ -11,29 +11,48 @@
             align-content="center"
             justify="center"
           >
-            <NuxtLink to="/">
-              <NuxtImg
-                src="/images/logo.webp"
-                width="300px"
-                height="300px"
-                sizes="300px"
-                alt="Spendly"
-                :placeholder="[150, 150, 50, 5]"
-                preload
-              />
-            </NuxtLink>
+            <h1 class="text-h1">
+              {{ error.statusCode }}
+            </h1>
           </v-row>
           <v-row
             align="center"
             align-content="center"
             justify="center"
           >
-            <NuxtLink to="/">
-              {{ $t("error.redirect-to-home") }}
-            </NuxtLink>
+            <v-alert
+              color="error"
+              :text="error.message"
+              max-width="35%"
+            />
+          </v-row>
+          <v-row
+            align="center"
+            align-content="center"
+            justify="center"
+          >
+            <v-btn
+              :text="t('error.back')"
+              to="/"
+              color="error"
+              prepend-icon="mdi-home-outline"
+              size="large"
+              style="margin-top: 1rem;"
+              variant="outlined"
+            />
           </v-row>
         </v-col>
       </v-container>
     </v-main>
   </v-app>
 </template>
+
+<script setup lang="ts">
+import type { NuxtError } from "#app"
+
+const { t } = useI18n()
+
+const props = defineProps<{
+  error: NuxtError;
+}>()
+</script>

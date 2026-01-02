@@ -61,7 +61,6 @@
             <!-- Category Manager -->
             <AppCategoryManager
               :categories="categories"
-              :icons="icons"
               @refresh="fetchCategories"
             />
           </v-col>
@@ -107,7 +106,6 @@
 import type {
   BudgetTracker,
   Category,
-  Icon,
   Spending,
 } from "~/types"
 
@@ -117,7 +115,6 @@ const hasLoaded = ref(false)
 const selectedBudgetTrackerId = ref<string | null>(store.getSelectedBudgetTrackerId)
 const budgetTrackers = ref<BudgetTracker[]>([])
 const categories = ref<Category[]>([])
-const icons = ref<Icon[]>([])
 const spendings = ref<Spending[]>([])
 const timeRange = ref("month")
 
@@ -173,18 +170,6 @@ const fetchCategories = async () => {
   }
 }
 
-const fetchIcons = async () => {
-  try {
-    const response = await $fetch("/api/icon", {
-      headers: { Authorization: `Bearer ${store.getUser?.token}` },
-    })
-
-    icons.value = response.body.icons
-  } catch (error) {
-    console.error("Failed to fetch icons:", error)
-  }
-}
-
 const fetchSpendings = async () => {
   if (!selectedBudgetTrackerId.value) {
     spendings.value = []
@@ -230,7 +215,6 @@ onMounted(async () => {
   await Promise.all([
     fetchBudgetTrackers(),
     fetchCategories(),
-    fetchIcons(),
   ])
 
   hasLoaded.value = true

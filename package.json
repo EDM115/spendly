@@ -22,7 +22,7 @@
     "pinia": "~3.0.4",
     "vue": "~3.5.26",
     "vue-chartjs": "~5.3.3",
-    "vuetify-nuxt-module": "~0.19.1"
+    "vuetify-nuxt-module": "~0.19.2"
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "~1.51.4",
@@ -72,5 +72,5 @@
     "typecheck": "nuxt typecheck"
   },
   "type": "module",
-  "version": "0.2.0"
+  "version": "0.3.0"
 }

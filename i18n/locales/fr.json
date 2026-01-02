@@ -7,17 +7,6 @@
       "export-sql": "SQL",
       "export-sqlite": "SQLite"
     },
-    "icons": {
-      "add-icon": "Ajouter une icône",
-      "delete-cancel": "Annuler",
-      "delete-confirm": "Supprimer",
-      "delete-description": "Êtes-vous sûr de vouloir supprimer cette icône ?",
-      "delete-title": "Confirmation de suppression",
-      "edit-icon": "Modifier l'icône",
-      "icon": "Icône",
-      "name": "Nom",
-      "title": "Gestion des icônes"
-    },
     "title": "Paramètres",
     "users": {
       "add-user": "Ajouter un utilisateur",
@@ -70,7 +59,7 @@
       "delete-title": "Confirmation de suppression",
       "edit": "Modifier la catégorie",
       "name": "Nom",
-      "icon": "Icône",
+      "icon": "Icône (mdi-)",
       "select": "Sélectionner une catégorie",
       "title": "Catégories",
       "manage": "Gérer les catégories"
@@ -125,8 +114,7 @@
     "welcome": "Bienvenue"
   },
   "error": {
-    "more-infos": "Informations supplémentaires",
-    "redirect-to-home": "Redirection vers la page d'accueil..."
+    "back": "Retour à l'accueil"
   },
   "login": {
     "login": "Se connecter",

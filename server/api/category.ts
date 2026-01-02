@@ -25,9 +25,8 @@ export default defineEventHandler(async (event) => {
 
       if (category_id) {
         const category = db.prepare(`
-          SELECT c.*, i.name as icon_name, i.color as icon_color, i.icon
+          SELECT c.*
           FROM Category c
-          INNER JOIN Icon i ON c.icon_id = i.id
           WHERE c.id = ?
         `)
           // oxlint-disable-next-line no-unsafe-type-assertion
@@ -50,9 +49,8 @@ export default defineEventHandler(async (event) => {
       } else {
         // oxlint-disable-next-line no-unsafe-type-assertion
         const categories = db.prepare(`
-          SELECT c.*, i.name as icon_name, i.color as icon_color, i.icon
+          SELECT c.*
           FROM Category c
-          INNER JOIN Icon i ON c.icon_id = i.id
         `)
           .all() as Category[]
 
@@ -67,33 +65,22 @@ export default defineEventHandler(async (event) => {
     }
     case "POST": {
       const {
-        name, icon_id,
+        name, icon, color,
       } = await readBody(event)
 
-      if (!name || !icon_id) {
+      if (!name || !icon || !color) {
         throw createError({
           status: 400, message: "Missing required fields",
-        })
-      }
-
-      const iconExists = db.prepare(`
-        SELECT 1 FROM Icon WHERE id = ?
-      `)
-        .get(icon_id)
-
-      if (!iconExists) {
-        throw createError({
-          status: 404, message: "Icon not found",
         })
       }
 
       const categoryId = randomUUID()
 
       db.prepare(`
-        INSERT INTO Category (id, name, icon_id)
-        VALUES (?, ?, ?)
+        INSERT INTO Category (id, name, icon, color)
+        VALUES (?, ?, ?, ?)
       `)
-        .run(categoryId, name, icon_id)
+        .run(categoryId, name, icon, color)
 
       return {
         status: 201,
@@ -105,32 +92,21 @@ export default defineEventHandler(async (event) => {
     }
     case "PUT": {
       const {
-        id, name, icon_id,
+        id, name, icon, color,
       } = await readBody(event)
 
-      if (!id || !name || !icon_id) {
+      if (!id || !name || !icon || !color) {
         throw createError({
           status: 400, message: "Missing required fields",
         })
       }
 
-      const iconExists = db.prepare(`
-        SELECT 1 FROM Icon WHERE id = ?
-      `)
-        .get(icon_id)
-
-      if (!iconExists) {
-        throw createError({
-          status: 404, message: "Icon not found",
-        })
-      }
-
       db.prepare(`
         UPDATE Category
-        SET name = ?, icon_id = ?
+        SET name = ?, icon = ?, color = ?
         WHERE id = ?
       `)
-        .run(name, icon_id, id)
+        .run(name, icon, color, id)
 
       return {
         status: 200,

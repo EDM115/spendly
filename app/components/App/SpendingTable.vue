@@ -260,7 +260,7 @@
                     <template #prepend>
                       <v-icon
                         :icon="item.raw.icon"
-                        :color="item.raw.icon_color"
+                        :color="item.raw.color"
                       />
                     </template>
                   </v-list-item>
@@ -268,7 +268,7 @@
                 <template #selection="{ item }">
                   <v-icon
                     :icon="item.raw.icon"
-                    :color="item.raw.icon_color"
+                    :color="item.raw.color"
                     class="mr-2"
                   />
                   {{ item.raw.name }}
