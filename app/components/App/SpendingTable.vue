@@ -453,39 +453,62 @@ const headers = computed(() => [
 
 const filteredSpendings = computed(() => {
   const now = new Date()
-  let startDate: Date
-  let endDate: Date
+  let startDateStr: string
+  let endDateStr: string
 
   switch (timeRange.value) {
-    case "day":
-      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-      endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+    case "day": {
+      const start = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+
+      startDateStr =
+        `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}-${String(start.getDate()).padStart(2, "0")}`
+      endDateStr =
+        `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, "0")}-${String(end.getDate()).padStart(2, "0")}`
 
       break
-    case "week":
-      startDate = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000))
-      endDate = new Date(now.getTime() + (1 * 24 * 60 * 60 * 1000))
+    } case "week": {
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      const day = today.getDay()
+      const diffToMonday = (day + 6) % 7
+
+      const start = new Date(today)
+      start.setDate(today.getDate() - diffToMonday)
+
+      const end = new Date(start)
+      end.setDate(start.getDate() + 7)
+
+      startDateStr =
+        `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}-${String(start.getDate()).padStart(2, "0")}`
+      endDateStr =
+        `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, "0")}-${String(end.getDate()).padStart(2, "0")}`
 
       break
-    case "month":
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1)
-      endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+    } case "month": {
+      const start = new Date(now.getFullYear(), now.getMonth(), 1)
+      const end = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+
+      startDateStr =
+        `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}-${String(start.getDate()).padStart(2, "0")}`
+      endDateStr =
+        `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, "0")}-${String(end.getDate()).padStart(2, "0")}`
 
       break
-    case "year":
-      startDate = new Date(now.getFullYear(), 0, 1)
-      endDate = new Date(now.getFullYear() + 1, 0, 1)
+    } case "year": {
+      const start = new Date(now.getFullYear(), 0, 1)
+      const end = new Date(now.getFullYear() + 1, 0, 1)
+
+      startDateStr =
+        `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}-${String(start.getDate()).padStart(2, "0")}`
+      endDateStr =
+        `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, "0")}-${String(end.getDate()).padStart(2, "0")}`
 
       break
-    default:
+    } default:
       return props.spendings
   }
 
-  return props.spendings.filter((s) => {
-    const spendingDate = new Date(s.date)
-
-    return spendingDate >= startDate && spendingDate < endDate
-  })
+  return props.spendings.filter((s) => s.date >= startDateStr && s.date < endDateStr)
 })
 
 const totalIncome = computed(() => filteredSpendings.value
