@@ -39,8 +39,10 @@
           v-if="timeRangeModel === 'day' || timeRangeModel === 'week'"
           v-model="tempDate"
           show-adjacent-months
+          :multiple="timeRangeModel === 'week' ? 'range' : false"
           weeks-in-month="dynamic"
           weekday-format="short"
+          color="secondary"
           @update:model-value="(val) => {
             const v = Array.isArray(val)
               ? val[0]
@@ -72,6 +74,7 @@
           <template #[`item.1`]>
             <v-date-picker-years
               v-model="monthYear"
+              color="secondary"
             />
           </template>
 
@@ -79,6 +82,7 @@
             <v-date-picker-months
               v-model="tempMonth"
               v-model:year="monthYear"
+              color="secondary"
             />
           </template>
 
@@ -139,6 +143,7 @@
         <v-date-picker-years
           v-else-if="timeRangeModel === 'year'"
           v-model="tempYear"
+          color="secondary"
           @update:model-value="(y) => {
             if (!y) {
               return
@@ -212,7 +217,7 @@ const {
 
 const menu = ref(false)
 
-const tempDate = ref<string | null>(null)
+const tempDate = ref<string | string[] | Date | null>(null)
 const tempMonth = ref<number | undefined>(undefined)
 const tempYear = ref<number | undefined>(undefined)
 const monthStep = ref<number>(1)
@@ -238,6 +243,25 @@ const monthStepperItems = computed(() => ([
     title: t("app.date-range-filter.month"), value: 2,
   },
 ]))
+
+function getWeekStartAndEnd(date: Date): {
+  start: Date; end: Date;
+} {
+  const day = date.getDay()
+  const diffToMonday = (day + 6) % 7
+
+  const start = new Date(date)
+
+  start.setDate(date.getDate() - diffToMonday)
+
+  const end = new Date(start)
+
+  end.setDate(start.getDate() + 6)
+
+  return {
+    start, end,
+  }
+}
 
 const tooltipText = computed(() => {
   if (timeRangeModel.value === "all") {
@@ -265,16 +289,9 @@ const tooltipText = computed(() => {
   }
 
   if (timeRangeModel.value === "week") {
-    const day = base.getDay()
-    const diffToMonday = (day + 6) % 7
-
-    const start = new Date(base)
-
-    start.setDate(base.getDate() - diffToMonday)
-
-    const end = new Date(start)
-
-    end.setDate(start.getDate() + 6)
+    const {
+      start, end,
+    } = getWeekStartAndEnd(base)
 
     return `${fmt(start, baseOpts)} - ${fmt(end, baseOpts)}`
   }
@@ -303,6 +320,23 @@ watch(menu, (open) => {
     .map(Number)
 
   if (!y || !m || !d) {
+    return
+  }
+
+  if (timeRangeModel.value === "week") {
+    const baseDate = new Date(y, m - 1, d)
+    const {
+      start, end,
+    } = getWeekStartAndEnd(baseDate)
+
+    const dates: string[] = []
+
+    for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
+      dates.push(dt.toISOString())
+    }
+
+    tempDate.value = dates
+
     return
   }
 
