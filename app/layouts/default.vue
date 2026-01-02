@@ -63,7 +63,10 @@ onMounted(() => {
 
   store.initStore()
   setLocale(store.getI18n)
-  polyfillCountryFlagEmojis()
+  polyfillCountryFlagEmojis(
+    "Twemoji Country Flags",
+    "/fonts/TwemojiCountryFlags.woff2",
+  )
 })
 </script>
 

@@ -97,7 +97,7 @@
               <div class="text-caption">
                 {{ $t("app.spending.total-income") }}
               </div>
-              <div class="text-h5 font-weight-bold">
+              <div class="text-h5 font-weight-bold text-code">
                 {{ formatCurrency(totalIncome) }}
               </div>
             </v-card-text>
@@ -115,7 +115,7 @@
               <div class="text-caption">
                 {{ $t("app.spending.total-expense") }}
               </div>
-              <div class="text-h5 font-weight-bold">
+              <div class="text-h5 font-weight-bold text-code">
                 {{ formatCurrency(totalExpense) }}
               </div>
             </v-card-text>
@@ -133,7 +133,7 @@
               <div class="text-caption">
                 {{ $t("app.spending.balance") }}
               </div>
-              <div class="text-h5 font-weight-bold">
+              <div class="text-h5 font-weight-bold text-code">
                 {{ formatCurrency(balance) }}
               </div>
             </v-card-text>
@@ -166,6 +166,7 @@
         <template #[`item.value`]="{ item }">
           <v-chip
             :color="item.is_spending ? 'error' : 'success'"
+            class="text-code"
             size="small"
           >
             {{ item.is_spending ? "-" : "+" }}{{ formatCurrency(item.value) }}
@@ -497,9 +498,14 @@ watch(timeRange, (newVal) => {
   emit("update:timeRange", newVal)
 })
 
-const formatCurrency = (value: number) => new Intl.NumberFormat("fr-FR", {
+const formatCurrency = (value: number) => new Intl.NumberFormat(locale.value === "fr"
+    ? "fr-FR"
+    : "en-US", {
   style: "currency",
-  currency: "EUR",
+  currency: locale.value === "fr"
+    ? "EUR"
+    : "USD",
+  currencyDisplay: "narrowSymbol",
 })
   .format(value)
 
@@ -669,5 +675,13 @@ const exportCSV = () => {
 
 :deep(.v-data-table-footer__items-per-page > .v-select) {
   width: auto;
+}
+
+.text-code {
+  font-family: "Fira Code", monospace !important;
+  font-feature-settings: "liga" 1, "calt" 1, "case" 0, "ccmp" 0, "cpsp" 0,
+    "cv01" 0, "cv05" 0, "cv08" 0, "cv10" 0, "cv11" 0, "cv25" 1, "cv26" 1,
+    "cv28" 1, "cv32" 1, "dlig" 0, "frac" 0, "ss01" 0, "ss02" 0, "ss03" 1,
+    "ss05" 1, "ss06" 1, "ss07" 1, "ss08" 1, "ss09" 1, "zero" 0;
 }
 </style>

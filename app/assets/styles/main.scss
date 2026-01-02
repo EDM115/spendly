@@ -1,7 +1,7 @@
 @use "vuetify/settings" with (
-  $badge-font-family: ("Twemoji Country Flags", "Nunito", "Inter", sans-serif),
-  $body-font-family: ("Twemoji Country Flags", "Nunito", "Inter", sans-serif),
-  $heading-font-family: ("Twemoji Country Flags", "Nunito", "Inter", sans-serif),
+  $badge-font-family: ("Twemoji Country Flags", "Inter", sans-serif),
+  $body-font-family: ("Twemoji Country Flags", "Inter", sans-serif),
+  $heading-font-family: ("Twemoji Country Flags", "Nunito", sans-serif),
   $color-pack: false,
 );
 
@@ -10,13 +10,16 @@
 }
 
 :root {
-  font-feature-settings: "liga" 1, "calt" 1, "dlig" 1, "zero" 1, "case" 1, "ccmp" 1, "ss01" 1, "ss02" 1;
-  --fc-border-color: rgb(var(--v-theme-text));
+  --fc-border-color: var-color(v-theme-text);
 }
 
-* {
-  font-family: "Twemoji Country Flags", "Nunito", "Inter", sans-serif !important;
-  font-display: swap;
+html,
+body,
+[class^="text-"] {
+  font-family: "Twemoji Country Flags", "Inter", sans-serif !important;
+  font-feature-settings: "liga" 1, "calt" 1, "case" 1, "ccmp" 1, "cpsp" 1,
+    "cv01" 1, "cv05" 1, "cv08" 1, "cv10" 1, "dlig" 1, "frac" 1, "ss01" 1,
+    "ss02" 1, "ss07" 1, "ss08" 1, "tnum" 0, "zero" 1;
 }
 
 *::-webkit-scrollbar {
@@ -44,13 +47,37 @@ a {
   color: inherit;
 }
 
-iframe {
-  background-color: transparent;
-  border: none;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Twemoji Country Flags", "Nunito", sans-serif !important;
+  font-feature-settings: "liga" 1, "calt" 1, "case" 1, "ccmp" 1, "frac" 0,
+    "ss01" 0, "ss02" 0;
+  text-wrap: balance;
+}
+
+code,
+code > span,
+kbd,
+pre,
+samp {
+  font-family: "Fira Code", monospace !important;
+  font-feature-settings: "liga" 1, "calt" 1, "case" 0, "ccmp" 0, "cpsp" 0,
+    "cv01" 0, "cv05" 0, "cv08" 0, "cv10" 0, "cv11" 0, "cv25" 1, "cv26" 1,
+    "cv28" 1, "cv32" 1, "dlig" 0, "frac" 0, "ss01" 0, "ss02" 0, "ss03" 1,
+    "ss05" 1, "ss06" 1, "ss07" 1, "ss08" 1, "ss09" 1, "zero" 0;
 }
 
 input {
   background: transparent;
+}
+
+p,
+li {
+  text-wrap: pretty;
 }
 
 input:-webkit-autofill,
@@ -70,11 +97,6 @@ input:-webkit-autofill:active {
 }
 .link-color:hover {
   color: var-color(v-theme-success);
-}
-
-.code {
-  font-family: "Fira Code", monospace;
-  font-display: swap;
 }
 
 .v-btn {
@@ -130,10 +152,10 @@ input:-webkit-autofill:active {
   padding: 0 !important;
 }
 
-.force-nuxt-fonts-nunito {
-  font-family: "Nunito";
-}
-
 .force-nuxt-fonts-inter {
   font-family: "Inter";
+}
+
+.force-nuxt-fonts-nunito {
+  font-family: "Nunito";
 }
