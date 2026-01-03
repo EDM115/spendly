@@ -1,6 +1,6 @@
 <template>
   <v-card class="mb-4 pa-1">
-    <v-card-title class="d-flex align-center justify-space-between">
+    <v-card-title class="d-flex align-center justify-space-between flex-wrap gap-2">
       <div class="d-flex align-center">
         <v-icon
           icon="mdi-chart-box-multiple-outline"
@@ -9,10 +9,15 @@
         {{ $t("app.charts.title") }}
       </div>
 
-      <div class="d-flex gap-2 flex-wrap align-center">
+      <div :class="['d-flex', 'gap-2', 'flex-wrap', 'align-center', !smAndUp && 'mt-4', !smAndUp && 'flex-grow-1']">
         <AppDateRangeFilter
           v-model:time-range="timeRangeModel"
           v-model:anchor-date="anchorDateModel"
+        />
+
+        <div
+          v-if="!smAndUp"
+          class="flex-grow-1"
         />
 
         <v-menu v-if="spendings.length > 0">
@@ -66,6 +71,7 @@
       <v-tabs
         v-model="activeTab"
         color="secondary"
+        show-arrows
         align-tabs="center"
       >
         <v-tab value="area">
@@ -195,6 +201,7 @@ ChartJS.register(
 )
 
 ChartJS.defaults.font.family = '"Inter", sans-serif'
+ChartJS.defaults.font.size = 16
 
 const props = defineProps<{
   spendings: Spending[];
@@ -209,6 +216,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const store = useMainStore()
+const { smAndUp } = useVDisplay()
 const activeTab = ref("area")
 const timeRangeModel = computed({
   get: () => props.timeRange,
@@ -574,7 +582,6 @@ const doughnutChartOptions = computed(() => ({
     tooltip: {
       callbacks: {
         label: (ctx: TooltipItem<"doughnut">) => {
-          console.log(ctx, typeof ctx)
           const datasetIndex = ctx.datasetIndex
           const dataIndex = ctx.dataIndex
 
@@ -711,7 +718,7 @@ const exportPDF = async () => {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .chart-container {
   height: 400px;
   position: relative;

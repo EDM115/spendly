@@ -162,7 +162,7 @@ async function handleConnect() {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .force-ssr {
   position: fixed;
   top: 0;

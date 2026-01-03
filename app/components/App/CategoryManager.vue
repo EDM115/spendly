@@ -289,7 +289,7 @@ const saveCategory = async () => {
     closeDialog()
     emit("refresh")
   } catch (error) {
-    console.error("Failed to save category:", error)
+    console.error("Failed to save category :", error)
   }
 }
 
@@ -308,12 +308,12 @@ const deleteCategory = async () => {
     deletingCategory.value = null
     emit("refresh")
   } catch (error) {
-    console.error("Failed to delete category:", error)
+    console.error("Failed to delete category :", error)
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .v-color-picker {
   width: auto;
 }

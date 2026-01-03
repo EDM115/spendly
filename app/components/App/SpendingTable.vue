@@ -9,10 +9,15 @@
         {{ $t("app.spending.title") }}
       </div>
 
-      <div class="d-flex gap-2 flex-wrap align-center">
+      <div :class="['d-flex', 'gap-2', 'flex-wrap', 'align-center', !smAndUp && 'mt-4', !smAndUp && 'flex-grow-1']">
         <AppDateRangeFilter
           v-model:time-range="timeRangeModel"
           v-model:anchor-date="anchorDateModel"
+        />
+
+        <div
+          v-if="!smAndUp"
+          class="flex-grow-1"
         />
 
         <v-btn
@@ -566,7 +571,7 @@ const saveSpending = async () => {
     closeDialog()
     emit("refresh")
   } catch (error) {
-    console.error("Failed to save spending:", error)
+    console.error("Failed to save spending :", error)
   }
 }
 
@@ -588,7 +593,7 @@ const deleteSpending = async () => {
     deletingSpending.value = null
     emit("refresh")
   } catch (error) {
-    console.error("Failed to delete spending:", error)
+    console.error("Failed to delete spending :", error)
   }
 }
 

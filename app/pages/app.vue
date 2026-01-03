@@ -3,20 +3,40 @@
     class="py-8"
     fluid
   >
-    <v-row v-if="!hasLoaded">
-      <v-col cols="6">
-        <v-skeleton-loader
-          type="heading,table-thead,table-tbody"
-          class="mb-4"
-        />
+    <div v-if="!hasLoaded">
+      <v-row v-if="smAndUp">
+        <v-col cols="6">
+          <v-skeleton-loader
+            type="heading,table-thead,table-tbody"
+            class="mb-4"
+          />
+        </v-col>
+        <v-col cols="6">
+          <v-skeleton-loader
+            type="heading,image"
+            class="mb-4"
+          />
+        </v-col>
+      </v-row>
+
+      <v-col
+        v-else
+        cols="12"
+      >
+        <v-row>
+          <v-skeleton-loader
+            type="heading,table-thead,table-tbody"
+            class="mb-4"
+          />
+        </v-row>
+        <v-row>
+          <v-skeleton-loader
+            type="heading,image"
+            class="mb-4"
+          />
+        </v-row>
       </v-col>
-      <v-col cols="6">
-        <v-skeleton-loader
-          type="heading,image"
-          class="mb-4"
-        />
-      </v-col>
-    </v-row>
+    </div>
 
     <template v-else>
       <v-row class="mb-4 pa-1">
@@ -41,6 +61,7 @@
         <v-tabs
           v-model="selectedTab"
           fixed-tabs
+          show-arrows
           color="primary"
         >
           <v-tab value="spendings">
@@ -119,7 +140,7 @@
   </v-container>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import type {
   BudgetTracker,
   Category,
@@ -127,6 +148,7 @@ import type {
 } from "~/types"
 
 const store = useMainStore()
+const { smAndUp } = useVDisplay()
 const hasLoaded = ref(false)
 
 const selectedBudgetTrackerId = ref<string | null>(null)
@@ -174,7 +196,7 @@ const fetchBudgetTrackers = async () => {
       store.setSelectedBudgetTracker(null, null)
     }
   } catch (error) {
-    console.error("Failed to fetch budget trackers:", error)
+    console.error("Failed to fetch budget trackers :", error)
   }
 }
 
@@ -188,7 +210,7 @@ const fetchCategories = async () => {
       categories.value = response.body.categories
     }
   } catch (error) {
-    console.error("Failed to fetch categories:", error)
+    console.error("Failed to fetch categories :", error)
   }
 }
 
@@ -209,7 +231,7 @@ const fetchSpendings = async () => {
       spendings.value = response.body.spendings
     }
   } catch (error) {
-    console.error("Failed to fetch spendings:", error)
+    console.error("Failed to fetch spendings :", error)
     spendings.value = []
   }
 }
@@ -245,5 +267,9 @@ onMounted(async () => {
 <style>
 .v-skeleton-loader__image {
   height: 47.5vh;
+
+  @media (max-width: 600px) {
+    width: 90vw;
+  }
 }
 </style>

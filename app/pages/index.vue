@@ -181,7 +181,17 @@
   </div>
 </template>
 
-<style scoped>
+<script lang="ts" setup>
+const store = useMainStore()
+
+onMounted(async () => {
+  if (store.getUser !== null) {
+    await navigateTo("/app", { redirectCode: 302 })
+  }
+})
+</script>
+
+<style lang="scss" scoped>
 .hero-section {
   min-height: 80vh;
 }

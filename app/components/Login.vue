@@ -120,7 +120,7 @@ async function submit() {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .input-field {
   width: 100%;
   max-width: 80%;

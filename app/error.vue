@@ -47,7 +47,7 @@
   </v-app>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { NuxtError } from "#app"
 
 const { t } = useI18n()

@@ -159,45 +159,41 @@
   </v-menu>
 
   <v-btn-toggle
+    v-if="smAndUp"
     v-model="timeRangeModel"
     mandatory
     class="mr-4 rounded-s-0 rounded-e-pill"
     :color="color"
   >
     <v-btn
-      value="day"
+      v-for="item in dateFilterItems"
+      :key="item.value"
+      :value="item.value"
       size="small"
     >
-      {{ $t("app.time-range.day") }}
-    </v-btn>
-    <v-btn
-      value="week"
-      size="small"
-    >
-      {{ $t("app.time-range.week") }}
-    </v-btn>
-    <v-btn
-      value="month"
-      size="small"
-    >
-      {{ $t("app.time-range.month") }}
-    </v-btn>
-    <v-btn
-      value="year"
-      size="small"
-    >
-      {{ $t("app.time-range.year") }}
-    </v-btn>
-    <v-btn
-      value="all"
-      size="small"
-    >
-      {{ $t("app.time-range.all") }}
+      {{ item.text }}
     </v-btn>
   </v-btn-toggle>
+  <div
+    v-else
+    class="period-select"
+  >
+    <v-select
+      v-model="timeRangeModel"
+      class="mr-4"
+      :base-color="color"
+      :color="color"
+      :items="dateFilterItems"
+      item-title="text"
+      item-value="value"
+      density="comfortable"
+      hide-details
+      variant="outlined"
+    />
+  </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 const props = withDefaults(defineProps<{
   timeRange: string;
   anchorDate: string;
@@ -212,8 +208,10 @@ const emit = defineEmits<{
 }>()
 
 const {
-  locale, t,
+  locale,
+  t,
 } = useI18n()
+const { smAndUp } = useVDisplay()
 
 const menu = ref(false)
 
@@ -242,6 +240,14 @@ const monthStepperItems = computed(() => ([
   {
     title: t("app.date-range-filter.month"), value: 2,
   },
+]))
+
+const dateFilterItems = computed(() => ([
+  { text: t("app.time-range.day"), value: "day" },
+  { text: t("app.time-range.week"), value: "week" },
+  { text: t("app.time-range.month"), value: "month" },
+  { text: t("app.time-range.year"), value: "year" },
+  { text: t("app.time-range.all"), value: "all" },
 ]))
 
 function getWeekStartAndEnd(date: Date): {
@@ -360,5 +366,12 @@ watch(timeRangeModel, (val) => {
 <style lang="scss" scoped>
 .v-btn-group--horizontal {
   overflow-x: clip;
+}
+
+.period-select :deep(.v-input__control > .v-field) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 9999px;
+  border-bottom-right-radius: 9999px;
 }
 </style>

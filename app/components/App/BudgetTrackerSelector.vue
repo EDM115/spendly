@@ -432,7 +432,7 @@ const addTracker = async () => {
       emit("update:modelValue", newId)
     }
   } catch (error) {
-    console.error("Failed to add tracker:", error)
+    console.error("Failed to add tracker :", error)
   }
 }
 
@@ -453,7 +453,7 @@ const updateTracker = async () => {
     showEditDialog.value = false
     emit("refresh")
   } catch (error) {
-    console.error("Failed to update tracker:", error)
+    console.error("Failed to update tracker :", error)
   }
 }
 
@@ -473,7 +473,7 @@ const deleteTracker = async () => {
     emit("update:modelValue", null)
     emit("refresh")
   } catch (error) {
-    console.error("Failed to delete tracker:", error)
+    console.error("Failed to delete tracker :", error)
   }
 }
 
@@ -492,7 +492,7 @@ const fetchSharedUsers = async () => {
       sharedUsers.value = response.body.users
     }
   } catch (error) {
-    console.error("Failed to fetch shared users:", error)
+    console.error("Failed to fetch shared users :", error)
   }
 }
 
@@ -515,7 +515,7 @@ const addUser = async () => {
     newUserRole.value = "viewer"
     await fetchSharedUsers()
   } catch (error) {
-    console.error("Failed to add user:", error)
+    console.error("Failed to add user :", error)
   }
 }
 
@@ -536,7 +536,7 @@ const updateUserRole = async (userId: string, role: string) => {
     })
     await fetchSharedUsers()
   } catch (error) {
-    console.error("Failed to update user role:", error)
+    console.error("Failed to update user role :", error)
   }
 }
 
@@ -556,7 +556,7 @@ const removeUser = async (userId: string) => {
     })
     await fetchSharedUsers()
   } catch (error) {
-    console.error("Failed to remove user:", error)
+    console.error("Failed to remove user :", error)
   }
 }
 

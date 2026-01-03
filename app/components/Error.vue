@@ -52,7 +52,7 @@ const more = ref(false)
 const close = ref(false)
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .v-alert {
   margin: 1em 0;
 }
