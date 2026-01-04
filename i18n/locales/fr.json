@@ -1,11 +1,11 @@
 {
   "admin": {
     "backup": {
-      "title": "Export de la base de données",
       "export-csv": "CSV",
       "export-json": "JSON",
       "export-sql": "SQL",
-      "export-sqlite": "SQLite"
+      "export-sqlite": "SQLite",
+      "title": "Export de la base de données"
     },
     "title": "Paramètres",
     "users": {
@@ -24,139 +24,139 @@
   "app": {
     "budget-tracker": {
       "add": "Ajouter",
-      "delete": "Supprimer",
       "cancel": "Annuler",
+      "change-role": "Changer le rôle",
+      "delete": "Supprimer",
       "delete-description": "Êtes-vous sûr de vouloir supprimer ce budget ? Toutes les transactions associées seront supprimées.",
       "delete-title": "Confirmation de suppression",
       "edit": "Modifier",
       "name": "Nom",
+      "no-permission-delete": "Seul le propriétaire peut supprimer ce budget",
+      "no-permission-edit": "Vous n'avez pas la permission de modifier ce budget",
       "no-tracker": "Aucun budget pour le moment",
+      "remove-user": "Retirer l'utilisateur",
+      "role": "Rôle",
+      "roles": {
+        "admin": "Admin",
+        "editor": "Éditeur",
+        "owner": "Propriétaire",
+        "viewer": "Lecteur"
+      },
       "select": "Sélectionner un budget",
       "share": "Partager",
       "share-close": "Fermer",
       "title": "Budgets",
-      "users": "Utilisateurs partagés",
-      "remove-user": "Retirer l'utilisateur",
       "username": "Nom d'utilisateur",
-      "role": "Rôle",
-      "change-role": "Changer le rôle",
-      "roles": {
-        "owner": "Propriétaire",
-        "admin": "Admin",
-        "editor": "Éditeur",
-        "viewer": "Lecteur"
-      },
-      "no-permission-edit": "Vous n'avez pas la permission de modifier ce budget",
-      "no-permission-delete": "Seul le propriétaire peut supprimer ce budget"
+      "users": "Utilisateurs partagés"
     },
     "category": {
       "add": "Ajouter",
-      "delete": "Supprimer",
       "cancel": "Annuler",
+      "delete": "Supprimer",
       "delete-description": "Êtes-vous sûr de vouloir supprimer cette catégorie ? Attention, toutes les transactions associées seront également supprimées.",
       "delete-title": "Confirmation de suppression",
       "edit": "Modifier",
-      "name": "Nom",
-      "icon": "Icône (mdi-)",
       "empty": "Ajoutez une catégorie pour commencer à organiser vos dépenses",
+      "icon": "Icône (mdi-)",
+      "name": "Nom",
       "title": "Catégories"
     },
     "charts": {
       "area": "Évolution",
-      "bar": "Comparaison",
       "balance": "Solde au fil du temps",
-      "doughnut": "Distribution",
+      "bar": "Comparaison",
       "cashflow": "Aperçu du flux de trésorerie",
-      "savings": "Économies",
       "deficit": "Déficit",
-      "of-singular": "du",
-      "of-plural": "des",
+      "doughnut": "Distribution",
+      "export": "Télécharger",
+      "export-pdf": "PDF",
+      "export-png": "PNG",
+      "export-svg": "SVG",
       "income-vs-expense": "Revenus vs Dépenses",
       "no-data": "Aucune donnée disponible pour les graphiques",
+      "of-plural": "des",
+      "of-singular": "du",
       "pie": "Répartition par catégorie",
+      "savings": "Économies",
       "title": "Graphiques & Analyses",
-      "top-categories": "Top catégories de dépenses",
-      "export": "Télécharger",
-      "export-svg": "SVG",
-      "export-png": "PNG",
-      "export-pdf": "PDF"
+      "top-categories": "Top catégories de dépenses"
     },
     "date-range-filter": {
       "cancel": "Annuler",
-      "prev": "Retour",
-      "next": "Suivant",
-      "year": "Année",
       "month": "Mois",
-      "validate": "Valider"
+      "next": "Suivant",
+      "prev": "Retour",
+      "validate": "Valider",
+      "year": "Année"
     },
     "spending": {
       "actions": "Actions",
       "add": "Ajouter",
       "amount": "Montant",
+      "balance": "Solde",
+      "cancel": "Annuler",
       "category": "Catégorie",
       "date": "Date",
       "delete": "Supprimer",
-      "cancel": "Annuler",
       "delete-description": "Êtes-vous sûr de vouloir supprimer cette transaction ?",
       "delete-title": "Confirmation de suppression",
       "edit": "Modifier",
-      "income": "Revenu",
       "expense": "Dépense",
+      "export": "Exporter",
+      "export-csv": "CSV",
+      "export-json": "JSON",
+      "income": "Revenu",
       "name": "Description",
       "no-spending": "Aucune transaction pour le moment",
       "title": "Transactions",
-      "total-income": "Total revenus",
       "total-expense": "Total dépenses",
-      "balance": "Solde",
-      "type": "Type",
-      "export": "Exporter",
-      "export-json": "JSON",
-      "export-csv": "CSV"
+      "total-income": "Total revenus",
+      "type": "Type"
     },
     "time-range": {
       "all": "Tout",
+      "custom": "Personnalisé",
       "day": "Jour",
       "month": "Mois",
       "week": "Semaine",
-      "year": "Année",
-      "custom": "Personnalisé"
+      "year": "Année"
     },
     "welcome": "Bienvenue"
   },
   "error": {
     "back": "Retour à l'accueil"
   },
+  "landing": {
+    "features": {
+      "charts": {
+        "desc": "Comprenez vos habitudes de dépenses avec de beaux graphiques",
+        "title": "Analyses visuelles"
+      },
+      "free": {
+        "desc": "Pas de frais cachés, pas d'abonnements, open source",
+        "title": "Toujours gratuit"
+      },
+      "title": "Pourquoi Spendly ?",
+      "tracking": {
+        "desc": "Enregistrez vos revenus et dépenses en quelques secondes",
+        "title": "Suivi facile"
+      }
+    },
+    "github": "Voir sur GitHub",
+    "hero": {
+      "subtitle": "Suivi budgétaire simple, puissant et gratuit pour tous",
+      "title": "Maîtrisez votre budget avec Spendly"
+    },
+    "join": {
+      "text": "Pour créer un compte, envoyez simplement un email à",
+      "title": "Prêt à nous rejoindre ?"
+    }
+  },
   "login": {
     "login": "Se connecter",
     "password": "Mot de passe",
     "title": "Connexion",
     "username": "Nom d'utilisateur"
-  },
-  "landing": {
-    "hero": {
-      "title": "Maîtrisez votre budget avec Spendly",
-      "subtitle": "Suivi budgétaire simple, puissant et gratuit pour tous"
-    },
-    "features": {
-      "title": "Pourquoi Spendly ?",
-      "tracking": {
-        "title": "Suivi facile",
-        "desc": "Enregistrez vos revenus et dépenses en quelques secondes"
-      },
-      "charts": {
-        "title": "Analyses visuelles",
-        "desc": "Comprenez vos habitudes de dépenses avec de beaux graphiques"
-      },
-      "free": {
-        "title": "Toujours gratuit",
-        "desc": "Pas de frais cachés, pas d'abonnements, open source"
-      }
-    },
-    "join": {
-      "title": "Prêt à nous rejoindre ?",
-      "text": "Pour créer un compte, envoyez simplement un email à"
-    },
-    "github": "Voir sur GitHub"
   },
   "main": {
     "description": "Suivi budgétaire simple, puissant et gratuit pour tous",
