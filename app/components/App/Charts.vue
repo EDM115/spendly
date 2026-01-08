@@ -200,7 +200,7 @@ ChartJS.register(
   Filler,
 )
 
-ChartJS.defaults.font.family = '"Inter", sans-serif'
+ChartJS.defaults.font.family = "\"Inter\", sans-serif"
 ChartJS.defaults.font.size = 16
 
 const props = defineProps<{
@@ -418,6 +418,7 @@ const pieChartOptions = computed(() => ({
           const value = Number(ctx.raw ?? 0)
           const total = (ctx.dataset.data as number[]).reduce((a, b) => a + Number(b), 0) || 1
           const pct = (value / total) * 100
+
           return `${label} : ${value.toFixed(2)} (${pct.toFixed(1)}%)`
         },
       },
@@ -515,8 +516,11 @@ const doughnutChartData = computed(() => {
   let expense = 0
 
   for (const s of filteredSpendings.value) {
-    if (s.is_spending) {expense += s.value}
-    else {income += s.value}
+    if (s.is_spending) {
+      expense += s.value
+    } else {
+      income += s.value
+    }
   }
 
   const net = income - expense
@@ -525,9 +529,15 @@ const doughnutChartData = computed(() => {
   const netAbs = Math.abs(net)
 
   // percent base: savings vs income, deficit vs expense
-  const base = isPositive ? income : expense
-  const shown = base > 0 ? Math.min(netAbs, base) : 0
-  const remainder = base > 0 ? Math.max(base - shown, 0) : 0
+  const base = isPositive
+    ? income
+    : expense
+  const shown = base > 0
+    ? Math.min(netAbs, base)
+    : 0
+  const remainder = base > 0
+    ? Math.max(base - shown, 0)
+    : 0
 
   return {
     // Labels are mainly for the OUTER ring (legend uses dataset 0 by default)
@@ -538,28 +548,43 @@ const doughnutChartData = computed(() => {
     datasets: [
       // OUTER ring: income vs expense
       {
-        data: [income, expense],
+        data: [ income, expense ],
         backgroundColor: [
-          isDark.value ? "rgba(34,197,94,0.85)" : "rgba(22,163,74,0.85)",
-          isDark.value ? "rgba(239,68,68,0.85)" : "rgba(220,38,38,0.85)",
+          isDark.value
+            ? "rgba(34,197,94,0.85)"
+            : "rgba(22,163,74,0.85)",
+          isDark.value
+            ? "rgba(239,68,68,0.85)"
+            : "rgba(220,38,38,0.85)",
         ],
         borderWidth: 2,
-        borderColor: isDark.value ? "#051e11" : "#f0fdf4",
-        weight: 2, // thicker outer ring
+        borderColor: isDark.value
+          ? "#051e11"
+          : "#f0fdf4",
+        // thicker outer ring
+        weight: 2,
       },
 
       // INNER ring: savings/deficit percent wedge + transparent remainder
       {
-        data: [shown, remainder],
+        data: [ shown, remainder ],
         backgroundColor: [
           isPositive
-            ? (isDark.value ? "rgba(59,130,246,0.85)" : "rgba(37,99,235,0.85)") // savings color
-            : (isDark.value ? "rgba(245,158,11,0.85)" : "rgba(217,119,6,0.85)"), // deficit color
-          "rgba(0,0,0,0)", // transparent remainder
+            // savings color
+            ? (isDark.value
+                ? "rgba(59,130,246,0.85)"
+                : "rgba(37,99,235,0.85)")
+            // deficit color
+            : (isDark.value
+                ? "rgba(245,158,11,0.85)"
+                : "rgba(217,119,6,0.85)"),
+          // transparent remainder
+          "rgba(0,0,0,0)",
         ],
         borderWidth: 0,
         hoverOffset: 0,
-        weight: 1, // thinner inner ring
+        // thinner inner ring
+        weight: 1,
       },
     ],
   }
@@ -589,27 +614,37 @@ const doughnutChartOptions = computed(() => ({
           if (datasetIndex === 0) {
             const label = ctx.label ?? ""
             const value = Number(ctx.raw ?? 0)
+
             return `${label}: ${value.toFixed(2)}`
           }
 
           // Inner ring: only show tooltip for the first slice (shown)
           if (datasetIndex === 1) {
-            if (dataIndex === 1 || !ctx.chart.data.datasets[0]) {return ""} // ignore transparent remainder
+            if (dataIndex === 1 || !ctx.chart.data.datasets[0]) {
+              // ignore transparent remainder
+              return ""
+            }
 
-            const [income, expense] = ctx.chart.data.datasets[0].data as number[]
+            const [ income, expense ] = ctx.chart.data.datasets[0].data as number[]
+
             if (income === undefined || expense === undefined) {
               return ""
             }
+
             const net = income - expense
             const isPositive = net >= 0
-            const base = isPositive ? income : expense
+            const base = isPositive
+              ? income
+              : expense
             const shown = Number(ctx.raw ?? 0)
-            const pct = base > 0 ? (shown / base) * 100 : 0
+            const pct = base > 0
+              ? (shown / base) * 100
+              : 0
 
             const label = isPositive
               ? t("app.charts.savings")
               : t("app.charts.deficit")
-            
+
             const ofText = isPositive
               ? t("app.charts.of-singular")
               : t("app.charts.of-plural")

@@ -8,10 +8,7 @@
     width="80%"
     @click:close="close = true"
   >
-    <v-tooltip
-      location="top"
-      :text="$t('error.more-infos')"
-    >
+    <v-tooltip location="top">
       <template #activator="{ props }">
         <v-btn
           v-if="issue"

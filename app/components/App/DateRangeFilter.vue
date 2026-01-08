@@ -243,11 +243,21 @@ const monthStepperItems = computed(() => ([
 ]))
 
 const dateFilterItems = computed(() => ([
-  { text: t("app.time-range.day"), value: "day" },
-  { text: t("app.time-range.week"), value: "week" },
-  { text: t("app.time-range.month"), value: "month" },
-  { text: t("app.time-range.year"), value: "year" },
-  { text: t("app.time-range.all"), value: "all" },
+  {
+    text: t("app.time-range.day"), value: "day",
+  },
+  {
+    text: t("app.time-range.week"), value: "week",
+  },
+  {
+    text: t("app.time-range.month"), value: "month",
+  },
+  {
+    text: t("app.time-range.year"), value: "year",
+  },
+  {
+    text: t("app.time-range.all"), value: "all",
+  },
 ]))
 
 function getWeekStartAndEnd(date: Date): {

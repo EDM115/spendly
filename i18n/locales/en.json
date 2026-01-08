@@ -9,12 +9,10 @@
     },
     "title": "Settings",
     "users": {
-      "add-user": "Add a user",
       "delete-cancel": "Cancel",
       "delete-confirm": "Delete",
       "delete-description": "Are you sure you want to delete this user ?",
       "delete-title": "Delete confirmation",
-      "edit-user": "Edit the user",
       "password": "Password",
       "role": "Role",
       "title": "User management",
@@ -25,14 +23,11 @@
     "budget-tracker": {
       "add": "Add",
       "cancel": "Cancel",
-      "change-role": "Change role",
       "delete": "Delete",
       "delete-description": "Are you sure you want to delete this budget tracker? All associated spendings will be deleted.",
       "delete-title": "Delete confirmation",
       "edit": "Edit",
       "name": "Name",
-      "no-permission-delete": "Only the owner can delete this budget tracker",
-      "no-permission-edit": "You don't have permission to edit this budget tracker",
       "no-tracker": "No budget tracker yet",
       "remove-user": "Remove user",
       "role": "Role",
@@ -78,8 +73,7 @@
       "of-singular": "of",
       "pie": "Repartition by category",
       "savings": "Savings",
-      "title": "Charts & Analytics",
-      "top-categories": "Top spending categories"
+      "title": "Charts & Analytics"
     },
     "date-range-filter": {
       "cancel": "Cancel",
@@ -132,6 +126,7 @@
         "desc": "Understand your spending habits with beautiful charts",
         "title": "Visual analytics"
       },
+      "chip": "FEATURES",
       "free": {
         "desc": "No hidden fees, no subscriptions, open source",
         "title": "Forever free"
@@ -156,7 +151,8 @@
     "login": "Log in",
     "password": "Password",
     "title": "Login",
-    "username": "Username"
+    "username": "Username",
+    "welcome": "Welcome back! Please enter your details."
   },
   "main": {
     "description": "Simple, powerful, and free budget tracking for everyone",

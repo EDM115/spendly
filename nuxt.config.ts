@@ -215,6 +215,11 @@ export default defineNuxtConfig({
             dark: false,
           },
         },
+        variations: {
+          colors: [ "accent", "background", "error", "info", "primary", "secondary", "success", "text", "warning" ],
+          lighten: 5,
+          darken: 5,
+        },
       },
     },
   },

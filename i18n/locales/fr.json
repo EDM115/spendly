@@ -9,12 +9,10 @@
     },
     "title": "Paramètres",
     "users": {
-      "add-user": "Ajouter un utilisateur",
       "delete-cancel": "Annuler",
       "delete-confirm": "Supprimer",
       "delete-description": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
       "delete-title": "Confirmation de suppression",
-      "edit-user": "Modifier l'utilisateur",
       "password": "Mot de passe",
       "role": "Rôle",
       "title": "Gestion des utilisateurs",
@@ -25,14 +23,11 @@
     "budget-tracker": {
       "add": "Ajouter",
       "cancel": "Annuler",
-      "change-role": "Changer le rôle",
       "delete": "Supprimer",
       "delete-description": "Êtes-vous sûr de vouloir supprimer ce budget ? Toutes les transactions associées seront supprimées.",
       "delete-title": "Confirmation de suppression",
       "edit": "Modifier",
       "name": "Nom",
-      "no-permission-delete": "Seul le propriétaire peut supprimer ce budget",
-      "no-permission-edit": "Vous n'avez pas la permission de modifier ce budget",
       "no-tracker": "Aucun budget pour le moment",
       "remove-user": "Retirer l'utilisateur",
       "role": "Rôle",
@@ -78,8 +73,7 @@
       "of-singular": "du",
       "pie": "Répartition par catégorie",
       "savings": "Économies",
-      "title": "Graphiques & Analyses",
-      "top-categories": "Top catégories de dépenses"
+      "title": "Graphiques & Analyses"
     },
     "date-range-filter": {
       "cancel": "Annuler",
@@ -132,6 +126,7 @@
         "desc": "Comprenez vos habitudes de dépenses avec de beaux graphiques",
         "title": "Analyses visuelles"
       },
+      "chip": "FONCTIONNALITÉS",
       "free": {
         "desc": "Pas de frais cachés, pas d'abonnements, open source",
         "title": "Toujours gratuit"
@@ -156,7 +151,8 @@
     "login": "Se connecter",
     "password": "Mot de passe",
     "title": "Connexion",
-    "username": "Nom d'utilisateur"
+    "username": "Nom d'utilisateur",
+    "welcome": "Bon retour ! Veuillez entrer vos identifiants."
   },
   "main": {
     "description": "Suivi budgétaire simple, puissant et gratuit pour tous",
