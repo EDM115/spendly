@@ -71,12 +71,13 @@ docker run -d -p 60000:60000 --env-file .env -v spendly_db:/app/db --name spendl
 | role              | string | Not Null, default "viewer"       |
 
 ### Category
-| Column | Type   | Extra               |
-| :----- | :----- | :------------------ |
-| id     | string | Primary Key, UUIDv4 |
-| name   | string | Not Null            |
-| icon   | string | Not Null            |
-| color  | string | Not Null            |
+| Column            | Type   | Extra                 |
+| :---------------- | :----- | :-------------------- |
+| id                | string | Primary Key, UUIDv4   |
+| name              | string | Not Null              |
+| icon              | string | Not Null              |
+| color             | string | Not Null              |
+| budget_tracker_id | string | Not Null, Foreign Key |
 
 ### Spending
 | Column            | Type    | Extra                  |
@@ -114,6 +115,7 @@ erDiagram
     TEXT name
     TEXT icon
     TEXT color
+    TEXT budget_tracker_id FK
   }
 
   Spending {
@@ -129,6 +131,7 @@ erDiagram
   User ||--o{ UserBudgetTracker : participates
   BudgetTracker ||--o{ UserBudgetTracker : has
   BudgetTracker ||--o{ Spending : contains
+  BudgetTracker ||--o{ Category : has
   Category ||--o{ Spending : classifies
 ```
 

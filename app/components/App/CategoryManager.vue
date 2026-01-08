@@ -176,6 +176,7 @@ import type { VIcon } from "vuetify/components"
 
 const props = defineProps<{
   categories: Category[];
+  budgetTrackerId: string;
 }>()
 
 const emit = defineEmits<{
@@ -281,7 +282,10 @@ const saveCategory = async () => {
     } else {
       await $fetch("/api/category", {
         method: "POST",
-        body: categoryForm.value,
+        body: {
+          budget_tracker_id: props.budgetTrackerId,
+          ...categoryForm.value,
+        },
         headers: { Authorization: `Bearer ${store.getUser?.token}` },
       })
     }

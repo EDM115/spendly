@@ -58,7 +58,9 @@ function initDatabase() {
       id TEXT PRIMARY KEY NOT NULL,
       name TEXT NOT NULL,
       icon TEXT NOT NULL,
-      color TEXT NOT NULL
+      color TEXT NOT NULL,
+      budget_tracker_id TEXT NOT NULL,
+      FOREIGN KEY (budget_tracker_id) REFERENCES BudgetTracker(id) ON DELETE CASCADE
     );
   `)
     .run()

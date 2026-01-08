@@ -1,8 +1,15 @@
-import type { Category } from "~/types"
+import type {
+  BudgetTrackerRole,
+  Category,
+} from "~/types"
 
 import db from "@@/server/api/db"
 
 import { randomUUID } from "node:crypto"
+
+function canEditCategory(role: Exclude<BudgetTrackerRole, null>): boolean {
+  return [ "owner", "admin", "editor" ].includes(role)
+}
 
 export default defineEventHandler(async (event) => {
   if (![ "GET", "POST", "PUT", "DELETE" ].includes(event.method)) {
@@ -21,7 +28,9 @@ export default defineEventHandler(async (event) => {
 
   switch (event.method) {
     case "GET": {
-      const { category_id } = getQuery(event)
+      const {
+        category_id, budget_tracker_id,
+      } = getQuery(event)
 
       if (category_id) {
         const category = db.prepare(`
@@ -39,6 +48,18 @@ export default defineEventHandler(async (event) => {
           })
         }
 
+        const hasAccess = db.prepare(`
+          SELECT 1 FROM UserBudgetTracker
+          WHERE user_id = ? AND budget_tracker_id = ?
+        `)
+          .get(userId, category.budget_tracker_id)
+
+        if (!hasAccess) {
+          throw createError({
+            status: 403, message: "Access denied",
+          })
+        }
+
         return {
           status: 200,
           body: {
@@ -47,12 +68,31 @@ export default defineEventHandler(async (event) => {
           },
         }
       } else {
+        if (!budget_tracker_id) {
+          throw createError({
+            status: 400, message: "Missing budget_tracker_id",
+          })
+        }
+
+        const hasAccess = db.prepare(`
+          SELECT 1 FROM UserBudgetTracker
+          WHERE user_id = ? AND budget_tracker_id = ?
+        `)
+          .get(userId, budget_tracker_id)
+
+        if (!hasAccess) {
+          throw createError({
+            status: 403, message: "Access denied",
+          })
+        }
+
         // oxlint-disable-next-line no-unsafe-type-assertion
         const categories = db.prepare(`
           SELECT c.*
           FROM Category c
+          WHERE c.budget_tracker_id = ?
         `)
-          .all() as Category[]
+          .all(budget_tracker_id) as Category[]
 
         return {
           status: 200,
@@ -65,22 +105,41 @@ export default defineEventHandler(async (event) => {
     }
     case "POST": {
       const {
-        name, icon, color,
+        name, icon, color, budget_tracker_id,
       } = await readBody(event)
 
-      if (!name || !icon || !color) {
+      if (!name || !icon || !color || !budget_tracker_id) {
         throw createError({
           status: 400, message: "Missing required fields",
+        })
+      }
+
+      const userAccess = db.prepare(`
+        SELECT role FROM UserBudgetTracker
+        WHERE user_id = ? AND budget_tracker_id = ?
+      `)
+        // oxlint-disable-next-line no-unsafe-type-assertion
+        .get(userId, budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
+
+      if (!userAccess) {
+        throw createError({
+          status: 403, message: "Access denied",
+        })
+      }
+
+      if (!canEditCategory(userAccess.role)) {
+        throw createError({
+          status: 403, message: "You do not have permission to add categories",
         })
       }
 
       const categoryId = randomUUID()
 
       db.prepare(`
-        INSERT INTO Category (id, name, icon, color)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO Category (id, name, icon, color, budget_tracker_id)
+        VALUES (?, ?, ?, ?, ?)
       `)
-        .run(categoryId, name, icon, color)
+        .run(categoryId, name, icon, color, budget_tracker_id)
 
       return {
         status: 201,
@@ -98,6 +157,35 @@ export default defineEventHandler(async (event) => {
       if (!id || !name || !icon || !color) {
         throw createError({
           status: 400, message: "Missing required fields",
+        })
+      }
+
+      const category = db.prepare("SELECT budget_tracker_id FROM Category WHERE id = ?")
+        // oxlint-disable-next-line no-unsafe-type-assertion
+        .get(id) as { budget_tracker_id: string } | undefined
+
+      if (!category) {
+        throw createError({
+          status: 404, message: "Category not found",
+        })
+      }
+
+      const userAccess = db.prepare(`
+        SELECT role FROM UserBudgetTracker
+        WHERE user_id = ? AND budget_tracker_id = ?
+      `)
+        // oxlint-disable-next-line no-unsafe-type-assertion
+        .get(userId, category.budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
+
+      if (!userAccess) {
+        throw createError({
+          status: 403, message: "Access denied",
+        })
+      }
+
+      if (!canEditCategory(userAccess.role)) {
+        throw createError({
+          status: 403, message: "You do not have permission to edit categories",
         })
       }
 
@@ -121,6 +209,35 @@ export default defineEventHandler(async (event) => {
       if (!id) {
         throw createError({
           status: 400, message: "Missing required fields",
+        })
+      }
+
+      const category = db.prepare("SELECT budget_tracker_id FROM Category WHERE id = ?")
+        // oxlint-disable-next-line no-unsafe-type-assertion
+        .get(id) as { budget_tracker_id: string } | undefined
+
+      if (!category) {
+        throw createError({
+          status: 404, message: "Category not found",
+        })
+      }
+
+      const userAccess = db.prepare(`
+        SELECT role FROM UserBudgetTracker
+        WHERE user_id = ? AND budget_tracker_id = ?
+      `)
+        // oxlint-disable-next-line no-unsafe-type-assertion
+        .get(userId, category.budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
+
+      if (!userAccess) {
+        throw createError({
+          status: 403, message: "Access denied",
+        })
+      }
+
+      if (!canEditCategory(userAccess.role)) {
+        throw createError({
+          status: 403, message: "You do not have permission to delete categories",
         })
       }
 

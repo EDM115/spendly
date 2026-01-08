@@ -21,6 +21,7 @@ export type Category = {
   name: string;
   icon: string;
   color: string;
+  budget_tracker_id: string;
 }
 
 export type Spending = {

@@ -103,6 +103,7 @@
           <v-tabs-window-item value="categories">
             <AppCategoryManager
               :categories="categories"
+              :budget-tracker-id="selectedBudgetTrackerId"
               @refresh="fetchCategories"
             />
           </v-tabs-window-item>
@@ -201,8 +202,15 @@ const fetchBudgetTrackers = async () => {
 }
 
 const fetchCategories = async () => {
+  if (!selectedBudgetTrackerId.value) {
+    categories.value = []
+
+    return
+  }
+
   try {
     const response = await $fetch("/api/category", {
+      params: { budget_tracker_id: selectedBudgetTrackerId.value },
       headers: { Authorization: `Bearer ${store.getUser?.token}` },
     })
 
@@ -211,6 +219,7 @@ const fetchCategories = async () => {
     }
   } catch (error) {
     console.error("Failed to fetch categories :", error)
+    categories.value = []
   }
 }
 
@@ -237,7 +246,10 @@ const fetchSpendings = async () => {
 }
 
 watch(selectedBudgetTrackerId, async () => {
-  await fetchSpendings()
+  await Promise.all([
+    fetchSpendings(),
+    fetchCategories(),
+  ])
 })
 
 onMounted(async () => {
@@ -255,10 +267,7 @@ onMounted(async () => {
     return
   }
 
-  await Promise.all([
-    fetchBudgetTrackers(),
-    fetchCategories(),
-  ])
+  await fetchBudgetTrackers()
 
   hasLoaded.value = true
 })
