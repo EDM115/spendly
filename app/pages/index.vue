@@ -317,7 +317,7 @@ onMounted(async () => {
 
 .divider-gradient {
   height: 8px;
-  width: 350px;
+  width: min(350px, 90vw);
   background: linear-gradient(90deg, rgb(var(--v-theme-primary)), rgb(var(--v-theme-secondary)));
   border-radius: 4px;
 }

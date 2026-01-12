@@ -102,6 +102,7 @@
       "income": "Revenu",
       "name": "Description",
       "no-spending": "Aucune transaction pour le moment",
+      "search": "Rechercher des transactions",
       "title": "Transactions",
       "total-expense": "Total dépenses",
       "total-income": "Total revenus",

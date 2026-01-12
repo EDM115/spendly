@@ -13,7 +13,7 @@
     "@vueuse/core": "~14.1.0",
     "@vueuse/nuxt": "~14.1.0",
     "bcryptjs": "~3.0.3",
-    "better-sqlite3": "~12.5.0",
+    "better-sqlite3": "~12.6.0",
     "chart.js": "~4.5.1",
     "jsonwebtoken": "~9.0.3",
     "jspdf": "4.0.0",
@@ -27,10 +27,10 @@
   "devDependencies": {
     "@dotenvx/dotenvx": "~1.51.4",
     "@nuxt/eslint": "~1.12.1",
-    "@stylistic/eslint-plugin": "~5.6.1",
+    "@stylistic/eslint-plugin": "~5.7.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "latest",
+    "@types/node": "24",
     "@typescript-eslint/parser": "~8.52.0",
     "country-flag-emoji-polyfill": "~0.1.8",
     "edm115-lint": "~0.1.6",
@@ -39,8 +39,8 @@
     "globals": "~17.0.0",
     "jiti": "~2.6.1",
     "lightningcss": "~1.30.2",
-    "oxlint": "~1.38.0",
-    "oxlint-tsgolint": "~0.10.1",
+    "oxlint": "~1.39.0",
+    "oxlint-tsgolint": "~0.11.0",
     "sass-embedded": "~1.97.2",
     "sass-loader": "~16.0.6",
     "typescript": "~5.9.3",
@@ -49,7 +49,7 @@
   },
   "license": "MIT",
   "name": "spendly",
-  "packageManager": "pnpm@10.27.0",
+  "packageManager": "pnpm@10.28.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -74,5 +74,5 @@
     "typecheck": "nuxt typecheck"
   },
   "type": "module",
-  "version": "0.4.1"
+  "version": "0.4.2"
 }

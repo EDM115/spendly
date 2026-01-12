@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mb-4 pa-1">
+  <v-card class="mb-4 pa-1 rounded-lg">
     <v-card-title class="d-flex align-center justify-space-between">
       <div class="d-flex align-center">
         <v-icon
@@ -18,55 +18,74 @@
       </v-btn>
     </v-card-title>
     <v-card-text class="pt-4">
-      <v-list v-if="categories.length > 0">
-        <v-list-item
+      <v-row
+        v-if="categories.length > 0"
+        dense
+      >
+        <v-col
           v-for="category in categories"
           :key="category.id"
+          cols="12"
+          sm="6"
+          md="4"
         >
-          <template #prepend>
-            <v-icon
-              :icon="category.icon"
-              :color="category.color"
-            />
-          </template>
-          <v-list-item-title>{{ category.name }}</v-list-item-title>
-          <template #append>
-            <v-tooltip
-              location="top"
-              :text="$t('app.category.edit')"
-            >
-              <template #activator="{ props: tooltipProps }">
-                <v-btn
-                  v-if="canEdit"
-                  v-bind="tooltipProps"
-                  icon="mdi-pencil-outline"
-                  variant="text"
-                  size="small"
-                  color="secondary"
-                  @click="openEditDialog(category)"
+          <v-card
+            variant="outlined"
+            :style="{ border: `thin solid ${category.color}` }"
+            rounded="lg"
+            class="pa-3"
+          >
+            <div class="d-flex align-center justify-space-between">
+              <div class="d-flex align-center ga-3">
+                <v-icon
+                  :icon="category.icon"
+                  :color="category.color"
                 />
-              </template>
-            </v-tooltip>
+                <div class="text-body-1">
+                  {{ category.name }}
+                </div>
+              </div>
 
-            <v-tooltip
-              location="top"
-              :text="$t('app.category.delete')"
-            >
-              <template #activator="{ props: tooltipProps }">
-                <v-btn
-                  v-if="canEdit"
-                  v-bind="tooltipProps"
-                  icon="mdi-delete-outline"
-                  variant="text"
-                  size="small"
-                  color="error"
-                  @click="openDeleteDialog(category)"
-                />
-              </template>
-            </v-tooltip>
-          </template>
-        </v-list-item>
-      </v-list>
+              <div class="d-flex align-center ga-1">
+                <v-tooltip
+                  location="top"
+                  :text="$t('app.category.edit')"
+                >
+                  <template #activator="{ props: tooltipProps }">
+                    <v-btn
+                      v-if="canEdit"
+                      v-bind="tooltipProps"
+                      icon="mdi-pencil-outline"
+                      variant="text"
+                      size="small"
+                      color="secondary"
+                      @click="openEditDialog(category)"
+                    />
+                  </template>
+                </v-tooltip>
+
+                <v-tooltip
+                  location="top"
+                  :text="$t('app.category.delete')"
+                >
+                  <template #activator="{ props: tooltipProps }">
+                    <v-btn
+                      v-if="canEdit"
+                      v-bind="tooltipProps"
+                      icon="mdi-delete-outline"
+                      variant="text"
+                      size="small"
+                      color="error"
+                      @click="openDeleteDialog(category)"
+                    />
+                  </template>
+                </v-tooltip>
+              </div>
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
+
       <v-alert
         v-else
         type="info"

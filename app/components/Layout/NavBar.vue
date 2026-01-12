@@ -40,6 +40,7 @@
         />
       </NuxtLink>
     </v-app-bar-title>
+
     <v-app-bar-title v-else>
       <NuxtLink
         to="/admin"
@@ -74,6 +75,7 @@
           <div v-if="i18nSwitch">
             {{ getFlagEmoji(userLocale) }}
           </div>
+
           <div v-else>
             <v-icon icon="mdi-translate" />
           </div>

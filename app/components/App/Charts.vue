@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mb-4 pa-1">
+  <v-card class="mb-4 pa-1 rounded-lg">
     <v-card-title class="d-flex align-center justify-space-between flex-wrap gap-2">
       <div class="d-flex align-center">
         <v-icon
@@ -64,6 +64,7 @@
         {{ $t("app.charts.no-data") }}
       </v-alert>
     </v-card-text>
+
     <v-card-text
       v-else
       class="pt-4"

@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mb-4 pa-1">
+  <v-card class="mb-4 pa-1 rounded-lg">
     <v-card-title class="d-flex align-center">
       <v-icon
         icon="mdi-wallet-bifold-outline"

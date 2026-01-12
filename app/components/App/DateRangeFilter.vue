@@ -174,6 +174,7 @@
       {{ item.text }}
     </v-btn>
   </v-btn-toggle>
+
   <div
     v-else
     class="period-select"

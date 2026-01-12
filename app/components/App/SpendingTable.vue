@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mb-4 pa-1">
+  <v-card class="mb-4 pa-1 rounded-lg">
     <v-card-title class="d-flex align-center justify-space-between flex-wrap gap-2">
       <div class="d-flex align-center">
         <v-icon
@@ -117,33 +117,38 @@
         </v-col>
       </v-row>
 
-      <v-data-table
-        :headers="headers"
+      <v-text-field
+        v-model="search"
+        :label="$t('app.spending.search')"
+        prepend-inner-icon="mdi-magnify"
+        variant="outlined"
+        hide-details
+        class="mb-4"
+        rounded="pill"
+      />
+
+      <v-data-table-virtual
+        :headers
         :items="filteredSpendings"
-        :items-per-page="10"
-        class="elevation-1"
+        :sort-by="sortBy"
+        :height="Math.min((filteredSpendings.length + 1) * 56, 11 * 56)"
+        :search
+        hover
+        striped="odd"
         :no-data-text="$t('app.spending.no-spending')"
       >
         <template #[`item.category`]="{ item }">
-          <v-tooltip
+          <v-chip
+            :prepend-icon="item.icon"
             :text="item.category_name"
-            location="top"
-          >
-            <template #activator="{ props: activatorProps }">
-              <v-icon
-                v-bind="activatorProps"
-                :icon="item.icon"
-                :color="item.icon_color"
-                size="24"
-              />
-            </template>
-          </v-tooltip>
+            :color="item.icon_color"
+            label
+          />
         </template>
         <template #[`item.value`]="{ item }">
           <v-chip
             :color="item.is_spending ? 'error' : 'success'"
             class="text-code"
-            size="small"
           >
             {{ item.is_spending ? "-" : "+" }}{{ formatCurrency(item.value) }}
           </v-chip>
@@ -162,7 +167,6 @@
                 v-bind="tooltipProps"
                 icon="mdi-pencil-outline"
                 variant="text"
-                size="small"
                 color="secondary"
                 @click="openEditDialog(item)"
               />
@@ -179,14 +183,13 @@
                 v-bind="tooltipProps"
                 icon="mdi-delete-outline"
                 variant="text"
-                size="small"
                 color="error"
                 @click="openDeleteDialog(item)"
               />
             </template>
           </v-tooltip>
         </template>
-      </v-data-table>
+      </v-data-table-virtual>
     </v-card-text>
   </v-card>
 
@@ -403,6 +406,8 @@ const {
   smAndUp,
 } = useVDisplay()
 
+const search = ref("")
+const sortBy = ref<{ key: string; order: "asc" | "desc" }[]>([{ key: "date", order: "desc" }])
 const canEdit = computed(() => store.canEditData)
 const showAddDialog = ref(false)
 const showDeleteDialog = ref(false)
