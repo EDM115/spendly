@@ -7,9 +7,7 @@ ENV NODE_ENV=development
 RUN apk update && \
     apk upgrade --no-cache && \
     apk add --no-cache bash ca-certificates && \
-    update-ca-certificates && \
-    corepack disable yarn && \
-    npm uninstall -g corepack
+    update-ca-certificates
 
 SHELL ["/bin/bash", "-c"]
 
@@ -53,9 +51,7 @@ ENV NODE_ENV=production
 
 RUN apk update && \
     apk upgrade --no-cache && \
-    apk add --no-cache bash sqlite && \
-    corepack disable yarn && \
-    npm uninstall -g corepack
+    apk add --no-cache bash sqlite
 
 SHELL ["/bin/bash", "-c"]
 

@@ -145,7 +145,7 @@
         :headers
         :items="filteredSpendings"
         :sort-by="sortBy"
-        :height="Math.min((filteredSpendings.length + 1) * 56, 11 * 56)"
+        :height="Math.min((filteredSpendings.length === 0 ? 1 : filteredSpendings.length + 1) * 56, 11 * 56)"
         :search
         hover
         class="bg-transparent spending-table"
