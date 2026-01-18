@@ -1,12 +1,13 @@
 <template>
-  <v-card class="mb-4 pa-1 rounded-lg">
+  <v-card class="glass-card mb-4 pa-1 rounded-lg">
     <v-card-title class="d-flex align-center justify-space-between flex-wrap gap-2">
       <div class="d-flex align-center">
         <v-icon
           icon="mdi-chart-box-multiple-outline"
           class="mr-2"
+          color="primary"
         />
-        {{ $t("app.charts.title") }}
+        <span class="text-gradient font-weight-bold">{{ $t("app.charts.title") }}</span>
       </div>
 
       <div :class="['d-flex', 'gap-2', 'flex-wrap', 'align-center', !smAndUp && 'mt-4', !smAndUp && 'flex-grow-1']">
@@ -20,32 +21,54 @@
           class="flex-grow-1"
         />
 
-        <v-menu v-if="spendings.length > 0">
+        <v-menu
+          v-if="spendings.length > 0"
+          content-class="glass-menu-content"
+        >
           <template #activator="{ props: menuProps }">
             <v-btn
               v-bind="menuProps"
+              variant="tonal"
               color="info"
               prepend-icon="mdi-download-outline"
             >
               {{ $t("app.charts.export") }}
             </v-btn>
           </template>
-          <v-list>
-            <v-list-item @click="exportSVG">
+          <v-list class="glass-card pa-0 border-thin">
+            <v-list-item
+              class="glass-list-item mb-1 rounded-lg ma-1"
+              @click="exportSVG"
+            >
               <template #prepend>
-                <v-icon icon="mdi-svg" />
+                <v-icon
+                  icon="mdi-svg"
+                  color="secondary"
+                />
               </template>
               <v-list-item-title>{{ $t("app.charts.export-svg") }}</v-list-item-title>
             </v-list-item>
-            <v-list-item @click="exportPNG">
+            <v-list-item
+              class="glass-list-item mb-1 rounded-lg ma-1"
+              @click="exportPNG"
+            >
               <template #prepend>
-                <v-icon icon="mdi-file-image-outline" />
+                <v-icon
+                  icon="mdi-file-image-outline"
+                  color="secondary"
+                />
               </template>
               <v-list-item-title>{{ $t("app.charts.export-png") }}</v-list-item-title>
             </v-list-item>
-            <v-list-item @click="exportPDF">
+            <v-list-item
+              class="glass-list-item rounded-lg ma-1"
+              @click="exportPDF"
+            >
               <template #prepend>
-                <v-icon icon="mdi-file-pdf-box" />
+                <v-icon
+                  icon="mdi-file-pdf-box"
+                  color="secondary"
+                />
               </template>
               <v-list-item-title>{{ $t("app.charts.export-pdf") }}</v-list-item-title>
             </v-list-item>
@@ -60,6 +83,7 @@
       <v-alert
         type="info"
         variant="tonal"
+        class="glass-panel border-thin"
       >
         {{ $t("app.charts.no-data") }}
       </v-alert>
@@ -71,32 +95,45 @@
     >
       <v-tabs
         v-model="activeTab"
-        color="secondary"
+        color="accent"
         show-arrows
         align-tabs="center"
+        class="glass-tabs mb-4 rounded-lg"
       >
-        <v-tab value="area">
+        <v-tab
+          value="area"
+          class="text-body-1"
+        >
           <v-icon
             icon="mdi-chart-areaspline-variant"
             class="mr-2"
           />
           {{ $t("app.charts.area") }}
         </v-tab>
-        <v-tab value="pie">
+        <v-tab
+          value="pie"
+          class="text-body-1"
+        >
           <v-icon
             icon="mdi-chart-pie-outline"
             class="mr-2"
           />
           {{ $t("app.charts.pie") }}
         </v-tab>
-        <v-tab value="bar">
+        <v-tab
+          value="bar"
+          class="text-body-1"
+        >
           <v-icon
             icon="mdi-chart-bar"
             class="mr-2"
           />
           {{ $t("app.charts.bar") }}
         </v-tab>
-        <v-tab value="doughnut">
+        <v-tab
+          value="doughnut"
+          class="text-body-1"
+        >
           <v-icon
             icon="mdi-chart-donut"
             class="mr-2"
@@ -108,7 +145,7 @@
         <v-tabs-window-item value="area">
           <div
             ref="areaChartRef"
-            class="chart-container mt-4"
+            class="chart-container mt-4 glass-panel pa-4 rounded-xl border-thin bg-transparent"
           >
             <Line
               ref="areaChartInstance"
@@ -120,7 +157,7 @@
         <v-tabs-window-item value="pie">
           <div
             ref="pieChartRef"
-            class="chart-container mt-4"
+            class="chart-container mt-4 glass-panel pa-4 rounded-xl border-thin bg-transparent"
           >
             <Pie
               ref="pieChartInstance"
@@ -132,7 +169,7 @@
         <v-tabs-window-item value="bar">
           <div
             ref="barChartRef"
-            class="chart-container mt-4"
+            class="chart-container mt-4 glass-panel pa-4 rounded-xl border-thin bg-transparent"
           >
             <Bar
               ref="barChartInstance"
@@ -144,7 +181,7 @@
         <v-tabs-window-item value="doughnut">
           <div
             ref="doughnutChartRef"
-            class="chart-container mt-4"
+            class="chart-container mt-4 glass-panel pa-4 rounded-xl border-thin bg-transparent"
           >
             <Doughnut
               ref="doughnutChartInstance"
@@ -202,7 +239,7 @@ ChartJS.register(
 )
 
 ChartJS.defaults.font.family = "\"Inter\", sans-serif"
-ChartJS.defaults.font.size = 16
+ChartJS.defaults.font.size = 14
 
 const props = defineProps<{
   spendings: Spending[];
@@ -234,12 +271,13 @@ const barChartInstance = ref<InstanceType<typeof Bar> | null>(null)
 const doughnutChartInstance = ref<InstanceType<typeof Doughnut> | null>(null)
 
 const isDark = computed(() => store.getTheme === "dark")
+
 const textColor = computed(() => (isDark.value
-  ? "#f0fdf4"
-  : "#022c22"))
+  ? "rgba(255, 255, 255, 0.9)"
+  : "rgba(0, 0, 0, 0.87)"))
 const gridColor = computed(() => (isDark.value
-  ? "rgba(240, 253, 244, 0.1)"
-  : "rgba(2, 44, 34, 0.1)"))
+  ? "rgba(255, 255, 255, 0.1)"
+  : "rgba(0, 0, 0, 0.1)"))
 
 const filteredSpendings = computed(() => {
   const win = getDateWindow(timeRangeModel.value, anchorDateModel.value)
@@ -294,36 +332,24 @@ const areaChartData = computed(() => {
       {
         label: t("app.charts.balance"),
         data: balanceData,
-        borderColor: isDark.value
-          ? "#3b82f6"
-          : "#2563eb",
-        backgroundColor: isDark.value
-          ? "rgba(59, 130, 246, 0.2)"
-          : "rgba(37, 99, 235, 0.2)",
+        borderColor: "#3b82f6",
+        backgroundColor: "rgba(59, 130, 246, 0.2)",
         fill: true,
         tension: 0.4,
       },
       {
         label: t("app.spending.income"),
         data: incomeData,
-        borderColor: isDark.value
-          ? "#22c55e"
-          : "#16a34a",
-        backgroundColor: isDark.value
-          ? "rgba(34, 197, 94, 0.2)"
-          : "rgba(22, 163, 74, 0.2)",
+        borderColor: "#22c55e",
+        backgroundColor: "rgba(34, 197, 94, 0.2)",
         fill: true,
         tension: 0.4,
       },
       {
         label: t("app.spending.expense"),
         data: expenseData,
-        borderColor: isDark.value
-          ? "#ef4444"
-          : "#dc2626",
-        backgroundColor: isDark.value
-          ? "rgba(239, 68, 68, 0.2)"
-          : "rgba(220, 38, 38, 0.2)",
+        borderColor: "#ef4444",
+        backgroundColor: "rgba(239, 68, 68, 0.2)",
         fill: true,
         tension: 0.4,
       },
@@ -338,12 +364,16 @@ const areaChartOptions = computed(() => ({
     legend: {
       labels: {
         color: textColor.value,
+        usePointStyle: true,
       },
     },
     title: {
       display: true,
       text: t("app.charts.balance"),
       color: textColor.value,
+      font: {
+        size: 16, weight: 700,
+      },
     },
   },
   scales: {
@@ -390,8 +420,8 @@ const pieChartData = computed(() => {
         backgroundColor: backgroundColors,
         borderWidth: 2,
         borderColor: isDark.value
-          ? "#051e11"
-          : "#f0fdf4",
+          ? "rgba(0,0,0,0.5)"
+          : "#ffffff",
       },
     ],
   }
@@ -405,12 +435,16 @@ const pieChartOptions = computed(() => ({
       position: "right" as const,
       labels: {
         color: textColor.value,
+        usePointStyle: true,
       },
     },
     title: {
       display: true,
       text: t("app.charts.pie"),
       color: textColor.value,
+      font: {
+        size: 16, weight: 700,
+      },
     },
     tooltip: {
       callbacks: {
@@ -461,24 +495,18 @@ const barChartData = computed(() => {
       {
         label: t("app.spending.income"),
         data: incomeData,
-        backgroundColor: isDark.value
-          ? "rgba(34, 197, 94, 0.8)"
-          : "rgba(22, 163, 74, 0.8)",
-        borderColor: isDark.value
-          ? "#22c55e"
-          : "#16a34a",
+        backgroundColor: "rgba(34, 197, 94, 0.8)",
+        borderColor: "#22c55e",
         borderWidth: 1,
+        borderRadius: 4,
       },
       {
         label: t("app.spending.expense"),
         data: expenseData,
-        backgroundColor: isDark.value
-          ? "rgba(239, 68, 68, 0.8)"
-          : "rgba(220, 38, 38, 0.8)",
-        borderColor: isDark.value
-          ? "#ef4444"
-          : "#dc2626",
+        backgroundColor: "rgba(239, 68, 68, 0.8)",
+        borderColor: "#ef4444",
         borderWidth: 1,
+        borderRadius: 4,
       },
     ],
   }
@@ -491,12 +519,16 @@ const barChartOptions = computed(() => ({
     legend: {
       labels: {
         color: textColor.value,
+        usePointStyle: true,
       },
     },
     title: {
       display: true,
       text: t("app.charts.income-vs-expense"),
       color: textColor.value,
+      font: {
+        size: 16, weight: 700,
+      },
     },
   },
   scales: {
@@ -541,7 +573,6 @@ const doughnutChartData = computed(() => {
     : 0
 
   return {
-    // Labels are mainly for the OUTER ring (legend uses dataset 0 by default)
     labels: [
       t("app.spending.income"),
       t("app.spending.expense"),
@@ -551,18 +582,13 @@ const doughnutChartData = computed(() => {
       {
         data: [ income, expense ],
         backgroundColor: [
-          isDark.value
-            ? "rgba(34,197,94,0.85)"
-            : "rgba(22,163,74,0.85)",
-          isDark.value
-            ? "rgba(239,68,68,0.85)"
-            : "rgba(220,38,38,0.85)",
+          "rgba(34,197,94,0.85)",
+          "rgba(239,68,68,0.85)",
         ],
         borderWidth: 2,
         borderColor: isDark.value
-          ? "#051e11"
-          : "#f0fdf4",
-        // thicker outer ring
+          ? "rgba(0,0,0,0.5)"
+          : "#ffffff",
         weight: 2,
       },
 
@@ -571,20 +597,12 @@ const doughnutChartData = computed(() => {
         data: [ shown, remainder ],
         backgroundColor: [
           isPositive
-            // savings color
-            ? (isDark.value
-                ? "rgba(59,130,246,0.85)"
-                : "rgba(37,99,235,0.85)")
-            // deficit color
-            : (isDark.value
-                ? "rgba(245,158,11,0.85)"
-                : "rgba(217,119,6,0.85)"),
-          // transparent remainder
+            ? "rgba(59,130,246,0.85)"
+            : "rgba(217,119,6,0.85)",
           "rgba(0,0,0,0)",
         ],
         borderWidth: 0,
         hoverOffset: 0,
-        // thinner inner ring
         weight: 1,
       },
     ],
@@ -598,12 +616,18 @@ const doughnutChartOptions = computed(() => ({
   plugins: {
     legend: {
       position: "right" as const,
-      labels: { color: textColor.value },
+      labels: {
+        color: textColor.value,
+        usePointStyle: true,
+      },
     },
     title: {
       display: true,
       text: t("app.charts.cashflow"),
       color: textColor.value,
+      font: {
+        size: 16, weight: 700,
+      },
     },
     tooltip: {
       callbacks: {
@@ -611,7 +635,6 @@ const doughnutChartOptions = computed(() => ({
           const datasetIndex = ctx.datasetIndex
           const dataIndex = ctx.dataIndex
 
-          // Outer ring (income/expense)
           if (datasetIndex === 0) {
             const label = ctx.label ?? ""
             const value = Number(ctx.raw ?? 0)
@@ -619,10 +642,8 @@ const doughnutChartOptions = computed(() => ({
             return `${label}: ${value.toFixed(2)}`
           }
 
-          // Inner ring: only show tooltip for the first slice (shown)
           if (datasetIndex === 1) {
             if (dataIndex === 1 || !ctx.chart.data.datasets[0]) {
-              // ignore transparent remainder
               return ""
             }
 
@@ -758,5 +779,19 @@ const exportPDF = async () => {
 .chart-container {
   height: 400px;
   position: relative;
+}
+
+.glass-tabs {
+  background: rgba(var(--v-theme-surface), 0.3);
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.05);
+}
+
+.glass-list-item {
+  background: rgba(var(--v-theme-surface), 0.3) !important;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(var(--v-theme-surface), 0.5) !important;
+  }
 }
 </style>

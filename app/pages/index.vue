@@ -1,11 +1,11 @@
 <template>
   <div class="landing-page">
-    <div
-      class="hero-color"
-      style="height: 64px; display: block; width: 100vw;"
-    />
-    <section class="hero-section hero-color position-relative d-flex align-center">
-      <v-container>
+    <div style="height: 64px; display: block; width: 100vw;" />
+    <section class="hero-section position-relative d-flex align-center overflow-hidden">
+      <div class="hero-blob blob-1" />
+      <div class="hero-blob blob-2" />
+
+      <v-container class="mt-8">
         <v-row
           align="center"
           justify="center"
@@ -15,82 +15,75 @@
             cols="12"
             md="6"
             lg="5"
-            class="position-relative z-10 d-flex justify-center justify-md-end"
+            class="position-relative z-10 d-flex justify-center justify-md-end order-md-2 logo-wrapper"
           >
-            <div class="mb-4 mb-md-0">
+            <div class="animate-float">
               <NuxtImg
-                src="/images/logo.webp"
-                sizes="300px md:400px"
+                :src="logoSrc"
+                sizes="300px md:450px"
                 alt="Spendly Logo"
                 class="logo-img"
                 :draggable="false"
                 preload
               />
-              <div class="logo-glow" />
+              <div class="logo-glow-intense" />
             </div>
           </v-col>
 
           <v-col
             cols="12"
-            md="7"
-            lg="6"
-            class="position-relative z-10"
+            md="6"
+            lg="7"
+            class="position-relative z-10 order-md-1"
           >
-            <h1 class="text-h2 font-weight-black pb-6 text-gradient">
-              {{ $t('landing.hero.title') }}
+            <h1
+              class="text-h2 text-md-h1 font-weight-black pb-6 mt-n12 mt-md-4 lh-tight"
+            >
+              {{ $t('landing.hero.tagline.0') }}<span class="gradient-text">{{ $t('landing.hero.tagline.1') }}</span><br>
+              {{ $t('landing.hero.tagline.2') }}<span class="text-stroke">{{ $t('landing.hero.tagline.3') }}</span>{{ $t('landing.hero.tagline.4') }}
             </h1>
 
-            <p class="text-h6 text-md-h5 text-medium-emphasis mb-10 font-weight-light">
+            <p
+              class="text-h6 text-medium-emphasis mb-10 font-weight-light"
+              style="max-width: 600px"
+            >
               {{ $t('landing.hero.subtitle') }}
             </p>
-          </v-col>
 
-          <v-col
-            cols="12"
-            class="position-relative z-10"
-          >
-            <div class="d-flex justify-center ga-4 flex-wrap">
+            <div class="d-flex justify-center justify-md-start ga-4 flex-wrap">
               <v-btn
                 color="primary"
                 size="x-large"
                 to="/login"
-                prepend-icon="mdi-login-variant"
-                elevation="4"
+                prepend-icon="mdi-rocket-launch"
+                elevation="8"
                 rounded="xl"
-                class="px-8 font-weight-bold"
+                class="px-8 font-weight-bold glow-button"
               >
                 {{ $t('navbar.connect') }}
               </v-btn>
               <v-btn
                 variant="outlined"
                 size="x-large"
-                color="text"
+                color="secondary"
                 href="https://github.com/EDM115/spendly#readme"
                 target="_blank"
                 prepend-icon="mdi-github"
                 rounded="xl"
-                class="px-8"
+                class="px-8 glass-button"
               >
                 {{ $t('landing.github') }}
               </v-btn>
+              <div class="scroll-mouse-indicator ml-md-2">
+                <div class="mouse-wheel" />
+              </div>
             </div>
-          </v-col>
-
-          <v-col
-            cols="1"
-            class="position-relative z-10 mt-4"
-          >
-            <v-icon
-              icon="mdi-chevron-down"
-              size="large"
-              class="animate-bounce"
-            />
           </v-col>
         </v-row>
       </v-container>
     </section>
 
-    <section class="features-section py-16 bg-surface-light">
+    <section class="features-section py-16 position-relative">
       <v-container>
         <v-row justify="center">
           <v-col
@@ -98,17 +91,10 @@
             md="8"
             class="text-center mb-16"
           >
-            <v-chip
-              color="secondary"
-              variant="tonal"
-              class="mb-4 font-weight-bold"
-            >
-              {{ $t('landing.features.chip') }}
-            </v-chip>
             <h2 class="text-h3 font-weight-bold mb-4">
-              {{ $t('landing.features.title') }}
+              <span class="gradient-text">{{ $t('landing.features.title') }}</span>
             </h2>
-            <div class="divider-gradient mx-auto" />
+            <div class="divider-glow mx-auto" />
           </v-col>
         </v-row>
 
@@ -119,96 +105,106 @@
             cols="12"
             md="4"
           >
-            <v-hover v-slot="{ isHovering, props }">
-              <v-card
-                v-bind="props"
-                class="feature-card h-100 py-8 px-6"
-                :elevation="isHovering ? 8 : 2"
-                :color="isHovering ? `${feature.color}-darken-2` : 'surface'"
-                rounded="xl"
+            <v-card
+              class="glass-card h-100 py-8 px-6 rounded-xl"
+              elevation="0"
+            >
+              <div
+                class="icon-box mb-6"
+                :style="`background: rgba(var(--v-theme-${feature.color}), 0.1); color: rgb(var(--v-theme-${feature.color}))`"
               >
-                <div
-                  class="icon-box mb-6"
-                  :class="`bg-${feature.color}-lighten-5`"
-                >
-                  <v-icon
-                    :icon="feature.icon"
-                    size="48"
-                    :color="feature.color"
-                  />
-                </div>
-                <h3 class="text-h5 font-weight-bold mb-3">
-                  {{ feature.title }}
-                </h3>
-                <p class="text-body-1">
-                  {{ feature.desc }}
-                </p>
-              </v-card>
-            </v-hover>
+                <v-icon
+                  :icon="feature.icon"
+                  size="40"
+                />
+              </div>
+              <h3 class="text-h5 font-weight-bold mb-3">
+                {{ feature.title }}
+              </h3>
+              <p class="text-body-1 text-medium-emphasis">
+                {{ feature.desc }}
+              </p>
+            </v-card>
           </v-col>
         </v-row>
       </v-container>
     </section>
 
-    <section class="py-16 position-relative">
+    <section class="py-16 position-relative overflow-hidden">
+      <div
+        style="
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 80%;
+          height: 80%;
+          background: radial-gradient(circle, rgba(var(--v-theme-primary), 0.1) 0%, transparent 70%);
+          filter: blur(80px);
+          z-index: 0;
+        "
+      />
+
       <v-container class="position-relative z-10">
-        <v-card
-          color="background"
-          theme="dark"
-          class="overflow-hidden"
-          rounded="xl"
-          elevation="0"
-          border
-        >
-          <v-row class="ma-0">
-            <v-col
-              cols="12"
-              md="6"
-              class="pa-12 d-flex flex-column justify-center"
-            >
-              <h2 class="text-h3 font-weight-bold mb-6">
-                {{ $t('landing.join.title') }}
-              </h2>
-              <p class="text-h6 font-weight-light mb-8 opacity-90">
-                {{ $t('landing.join.text') }}
-              </p>
-              <div>
-                <v-btn
-                  color="white"
-                  variant="outlined"
-                  size="large"
-                  href="mailto:spendly@edm115.dev"
-                  prepend-icon="mdi-email-outline"
-                  rounded="lg"
-                >
-                  spendly@edm115.dev
-                </v-btn>
-              </div>
-            </v-col>
-            <v-col
-              cols="12"
-              md="6"
-              class="pa-0 position-relative d-none d-md-block"
-            >
-              <div class="join-pattern h-100 w-100" />
-            </v-col>
-          </v-row>
-        </v-card>
+        <div class="glass-panel rounded-xl overflow-hidden pa-1">
+          <v-card
+            color="transparent"
+            class="overflow-hidden"
+            rounded="xl"
+            elevation="0"
+          >
+            <v-row class="ma-0">
+              <v-col
+                cols="12"
+                md="6"
+                class="pa-12 d-flex flex-column justify-center"
+              >
+                <h2 class="text-h3 font-weight-bold mb-6">
+                  {{ $t('landing.join.title') }}
+                </h2>
+                <p class="text-h6 font-weight-light mb-8 opacity-90">
+                  {{ $t('landing.join.text') }}
+                </p>
+                <div>
+                  <v-btn
+                    color="primary"
+                    variant="flat"
+                    size="large"
+                    href="mailto:spendly@edm115.dev"
+                    prepend-icon="mdi-email-outline"
+                    rounded="lg"
+                    class="glow-button px-8"
+                  >
+                    spendly@edm115.dev
+                  </v-btn>
+                </div>
+              </v-col>
+              <v-col
+                cols="12"
+                md="6"
+                class="pa-0 position-relative d-none d-md-block"
+              >
+                <div class="join-pattern h-100 w-100" />
+                <div class="gradient-overlay" />
+              </v-col>
+            </v-row>
+          </v-card>
+        </div>
       </v-container>
     </section>
 
-    <v-footer class="bg-background py-8 text-center d-flex flex-column border-t">
-      <div class="d-flex ga-4 mb-4 align-center">
+    <v-footer class="bg-transparent py-8 text-center d-flex flex-column">
+      <div class="d-flex ga-4 mb-2 align-center">
         <v-btn
           icon="mdi-github"
           variant="text"
           href="https://github.com/EDM115/spendly#readme"
           target="_blank"
-          color="medium-emphasis"
+          color="secondary"
         />
       </div>
       <div class="text-body-2 text-medium-emphasis">
-        {{ new Date().getFullYear() }} — <strong>Spendly</strong>
+        {{ new Date().getFullYear() }} - <strong class="gradient-text">Spendly</strong>
       </div>
     </v-footer>
   </div>
@@ -216,10 +212,7 @@
 
 <script lang="ts" setup>
 const store = useMainStore()
-const theme = useVTheme()
 const { t } = useI18n()
-
-const darkPrimaryColor = ref(theme.computedThemes.value.dark?.colors.primary ?? "#4ADE80")
 
 const features = computed(() => [
   {
@@ -242,6 +235,10 @@ const features = computed(() => [
   },
 ])
 
+const logoSrc = computed(() => (store.getTheme === "light"
+  ? "/images/logo_alt.webp"
+  : "/images/logo.webp"))
+
 onMounted(async () => {
   if (store.getUser !== null) {
     await navigateTo("/app", { redirectCode: 302 })
@@ -255,91 +252,123 @@ onMounted(async () => {
   margin-top: -64px;
 }
 
-.hero-color {
-  background: radial-gradient(circle at top right, rgba(var(--v-theme-primary), 0.15), transparent 40%),
-              radial-gradient(circle at bottom left, rgba(var(--v-theme-secondary), 0.15), transparent 40%);
-}
-
 .hero-section {
-  min-height: calc(100vh - 64px);
+  min-height: 100vh;
+  margin-top: -64px;
 }
 
-.logo-glow {
+.hero-blob {
+  position: absolute;
+  width: 50vw;
+  height: 50vw;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: 0;
+  opacity: 0.5;
+  animation: blob-float 10s infinite alternate;
+}
+
+.blob-1 {
+  top: -10vw;
+  left: -10vw;
+  background: radial-gradient(circle, rgba(var(--v-theme-primary), 0.4), transparent 70%);
+}
+
+.blob-2 {
+  bottom: 0;
+  right: -10vw;
+  background: radial-gradient(circle, rgba(var(--v-theme-secondary), 0.4), transparent 70%);
+  animation-delay: -5s;
+}
+
+@keyframes blob-float {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(20px, 20px) scale(1.1); }
+}
+
+.logo-wrapper {
+  transition: transform 0.3s ease;
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.logo-glow-intense {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, v-bind(darkPrimaryColor) 0%, transparent 60%);
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle, rgba(var(--v-theme-primary), 0.5) 0%, transparent 70%);
   transform: translate(-50%, -50%);
-  filter: blur(60px) saturate(110%);
+  filter: blur(40px);
   z-index: -1;
+  animation: pulse-glow 3s infinite alternate;
 }
 
-.features-section {
-  min-height: calc(100vh - 64px);
+@keyframes pulse-glow {
+  0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.95); }
+  100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.05); }
 }
 
-.logo-img {
-  filter: drop-shadow(0 0 20px rgba(var(--v-theme-primary), 0.3));
-  transition: transform 0.3s ease;
+.glass-button {
+  backdrop-filter: blur(10px);
+  background: rgba(var(--v-theme-surface), 0.1);
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.1);
+
+  &:hover {
+    background: rgba(var(--v-theme-surface), 0.2);
+  }
 }
 
-.text-gradient {
-  background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, rgb(var(--v-theme-secondary)) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.text-stroke {
+  -webkit-text-stroke: 1px rgba(var(--v-theme-on-background), 0.5);
+  color: transparent;
 }
 
-.z-10 {
-  z-index: 10;
+.scroll-mouse-indicator {
+  width: 30px;
+  height: 50px;
+  border: 2px solid rgba(var(--v-theme-on-background), 0.3);
+  border-radius: 15px;
+  position: relative;
+
+  .mouse-wheel {
+    width: 4px;
+    height: 8px;
+    background: rgb(var(--v-theme-primary));
+    border-radius: 2px;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: scroll-wheel 2s infinite;
+  }
 }
 
-.scroll-indicator {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0.7;
-  z-index: 10;
+@keyframes scroll-wheel {
+  0% { transform: translate(-50%, 0); opacity: 1; }
+  100% { transform: translate(-50%, 20px); opacity: 0; }
 }
 
-.animate-bounce {
-  animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-10px); }
-  60% { transform: translateY(-5px); }
-}
-
-.divider-gradient {
-  height: 8px;
-  width: min(350px, 90vw);
-  background: linear-gradient(90deg, rgb(var(--v-theme-primary)), rgb(var(--v-theme-secondary)));
-  border-radius: 4px;
-}
-
-.feature-card {
-  transition: all 0.3s ease;
-  border: 1px solid rgba(var(--v-theme-on-surface), 0.05);
+.divider-glow {
+  height: 2px;
+  width: 150px;
+  background: linear-gradient(90deg, rgba(var(--v-theme-primary), 0.1), rgb(var(--v-theme-primary)), rgba(var(--v-theme-primary), 0.1));
+  box-shadow: 0 0 10px rgb(var(--v-theme-primary));
 }
 
 .icon-box {
-  width: 80px;
-  height: 80px;
-  border-radius: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(var(--v-theme-surface-variant), 0.5);
+  transition: transform 0.3s ease;
 }
 
-.join-pattern {
-  background-image: radial-gradient(rgba(var(--v-theme-primary), 0.2) 1px, transparent 1px);
-  background-size: 20px 20px;
-  opacity: 0.5;
+.glass-card:hover .icon-box {
+  transform: scale(1.1) rotate(-5deg);
 }
 </style>

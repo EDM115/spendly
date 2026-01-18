@@ -63,6 +63,7 @@
           fixed-tabs
           show-arrows
           color="primary"
+          class="mb-6 glass-tabs"
         >
           <v-tab value="spendings">
             <v-icon
@@ -273,7 +274,7 @@ onMounted(async () => {
 })
 </script>
 
-<style>
+<style lang="scss" scoped>
 .v-skeleton-loader__image {
   height: 47.5vh;
 

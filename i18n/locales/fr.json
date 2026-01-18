@@ -119,7 +119,8 @@
     "welcome": "Bienvenue"
   },
   "error": {
-    "back": "Retour à l'accueil"
+    "back": "Retour à l'accueil",
+    "title": "Erreur"
   },
   "landing": {
     "features": {
@@ -141,6 +142,13 @@
     "github": "Voir sur GitHub",
     "hero": {
       "subtitle": "Suivi budgétaire simple, puissant et gratuit pour tous",
+      "tagline": {
+        "0": "Contrôlez votre ",
+        "1": "argent",
+        "2": " avant qu'il ne ",
+        "3": "vous",
+        "4": " contrôle"
+      },
       "title": "Maîtrisez votre budget avec Spendly"
     },
     "join": {

@@ -1,11 +1,12 @@
 <template>
-  <v-card class="mb-4 pa-1 rounded-lg">
+  <v-card class="glass-card mb-4 pa-1 rounded-lg">
     <v-card-title class="d-flex align-center">
       <v-icon
         icon="mdi-wallet-bifold-outline"
         class="mr-2"
+        color="primary"
       />
-      {{ $t("app.budget-tracker.title") }}
+      <span class="text-gradient font-weight-bold">{{ $t("app.budget-tracker.title") }}</span>
     </v-card-title>
     <v-card-text class="pt-4">
       <v-row align="center">
@@ -22,6 +23,8 @@
             variant="outlined"
             hide-details
             clearable
+            class="glass-input"
+            bg-color="transparent"
             @update:model-value="onTrackerChange"
           >
             <template #no-data>
@@ -35,6 +38,8 @@
                   <v-chip
                     size="x-small"
                     :color="getRoleColor(item.raw.role)"
+                    variant="flat"
+                    class="elevation-2"
                   >
                     {{ $t(`app.budget-tracker.roles.${item.raw.role}`) }}
                   </v-chip>
@@ -42,11 +47,12 @@
               </v-list-item>
             </template>
             <template #selection="{ item }">
-              {{ item.raw.name }}
+              <span class="text-high-emphasis font-weight-medium">{{ item.raw.name }}</span>
               <v-chip
                 size="x-small"
                 :color="getRoleColor(item.raw.role)"
-                class="ml-2"
+                class="ml-2 elevation-1"
+                variant="flat"
               >
                 {{ $t(`app.budget-tracker.roles.${item.raw.role}`) }}
               </v-chip>
@@ -60,7 +66,7 @@
         >
           <v-btn
             color="primary"
-            class="ma-2"
+            class="glow-button ma-2"
             prepend-icon="mdi-plus"
             @click="showAddDialog = true"
           >
@@ -69,7 +75,7 @@
           <v-btn
             v-if="selectedTracker && canEdit"
             color="secondary"
-            class="ma-2"
+            class="glow-button ma-2"
             prepend-icon="mdi-pencil-outline"
             @click="openEditDialog"
           >
@@ -78,7 +84,7 @@
           <v-btn
             v-if="selectedTracker && canManageUsers"
             color="warning"
-            class="ma-2"
+            class="glow-button ma-2"
             prepend-icon="mdi-account-multiple-outline"
             @click="showShareDialog = true"
           >
@@ -87,7 +93,7 @@
           <v-btn
             v-if="selectedTracker && canDelete"
             color="error"
-            class="ma-2"
+            class="glow-button ma-2"
             prepend-icon="mdi-delete-outline"
             @click="showDeleteDialog = true"
           >
@@ -103,14 +109,18 @@
     max-width="500"
     persistent
   >
-    <v-card class="pa-1">
-      <v-card-title>{{ $t("app.budget-tracker.add") }}</v-card-title>
+    <v-card class="glass-card pa-1 border-thin">
+      <v-card-title class="text-h6 font-weight-bold">
+        {{ $t("app.budget-tracker.add") }}
+      </v-card-title>
       <v-card-text>
         <v-text-field
           v-model="newTrackerName"
           :label="$t('app.budget-tracker.name')"
           variant="outlined"
           autofocus
+          class="glass-input"
+          bg-color="transparent"
           @keyup.enter="addTracker"
         />
       </v-card-text>
@@ -118,12 +128,15 @@
         <v-spacer />
         <v-btn
           color="secondary"
+          variant="text"
           @click="showAddDialog = false"
         >
           {{ $t("app.budget-tracker.cancel") }}
         </v-btn>
         <v-btn
           color="primary"
+          class="glow-button"
+          variant="elevated"
           :disabled="!newTrackerName.trim()"
           @click="addTracker"
         >
@@ -138,14 +151,18 @@
     max-width="500"
     persistent
   >
-    <v-card class="pa-1">
-      <v-card-title>{{ $t("app.budget-tracker.edit") }}</v-card-title>
+    <v-card class="glass-card pa-1 border-thin">
+      <v-card-title class="text-h6 font-weight-bold">
+        {{ $t("app.budget-tracker.edit") }}
+      </v-card-title>
       <v-card-text>
         <v-text-field
           v-model="editTrackerName"
           :label="$t('app.budget-tracker.name')"
           variant="outlined"
           autofocus
+          class="glass-input"
+          bg-color="transparent"
           @keyup.enter="updateTracker"
         />
       </v-card-text>
@@ -153,12 +170,15 @@
         <v-spacer />
         <v-btn
           color="secondary"
+          variant="text"
           @click="showEditDialog = false"
         >
           {{ $t("app.budget-tracker.cancel") }}
         </v-btn>
         <v-btn
           color="primary"
+          class="glow-button"
+          variant="elevated"
           :disabled="!editTrackerName.trim()"
           @click="updateTracker"
         >
@@ -173,8 +193,8 @@
     max-width="500"
     persistent
   >
-    <v-card class="pa-1">
-      <v-card-title class="text-h5">
+    <v-card class="glass-card pa-1 border-thin">
+      <v-card-title class="text-h5 text-error font-weight-bold">
         {{ $t("app.budget-tracker.delete-title") }}
       </v-card-title>
       <v-card-text>
@@ -184,12 +204,15 @@
         <v-spacer />
         <v-btn
           color="secondary"
+          variant="text"
           @click="showDeleteDialog = false"
         >
           {{ $t("app.budget-tracker.cancel") }}
         </v-btn>
         <v-btn
           color="error"
+          class="glow-button"
+          variant="elevated"
           @click="deleteTracker"
         >
           {{ $t("app.budget-tracker.delete") }}
@@ -203,16 +226,25 @@
     max-width="600"
     persistent
   >
-    <v-card class="pa-1">
-      <v-card-title>{{ $t("app.budget-tracker.users") }}</v-card-title>
+    <v-card class="glass-card pa-1 border-thin">
+      <v-card-title class="text-h6 font-weight-bold">
+        {{ $t("app.budget-tracker.users") }}
+      </v-card-title>
       <v-card-text>
-        <v-list v-if="sharedUsers.length > 0">
+        <v-list
+          v-if="sharedUsers.length > 0"
+          bg-color="transparent"
+        >
           <v-list-item
             v-for="user in sharedUsers"
             :key="user.user_id"
+            class="rounded-lg mb-1"
+            style="background: rgba(var(--v-theme-surface), 0.3)"
           >
             <template #prepend>
               <v-icon
+                class="mr-2"
+                :color="getRoleColor(user.role)"
                 :icon="user.role === 'owner'
                   ? 'mdi-account-check-outline'
                   : user.role === 'admin'
@@ -222,11 +254,15 @@
                       : 'mdi-account-eye-outline'"
               />
             </template>
-            <v-list-item-title>{{ user.username }}</v-list-item-title>
+            <v-list-item-title class="font-weight-medium">
+              {{ user.username }}
+            </v-list-item-title>
             <v-list-item-subtitle>
               <v-chip
                 size="x-small"
                 :color="getRoleColor(user.role)"
+                variant="flat"
+                class="elevation-1"
               >
                 {{ $t(`app.budget-tracker.roles.${user.role}`) }}
               </v-chip>
@@ -241,7 +277,8 @@
                 density="compact"
                 variant="outlined"
                 hide-details
-                class="mr-2"
+                class="glass-input mr-2"
+                bg-color="transparent"
                 style="max-width: 140px;"
                 @update:model-value="updateUserRole(user.user_id, $event)"
               />
@@ -257,6 +294,7 @@
                     color="error"
                     variant="text"
                     size="small"
+                    class="ml-1"
                     @click="removeUser(user.user_id)"
                   />
                 </template>
@@ -273,6 +311,8 @@
               variant="outlined"
               density="compact"
               hide-details
+              class="glass-input"
+              bg-color="transparent"
             />
           </v-col>
           <v-col cols="4">
@@ -285,12 +325,15 @@
               variant="outlined"
               density="compact"
               hide-details
+              class="glass-input"
+              bg-color="transparent"
             />
           </v-col>
           <v-col cols="2">
             <v-btn
               color="primary"
               icon="mdi-account-plus-outline"
+              class="glow-button"
               :disabled="!newUsername.trim()"
               @click="addUser"
             />
@@ -301,6 +344,7 @@
         <v-spacer />
         <v-btn
           color="secondary"
+          variant="text"
           @click="showShareDialog = false"
         >
           {{ $t("app.budget-tracker.share-close") }}

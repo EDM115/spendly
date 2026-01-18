@@ -1,17 +1,19 @@
 <template>
-  <v-card class="mb-4 pa-1 rounded-lg">
+  <v-card class="glass-card mb-4 pa-1 rounded-lg">
     <v-card-title class="d-flex align-center justify-space-between">
       <div class="d-flex align-center">
         <v-icon
           icon="mdi-shape-outline"
           class="mr-2"
+          color="primary"
         />
-        {{ $t("app.category.title") }}
+        <span class="text-gradient font-weight-bold">{{ $t("app.category.title") }}</span>
       </div>
       <v-btn
         v-if="canEdit"
         color="primary"
         prepend-icon="mdi-plus"
+        class="glow-button"
         @click="showAddDialog = true"
       >
         {{ $t("app.category.add") }}
@@ -31,17 +33,24 @@
         >
           <v-card
             variant="outlined"
+            class="glass-panel pa-3 transition-swing"
             :style="{ border: `thin solid ${category.color}` }"
             rounded="lg"
-            class="pa-3"
           >
             <div class="d-flex align-center justify-space-between">
               <div class="d-flex align-center ga-3">
-                <v-icon
-                  :icon="category.icon"
+                <v-avatar
                   :color="category.color"
-                />
-                <div class="text-body-1">
+                  variant="tonal"
+                  size="small"
+                >
+                  <v-icon
+                    :icon="category.icon"
+                    :color="category.color"
+                    size="small"
+                  />
+                </v-avatar>
+                <div class="text-body-1 font-weight-medium text-high-emphasis">
                   {{ category.name }}
                 </div>
               </div>
@@ -90,6 +99,7 @@
         v-else
         type="info"
         variant="tonal"
+        class="glass-panel border-thin"
       >
         {{ $t("app.category.empty") }}
       </v-alert>
@@ -101,8 +111,8 @@
     max-width="500"
     persistent
   >
-    <v-card class="pa-1">
-      <v-card-title>
+    <v-card class="glass-card pa-1 border-thin">
+      <v-card-title class="text-h6 font-weight-bold">
         {{ editingCategory ? $t("app.category.edit") : $t("app.category.add") }}
       </v-card-title>
       <v-card-text>
@@ -110,16 +120,23 @@
           v-model="categoryForm.name"
           :label="$t('app.category.name')"
           variant="outlined"
-          class="mb-4"
+          class="glass-input mb-4"
+          bg-color="transparent"
         />
         <v-row class="align-center mb-4">
           <v-col cols="auto">
-            <v-icon
-              ref="testIcon"
-              :icon="categoryForm.icon"
+            <v-avatar
               :color="categoryForm.color"
               size="large"
-            />
+              variant="tonal"
+              class="elevation-2"
+            >
+              <v-icon
+                ref="testIcon"
+                :icon="categoryForm.icon"
+                :color="categoryForm.color"
+              />
+            </v-avatar>
           </v-col>
           <v-col>
             <v-text-field
@@ -128,6 +145,8 @@
               variant="outlined"
               hide-details
               :error="!isValidIcon"
+              class="glass-input"
+              bg-color="transparent"
               @update:model-value="validateIcon"
             />
           </v-col>
@@ -136,19 +155,23 @@
           v-model="categoryForm.color"
           mode="hex"
           :modes="['hex']"
-          class="mb-4"
+          class="mb-4 glass-panel border-thin w-100"
+          elevation="0"
         />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn
           color="secondary"
+          variant="text"
           @click="closeDialog"
         >
           {{ $t("app.category.cancel") }}
         </v-btn>
         <v-btn
           color="primary"
+          class="glow-button"
+          variant="elevated"
           :disabled="!categoryForm.name.trim() || !isValidIcon"
           @click="saveCategory"
         >
@@ -163,8 +186,8 @@
     max-width="500"
     persistent
   >
-    <v-card class="pa-1">
-      <v-card-title class="text-h5">
+    <v-card class="glass-card pa-1 border-thin">
+      <v-card-title class="text-h5 text-error font-weight-bold">
         {{ $t("app.category.delete-title") }}
       </v-card-title>
       <v-card-text>
@@ -174,12 +197,15 @@
         <v-spacer />
         <v-btn
           color="secondary"
+          variant="text"
           @click="showDeleteDialog = false"
         >
           {{ $t("app.category.cancel") }}
         </v-btn>
         <v-btn
           color="error"
+          class="glow-button"
+          variant="elevated"
           @click="deleteCategory"
         >
           {{ $t("app.category.delete") }}

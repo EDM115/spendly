@@ -1,4 +1,4 @@
-FROM node:24-alpine AS builder
+FROM node:25-alpine AS builder
 
 ARG PORT=60000
 ENV PORT=${PORT}
@@ -20,8 +20,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 ENV PNPM_HOME=/root/.local/share/pnpm
 ENV PATH=$PNPM_HOME:/app/node_modules/.bin:$PATH
 
-RUN PNPM_VERSION=$(grep '"packageManager":' package.json | sed -E 's/.*"pnpm@([^"]+)".*/\1/') && \
-    wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" PNPM_VERSION=$PNPM_VERSION bash -
+RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
 
 RUN pnpm i --frozen-lockfile
 
@@ -39,10 +38,10 @@ RUN pnpm build
 
 ###
 
-FROM node:24-alpine
+FROM node:25-alpine
 
 LABEL org.opencontainers.image.authors="EDM115 <docker@edm115.dev>"
-LABEL org.opencontainers.image.base.name="node:24-alpine"
+LABEL org.opencontainers.image.base.name="node:25-alpine"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.source="https://github.com/EDM115/spendly.git"
 LABEL org.opencontainers.image.title="Spendly"
@@ -67,8 +66,7 @@ COPY package.json ./
 ENV PNPM_HOME=/root/.local/share/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 
-RUN PNPM_VERSION=$(grep '"packageManager":' package.json | sed -E 's/.*"pnpm@([^"]+)".*/\1/') && \
-    wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" PNPM_VERSION=$PNPM_VERSION bash - && \
+RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash - && \
     pnpm add -g dotenv-cli
 
 COPY --from=builder /app/.output /app/.output

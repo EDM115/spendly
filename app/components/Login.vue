@@ -18,11 +18,9 @@
           v-model="state.username"
           variant="outlined"
           color="primary"
-          bg-color="surface"
           :label="$t('login.username')"
           prepend-inner-icon="mdi-account-outline"
           hide-details="auto"
-          class="rounded-lg"
         />
       </div>
 
@@ -32,11 +30,9 @@
           :type="showPassword ? 'text' : 'password'"
           variant="outlined"
           color="primary"
-          bg-color="surface"
           :label="$t('login.password')"
           prepend-inner-icon="mdi-key-outline"
           hide-details="auto"
-          class="rounded-lg"
         >
           <template #append-inner>
             <v-btn
@@ -60,8 +56,8 @@
         type="submit"
         variant="flat"
         :loading="loading"
-        class="text-none font-weight-bold rounded-lg"
-        elevation="2"
+        class="text-none font-weight-bold rounded-xl glow-button"
+        elevation="4"
       >
         {{ $t('login.login') }}
       </v-btn>

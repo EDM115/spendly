@@ -3,6 +3,7 @@
     v-model="menu"
     :close-on-content-click="false"
     location="bottom"
+    content-class="glass-menu-content"
   >
     <template #activator="{ props: btnProps }">
       <v-tooltip
@@ -16,7 +17,7 @@
             icon="mdi-calendar-range-outline"
             variant="outlined"
             :color="color"
-            class="rounded-e-0"
+            class="rounded-e-0 glow-icon"
             :disabled="timeRangeModel === 'all'"
           />
         </template>
@@ -28,12 +29,12 @@
         icon="mdi-calendar-range-outline"
         variant="outlined"
         :color="color"
-        class="rounded-e-0"
+        class="rounded-e-0 glow-icon"
         :disabled="timeRangeModel === 'all'"
       />
     </template>
 
-    <v-card>
+    <v-card class="glass-card pa-1 border-thin">
       <v-card-text class="pa-0">
         <v-date-picker
           v-if="timeRangeModel === 'day' || timeRangeModel === 'week'"
@@ -43,6 +44,8 @@
           weeks-in-month="dynamic"
           weekday-format="short"
           color="secondary"
+          class="glass-date-picker"
+          bg-color="transparent"
           @update:model-value="(val) => {
             const v = Array.isArray(val)
               ? val[0]
@@ -70,11 +73,14 @@
           :items="monthStepperItems"
           :color="color"
           alt-labels
+          bg-color="transparent"
+          flat
         >
           <template #[`item.1`]>
             <v-date-picker-years
               v-model="monthYear"
               color="secondary"
+              bg-color="transparent"
             />
           </template>
 
@@ -83,6 +89,7 @@
               v-model="tempMonth"
               v-model:year="monthYear"
               color="secondary"
+              bg-color="transparent"
             />
           </template>
 
@@ -109,7 +116,7 @@
 
               <v-btn
                 v-else
-                color="accent"
+                color="secondary"
                 variant="text"
                 @click="prev"
               >
@@ -144,6 +151,7 @@
           v-else-if="timeRangeModel === 'year'"
           v-model="tempYear"
           color="secondary"
+          bg-color="transparent"
           @update:model-value="(y) => {
             if (!y) {
               return
@@ -162,7 +170,7 @@
     v-if="smAndUp"
     v-model="timeRangeModel"
     mandatory
-    class="mr-4 rounded-s-0 rounded-e-pill"
+    class="mr-4 rounded-s-0 rounded-e-pill glass-toggle"
     :color="color"
   >
     <v-btn
@@ -181,7 +189,7 @@
   >
     <v-select
       v-model="timeRangeModel"
-      class="mr-4"
+      class="mr-4 glass-input"
       :base-color="color"
       :color="color"
       :items="dateFilterItems"
@@ -190,6 +198,7 @@
       density="comfortable"
       hide-details
       variant="outlined"
+      bg-color="transparent"
     />
   </div>
 </template>
@@ -384,5 +393,14 @@ watch(timeRangeModel, (val) => {
   border-bottom-left-radius: 0;
   border-top-right-radius: 9999px;
   border-bottom-right-radius: 9999px;
+}
+
+:deep(.v-date-picker) {
+  background-color: transparent !important;
+}
+
+:deep(.v-stepper-vertical) {
+  box-shadow: none !important;
+  background-color: transparent !important;
 }
 </style>

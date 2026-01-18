@@ -1,14 +1,15 @@
 <template>
-  <v-container class="flex-column justify-center h-100">
+  <v-container class="flex-column justify-center h-100 py-8">
+    <div class="ambient-bg" />
     <v-row
-      align="center"
-      align-content="center"
+      align="start"
       justify="center"
-      :class="[smAndUp ? 'flex-row' : 'flex-column', 'h-100']"
+      class="h-100"
     >
       <v-col
-        align="center"
-        class="align-content-center"
+        cols="12"
+        lg="10"
+        xl="8"
       >
         <AdminSettings
           v-if="data"
@@ -23,7 +24,6 @@
 import type { User } from "~/types"
 
 const store = useMainStore()
-const { smAndUp } = useVDisplay()
 
 const { data } = await useAsyncData<{
   users: User[];

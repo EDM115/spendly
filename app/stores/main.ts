@@ -85,9 +85,7 @@ export const useMainStore = defineStore("main", () => {
         headers: { Authorization: `Bearer ${user.value.token}` },
       })
 
-      const body = (response as { body: { valid: boolean } }).body
-
-      if (!body.valid) {
+      if (!response.body.valid) {
         logout()
 
         return false

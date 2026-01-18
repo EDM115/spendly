@@ -1,5 +1,9 @@
 <template>
-  <v-app :theme="theme">
+  <v-app
+    :theme="theme"
+    class="app-wrapper"
+  >
+    <div class="ambient-bg" />
     <NuxtRouteAnnouncer />
     <LayoutNavBar />
     <v-main>

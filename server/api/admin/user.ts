@@ -16,15 +16,14 @@ export default defineEventHandler(async (event) => {
 
   switch (event.method) {
     case "GET": {
-      const { user_id } = getQuery(event)
+      const { user_id }: { user_id?: string } = getQuery(event)
 
       if (user_id) {
-        // oxlint-disable-next-line no-unsafe-type-assertion
-        const user = db.prepare(`
+        const user = db.prepare<[string], User>(`
           SELECT * FROM User
           WHERE id = ?
         `)
-          .get(user_id) as User | undefined
+          .get(user_id)
 
         if (!user) {
           throw createError({
@@ -41,11 +40,10 @@ export default defineEventHandler(async (event) => {
           },
         }
       } else {
-        // oxlint-disable-next-line no-unsafe-type-assertion
-        const users = db.prepare(`
+        const users = db.prepare<[], User>(`
           SELECT * FROM User
         `)
-          .all() as User[]
+          .all()
 
         return {
           status: 200,
@@ -59,7 +57,7 @@ export default defineEventHandler(async (event) => {
     case "POST": {
       const {
         username, password, role,
-      } = await readBody(event)
+      }: { username?: string; password?: string; role?: string } = await readBody(event)
 
       if (!username || !role || !password) {
         throw createError({
@@ -70,7 +68,7 @@ export default defineEventHandler(async (event) => {
       const userId = randomUUID()
       const hashed = await hash(password, SALT_ROUNDS)
 
-      db.prepare(`
+      db.prepare<[string, string, string, string]>(`
         INSERT INTO User (id, username, password, role)
         VALUES (?, ?, ?, ?)
       `)
@@ -87,7 +85,7 @@ export default defineEventHandler(async (event) => {
     case "PUT": {
       const {
         id, role,
-      } = await readBody(event)
+      }: { id?: string; role?: string } = await readBody(event)
 
       if (!id || !role) {
         throw createError({
@@ -95,7 +93,7 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      db.prepare(`
+      db.prepare<[string, string]>(`
         UPDATE User
         SET role = ?
         WHERE id = ?
@@ -110,7 +108,7 @@ export default defineEventHandler(async (event) => {
       }
     }
     case "DELETE": {
-      const { id } = await readBody(event)
+      const { id }: { id?: string } = await readBody(event)
 
       if (!id) {
         throw createError({
@@ -118,7 +116,7 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      db.prepare(`
+      db.prepare<[string]>(`
         DELETE FROM User
         WHERE id = ?
       `)

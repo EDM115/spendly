@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
     }
 
     if ((/^\/api\/admin(\/.*)?$/).test(event.node.req.url ?? "")) {
-      const userId = event.context.auth?.userId
+      const userId: string | undefined = event.context.auth?.userId
 
       if (!userId) {
         return sendError(event, createError({

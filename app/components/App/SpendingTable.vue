@@ -1,12 +1,13 @@
 <template>
-  <v-card class="mb-4 pa-1 rounded-lg">
+  <v-card class="glass-card mb-4 pa-1 rounded-lg">
     <v-card-title class="d-flex align-center justify-space-between flex-wrap gap-2">
       <div class="d-flex align-center">
         <v-icon
           icon="mdi-format-list-bulleted"
           class="mr-2"
+          color="primary"
         />
-        {{ $t("app.spending.title") }}
+        <span class="font-weight-bold">{{ $t("app.spending.title") }}</span>
       </div>
 
       <div :class="['d-flex', 'gap-2', 'flex-wrap', 'align-center', !smAndUp && 'mt-4', !smAndUp && 'flex-grow-1']">
@@ -23,8 +24,9 @@
         <v-btn
           v-if="canEdit"
           color="primary"
-          class="mr-4"
+          class="mr-4 glow-button"
           prepend-icon="mdi-plus"
+          rounded="lg"
           @click="showAddDialog = true"
         >
           {{ $t("app.spending.add") }}
@@ -34,21 +36,29 @@
             <v-btn
               v-bind="menuProps"
               color="info"
+              variant="tonal"
               prepend-icon="mdi-download-outline"
+              rounded="lg"
             >
               {{ $t("app.spending.export") }}
             </v-btn>
           </template>
-          <v-list>
+          <v-list class="glass-panel">
             <v-list-item @click="exportJSON">
               <template #prepend>
-                <v-icon icon="mdi-code-json" />
+                <v-icon
+                  icon="mdi-code-json"
+                  color="secondary"
+                />
               </template>
               <v-list-item-title>{{ $t("app.spending.export-json") }}</v-list-item-title>
             </v-list-item>
             <v-list-item @click="exportCSV">
               <template #prepend>
-                <v-icon icon="mdi-file-delimited-outline" />
+                <v-icon
+                  icon="mdi-file-delimited-outline"
+                  color="secondary"
+                />
               </template>
               <v-list-item-title>{{ $t("app.spending.export-csv") }}</v-list-item-title>
             </v-list-item>
@@ -56,22 +66,23 @@
         </v-menu>
       </div>
     </v-card-title>
-    <v-card-text class="pt-4">
-      <v-row class="mb-4">
+    <v-card-text class="pt-4 px-6">
+      <v-row class="mb-6">
         <v-col
           cols="12"
           sm="4"
         >
           <v-card
-            color="success"
-            rounded="lg"
-            variant="tonal"
+            class="summary-card"
+            rounded="xl"
+            elevation="0"
           >
-            <v-card-text class="text-center">
-              <div class="text-caption">
+            <div class="summary-bg bg-success" />
+            <v-card-text class="text-center position-relative z-10">
+              <div class="text-caption font-weight-bold text-uppercase mb-1 opacity-70">
                 {{ $t("app.spending.total-income") }}
               </div>
-              <div class="text-h5 font-weight-bold text-code">
+              <div class="text-h4 font-weight-black text-code text-success">
                 {{ formatCurrency(totalIncome) }}
               </div>
             </v-card-text>
@@ -82,15 +93,16 @@
           sm="4"
         >
           <v-card
-            color="error"
-            rounded="lg"
-            variant="tonal"
+            class="summary-card"
+            rounded="xl"
+            elevation="0"
           >
-            <v-card-text class="text-center">
-              <div class="text-caption">
+            <div class="summary-bg bg-error" />
+            <v-card-text class="text-center position-relative z-10">
+              <div class="text-caption font-weight-bold text-uppercase mb-1 opacity-70">
                 {{ $t("app.spending.total-expense") }}
               </div>
-              <div class="text-h5 font-weight-bold text-code">
+              <div class="text-h4 font-weight-black text-code text-error">
                 {{ formatCurrency(totalExpense) }}
               </div>
             </v-card-text>
@@ -101,15 +113,16 @@
           sm="4"
         >
           <v-card
-            :color="balance >= 0 ? 'info' : 'warning'"
-            rounded="lg"
-            variant="tonal"
+            class="summary-card"
+            rounded="xl"
+            elevation="0"
           >
-            <v-card-text class="text-center">
-              <div class="text-caption">
+            <div :class="['summary-bg', balance >= 0 ? 'bg-info' : 'bg-warning']" />
+            <v-card-text class="text-center position-relative z-10">
+              <div class="text-caption font-weight-bold text-uppercase mb-1 opacity-70">
                 {{ $t("app.spending.balance") }}
               </div>
-              <div class="text-h5 font-weight-bold text-code">
+              <div :class="['text-h4', 'font-weight-black', 'text-code', balance >= 0 ? 'text-info' : 'text-warning']">
                 {{ formatCurrency(balance) }}
               </div>
             </v-card-text>
@@ -123,8 +136,9 @@
         prepend-inner-icon="mdi-magnify"
         variant="outlined"
         hide-details
-        class="mb-4"
+        class="mb-6 search-field"
         rounded="pill"
+        density="comfortable"
       />
 
       <v-data-table-virtual
@@ -134,27 +148,27 @@
         :height="Math.min((filteredSpendings.length + 1) * 56, 11 * 56)"
         :search
         hover
-        striped="odd"
+        class="bg-transparent spending-table"
         :no-data-text="$t('app.spending.no-spending')"
       >
         <template #[`item.category`]="{ item }">
           <v-chip
             :prepend-icon="item.icon"
-            :text="item.category_name"
             :color="item.icon_color"
             label
-          />
-        </template>
-        <template #[`item.value`]="{ item }">
-          <v-chip
-            :color="item.is_spending ? 'error' : 'success'"
-            class="text-code"
+            variant="tonal"
+            class="font-weight-medium rounded-lg"
           >
-            {{ item.is_spending ? "-" : "+" }}{{ formatCurrency(item.value) }}
+            {{ item.category_name }}
           </v-chip>
         </template>
+        <template #[`item.value`]="{ item }">
+          <span :class="['text-code', 'font-weight-bold', item.is_spending ? 'text-error' : 'text-success']">
+            {{ item.is_spending ? "-" : "+" }}{{ formatCurrency(item.value) }}
+          </span>
+        </template>
         <template #[`item.date`]="{ item }">
-          {{ formatDate(item.date) }}
+          <span class="text-medium-emphasis text-body-2">{{ formatDate(item.date) }}</span>
         </template>
         <template #[`item.actions`]="{ item }">
           <v-tooltip
@@ -336,6 +350,7 @@
         </v-btn>
         <v-btn
           color="primary"
+          variant="elevated"
           :disabled="!isFormValid"
           @click="saveSpending"
         >
@@ -367,6 +382,7 @@
         </v-btn>
         <v-btn
           color="error"
+          variant="elevated"
           @click="deleteSpending"
         >
           {{ $t("app.spending.delete") }}
@@ -407,7 +423,13 @@ const {
 } = useVDisplay()
 
 const search = ref("")
-const sortBy = ref<{ key: string; order: "asc" | "desc" }[]>([{ key: "date", order: "desc" }])
+const sortBy = ref<{
+  key: string; order: "asc" | "desc";
+}[]>([
+  {
+    key: "date", order: "desc",
+  },
+])
 const canEdit = computed(() => store.canEditData)
 const showAddDialog = ref(false)
 const showDeleteDialog = ref(false)
@@ -648,6 +670,30 @@ const exportCSV = () => {
 </script>
 
 <style lang="scss" scoped>
+.summary-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.05);
+  background: rgba(var(--v-theme-surface), 0.4) !important;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.summary-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.15;
+  mask-image: linear-gradient(to right, black, transparent);
+  -webkit-mask-image: linear-gradient(to right, black, transparent);
+}
+
 :deep(.v-data-table__tr > .v-data-table__td:nth-child(2)) {
   max-width: 50vw;
 }
@@ -662,5 +708,13 @@ const exportCSV = () => {
     "cv01" 0, "cv05" 0, "cv08" 0, "cv10" 0, "cv11" 0, "cv25" 1, "cv26" 1,
     "cv28" 1, "cv32" 1, "dlig" 0, "frac" 0, "ss01" 0, "ss02" 0, "ss03" 1,
     "ss05" 1, "ss06" 1, "ss07" 1, "ss08" 1, "ss09" 1, "zero" 0;
+}
+
+.spending-table :deep(tr) {
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: rgba(var(--v-theme-on-surface), 0.03) !important;
+  }
 }
 </style>

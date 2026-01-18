@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const userId = event.context.auth?.userId
+  const userId: string | undefined = event.context.auth?.userId
 
   if (!userId) {
     throw createError({
@@ -30,16 +30,15 @@ export default defineEventHandler(async (event) => {
     case "GET": {
       const {
         category_id, budget_tracker_id,
-      } = getQuery(event)
+      }: { category_id?: string; budget_tracker_id?: string } = getQuery(event)
 
       if (category_id) {
-        const category = db.prepare(`
+        const category = db.prepare<[string], Category>(`
           SELECT c.*
           FROM Category c
           WHERE c.id = ?
         `)
-          // oxlint-disable-next-line no-unsafe-type-assertion
-          .get(category_id) as Category | undefined
+          .get(category_id)
 
         if (!category) {
           throw createError({
@@ -48,7 +47,11 @@ export default defineEventHandler(async (event) => {
           })
         }
 
-        const hasAccess = db.prepare(`
+        const hasAccess = db.prepare<[string, string], {
+          user_id: string;
+          budget_tracker_id: string;
+          role: Exclude<BudgetTrackerRole, null>;
+        }>(`
           SELECT 1 FROM UserBudgetTracker
           WHERE user_id = ? AND budget_tracker_id = ?
         `)
@@ -74,7 +77,11 @@ export default defineEventHandler(async (event) => {
           })
         }
 
-        const hasAccess = db.prepare(`
+        const hasAccess = db.prepare<[string, string], {
+          user_id: string;
+          budget_tracker_id: string;
+          role: Exclude<BudgetTrackerRole, null>;
+        }>(`
           SELECT 1 FROM UserBudgetTracker
           WHERE user_id = ? AND budget_tracker_id = ?
         `)
@@ -86,13 +93,12 @@ export default defineEventHandler(async (event) => {
           })
         }
 
-        // oxlint-disable-next-line no-unsafe-type-assertion
-        const categories = db.prepare(`
+        const categories = db.prepare<[string], Category>(`
           SELECT c.*
           FROM Category c
           WHERE c.budget_tracker_id = ?
         `)
-          .all(budget_tracker_id) as Category[]
+          .all(budget_tracker_id)
 
         return {
           status: 200,
@@ -106,6 +112,11 @@ export default defineEventHandler(async (event) => {
     case "POST": {
       const {
         name, icon, color, budget_tracker_id,
+      }: {
+        name?: string;
+        icon?: string;
+        color?: string;
+        budget_tracker_id?: string;
       } = await readBody(event)
 
       if (!name || !icon || !color || !budget_tracker_id) {
@@ -114,12 +125,11 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = db.prepare(`
+      const userAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
-        // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(userId, budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
+        .get(userId, budget_tracker_id)
 
       if (!userAccess) {
         throw createError({
@@ -135,7 +145,7 @@ export default defineEventHandler(async (event) => {
 
       const categoryId = randomUUID()
 
-      db.prepare(`
+      db.prepare<[string, string, string, string, string]>(`
         INSERT INTO Category (id, name, icon, color, budget_tracker_id)
         VALUES (?, ?, ?, ?, ?)
       `)
@@ -152,6 +162,11 @@ export default defineEventHandler(async (event) => {
     case "PUT": {
       const {
         id, name, icon, color,
+      }: {
+        id?: string;
+        name?: string;
+        icon?: string;
+        color?: string;
       } = await readBody(event)
 
       if (!id || !name || !icon || !color) {
@@ -160,9 +175,8 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const category = db.prepare("SELECT budget_tracker_id FROM Category WHERE id = ?")
-        // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(id) as { budget_tracker_id: string } | undefined
+      const category = db.prepare<[string], { budget_tracker_id: string }>("SELECT budget_tracker_id FROM Category WHERE id = ?")
+        .get(id)
 
       if (!category) {
         throw createError({
@@ -170,12 +184,11 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = db.prepare(`
+      const userAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
-        // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(userId, category.budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
+        .get(userId, category.budget_tracker_id)
 
       if (!userAccess) {
         throw createError({
@@ -189,7 +202,7 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      db.prepare(`
+      db.prepare<[string, string, string, string]>(`
         UPDATE Category
         SET name = ?, icon = ?, color = ?
         WHERE id = ?
@@ -204,7 +217,7 @@ export default defineEventHandler(async (event) => {
       }
     }
     case "DELETE": {
-      const { id } = await readBody(event)
+      const { id }: { id?: string } = await readBody(event)
 
       if (!id) {
         throw createError({
@@ -212,9 +225,8 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const category = db.prepare("SELECT budget_tracker_id FROM Category WHERE id = ?")
-        // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(id) as { budget_tracker_id: string } | undefined
+      const category = db.prepare<[string], { budget_tracker_id: string }>("SELECT budget_tracker_id FROM Category WHERE id = ?")
+        .get(id)
 
       if (!category) {
         throw createError({
@@ -222,12 +234,11 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = db.prepare(`
+      const userAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
-        // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(userId, category.budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
+        .get(userId, category.budget_tracker_id)
 
       if (!userAccess) {
         throw createError({
@@ -241,7 +252,7 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      db.prepare(`
+      db.prepare<[string]>(`
         DELETE FROM Category
         WHERE id = ?
       `)

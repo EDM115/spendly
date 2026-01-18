@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const userId = event.context.auth?.userId
+  const userId: string | undefined = event.context.auth?.userId
 
   if (!userId) {
     throw createError({
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
 
   switch (event.method) {
     case "GET": {
-      const { budget_tracker_id } = getQuery(event)
+      const { budget_tracker_id }: { budget_tracker_id?: string } = getQuery(event)
 
       if (!budget_tracker_id) {
         throw createError({
@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const hasAccess = db.prepare(`
+      const hasAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
@@ -64,13 +64,12 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      // oxlint-disable-next-line no-unsafe-type-assertion
-      const users = db.prepare(`
+      const users = db.prepare<[string], SharedUser>(`
         SELECT u.id as user_id, u.username, ubt.role FROM User u
         INNER JOIN UserBudgetTracker ubt ON u.id = ubt.user_id
         WHERE ubt.budget_tracker_id = ?
       `)
-        .all(budget_tracker_id) as SharedUser[]
+        .all(budget_tracker_id)
 
       return {
         status: 200,
@@ -83,6 +82,10 @@ export default defineEventHandler(async (event) => {
     case "POST": {
       const {
         budget_tracker_id, username, role = "viewer",
+      }: {
+        budget_tracker_id?: string;
+        username?: string;
+        role?: Exclude<BudgetTrackerRole, null>;
       } = await readBody(event)
 
       if (!budget_tracker_id || !username) {
@@ -97,12 +100,11 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = db.prepare(`
+      const userAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
-        // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(userId, budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
+        .get(userId, budget_tracker_id)
 
       if (!userAccess) {
         throw createError({
@@ -116,11 +118,10 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const targetUser = db.prepare(`
+      const targetUser = db.prepare<[string], { id: string }>(`
         SELECT id FROM User WHERE username = ?
       `)
-        // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(username) as { id: string } | undefined
+        .get(username)
 
       if (!targetUser) {
         throw createError({
@@ -128,7 +129,11 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const alreadyHasAccess = db.prepare(`
+      const alreadyHasAccess = db.prepare<[string, string], {
+        user_id: string;
+        budget_tracker_id: string;
+        role: Exclude<BudgetTrackerRole, null>;
+      }>(`
         SELECT 1 FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
@@ -140,7 +145,7 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      db.prepare(`
+      db.prepare<[string, string, Exclude<BudgetTrackerRole, null>]>(`
         INSERT INTO UserBudgetTracker (user_id, budget_tracker_id, role)
         VALUES (?, ?, ?)
       `)
@@ -156,6 +161,10 @@ export default defineEventHandler(async (event) => {
     case "PUT": {
       const {
         budget_tracker_id, target_user_id, role,
+      }: {
+        budget_tracker_id?: string;
+        target_user_id?: string;
+        role?: Exclude<BudgetTrackerRole, null>;
       } = await readBody(event)
 
       if (!budget_tracker_id || !target_user_id || !role) {
@@ -170,12 +179,11 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = db.prepare(`
+      const userAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
-        // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(userId, budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
+        .get(userId, budget_tracker_id)
 
       if (!userAccess) {
         throw createError({
@@ -183,12 +191,11 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const targetUserAccess = db.prepare(`
+      const targetUserAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
-        // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(target_user_id, budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
+        .get(target_user_id, budget_tracker_id)
 
       if (!targetUserAccess) {
         throw createError({
@@ -208,7 +215,7 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      db.prepare(`
+      db.prepare<[Exclude<BudgetTrackerRole, null>, string, string]>(`
         UPDATE UserBudgetTracker
         SET role = ?
         WHERE user_id = ? AND budget_tracker_id = ?
@@ -225,6 +232,9 @@ export default defineEventHandler(async (event) => {
     case "DELETE": {
       const {
         budget_tracker_id, target_user_id,
+      }: {
+        budget_tracker_id?: string;
+        target_user_id?: string;
       } = await readBody(event)
 
       if (!budget_tracker_id || !target_user_id) {
@@ -233,12 +243,11 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = db.prepare(`
+      const userAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
-        // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(userId, budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
+        .get(userId, budget_tracker_id)
 
       if (!userAccess) {
         throw createError({
@@ -252,12 +261,11 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const targetUserAccess = db.prepare(`
+      const targetUserAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
-        // oxlint-disable-next-line no-unsafe-type-assertion
-        .get(target_user_id, budget_tracker_id) as { role: Exclude<BudgetTrackerRole, null> } | undefined
+        .get(target_user_id, budget_tracker_id)
 
       if (!targetUserAccess) {
         throw createError({
@@ -277,7 +285,7 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      db.prepare(`
+      db.prepare<[string, string]>(`
         DELETE FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)

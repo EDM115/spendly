@@ -1,10 +1,9 @@
 <template>
   <v-app-bar
-    class="px-8 force-ssr"
-    color="secondary"
-    elevation="6"
+    class="px-8 pt-2 force-ssr glass-panel mb-4 mx-4 rounded-xl"
+    color="transparent"
+    :elevation="0"
     floating
-    rounded="b-xl"
   >
     <template #prepend>
       <NuxtLink
@@ -12,7 +11,7 @@
         class="flex items-center"
       >
         <NuxtImg
-          src="/images/logo.webp"
+          :src="logoSrc"
           alt="Spendly"
           :draggable="false"
           height="40px"
@@ -20,13 +19,14 @@
           sizes="40px"
           :placeholder="[10, 10, 50, 5]"
           preload
+          class="nav-logo"
         />
       </NuxtLink>
     </template>
     <v-app-bar-title v-if="smAndUp">
       <NuxtLink
         :to="store.getUser ? '/app' : '/'"
-        class="text-h6"
+        class="text-h6 font-weight-bold"
       >
         Spendly
       </NuxtLink>
@@ -126,6 +126,10 @@ const iconTheme = computed(() => (store.getTheme === "light"
   ? "mdi-weather-night"
   : "mdi-weather-sunny"))
 
+const logoSrc = computed(() => (store.getTheme === "light"
+  ? "/images/logo_alt.webp"
+  : "/images/logo.webp"))
+
 watch(connected, (value) => {
   accountIcon.value = value
     ? "mdi-logout"
@@ -169,8 +173,17 @@ async function handleConnect() {
   position: fixed;
   top: 0;
   left: 0;
+  right: 0;
   transform: translateY(0px);
-  width: 100%;
+  width: calc(100% - 32px) !important;
+  z-index: 1006;
+}
+
+.nav-logo {
+  transition: transform 0.3s ease;
+  &:hover {
+    transform: rotate(-5deg) scale(1.1);
+  }
 }
 
 .small-list :deep(.v-list-item__content) {

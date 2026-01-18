@@ -119,7 +119,8 @@
     "welcome": "Welcome"
   },
   "error": {
-    "back": "Go back home"
+    "back": "Go back home",
+    "title": "Error"
   },
   "landing": {
     "features": {
@@ -141,6 +142,13 @@
     "github": "View on GitHub",
     "hero": {
       "subtitle": "Simple, powerful, and free budget tracking for everyone",
+      "tagline": {
+        "0": "Control your ",
+        "1": "money",
+        "2": " before it controls ",
+        "3": "you",
+        "4": ""
+      },
       "title": "Master your money with Spendly"
     },
     "join": {

@@ -23,13 +23,12 @@ export default defineEventHandler(async (event) => {
     password: string;
   } = await readBody(event)
 
-  const stmt = db.prepare(`
+  const user = db.prepare<[string], User & { password: string }>(`
     SELECT id, username, password, role
     FROM User
     WHERE username = ?
   `)
-  // oxlint-disable-next-line no-unsafe-type-assertion
-  const user = stmt.get(username) as User & { password: string } | undefined
+    .get(username)
 
   if (!user) {
     throw createError({
