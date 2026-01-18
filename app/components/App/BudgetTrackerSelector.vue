@@ -6,7 +6,7 @@
         class="mr-2"
         color="primary"
       />
-      <span class="text-gradient font-weight-bold">{{ $t("app.budget-tracker.title") }}</span>
+      <span class="font-weight-bold">{{ $t("app.budget-tracker.title") }}</span>
     </v-card-title>
     <v-card-text class="pt-4">
       <v-row align="center">
@@ -23,7 +23,6 @@
             variant="outlined"
             hide-details
             clearable
-            class="glass-input"
             bg-color="transparent"
             @update:model-value="onTrackerChange"
           >
@@ -119,7 +118,6 @@
           :label="$t('app.budget-tracker.name')"
           variant="outlined"
           autofocus
-          class="glass-input"
           bg-color="transparent"
           @keyup.enter="addTracker"
         />
@@ -161,7 +159,6 @@
           :label="$t('app.budget-tracker.name')"
           variant="outlined"
           autofocus
-          class="glass-input"
           bg-color="transparent"
           @keyup.enter="updateTracker"
         />
@@ -277,7 +274,7 @@
                 density="compact"
                 variant="outlined"
                 hide-details
-                class="glass-input mr-2"
+                class="mr-2"
                 bg-color="transparent"
                 style="max-width: 140px;"
                 @update:model-value="updateUserRole(user.user_id, $event)"
@@ -311,7 +308,6 @@
               variant="outlined"
               density="compact"
               hide-details
-              class="glass-input"
               bg-color="transparent"
             />
           </v-col>
@@ -325,7 +321,6 @@
               variant="outlined"
               density="compact"
               hide-details
-              class="glass-input"
               bg-color="transparent"
             />
           </v-col>

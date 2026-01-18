@@ -1,9 +1,10 @@
 <template>
   <v-app-bar
-    class="px-8 pt-2 force-ssr glass-panel mb-4 mx-4 rounded-xl"
+    class="px-8 pt-2 force-ssr glass-panel mb-4 mx-4"
     color="transparent"
     :elevation="0"
     floating
+    rounded="b-xl"
   >
     <template #prepend>
       <NuxtLink

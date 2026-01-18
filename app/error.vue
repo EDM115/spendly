@@ -10,14 +10,14 @@
         width="100%"
       >
         <div class="error-glow" />
-  
+
         <h1
           class="text-h1 font-weight-black gradient-text mb-4"
           style="font-size: 8rem !important; line-height: 1;"
         >
           {{ error.statusCode }}
         </h1>
-  
+
         <v-alert
           color="error"
           variant="tonal"
@@ -29,7 +29,7 @@
           </div>
           {{ error.message }}
         </v-alert>
-  
+
         <v-btn
           :text="t('error.back')"
           to="/"

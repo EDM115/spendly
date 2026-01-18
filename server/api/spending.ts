@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
       }: {
         budget_tracker_id?: string;
         spending_id?: string;
-        start_date?: string; 
+        start_date?: string;
         end_date?: string;
       } = getQuery(event)
 

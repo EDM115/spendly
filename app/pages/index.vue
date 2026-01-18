@@ -22,7 +22,6 @@
                 :src="logoSrc"
                 sizes="300px md:450px"
                 alt="Spendly Logo"
-                class="logo-img"
                 :draggable="false"
                 preload
               />
@@ -83,7 +82,7 @@
       </v-container>
     </section>
 
-    <section class="features-section py-16 position-relative">
+    <section class="py-16 position-relative">
       <v-container>
         <v-row justify="center">
           <v-col
@@ -178,14 +177,6 @@
                     spendly@edm115.dev
                   </v-btn>
                 </div>
-              </v-col>
-              <v-col
-                cols="12"
-                md="6"
-                class="pa-0 position-relative d-none d-md-block"
-              >
-                <div class="join-pattern h-100 w-100" />
-                <div class="gradient-overlay" />
               </v-col>
             </v-row>
           </v-card>

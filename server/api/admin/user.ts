@@ -57,7 +57,11 @@ export default defineEventHandler(async (event) => {
     case "POST": {
       const {
         username, password, role,
-      }: { username?: string; password?: string; role?: string } = await readBody(event)
+      }: {
+        username?: string;
+        password?: string;
+        role?: string;
+      } = await readBody(event)
 
       if (!username || !role || !password) {
         throw createError({
@@ -85,7 +89,9 @@ export default defineEventHandler(async (event) => {
     case "PUT": {
       const {
         id, role,
-      }: { id?: string; role?: string } = await readBody(event)
+      }: {
+        id?: string; role?: string;
+      } = await readBody(event)
 
       if (!id || !role) {
         throw createError({

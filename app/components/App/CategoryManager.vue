@@ -7,7 +7,7 @@
           class="mr-2"
           color="primary"
         />
-        <span class="text-gradient font-weight-bold">{{ $t("app.category.title") }}</span>
+        <span class="font-weight-bold">{{ $t("app.category.title") }}</span>
       </div>
       <v-btn
         v-if="canEdit"
@@ -120,7 +120,7 @@
           v-model="categoryForm.name"
           :label="$t('app.category.name')"
           variant="outlined"
-          class="glass-input mb-4"
+          class="mb-4"
           bg-color="transparent"
         />
         <v-row class="align-center mb-4">
@@ -140,14 +140,12 @@
           </v-col>
           <v-col>
             <v-text-field
-              v-model="categoryForm.icon"
+              v-model="iconInput"
               :label="$t('app.category.icon')"
               variant="outlined"
               hide-details
               :error="!isValidIcon"
-              class="glass-input"
               bg-color="transparent"
-              @update:model-value="validateIcon"
             />
           </v-col>
         </v-row>
@@ -229,6 +227,7 @@ const emit = defineEmits<{
 }>()
 
 const store = useMainStore()
+const theme = useVTheme()
 
 const canEdit = computed(() => store.canEditData)
 const showAddDialog = ref(false)
@@ -238,24 +237,29 @@ const deletingCategory = ref<Category | null>(null)
 const categoryForm = ref({
   name: "",
   icon: "mdi-",
-  color: "#4ADE80",
+  color: theme.current.value.colors.primary,
 })
 const isValidIcon = ref(false)
 const testIcon = ref<InstanceType<typeof VIcon> | HTMLElement | null>(null)
+
+const iconInput = computed({
+  get: () => categoryForm.value.icon.replace(/^mdi-/, ""),
+  set: (value: string) => {
+    const cleaned = value.trim()
+      .replace(/^mdi-/, "")
+
+    categoryForm.value.icon = cleaned
+      ? `mdi-${cleaned}`
+      : "mdi-"
+    void validateIcon(categoryForm.value.icon)
+  },
+})
 
 const validateIcon = async (iconName: string) => {
   const okBasic = iconName.startsWith("mdi-") && iconName.length >= 5
 
   if (!okBasic) {
     isValidIcon.value = false
-
-    if (!iconName.startsWith("mdi-")) {
-      if (iconName.length >= 4) {
-        categoryForm.value.icon = "mdi-" + iconName
-      } else {
-        categoryForm.value.icon = "mdi-"
-      }
-    }
 
     return
   }

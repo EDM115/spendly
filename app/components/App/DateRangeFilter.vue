@@ -17,7 +17,7 @@
             icon="mdi-calendar-range-outline"
             variant="outlined"
             :color="color"
-            class="rounded-e-0 glow-icon"
+            class="rounded-e-0"
             :disabled="timeRangeModel === 'all'"
           />
         </template>
@@ -29,7 +29,7 @@
         icon="mdi-calendar-range-outline"
         variant="outlined"
         :color="color"
-        class="rounded-e-0 glow-icon"
+        class="rounded-e-0"
         :disabled="timeRangeModel === 'all'"
       />
     </template>
@@ -44,7 +44,6 @@
           weeks-in-month="dynamic"
           weekday-format="short"
           color="secondary"
-          class="glass-date-picker"
           bg-color="transparent"
           @update:model-value="(val) => {
             const v = Array.isArray(val)
@@ -170,7 +169,7 @@
     v-if="smAndUp"
     v-model="timeRangeModel"
     mandatory
-    class="mr-4 rounded-s-0 rounded-e-pill glass-toggle"
+    class="mr-4 rounded-s-0 rounded-e-pill"
     :color="color"
   >
     <v-btn
@@ -189,7 +188,7 @@
   >
     <v-select
       v-model="timeRangeModel"
-      class="mr-4 glass-input"
+      class="mr-4"
       :base-color="color"
       :color="color"
       :items="dateFilterItems"

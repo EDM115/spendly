@@ -30,7 +30,9 @@ export default defineEventHandler(async (event) => {
     case "GET": {
       const {
         category_id, budget_tracker_id,
-      }: { category_id?: string; budget_tracker_id?: string } = getQuery(event)
+      }: {
+        category_id?: string; budget_tracker_id?: string;
+      } = getQuery(event)
 
       if (category_id) {
         const category = db.prepare<[string], Category>(`

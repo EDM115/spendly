@@ -107,7 +107,9 @@ export default defineEventHandler(async (event) => {
     case "PUT": {
       const {
         id, name,
-      }: { id?: string; name?: string } = await readBody(event)
+      }: {
+        id?: string; name?: string;
+      } = await readBody(event)
 
       if (!id || !name) {
         throw createError({

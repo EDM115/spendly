@@ -7,7 +7,7 @@
           class="mr-2"
           color="primary"
         />
-        <span class="text-gradient font-weight-bold">{{ $t("app.charts.title") }}</span>
+        <span class="font-weight-bold">{{ $t("app.charts.title") }}</span>
       </div>
 
       <div :class="['d-flex', 'gap-2', 'flex-wrap', 'align-center', !smAndUp && 'mt-4', !smAndUp && 'flex-grow-1']">
