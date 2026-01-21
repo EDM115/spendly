@@ -1,10 +1,11 @@
 <template>
   <v-app-bar
-    class="px-8 pt-2 force-ssr glass-panel mb-4 mx-4"
+    :class="['force-ssr', smAndUp ? 'nav-desktop' : 'nav-mobile', 'glass-panel']"
     color="transparent"
     :elevation="0"
     floating
     rounded="b-xl"
+    :density="smAndUp ? 'default' : 'comfortable'"
   >
     <template #prepend>
       <NuxtLink
@@ -176,8 +177,19 @@ async function handleConnect() {
   left: 0;
   right: 0;
   transform: translateY(0px);
-  width: calc(100% - 32px) !important;
   z-index: 1006;
+}
+
+.nav-desktop {
+  padding: 8px 32px 0;
+  margin: 0 16px 16px;
+  width: calc(100% - 32px) !important;
+}
+
+.nav-mobile {
+  padding: 6px 12px 0;
+  margin: 0 8px 12px;
+  width: calc(100% - 16px) !important;
 }
 
 .nav-logo {

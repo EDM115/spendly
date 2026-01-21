@@ -1,6 +1,6 @@
 <template>
-  <v-card class="glass-card mb-4 pa-1 rounded-lg">
-    <v-card-title class="d-flex align-center justify-space-between flex-wrap gap-2">
+  <v-card :class="['glass-card', 'mb-4', 'rounded-lg', smAndUp ? 'pa-1' : 'pa-0']">
+    <v-card-title :class="['d-flex', 'align-center', 'justify-space-between', 'flex-wrap', 'gap-2', smAndUp ? '' : 'px-3 pt-3']">
       <div class="d-flex align-center">
         <v-icon
           icon="mdi-format-list-bulleted"
@@ -10,67 +10,67 @@
         <span class="font-weight-bold">{{ $t("app.spending.title") }}</span>
       </div>
 
-      <div :class="['d-flex', 'gap-2', 'flex-wrap', 'align-center', !smAndUp && 'mt-4', !smAndUp && 'flex-grow-1']">
+      <div :class="['spending-header-actions', !smAndUp && 'spending-header-actions--mobile', !smAndUp && 'pt-2']">
         <AppDateRangeFilter
           v-model:time-range="timeRangeModel"
           v-model:anchor-date="anchorDateModel"
         />
 
-        <div
-          v-if="!smAndUp"
-          class="flex-grow-1"
-        />
-
-        <v-btn
-          v-if="canEdit"
-          color="primary"
-          class="mr-4 glow-button"
-          prepend-icon="mdi-plus"
-          rounded="lg"
-          @click="showAddDialog = true"
-        >
-          {{ $t("app.spending.add") }}
-        </v-btn>
-        <v-menu>
-          <template #activator="{ props: menuProps }">
-            <v-btn
-              v-bind="menuProps"
-              color="info"
-              variant="tonal"
-              prepend-icon="mdi-download-outline"
-              rounded="lg"
-            >
-              {{ $t("app.spending.export") }}
-            </v-btn>
-          </template>
-          <v-list class="glass-panel">
-            <v-list-item @click="exportJSON">
-              <template #prepend>
-                <v-icon
-                  icon="mdi-code-json"
-                  color="secondary"
-                />
-              </template>
-              <v-list-item-title>{{ $t("app.spending.export-json") }}</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="exportCSV">
-              <template #prepend>
-                <v-icon
-                  icon="mdi-file-delimited-outline"
-                  color="secondary"
-                />
-              </template>
-              <v-list-item-title>{{ $t("app.spending.export-csv") }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+        <div :class="['spending-actions', !smAndUp ? 'spending-actions--stack' : '']">
+          <v-btn
+            v-if="canEdit"
+            color="primary"
+            class="glow-button"
+            prepend-icon="mdi-plus"
+            rounded="lg"
+            :block="false"
+            @click="showAddDialog = true"
+          >
+            {{ $t("app.spending.add") }}
+          </v-btn>
+          <v-menu>
+            <template #activator="{ props: menuProps }">
+              <v-btn
+                v-bind="menuProps"
+                color="info"
+                variant="tonal"
+                prepend-icon="mdi-download-outline"
+                rounded="lg"
+                :block="false"
+              >
+                {{ $t("app.spending.export") }}
+              </v-btn>
+            </template>
+            <v-list class="glass-panel">
+              <v-list-item @click="exportJSON">
+                <template #prepend>
+                  <v-icon
+                    icon="mdi-code-json"
+                    color="secondary"
+                  />
+                </template>
+                <v-list-item-title>{{ $t("app.spending.export-json") }}</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="exportCSV">
+                <template #prepend>
+                  <v-icon
+                    icon="mdi-file-delimited-outline"
+                    color="secondary"
+                  />
+                </template>
+                <v-list-item-title>{{ $t("app.spending.export-csv") }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
       </div>
     </v-card-title>
-    <v-card-text class="pt-4 px-6">
-      <v-row class="mb-6">
+    <v-card-text :class="['pt-4', smAndUp ? 'px-6' : 'px-3']">
+      <v-row :class="smAndUp ? 'mb-6' : 'mb-4'">
         <v-col
           cols="12"
           sm="4"
+          :class="!smAndUp ? 'mobile-small-padding' : ''"
         >
           <v-card
             class="summary-card"
@@ -82,7 +82,7 @@
               <div class="text-caption font-weight-bold text-uppercase mb-1 opacity-70">
                 {{ $t("app.spending.total-income") }}
               </div>
-              <div class="text-h4 font-weight-black text-code text-success">
+              <div :class="['font-weight-black', 'text-code', 'text-success', smAndUp ? 'text-h4' : 'text-h5']">
                 {{ formatCurrency(totalIncome) }}
               </div>
             </v-card-text>
@@ -91,6 +91,7 @@
         <v-col
           cols="12"
           sm="4"
+          :class="!smAndUp ? 'mobile-small-padding' : ''"
         >
           <v-card
             class="summary-card"
@@ -102,7 +103,7 @@
               <div class="text-caption font-weight-bold text-uppercase mb-1 opacity-70">
                 {{ $t("app.spending.total-expense") }}
               </div>
-              <div class="text-h4 font-weight-black text-code text-error">
+              <div :class="['font-weight-black', 'text-code', 'text-error', smAndUp ? 'text-h4' : 'text-h5']">
                 {{ formatCurrency(totalExpense) }}
               </div>
             </v-card-text>
@@ -111,6 +112,7 @@
         <v-col
           cols="12"
           sm="4"
+          :class="!smAndUp ? 'mobile-small-padding' : ''"
         >
           <v-card
             class="summary-card"
@@ -122,7 +124,7 @@
               <div class="text-caption font-weight-bold text-uppercase mb-1 opacity-70">
                 {{ $t("app.spending.balance") }}
               </div>
-              <div :class="['text-h4', 'font-weight-black', 'text-code', balance >= 0 ? 'text-info' : 'text-warning']">
+              <div :class="[smAndUp ? 'text-h4' : 'text-h5', 'font-weight-black', 'text-code', balance >= 0 ? 'text-info' : 'text-warning']">
                 {{ formatCurrency(balance) }}
               </div>
             </v-card-text>
@@ -138,17 +140,18 @@
         hide-details
         class="mb-6 search-field"
         rounded="pill"
-        density="comfortable"
+        :density="smAndUp ? 'comfortable' : 'compact'"
       />
 
       <v-data-table-virtual
         :headers
         :items="filteredSpendings"
         :sort-by="sortBy"
-        :height="Math.min((filteredSpendings.length === 0 ? 1 : filteredSpendings.length + 1) * 56, 11 * 56)"
+        :height="Math.min((filteredSpendings.length === 0 ? 1 : filteredSpendings.length + 1) * tableRowHeight, maxTableHeight)"
+        :item-height="tableRowHeight"
         :search
         hover
-        class="bg-transparent spending-table"
+        :class="['bg-transparent', 'spending-table', !smAndUp ? 'spending-table--compact' : '']"
         :no-data-text="$t('app.spending.no-spending')"
       >
         <template #[`item.category`]="{ item }">
@@ -168,7 +171,7 @@
           </span>
         </template>
         <template #[`item.date`]="{ item }">
-          <span class="text-medium-emphasis text-body-2">{{ formatDate(item.date) }}</span>
+          <span class="text-medium-emphasis text-body-2 date-cell">{{ formatDate(item.date) }}</span>
         </template>
         <template #[`item.actions`]="{ item }">
           <v-tooltip
@@ -422,6 +425,13 @@ const {
   smAndUp,
 } = useVDisplay()
 
+const tableRowHeight = computed(() => (smAndUp.value
+  ? 56
+  : 72))
+const maxTableHeight = computed(() => (smAndUp.value
+  ? 11
+  : 8) * tableRowHeight.value)
+
 const search = ref("")
 const sortBy = ref<{
   key: string; order: "asc" | "desc";
@@ -475,7 +485,9 @@ const headers = computed(() => [
     title: t("app.spending.amount"), key: "value", sortable: true,
   },
   {
-    title: t("app.spending.date"), key: "date", sortable: true,
+    title: t("app.spending.date"), key: "date", sortable: true, minWidth: smAndUp.value
+      ? 160
+      : 190,
   },
   {
     title: t("app.spending.actions"), key: "actions", sortable: false,
@@ -716,5 +728,41 @@ const exportCSV = () => {
   &:hover {
     background: rgba(var(--v-theme-on-surface), 0.03) !important;
   }
+}
+
+.spending-table--compact :deep(.v-data-table__td),
+.spending-table--compact :deep(.v-data-table__th) {
+  padding: 8px 10px !important;
+}
+
+.date-cell {
+  white-space: normal;
+  line-height: 1.2;
+}
+
+.spending-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.spending-header-actions--mobile {
+  width: 100%;
+}
+
+.spending-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.spending-actions--stack {
+  flex-direction: row;
+}
+
+.mobile-small-padding {
+  padding: 6px 12px !important;
 }
 </style>

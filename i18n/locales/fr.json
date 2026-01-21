@@ -61,6 +61,7 @@
       "balance": "Solde au fil du temps",
       "bar": "Comparaison",
       "cashflow": "Aperçu du flux de trésorerie",
+      "controls": "Options du graphique",
       "deficit": "Déficit",
       "doughnut": "Distribution",
       "export": "Télécharger",
@@ -73,6 +74,14 @@
       "of-singular": "du",
       "pie": "Répartition par catégorie",
       "savings": "Économies",
+      "show-axes": "Afficher les axes",
+      "show-balance": "Solde",
+      "show-expense": "Dépenses",
+      "show-grid": "Afficher la grille",
+      "show-income": "Revenus",
+      "show-legend": "Afficher la légende",
+      "show-title": "Afficher le titre",
+      "simplified": "Simplifié",
       "title": "Graphiques & Analyses"
     },
     "date-range-filter": {

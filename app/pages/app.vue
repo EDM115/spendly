@@ -1,6 +1,6 @@
 <template>
   <v-container
-    class="py-8"
+    :class="['app-container', smAndUp ? 'app-container--desktop' : 'app-container--mobile', selectedBudgetTrackerId && !smAndUp ? 'app-container--with-bottom-nav' : '']"
     fluid
   >
     <div v-if="!hasLoaded">
@@ -39,7 +39,7 @@
     </div>
 
     <template v-else>
-      <v-row class="mb-4 pa-1">
+      <v-row :class="['mb-4', smAndUp ? 'pa-1' : 'pa-0']">
         <v-col cols="12">
           <h1 class="text-h4">
             {{ $t("app.welcome") }}, {{ store.getUser?.username }} 👋
@@ -59,6 +59,7 @@
 
       <template v-if="selectedBudgetTrackerId">
         <v-tabs
+          v-if="smAndUp"
           v-model="selectedTab"
           fixed-tabs
           show-arrows
@@ -88,7 +89,7 @@
           </v-tab>
         </v-tabs>
 
-        <v-divider class="my-2" />
+        <v-divider :class="smAndUp ? 'mt-2 mb-6' : 'mt-1 mb-5'" />
 
         <v-tabs-window v-model="selectedTab">
           <v-tabs-window-item value="spendings">
@@ -105,7 +106,7 @@
             <AppCategoryManager
               :categories="categories"
               :budget-tracker-id="selectedBudgetTrackerId"
-              @refresh="fetchCategories"
+              @refresh="refreshCategoriesAndSpendings"
             />
           </v-tabs-window-item>
           <v-tabs-window-item value="charts">
@@ -116,6 +117,27 @@
             />
           </v-tabs-window-item>
         </v-tabs-window>
+
+        <v-bottom-navigation
+          v-if="!smAndUp"
+          v-model="selectedTab"
+          grow
+          mode="shift"
+          class="glass-panel app-bottom-nav"
+        >
+          <v-btn value="spendings">
+            <v-icon icon="mdi-format-list-bulleted" />
+            <span class="nav-label">{{ $t("app.spending.title") }}</span>
+          </v-btn>
+          <v-btn value="categories">
+            <v-icon icon="mdi-shape-outline" />
+            <span class="nav-label">{{ $t("app.category.title") }}</span>
+          </v-btn>
+          <v-btn value="charts">
+            <v-icon icon="mdi-chart-box-multiple-outline" />
+            <span class="nav-label">{{ $t("app.charts.title").split(" ")[2] }}</span>
+          </v-btn>
+        </v-bottom-navigation>
       </template>
 
       <v-row v-else>
@@ -246,6 +268,13 @@ const fetchSpendings = async () => {
   }
 }
 
+const refreshCategoriesAndSpendings = async () => {
+  await Promise.all([
+    fetchCategories(),
+    fetchSpendings(),
+  ])
+}
+
 watch(selectedBudgetTrackerId, async () => {
   await Promise.all([
     fetchSpendings(),
@@ -275,6 +304,51 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
+.app-container {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.app-container--desktop {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.app-container--mobile {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.app-container--with-bottom-nav {
+  padding-bottom: calc(104px + env(safe-area-inset-bottom));
+}
+
+.app-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0 8px 8px;
+  width: calc(100% - 16px) !important;
+  border-radius: 18px;
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+  z-index: 1007;
+}
+
+.app-bottom-nav :deep(.v-btn__content) {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-label {
+  display: block;
+  line-height: 1.1;
+  text-align: center;
+}
+
 .v-skeleton-loader__image {
   height: 47.5vh;
 

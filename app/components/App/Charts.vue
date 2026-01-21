@@ -1,6 +1,6 @@
 <template>
-  <v-card class="glass-card mb-4 pa-1 rounded-lg">
-    <v-card-title class="d-flex align-center justify-space-between flex-wrap gap-2">
+  <v-card :class="['glass-card', 'mb-4', 'rounded-lg', smAndUp ? 'pa-1' : 'pa-0']">
+    <v-card-title :class="['d-flex', 'align-center', 'justify-space-between', 'flex-wrap', 'gap-2', smAndUp ? '' : 'px-3 pt-3']">
       <div class="d-flex align-center">
         <v-icon
           icon="mdi-chart-box-multiple-outline"
@@ -10,75 +10,189 @@
         <span class="font-weight-bold">{{ $t("app.charts.title") }}</span>
       </div>
 
-      <div :class="['d-flex', 'gap-2', 'flex-wrap', 'align-center', !smAndUp && 'mt-4', !smAndUp && 'flex-grow-1']">
+      <div :class="['charts-header-actions', !smAndUp && 'charts-header-actions--mobile', !smAndUp && 'pt-2']">
         <AppDateRangeFilter
           v-model:time-range="timeRangeModel"
           v-model:anchor-date="anchorDateModel"
         />
+        <div :class="['chart-actions', !smAndUp ? 'chart-actions--inline' : '']">
+          <v-btn
+            :color="simplifiedMode ? 'primary' : 'info'"
+            variant="tonal"
+            prepend-icon="mdi-auto-fix"
+            @click="toggleSimplified"
+          >
+            {{ $t("app.charts.simplified") }} {{ simplifiedMode ? '✅' : '❌' }}
+          </v-btn>
 
-        <div
-          v-if="!smAndUp"
-          class="flex-grow-1"
-        />
+          <v-menu
+            content-class="glass-menu-content"
+          >
+            <template #activator="{ props: settingsProps }">
+              <v-btn
+                v-bind="settingsProps"
+                variant="tonal"
+                color="secondary"
+                prepend-icon="mdi-tune-variant"
+              >
+                {{ $t("app.charts.controls") }}
+              </v-btn>
+            </template>
+            <v-list class="glass-card pa-2 border-thin">
+              <v-list-item>
+                <v-list-item-title>{{ $t("app.charts.show-title") }}</v-list-item-title>
+                <template #append>
+                  <v-switch
+                    v-model="showTitle"
+                    density="compact"
+                    color="primary"
+                    hide-details
+                    inset
+                    :disabled="simplifiedMode"
+                  />
+                </template>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-title>{{ $t("app.charts.show-legend") }}</v-list-item-title>
+                <template #append>
+                  <v-switch
+                    v-model="showLegend"
+                    density="compact"
+                    color="primary"
+                    hide-details
+                    inset
+                    :disabled="simplifiedMode"
+                  />
+                </template>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-title>{{ $t("app.charts.show-axes") }}</v-list-item-title>
+                <template #append>
+                  <v-switch
+                    v-model="showAxes"
+                    density="compact"
+                    color="primary"
+                    hide-details
+                    inset
+                    :disabled="simplifiedMode"
+                  />
+                </template>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-title>{{ $t("app.charts.show-grid") }}</v-list-item-title>
+                <template #append>
+                  <v-switch
+                    v-model="showGrid"
+                    density="compact"
+                    color="primary"
+                    hide-details
+                    inset
+                    :disabled="simplifiedMode"
+                  />
+                </template>
+              </v-list-item>
+              <v-divider
+                v-if="activeTab === 'area'"
+                class="my-2"
+              />
+              <v-list-item v-if="activeTab === 'area'">
+                <v-list-item-title>{{ $t("app.charts.show-balance") }}</v-list-item-title>
+                <template #append>
+                  <v-switch
+                    v-model="showBalance"
+                    density="compact"
+                    color="info"
+                    hide-details
+                    inset
+                  />
+                </template>
+              </v-list-item>
+              <v-list-item v-if="activeTab === 'area'">
+                <v-list-item-title>{{ $t("app.charts.show-income") }}</v-list-item-title>
+                <template #append>
+                  <v-switch
+                    v-model="showIncome"
+                    density="compact"
+                    color="success"
+                    hide-details
+                    inset
+                  />
+                </template>
+              </v-list-item>
+              <v-list-item v-if="activeTab === 'area'">
+                <v-list-item-title>{{ $t("app.charts.show-expense") }}</v-list-item-title>
+                <template #append>
+                  <v-switch
+                    v-model="showExpense"
+                    density="compact"
+                    color="error"
+                    hide-details
+                    inset
+                  />
+                </template>
+              </v-list-item>
+            </v-list>
+          </v-menu>
 
-        <v-menu
-          v-if="spendings.length > 0"
-          content-class="glass-menu-content"
-        >
-          <template #activator="{ props: menuProps }">
-            <v-btn
-              v-bind="menuProps"
-              variant="tonal"
-              color="info"
-              prepend-icon="mdi-download-outline"
-            >
-              {{ $t("app.charts.export") }}
-            </v-btn>
-          </template>
-          <v-list class="glass-card pa-0 border-thin">
-            <v-list-item
-              class="glass-list-item mb-1 rounded-lg ma-1"
-              @click="exportSVG"
-            >
-              <template #prepend>
-                <v-icon
-                  icon="mdi-svg"
-                  color="secondary"
-                />
-              </template>
-              <v-list-item-title>{{ $t("app.charts.export-svg") }}</v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              class="glass-list-item mb-1 rounded-lg ma-1"
-              @click="exportPNG"
-            >
-              <template #prepend>
-                <v-icon
-                  icon="mdi-file-image-outline"
-                  color="secondary"
-                />
-              </template>
-              <v-list-item-title>{{ $t("app.charts.export-png") }}</v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              class="glass-list-item rounded-lg ma-1"
-              @click="exportPDF"
-            >
-              <template #prepend>
-                <v-icon
-                  icon="mdi-file-pdf-box"
-                  color="secondary"
-                />
-              </template>
-              <v-list-item-title>{{ $t("app.charts.export-pdf") }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+          <v-menu
+            v-if="spendings.length > 0"
+            content-class="glass-menu-content"
+          >
+            <template #activator="{ props: menuProps }">
+              <v-btn
+                v-bind="menuProps"
+                variant="tonal"
+                color="info"
+                prepend-icon="mdi-download-outline"
+              >
+                {{ $t("app.charts.export") }}
+              </v-btn>
+            </template>
+            <v-list class="glass-card pa-0 border-thin">
+              <v-list-item
+                class="glass-list-item mb-1 rounded-lg ma-1"
+                @click="exportSVG"
+              >
+                <template #prepend>
+                  <v-icon
+                    icon="mdi-svg"
+                    color="secondary"
+                  />
+                </template>
+                <v-list-item-title>{{ $t("app.charts.export-svg") }}</v-list-item-title>
+              </v-list-item>
+              <v-list-item
+                class="glass-list-item mb-1 rounded-lg ma-1"
+                @click="exportPNG"
+              >
+                <template #prepend>
+                  <v-icon
+                    icon="mdi-file-image-outline"
+                    color="secondary"
+                  />
+                </template>
+                <v-list-item-title>{{ $t("app.charts.export-png") }}</v-list-item-title>
+              </v-list-item>
+              <v-list-item
+                class="glass-list-item rounded-lg ma-1"
+                @click="exportPDF"
+              >
+                <template #prepend>
+                  <v-icon
+                    icon="mdi-file-pdf-box"
+                    color="secondary"
+                  />
+                </template>
+                <v-list-item-title>{{ $t("app.charts.export-pdf") }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
       </div>
     </v-card-title>
     <v-card-text
       v-if="spendings.length === 0"
-      class="pt-4"
+      :class="smAndUp ? 'pt-4' : 'pt-3 px-3'"
     >
       <v-alert
         type="info"
@@ -91,7 +205,7 @@
 
     <v-card-text
       v-else
-      class="pt-4"
+      :class="smAndUp ? 'pt-4' : 'pt-3 px-3'"
     >
       <v-tabs
         v-model="activeTab"
@@ -145,7 +259,7 @@
         <v-tabs-window-item value="area">
           <div
             ref="areaChartRef"
-            class="chart-container mt-4 glass-panel pa-4 rounded-xl border-thin bg-transparent"
+            :class="['chart-container', 'mt-4', 'glass-panel', smAndUp ? 'pa-4' : 'pa-3', 'rounded-xl', 'border-thin', 'bg-transparent']"
           >
             <Line
               ref="areaChartInstance"
@@ -157,7 +271,7 @@
         <v-tabs-window-item value="pie">
           <div
             ref="pieChartRef"
-            class="chart-container mt-4 glass-panel pa-4 rounded-xl border-thin bg-transparent"
+            :class="['chart-container', 'mt-4', 'glass-panel', smAndUp ? 'pa-4' : 'pa-3', 'rounded-xl', 'border-thin', 'bg-transparent']"
           >
             <Pie
               ref="pieChartInstance"
@@ -169,7 +283,7 @@
         <v-tabs-window-item value="bar">
           <div
             ref="barChartRef"
-            class="chart-container mt-4 glass-panel pa-4 rounded-xl border-thin bg-transparent"
+            :class="['chart-container', 'mt-4', 'glass-panel', smAndUp ? 'pa-4' : 'pa-3', 'rounded-xl', 'border-thin', 'bg-transparent']"
           >
             <Bar
               ref="barChartInstance"
@@ -181,7 +295,7 @@
         <v-tabs-window-item value="doughnut">
           <div
             ref="doughnutChartRef"
-            class="chart-container mt-4 glass-panel pa-4 rounded-xl border-thin bg-transparent"
+            :class="['chart-container', 'mt-4', 'glass-panel', smAndUp ? 'pa-4' : 'pa-3', 'rounded-xl', 'border-thin', 'bg-transparent']"
           >
             <Doughnut
               ref="doughnutChartInstance"
@@ -256,6 +370,14 @@ const { t } = useI18n()
 const store = useMainStore()
 const { smAndUp } = useVDisplay()
 const activeTab = ref("area")
+const simplifiedMode = ref(!smAndUp.value)
+const showTitle = ref(true)
+const showLegend = ref(true)
+const showAxes = ref(true)
+const showGrid = ref(true)
+const showBalance = ref(true)
+const showIncome = ref(true)
+const showExpense = ref(true)
 const timeRangeModel = computed({
   get: () => props.timeRange,
   set: (v: string) => emit("update:time-range", v),
@@ -263,6 +385,20 @@ const timeRangeModel = computed({
 const anchorDateModel = computed({
   get: () => props.anchorDate,
   set: (v: string) => emit("update:anchor-date", v),
+})
+
+const toggleSimplified = () => {
+  simplifiedMode.value = !simplifiedMode.value
+}
+
+watch(smAndUp, (val, prev) => {
+  if (val && !prev) {
+    simplifiedMode.value = false
+  }
+
+  if (!val && prev) {
+    simplifiedMode.value = true
+  }
 })
 
 const areaChartInstance = ref<InstanceType<typeof Line> | null>(null)
@@ -278,6 +414,25 @@ const textColor = computed(() => (isDark.value
 const gridColor = computed(() => (isDark.value
   ? "rgba(255, 255, 255, 0.1)"
   : "rgba(0, 0, 0, 0.1)"))
+const effectiveShowTitle = computed(() => (simplifiedMode.value
+  ? false
+  : showTitle.value))  
+const effectiveShowLegend = computed(() => (simplifiedMode.value
+  ? false
+  : showLegend.value))
+const effectiveShowAxes = computed(() => (simplifiedMode.value
+  ? false
+  : showAxes.value))
+const effectiveShowGrid = computed(() => (simplifiedMode.value
+  ? false
+  : showGrid.value))
+
+const pieAnimation = computed(() => ({
+  duration: 650,
+  easing: "easeOutQuart" as const,
+  animateRotate: true,
+  animateScale: true,
+}))
 
 const filteredSpendings = computed(() => {
   const win = getDateWindow(timeRangeModel.value, anchorDateModel.value)
@@ -326,34 +481,62 @@ const areaChartData = computed(() => {
     expenseData.push(values.expense)
   }
 
+  const datasets = [] as {
+    label: string;
+    data: number[];
+    borderColor: string;
+    backgroundColor: string;
+    fill: boolean;
+    tension: number;
+  }[]
+
+  if (showBalance.value) {
+    datasets.push({
+      label: t("app.charts.balance"),
+      data: balanceData,
+      borderColor: "#3b82f6",
+      backgroundColor: "rgba(59, 130, 246, 0.2)",
+      fill: true,
+      tension: 0.4,
+    })
+  }
+
+  if (showIncome.value) {
+    datasets.push({
+      label: t("app.spending.income"),
+      data: incomeData,
+      borderColor: "#22c55e",
+      backgroundColor: "rgba(34, 197, 94, 0.2)",
+      fill: true,
+      tension: 0.4,
+    })
+  }
+
+  if (showExpense.value) {
+    datasets.push({
+      label: t("app.spending.expense"),
+      data: expenseData,
+      borderColor: "#ef4444",
+      backgroundColor: "rgba(239, 68, 68, 0.2)",
+      fill: true,
+      tension: 0.4,
+    })
+  }
+
+  if (datasets.length === 0) {
+    datasets.push({
+      label: t("app.charts.balance"),
+      data: balanceData,
+      borderColor: "#3b82f6",
+      backgroundColor: "rgba(59, 130, 246, 0.2)",
+      fill: true,
+      tension: 0.4,
+    })
+  }
+
   return {
     labels,
-    datasets: [
-      {
-        label: t("app.charts.balance"),
-        data: balanceData,
-        borderColor: "#3b82f6",
-        backgroundColor: "rgba(59, 130, 246, 0.2)",
-        fill: true,
-        tension: 0.4,
-      },
-      {
-        label: t("app.spending.income"),
-        data: incomeData,
-        borderColor: "#22c55e",
-        backgroundColor: "rgba(34, 197, 94, 0.2)",
-        fill: true,
-        tension: 0.4,
-      },
-      {
-        label: t("app.spending.expense"),
-        data: expenseData,
-        borderColor: "#ef4444",
-        backgroundColor: "rgba(239, 68, 68, 0.2)",
-        fill: true,
-        tension: 0.4,
-      },
-    ],
+    datasets,
   }
 })
 
@@ -362,13 +545,14 @@ const areaChartOptions = computed(() => ({
   maintainAspectRatio: false,
   plugins: {
     legend: {
+      display: effectiveShowLegend.value,
       labels: {
         color: textColor.value,
         usePointStyle: true,
       },
     },
     title: {
-      display: true,
+      display: effectiveShowTitle.value,
       text: t("app.charts.balance"),
       color: textColor.value,
       font: {
@@ -378,12 +562,20 @@ const areaChartOptions = computed(() => ({
   },
   scales: {
     x: {
+      display: effectiveShowAxes.value,
       ticks: { color: textColor.value },
-      grid: { color: gridColor.value },
+      grid: {
+        color: gridColor.value,
+        display: effectiveShowGrid.value,
+      },
     },
     y: {
+      display: effectiveShowAxes.value,
       ticks: { color: textColor.value },
-      grid: { color: gridColor.value },
+      grid: {
+        color: gridColor.value,
+        display: effectiveShowGrid.value,
+      },
     },
   },
 }))
@@ -430,16 +622,20 @@ const pieChartData = computed(() => {
 const pieChartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
+  animation: pieAnimation.value,
   plugins: {
     legend: {
-      position: "right" as const,
+      display: effectiveShowLegend.value,
+      position: smAndUp.value
+        ? ("right" as const)
+        : ("bottom" as const),
       labels: {
         color: textColor.value,
         usePointStyle: true,
       },
     },
     title: {
-      display: true,
+      display: effectiveShowTitle.value,
       text: t("app.charts.pie"),
       color: textColor.value,
       font: {
@@ -517,13 +713,14 @@ const barChartOptions = computed(() => ({
   maintainAspectRatio: false,
   plugins: {
     legend: {
+      display: effectiveShowLegend.value,
       labels: {
         color: textColor.value,
         usePointStyle: true,
       },
     },
     title: {
-      display: true,
+      display: effectiveShowTitle.value,
       text: t("app.charts.income-vs-expense"),
       color: textColor.value,
       font: {
@@ -533,12 +730,20 @@ const barChartOptions = computed(() => ({
   },
   scales: {
     x: {
+      display: effectiveShowAxes.value,
       ticks: { color: textColor.value },
-      grid: { color: gridColor.value },
+      grid: {
+        color: gridColor.value,
+        display: effectiveShowGrid.value,
+      },
     },
     y: {
+      display: effectiveShowAxes.value,
       ticks: { color: textColor.value },
-      grid: { color: gridColor.value },
+      grid: {
+        color: gridColor.value,
+        display: effectiveShowGrid.value,
+      },
     },
   },
 }))
@@ -613,16 +818,20 @@ const doughnutChartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   cutout: "45%",
+  animation: pieAnimation.value,
   plugins: {
     legend: {
-      position: "right" as const,
+      display: effectiveShowLegend.value,
+      position: smAndUp.value
+        ? ("right" as const)
+        : ("bottom" as const),
       labels: {
         color: textColor.value,
         usePointStyle: true,
       },
     },
     title: {
-      display: true,
+      display: effectiveShowTitle.value,
       text: t("app.charts.cashflow"),
       color: textColor.value,
       font: {
@@ -699,6 +908,22 @@ const getCurrentChartInstance = (): ChartComponentRef => {
       return null
   }
 }
+
+const refreshActiveChart = async () => {
+  await nextTick()
+
+  const chartInstance = getCurrentChartInstance()
+
+  chartInstance?.chart?.update()
+}
+
+watch(activeTab, async () => {
+  await refreshActiveChart()
+})
+
+watch(filteredSpendings, async () => {
+  await refreshActiveChart()
+})
 
 const getChartCanvas = (): HTMLCanvasElement | null => {
   const chartInstance = getCurrentChartInstance()
@@ -781,9 +1006,42 @@ const exportPDF = async () => {
   position: relative;
 }
 
+@media (max-width: 600px) {
+  .chart-container {
+    height: 280px;
+  }
+}
+
 .glass-tabs {
   background: rgba(var(--v-theme-surface), 0.3);
   border: 1px solid rgba(var(--v-theme-on-surface), 0.05);
+}
+
+.charts-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.charts-header-actions--mobile {
+  width: 100%;
+}
+
+.chart-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.chart-actions--inline {
+  flex-direction: row;
+}
+
+.chart-icon-btn {
+  width: 36px;
+  height: 36px;
 }
 
 .glass-list-item {

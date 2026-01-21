@@ -61,12 +61,13 @@
         <v-col
           cols="12"
           sm="6"
-          class="d-flex gap-2 flex-wrap"
+          :class="['tracker-actions', smAndUp ? 'tracker-actions--inline' : 'tracker-actions--stack']"
         >
           <v-btn
             color="primary"
-            class="glow-button ma-2"
+            :class="['glow-button', smAndUp ? 'ma-2' : 'ma-1']"
             prepend-icon="mdi-plus"
+            :block="!smAndUp"
             @click="showAddDialog = true"
           >
             {{ $t("app.budget-tracker.add") }}
@@ -74,8 +75,9 @@
           <v-btn
             v-if="selectedTracker && canEdit"
             color="secondary"
-            class="glow-button ma-2"
+            :class="['glow-button', smAndUp ? 'ma-2' : 'ma-1']"
             prepend-icon="mdi-pencil-outline"
+            :block="!smAndUp"
             @click="openEditDialog"
           >
             {{ $t("app.budget-tracker.edit") }}
@@ -83,8 +85,9 @@
           <v-btn
             v-if="selectedTracker && canManageUsers"
             color="warning"
-            class="glow-button ma-2"
+            :class="['glow-button', smAndUp ? 'ma-2' : 'ma-1']"
             prepend-icon="mdi-account-multiple-outline"
+            :block="!smAndUp"
             @click="showShareDialog = true"
           >
             {{ $t("app.budget-tracker.share") }}
@@ -92,8 +95,9 @@
           <v-btn
             v-if="selectedTracker && canDelete"
             color="error"
-            class="glow-button ma-2"
+            :class="['glow-button', smAndUp ? 'ma-2' : 'ma-1']"
             prepend-icon="mdi-delete-outline"
+            :block="!smAndUp"
             @click="showDeleteDialog = true"
           >
             {{ $t("app.budget-tracker.delete") }}
@@ -367,6 +371,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const store = useMainStore()
+const { smAndUp } = useVDisplay()
 
 const selectedTracker = ref<string | null>(props.modelValue)
 const showAddDialog = ref(false)
@@ -605,3 +610,21 @@ watch(showShareDialog, async (val) => {
   }
 })
 </script>
+
+<style lang="scss" scoped>
+.tracker-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tracker-actions--stack {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 8px;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+}
+</style>

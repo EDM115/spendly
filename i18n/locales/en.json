@@ -61,6 +61,7 @@
       "balance": "Balance over time",
       "bar": "Comparison",
       "cashflow": "Cashflow overview",
+      "controls": "Chart options",
       "deficit": "Deficit",
       "doughnut": "Distribution",
       "export": "Download",
@@ -73,6 +74,14 @@
       "of-singular": "of",
       "pie": "Repartition by category",
       "savings": "Savings",
+      "show-axes": "Show axes",
+      "show-balance": "Balance",
+      "show-expense": "Expenses",
+      "show-grid": "Show grid",
+      "show-income": "Income",
+      "show-legend": "Show legend",
+      "show-title": "Show title",
+      "simplified": "Simplified",
       "title": "Charts & Analytics"
     },
     "date-range-filter": {

@@ -42,6 +42,10 @@ body,
   background: var-color(v-theme-secondary) !important;
 }
 
+*::-webkit-scrollbar-corner {
+  background: transparent !important;
+}
+
 a {
   text-decoration: none;
   color: inherit;

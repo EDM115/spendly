@@ -14,6 +14,7 @@
         color="primary"
         prepend-icon="mdi-plus"
         class="glow-button"
+        :block="false"
         @click="showAddDialog = true"
       >
         {{ $t("app.category.add") }}
@@ -50,7 +51,10 @@
                     size="small"
                   />
                 </v-avatar>
-                <div class="text-body-1 font-weight-medium text-high-emphasis">
+                <div
+                  class="text-body-1 font-weight-medium text-high-emphasis"
+                  style="word-break: break-all;"
+                >
                   {{ category.name }}
                 </div>
               </div>
@@ -227,6 +231,7 @@ const emit = defineEmits<{
 }>()
 
 const store = useMainStore()
+const { smAndUp } = useVDisplay()
 const theme = useVTheme()
 
 const canEdit = computed(() => store.canEditData)
@@ -369,5 +374,9 @@ const deleteCategory = async () => {
 <style lang="scss" scoped>
 .v-color-picker {
   width: auto;
+}
+
+:deep(.v-color-picker-canvas) {
+  min-height: 150px !important;
 }
 </style>

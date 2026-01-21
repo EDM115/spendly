@@ -1,204 +1,206 @@
 <template>
-  <v-menu
-    v-model="menu"
-    :close-on-content-click="false"
-    location="bottom"
-    content-class="glass-menu-content"
-  >
-    <template #activator="{ props: btnProps }">
-      <v-tooltip
-        v-if="tooltipText"
-        :text="tooltipText"
-        location="bottom"
-      >
-        <template #activator="{ props: ttProps }">
-          <v-btn
-            v-bind="{ ...btnProps, ...ttProps }"
-            icon="mdi-calendar-range-outline"
-            variant="outlined"
-            :color="color"
-            class="rounded-e-0"
-            :disabled="timeRangeModel === 'all'"
-          />
-        </template>
-      </v-tooltip>
-
-      <v-btn
-        v-else
-        v-bind="btnProps"
-        icon="mdi-calendar-range-outline"
-        variant="outlined"
-        :color="color"
-        class="rounded-e-0"
-        :disabled="timeRangeModel === 'all'"
-      />
-    </template>
-
-    <v-card class="glass-card pa-1 border-thin">
-      <v-card-text class="pa-0">
-        <v-date-picker
-          v-if="timeRangeModel === 'day' || timeRangeModel === 'week'"
-          v-model="tempDate"
-          show-adjacent-months
-          :multiple="timeRangeModel === 'week' ? 'range' : false"
-          weeks-in-month="dynamic"
-          weekday-format="short"
-          color="secondary"
-          bg-color="transparent"
-          @update:model-value="(val) => {
-            const v = Array.isArray(val)
-              ? val[0]
-              : val
-
-            if (!v) {
-              return
-            }
-
-            if (typeof v === 'string') {
-              anchorDateModel = (v.split('T')[0] ?? '')
-            } else {
-              const d = v instanceof Date ? v : new Date(v)
-
-              anchorDateModel = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
-            }
-
-            menu = false
-          }"
-        />
-
-        <v-stepper-vertical
-          v-else-if="timeRangeModel === 'month'"
-          v-model="monthStep"
-          :items="monthStepperItems"
-          :color="color"
-          alt-labels
-          bg-color="transparent"
-          flat
-        >
-          <template #[`item.1`]>
-            <v-date-picker-years
-              v-model="monthYear"
-              color="secondary"
-              bg-color="transparent"
-            />
-          </template>
-
-          <template #[`item.2`]>
-            <v-date-picker-months
-              v-model="tempMonth"
-              v-model:year="monthYear"
-              color="secondary"
-              bg-color="transparent"
-            />
-          </template>
-
-          <template #actions="{ step, next, prev }">
-            <div class="d-flex align-center ga-2 pa-3">
-              <v-btn
-                color="error"
-                variant="text"
-                @click="menu = false"
-              >
-                {{ $t("app.date-range-filter.cancel") }}
-              </v-btn>
-
-              <v-spacer />
-
-              <v-btn
-                v-if="step === 1"
-                variant="tonal"
-                :color="color"
-                @click="next"
-              >
-                {{ $t("app.date-range-filter.next") }}
-              </v-btn>
-
-              <v-btn
-                v-else
-                color="secondary"
-                variant="text"
-                @click="prev"
-              >
-                {{ $t("app.date-range-filter.prev") }}
-              </v-btn>
-
-              <v-btn
-                v-if="step === 2"
-                variant="flat"
-                :color="color"
-                :disabled="tempMonth === undefined || tempMonth === null"
-                @click="() => {
-                  const m = tempMonth
-
-                  if (m === undefined || m === null) {
-                    return
-                  }
-
-                  const month1 = (m >= 0 && m <= 11) ? (m + 1) : m
-
-                  anchorDateModel = `${monthYear}-${String(month1).padStart(2, '0')}-01`
-                  menu = false
-                }"
-              >
-                {{ $t("app.date-range-filter.validate") }}
-              </v-btn>
-            </div>
-          </template>
-        </v-stepper-vertical>
-
-        <v-date-picker-years
-          v-else-if="timeRangeModel === 'year'"
-          v-model="tempYear"
-          color="secondary"
-          bg-color="transparent"
-          @update:model-value="(y) => {
-            if (!y) {
-              return
-            }
-
-            anchorDateModel = `${y}-01-01`
-            monthYear = y
-            menu = false
-          }"
-        />
-      </v-card-text>
-    </v-card>
-  </v-menu>
-
-  <v-btn-toggle
-    v-if="smAndUp"
-    v-model="timeRangeModel"
-    mandatory
-    class="mr-4 rounded-s-0 rounded-e-pill"
-    :color="color"
-  >
-    <v-btn
-      v-for="item in dateFilterItems"
-      :key="item.value"
-      :value="item.value"
-      size="small"
+  <div class="d-flex">
+    <v-menu
+      v-model="menu"
+      :close-on-content-click="false"
+      location="bottom"
+      content-class="glass-menu-content"
     >
-      {{ item.text }}
-    </v-btn>
-  </v-btn-toggle>
-
-  <div
-    v-else
-    class="period-select"
-  >
-    <v-select
+      <template #activator="{ props: btnProps }">
+        <v-tooltip
+          v-if="tooltipText"
+          :text="tooltipText"
+          location="bottom"
+        >
+          <template #activator="{ props: ttProps }">
+            <v-btn
+              v-bind="{ ...btnProps, ...ttProps }"
+              icon="mdi-calendar-range-outline"
+              variant="outlined"
+              :color="color"
+              class="rounded-e-0"
+              :disabled="timeRangeModel === 'all'"
+            />
+          </template>
+        </v-tooltip>
+  
+        <v-btn
+          v-else
+          v-bind="btnProps"
+          icon="mdi-calendar-range-outline"
+          variant="outlined"
+          :color="color"
+          class="rounded-e-0"
+          :disabled="timeRangeModel === 'all'"
+        />
+      </template>
+  
+      <v-card class="glass-card pa-1 border-thin">
+        <v-card-text class="pa-0">
+          <v-date-picker
+            v-if="timeRangeModel === 'day' || timeRangeModel === 'week'"
+            v-model="tempDate"
+            show-adjacent-months
+            :multiple="timeRangeModel === 'week' ? 'range' : false"
+            weeks-in-month="dynamic"
+            weekday-format="short"
+            color="secondary"
+            bg-color="transparent"
+            @update:model-value="(val) => {
+              const v = Array.isArray(val)
+                ? val[0]
+                : val
+  
+              if (!v) {
+                return
+              }
+  
+              if (typeof v === 'string') {
+                anchorDateModel = (v.split('T')[0] ?? '')
+              } else {
+                const d = v instanceof Date ? v : new Date(v)
+  
+                anchorDateModel = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+              }
+  
+              menu = false
+            }"
+          />
+  
+          <v-stepper-vertical
+            v-else-if="timeRangeModel === 'month'"
+            v-model="monthStep"
+            :items="monthStepperItems"
+            :color="color"
+            alt-labels
+            bg-color="transparent"
+            flat
+          >
+            <template #[`item.1`]>
+              <v-date-picker-years
+                v-model="monthYear"
+                color="secondary"
+                bg-color="transparent"
+              />
+            </template>
+  
+            <template #[`item.2`]>
+              <v-date-picker-months
+                v-model="tempMonth"
+                v-model:year="monthYear"
+                color="secondary"
+                bg-color="transparent"
+              />
+            </template>
+  
+            <template #actions="{ step, next, prev }">
+              <div class="d-flex align-center ga-2 pa-3">
+                <v-btn
+                  color="error"
+                  variant="text"
+                  @click="menu = false"
+                >
+                  {{ $t("app.date-range-filter.cancel") }}
+                </v-btn>
+  
+                <v-spacer />
+  
+                <v-btn
+                  v-if="step === 1"
+                  variant="tonal"
+                  :color="color"
+                  @click="next"
+                >
+                  {{ $t("app.date-range-filter.next") }}
+                </v-btn>
+  
+                <v-btn
+                  v-else
+                  color="secondary"
+                  variant="text"
+                  @click="prev"
+                >
+                  {{ $t("app.date-range-filter.prev") }}
+                </v-btn>
+  
+                <v-btn
+                  v-if="step === 2"
+                  variant="flat"
+                  :color="color"
+                  :disabled="tempMonth === undefined || tempMonth === null"
+                  @click="() => {
+                    const m = tempMonth
+  
+                    if (m === undefined || m === null) {
+                      return
+                    }
+  
+                    const month1 = (m >= 0 && m <= 11) ? (m + 1) : m
+  
+                    anchorDateModel = `${monthYear}-${String(month1).padStart(2, '0')}-01`
+                    menu = false
+                  }"
+                >
+                  {{ $t("app.date-range-filter.validate") }}
+                </v-btn>
+              </div>
+            </template>
+          </v-stepper-vertical>
+  
+          <v-date-picker-years
+            v-else-if="timeRangeModel === 'year'"
+            v-model="tempYear"
+            color="secondary"
+            bg-color="transparent"
+            @update:model-value="(y) => {
+              if (!y) {
+                return
+              }
+  
+              anchorDateModel = `${y}-01-01`
+              monthYear = y
+              menu = false
+            }"
+          />
+        </v-card-text>
+      </v-card>
+    </v-menu>
+  
+    <v-btn-toggle
+      v-if="smAndUp"
       v-model="timeRangeModel"
-      class="mr-4"
-      :base-color="color"
+      mandatory
+      class="mr-4 rounded-s-0 rounded-e-pill"
       :color="color"
-      :items="dateFilterItems"
-      item-title="text"
-      item-value="value"
-      density="comfortable"
-      hide-details
-      variant="outlined"
-      bg-color="transparent"
-    />
+    >
+      <v-btn
+        v-for="item in dateFilterItems"
+        :key="item.value"
+        :value="item.value"
+        size="small"
+      >
+        {{ item.text }}
+      </v-btn>
+    </v-btn-toggle>
+  
+    <div
+      v-else
+      class="period-select"
+    >
+      <v-select
+        v-model="timeRangeModel"
+        class="mr-4"
+        :base-color="color"
+        :color="color"
+        :items="dateFilterItems"
+        item-title="text"
+        item-value="value"
+        density="comfortable"
+        hide-details
+        variant="outlined"
+        bg-color="transparent"
+      />
+    </div>
   </div>
 </template>
 
