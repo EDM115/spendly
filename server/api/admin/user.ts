@@ -1,6 +1,4 @@
-import type { User } from "~/types"
-
-import db from "@@/server/api/db"
+import db from "#server/api/db"
 
 import { hash } from "bcryptjs"
 import { randomUUID } from "node:crypto"

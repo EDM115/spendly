@@ -1,4 +1,4 @@
-import type { Language } from "./app/types"
+import type { Language } from "./shared/types/main"
 
 export default defineNuxtConfig({
   modules: [

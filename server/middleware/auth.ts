@@ -1,4 +1,4 @@
-import db from "@@/server/api/db"
+import db from "#server/api/db"
 
 import jwt from "jsonwebtoken"
 
@@ -8,8 +8,8 @@ export default defineEventHandler(async (event) => {
 
     if (!authHeader) {
       return sendError(event, createError({
-        statusCode: 401,
-        statusMessage: "Unauthorized",
+        status: 401,
+        statusText: "Unauthorized",
       }))
     }
 
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
 
     try {
       // oxlint-disable-next-line no-unsafe-type-assertion
-      const payload = jwt.verify(token, process.env.JWT_SECRET ?? "secret") as {
+      const payload = jwt.verify(token!, process.env.JWT_SECRET ?? "secret") as unknown as {
         id: string;
         username: string;
       }
@@ -25,8 +25,8 @@ export default defineEventHandler(async (event) => {
       event.context.auth = { userId: payload.id }
     } catch {
       return sendError(event, createError({
-        statusCode: 401,
-        statusMessage: "Unauthorized",
+        status: 401,
+        statusText: "Unauthorized",
       }))
     }
 
@@ -35,8 +35,8 @@ export default defineEventHandler(async (event) => {
 
       if (!userId) {
         return sendError(event, createError({
-          statusCode: 401,
-          statusMessage: "Unauthorized",
+          status: 401,
+          statusText: "Unauthorized",
         }))
       }
 
@@ -48,8 +48,8 @@ export default defineEventHandler(async (event) => {
 
       if (!admin) {
         return sendError(event, createError({
-          statusCode: 403,
-          statusMessage: "Admin not found or insufficient permissions",
+          status: 403,
+          statusText: "Admin not found or insufficient permissions",
         }))
       }
     }

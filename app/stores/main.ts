@@ -1,9 +1,12 @@
-import type {
-  BudgetTrackerRole,
-  Language,
-  StoreUser,
-  Theme,
-} from "~/types"
+import {
+  computed,
+  defineStore,
+  ref,
+  type BudgetTrackerRole,
+  type Language,
+  type StoreUser,
+  type Theme,
+} from "#imports"
 
 function ssrSafe() {
   return import.meta.client
@@ -81,11 +84,20 @@ export const useMainStore = defineStore("main", () => {
     isValidatingToken.value = true
 
     try {
-      const response = await $fetch("/api/auth/validate", {
+      const response = await $fetch<{
+        status: number;
+        body: {
+          valid: boolean;
+          user?: {
+            id: string;
+            username: string;
+          };
+        };
+      }>("/api/auth/validate", {
         headers: { Authorization: `Bearer ${user.value.token}` },
       })
 
-      if (!response.body.valid) {
+      if (!response.body.valid || !response.body.user) {
         logout()
 
         return false

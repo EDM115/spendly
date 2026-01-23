@@ -1,9 +1,4 @@
-import type {
-  BudgetTracker,
-  BudgetTrackerRole,
-} from "~/types"
-
-import db from "@@/server/api/db"
+import db from "#server/api/db"
 
 import { randomUUID } from "node:crypto"
 

@@ -165,12 +165,6 @@
 </template>
 
 <script lang="ts" setup>
-import type {
-  BudgetTracker,
-  Category,
-  Spending,
-} from "~/types"
-
 const store = useMainStore()
 const { smAndUp } = useVDisplay()
 const hasLoaded = ref(false)

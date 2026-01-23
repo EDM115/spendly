@@ -105,8 +105,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { Language } from "~/types"
-
 const store = useMainStore()
 const route = useRoute()
 const { toggleTheme } = useCustomTheme()

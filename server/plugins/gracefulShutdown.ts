@@ -1,4 +1,4 @@
-import db from "@@/server/api/db"
+import db from "#server/api/db"
 
 export default defineNitroPlugin((nitroApp) => {
   nitroApp.hooks.hook("close", () => {

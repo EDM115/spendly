@@ -310,8 +310,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { Spending } from "~/types"
-
 import {
   ArcElement,
   BarElement,
@@ -416,7 +414,7 @@ const gridColor = computed(() => (isDark.value
   : "rgba(0, 0, 0, 0.1)"))
 const effectiveShowTitle = computed(() => (simplifiedMode.value
   ? false
-  : showTitle.value))  
+  : showTitle.value))
 const effectiveShowLegend = computed(() => (simplifiedMode.value
   ? false
   : showLegend.value))
@@ -908,22 +906,6 @@ const getCurrentChartInstance = (): ChartComponentRef => {
       return null
   }
 }
-
-const refreshActiveChart = async () => {
-  await nextTick()
-
-  const chartInstance = getCurrentChartInstance()
-
-  chartInstance?.chart?.update()
-}
-
-watch(activeTab, async () => {
-  await refreshActiveChart()
-})
-
-watch(filteredSpendings, async () => {
-  await refreshActiveChart()
-})
 
 const getChartCanvas = (): HTMLCanvasElement | null => {
   const chartInstance = getCurrentChartInstance()

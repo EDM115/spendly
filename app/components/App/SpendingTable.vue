@@ -396,11 +396,6 @@
 </template>
 
 <script lang="ts" setup>
-import type {
-  Category,
-  Spending,
-} from "~/types"
-
 const props = defineProps<{
   spendings: Spending[];
   categories: Category[];
@@ -485,7 +480,10 @@ const headers = computed(() => [
     title: t("app.spending.amount"), key: "value", sortable: true,
   },
   {
-    title: t("app.spending.date"), key: "date", sortable: true, minWidth: smAndUp.value
+    title: t("app.spending.date"),
+    key: "date",
+    sortable: true,
+    minWidth: smAndUp.value
       ? 160
       : 190,
   },

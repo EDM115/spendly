@@ -40,7 +40,7 @@ export type Spending = {
 export type ErrorType = {
   data?: {
     message: string;
-    statusMessage: string;
+    statusText: string;
   };
 } | string
 

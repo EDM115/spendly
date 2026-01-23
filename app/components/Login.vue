@@ -66,8 +66,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { ErrorType } from "~/types"
-
 const store = useMainStore()
 
 const errorMessage = ref("")
@@ -102,7 +100,7 @@ function handleError(error: ErrorType) {
   }
 
   errorMessage.value = error.data?.message ?? "An unknown error occurred"
-  issueMessage.value = error.data?.statusMessage ?? ""
+  issueMessage.value = error.data?.statusText ?? ""
 }
 
 async function login(event: typeof state) {

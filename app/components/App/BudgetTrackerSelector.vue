@@ -354,11 +354,6 @@
 </template>
 
 <script lang="ts" setup>
-import type {
-  BudgetTracker,
-  SharedUser,
-} from "~/types"
-
 const props = defineProps<{
   budgetTrackers: BudgetTracker[];
   modelValue: string | null;

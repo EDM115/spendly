@@ -1,4 +1,8 @@
-import type { Theme } from "~/types"
+import {
+  useMainStore,
+  useVTheme,
+  type Theme,
+} from "#imports"
 
 export function useCustomTheme() {
   const vtheme = useVTheme()

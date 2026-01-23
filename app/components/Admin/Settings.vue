@@ -281,11 +281,6 @@
 </template>
 
 <script lang="ts" setup>
-import type {
-  ExportFormat,
-  User,
-} from "~/types"
-
 const store = useMainStore()
 
 const props = defineProps<{

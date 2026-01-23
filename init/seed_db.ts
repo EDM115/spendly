@@ -1,4 +1,4 @@
-import type { User } from "./app/types"
+import type { User } from "../shared/types/main"
 
 import Database from "better-sqlite3"
 

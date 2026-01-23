@@ -1,9 +1,4 @@
-import type {
-  BudgetTrackerRole,
-  SharedUser,
-} from "~/types"
-
-import db from "@@/server/api/db"
+import db from "#server/api/db"
 
 const VALID_ROLES = new Set([ "viewer", "editor", "admin" ])
 

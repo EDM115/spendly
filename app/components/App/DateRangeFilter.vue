@@ -23,7 +23,7 @@
             />
           </template>
         </v-tooltip>
-  
+
         <v-btn
           v-else
           v-bind="btnProps"
@@ -34,7 +34,7 @@
           :disabled="timeRangeModel === 'all'"
         />
       </template>
-  
+
       <v-card class="glass-card pa-1 border-thin">
         <v-card-text class="pa-0">
           <v-date-picker
@@ -50,23 +50,23 @@
               const v = Array.isArray(val)
                 ? val[0]
                 : val
-  
+
               if (!v) {
                 return
               }
-  
+
               if (typeof v === 'string') {
                 anchorDateModel = (v.split('T')[0] ?? '')
               } else {
                 const d = v instanceof Date ? v : new Date(v)
-  
+
                 anchorDateModel = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
               }
-  
+
               menu = false
             }"
           />
-  
+
           <v-stepper-vertical
             v-else-if="timeRangeModel === 'month'"
             v-model="monthStep"
@@ -83,7 +83,7 @@
                 bg-color="transparent"
               />
             </template>
-  
+
             <template #[`item.2`]>
               <v-date-picker-months
                 v-model="tempMonth"
@@ -92,7 +92,7 @@
                 bg-color="transparent"
               />
             </template>
-  
+
             <template #actions="{ step, next, prev }">
               <div class="d-flex align-center ga-2 pa-3">
                 <v-btn
@@ -102,9 +102,9 @@
                 >
                   {{ $t("app.date-range-filter.cancel") }}
                 </v-btn>
-  
+
                 <v-spacer />
-  
+
                 <v-btn
                   v-if="step === 1"
                   variant="tonal"
@@ -113,7 +113,7 @@
                 >
                   {{ $t("app.date-range-filter.next") }}
                 </v-btn>
-  
+
                 <v-btn
                   v-else
                   color="secondary"
@@ -122,7 +122,7 @@
                 >
                   {{ $t("app.date-range-filter.prev") }}
                 </v-btn>
-  
+
                 <v-btn
                   v-if="step === 2"
                   variant="flat"
@@ -130,13 +130,13 @@
                   :disabled="tempMonth === undefined || tempMonth === null"
                   @click="() => {
                     const m = tempMonth
-  
+
                     if (m === undefined || m === null) {
                       return
                     }
-  
+
                     const month1 = (m >= 0 && m <= 11) ? (m + 1) : m
-  
+
                     anchorDateModel = `${monthYear}-${String(month1).padStart(2, '0')}-01`
                     menu = false
                   }"
@@ -146,7 +146,7 @@
               </div>
             </template>
           </v-stepper-vertical>
-  
+
           <v-date-picker-years
             v-else-if="timeRangeModel === 'year'"
             v-model="tempYear"
@@ -156,7 +156,7 @@
               if (!y) {
                 return
               }
-  
+
               anchorDateModel = `${y}-01-01`
               monthYear = y
               menu = false
@@ -165,7 +165,7 @@
         </v-card-text>
       </v-card>
     </v-menu>
-  
+
     <v-btn-toggle
       v-if="smAndUp"
       v-model="timeRangeModel"
@@ -182,7 +182,7 @@
         {{ item.text }}
       </v-btn>
     </v-btn-toggle>
-  
+
     <div
       v-else
       class="period-select"

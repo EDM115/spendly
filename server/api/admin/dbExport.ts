@@ -1,4 +1,4 @@
-import db from "@@/server/api/db"
+import db from "#server/api/db"
 
 import fs from "node:fs/promises"
 import path from "node:path"

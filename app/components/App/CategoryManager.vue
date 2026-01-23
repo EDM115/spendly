@@ -218,7 +218,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { Category } from "~/types"
 import type { VIcon } from "vuetify/components"
 
 const props = defineProps<{

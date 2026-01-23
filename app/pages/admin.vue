@@ -21,8 +21,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { User } from "~/types"
-
 const store = useMainStore()
 
 const { data } = await useAsyncData<{
@@ -33,8 +31,8 @@ const { data } = await useAsyncData<{
 
   if (!token || !adminId) {
     throw createError({
-      statusCode: 401,
-      statusMessage: "Unauthorized",
+      status: 401,
+      statusText: "Unauthorized",
     })
   }
 
