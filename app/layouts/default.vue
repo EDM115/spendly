@@ -49,7 +49,7 @@ useSeoMeta({
   ogTitle: t("main.title"),
   description: t("main.description"),
   ogDescription: t("main.description"),
-  ogImage: "/images/logo.webp",
+  ogImage: "/images/og.png",
   ogType: "website",
   ogUrl: "https://spendly.edm115.dev",
   ogLocale: "fr_FR",

@@ -44,7 +44,7 @@ pnpm dev
 
 ## Build and run
 ```pwsh
-docker build --network=host -t edm115/spendly .
+docker build -t edm115/spendly .
 docker run -d -p 60000:60000 --env-file .env -v spendly_db:/app/db --name spendly edm115/spendly
 ```
 
