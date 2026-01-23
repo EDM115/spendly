@@ -76,7 +76,6 @@
       "of-singular": "of",
       "pie": "Repartition by category",
       "savings": "Savings",
-      "show-axes": "Show axes",
       "show-balance": "Balance",
       "show-expense": "Expenses",
       "show-grid": "Show grid",
@@ -84,6 +83,8 @@
       "show-legend": "Show legend",
       "show-points": "Show points",
       "show-title": "Show title",
+      "show-x-axis": "Show X axis",
+      "show-y-axis": "Show Y axis",
       "simplified": "Simplified",
       "title": "Charts & Analytics"
     },

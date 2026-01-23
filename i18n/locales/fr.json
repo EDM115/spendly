@@ -76,7 +76,6 @@
       "of-singular": "du",
       "pie": "Répartition par catégorie",
       "savings": "Économies",
-      "show-axes": "Afficher les axes",
       "show-balance": "Solde",
       "show-expense": "Dépenses",
       "show-grid": "Afficher la grille",
@@ -84,6 +83,8 @@
       "show-legend": "Afficher la légende",
       "show-points": "Afficher les points",
       "show-title": "Afficher le titre",
+      "show-x-axis": "Afficher l'axe X",
+      "show-y-axis": "Afficher l'axe Y",
       "simplified": "Simplifié",
       "title": "Graphiques & Analyses"
     },

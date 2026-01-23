@@ -46,7 +46,7 @@
                   <v-switch
                     v-model="showTitle"
                     density="compact"
-                    color="primary"
+                    color="secondary"
                     hide-details
                     inset
                     :disabled="simplifiedMode"
@@ -59,46 +59,59 @@
                   <v-switch
                     v-model="showLegend"
                     density="compact"
-                    color="primary"
+                    color="secondary"
                     hide-details
                     inset
                     :disabled="simplifiedMode"
                   />
                 </template>
               </v-list-item>
-              <v-list-item v-if="!simplifiedMode">
-                <v-list-item-title>{{ $t("app.charts.show-axes") }}</v-list-item-title>
+              <v-list-item v-if="!simplifiedMode && ['area', 'bar'].includes(activeTab)">
+                <v-list-item-title>{{ $t("app.charts.show-x-axis") }}</v-list-item-title>
                 <template #append>
                   <v-switch
-                    v-model="showAxes"
+                    v-model="showXAxis"
                     density="compact"
-                    color="primary"
+                    color="secondary"
                     hide-details
                     inset
                     :disabled="simplifiedMode"
                   />
                 </template>
               </v-list-item>
-              <v-list-item v-if="!simplifiedMode">
+              <v-list-item v-if="!simplifiedMode && ['area', 'bar'].includes(activeTab)">
+                <v-list-item-title>{{ $t("app.charts.show-y-axis") }}</v-list-item-title>
+                <template #append>
+                  <v-switch
+                    v-model="showYAxis"
+                    density="compact"
+                    color="secondary"
+                    hide-details
+                    inset
+                    :disabled="simplifiedMode"
+                  />
+                </template>
+              </v-list-item>
+              <v-list-item v-if="!simplifiedMode && ['area', 'bar'].includes(activeTab)">
                 <v-list-item-title>{{ $t("app.charts.show-grid") }}</v-list-item-title>
                 <template #append>
                   <v-switch
                     v-model="showGrid"
                     density="compact"
-                    color="primary"
+                    color="secondary"
                     hide-details
                     inset
                     :disabled="simplifiedMode"
                   />
                 </template>
               </v-list-item>
-              <v-list-item v-if="!simplifiedMode">
+              <v-list-item v-if="!simplifiedMode && activeTab === 'area'">
                 <v-list-item-title>{{ $t("app.charts.show-points") }}</v-list-item-title>
                 <template #append>
                   <v-switch
                     v-model="showPoints"
                     density="compact"
-                    color="primary"
+                    color="secondary"
                     hide-details
                     inset
                     :disabled="simplifiedMode"
@@ -311,9 +324,9 @@
               :class="['chart-container', 'pie-chart', 'glass-panel', smAndUp ? 'pa-4' : 'pa-3', 'rounded-xl', 'border-thin', 'bg-transparent']"
             >
               <Pie
-                ref="pieChartInstance"
-                :data="pieChartData"
-                :options="pieChartOptions"
+                ref="expensesPieChartInstance"
+                :data="expensesPieChartData"
+                :options="expensesPieChartOptions"
               />
             </div>
             <div
@@ -413,14 +426,15 @@ const emit = defineEmits<{
   "update:anchor-date": [value: string];
 }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const store = useMainStore()
 const { smAndUp } = useVDisplay()
 const activeTab = ref("area")
 const simplifiedMode = ref(!smAndUp.value)
 const showTitle = ref(true)
 const showLegend = ref(true)
-const showAxes = ref(true)
+const showXAxis = ref(true)
+const showYAxis = ref(true)
 const showGrid = ref(true)
 const showPoints = ref(true)
 const showBalance = ref(true)
@@ -452,7 +466,7 @@ watch(smAndUp, (val, prev) => {
 })
 
 const areaChartInstance = ref<InstanceType<typeof Line> | null>(null)
-const pieChartInstance = ref<InstanceType<typeof Pie> | null>(null)
+const expensesPieChartInstance = ref<InstanceType<typeof Pie> | null>(null)
 const incomePieChartInstance = ref<InstanceType<typeof Pie> | null>(null)
 const barChartInstance = ref<InstanceType<typeof Bar> | null>(null)
 const doughnutChartInstance = ref<InstanceType<typeof Doughnut> | null>(null)
@@ -471,15 +485,129 @@ const effectiveShowTitle = computed(() => (simplifiedMode.value
 const effectiveShowLegend = computed(() => (simplifiedMode.value
   ? false
   : showLegend.value))
-const effectiveShowAxes = computed(() => (simplifiedMode.value
+const effectiveShowXAxis = computed(() => (simplifiedMode.value
   ? false
-  : showAxes.value))
+  : showXAxis.value))
+const effectiveShowYAxis = computed(() => (simplifiedMode.value
+  ? false
+  : showYAxis.value))
 const effectiveShowGrid = computed(() => (simplifiedMode.value
   ? false
   : showGrid.value))
 const effectiveShowPoints = computed(() => (simplifiedMode.value
   ? false
   : showPoints.value))
+
+const formatAreaLabel = (rawLabel: unknown) => {
+  const label = typeof rawLabel === "string"
+    ? rawLabel
+    : String(rawLabel ?? "")
+
+  if (!label) {
+    return ""
+  }
+
+  const [ y, m, d ] = label.split("-").map(Number)
+
+  if (!y || !m) {
+    return label
+  }
+
+  const date = new Date(y, m - 1, d || 1)
+  const range = timeRangeModel.value
+
+  if (range === "day" || range === "all") {
+    return new Intl.DateTimeFormat(locale.value, {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }).format(date)
+  }
+
+  return new Intl.DateTimeFormat(locale.value, {
+    day: "2-digit",
+    month: "short",
+  }).format(date)
+}
+
+const getWeekStartAndEnd = (date: Date): {
+  start: Date; end: Date;
+} => {
+  const day = date.getDay()
+  const diffToMonday = (day + 6) % 7
+
+  const start = new Date(date)
+
+  start.setDate(date.getDate() - diffToMonday)
+
+  const end = new Date(start)
+
+  end.setDate(start.getDate() + 6)
+
+  return {
+    start, end,
+  }
+}
+
+const formatBarLabel = (rawLabel: unknown) => {
+  const label = typeof rawLabel === "string"
+    ? rawLabel
+    : String(rawLabel ?? "")
+
+  if (!label) {
+    return ""
+  }
+
+  const [ y, m, d ] = label.split("-").map(Number)
+
+  if (!y || !m) {
+    return label
+  }
+
+  const date = new Date(y, m - 1, d || 1)
+  const range = timeRangeModel.value
+  const fmt = (dt: Date, options: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(locale.value, options)
+    .format(dt)
+
+  if (range === "day") {
+    const [ ay, am, ad ] = (anchorDateModel.value || "").split("-")
+      .map(Number)
+    const anchor = ay && am && ad
+      ? new Date(ay, am - 1, ad)
+      : date
+
+    return fmt(anchor, {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    })
+  }
+
+  if (range === "week") {
+    const {
+      start, end,
+    } = getWeekStartAndEnd(date)
+
+    const options: Intl.DateTimeFormatOptions = {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    }
+
+    return `${fmt(start, options)} - ${fmt(end, options)}`
+  }
+
+  if (range === "month") {
+    return fmt(date, {
+      month: "long",
+    })
+  }
+
+  return fmt(date, {
+    month: "long",
+    year: "numeric",
+  })
+}
 
 const pieAnimation = computed(() => ({
   duration: 650,
@@ -544,17 +672,6 @@ const areaChartData = computed(() => {
     tension: number;
   }[]
 
-  if (showBalance.value) {
-    datasets.push({
-      label: t("app.charts.balance"),
-      data: balanceData,
-      borderColor: "#3b82f6",
-      backgroundColor: "rgba(59, 130, 246, 0.2)",
-      fill: true,
-      tension: 0.4,
-    })
-  }
-
   if (showIncome.value) {
     datasets.push({
       label: t("app.spending.income"),
@@ -572,6 +689,17 @@ const areaChartData = computed(() => {
       data: expenseData,
       borderColor: "#ef4444",
       backgroundColor: "rgba(239, 68, 68, 0.2)",
+      fill: true,
+      tension: 0.4,
+    })
+  }
+
+  if (showBalance.value) {
+    datasets.push({
+      label: t("app.charts.balance").split(" ")[0] ?? "",
+      data: balanceData,
+      borderColor: "#3b82f6",
+      backgroundColor: "rgba(59, 130, 246, 0.2)",
       fill: true,
       tension: 0.4,
     })
@@ -629,26 +757,33 @@ const areaChartOptions = computed(() => ({
   },
   scales: {
     x: {
-      display: effectiveShowAxes.value,
-      ticks: { color: textColor.value },
+      display: effectiveShowXAxis.value,
+      ticks: {
+        color: textColor.value,
+        callback: (value: string | number, index: number) => {
+          const label = areaChartData.value.labels?.[index] ?? value
+
+          return formatAreaLabel(label)
+        },
+      },
       grid: {
         color: gridColor.value,
-        display: effectiveShowGrid.value,
+        display: effectiveShowGrid.value && effectiveShowXAxis.value,
       },
     },
     y: {
-      display: effectiveShowAxes.value,
+      display: effectiveShowYAxis.value,
       ticks: { color: textColor.value },
       grid: {
         color: gridColor.value,
-        display: effectiveShowGrid.value,
+        display: effectiveShowGrid.value && effectiveShowYAxis.value,
       },
     },
   },
 }))
 
 // Pie Chart Data - Category distribution for expenses
-const pieChartData = computed(() => {
+const expensesPieChartData = computed(() => {
   const categoryTotals = new Map<string, {
     total: number; color: string;
   }>()
@@ -725,7 +860,7 @@ const incomePieChartData = computed(() => {
   }
 })
 
-const pieChartOptions = computed(() => ({
+const expensesPieChartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   animation: pieAnimation.value,
@@ -898,19 +1033,26 @@ const barChartOptions = computed(() => ({
   },
   scales: {
     x: {
-      display: effectiveShowAxes.value,
-      ticks: { color: textColor.value },
+      display: effectiveShowXAxis.value,
+      ticks: {
+        color: textColor.value,
+        callback: (value: string | number, index: number) => {
+          const label = barChartData.value.labels?.[index] ?? value
+
+          return formatBarLabel(label)
+        },
+      },
       grid: {
         color: gridColor.value,
-        display: effectiveShowGrid.value,
+        display: effectiveShowGrid.value && effectiveShowXAxis.value,
       },
     },
     y: {
-      display: effectiveShowAxes.value,
+      display: effectiveShowYAxis.value,
       ticks: { color: textColor.value },
       grid: {
         color: gridColor.value,
-        display: effectiveShowGrid.value,
+        display: effectiveShowGrid.value && effectiveShowYAxis.value,
       },
     },
   },
@@ -1067,7 +1209,7 @@ const getCurrentChartInstance = (): ChartComponentRef => {
     case "area":
       return areaChartInstance.value as ChartComponentRef
     case "pie":
-      return pieChartInstance.value as ChartComponentRef
+      return expensesPieChartInstance.value as ChartComponentRef
     case "bar":
       return barChartInstance.value as ChartComponentRef
     case "doughnut":
