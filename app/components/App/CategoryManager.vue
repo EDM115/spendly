@@ -247,7 +247,7 @@
 <script lang="ts" setup>
 import type { VIcon } from "vuetify/components"
 
-const mdiMetaRaw = await import("@mdi/svg/meta.json")
+const mdiMeta = (await import("@mdi/svg/meta.json")).default as MdiMetaItem[]
 
 const props = defineProps<{
   categories: Category[];
@@ -274,8 +274,6 @@ const categoryForm = ref({
 const isValidIcon = ref(false)
 const testIcon = ref<InstanceType<typeof VIcon> | HTMLElement | null>(null)
 const iconSearch = ref("")
-
-const mdiMeta = mdiMetaRaw as MdiMetaItem[]
 
 const iconInput = computed({
   get: () => categoryForm.value.icon.replace(/^mdi-/, ""),
