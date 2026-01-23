@@ -199,10 +199,20 @@
             <v-list class="glass-card pa-0 border-thin">
               <v-list-item
                 class="glass-list-item mb-1 rounded-lg ma-1"
+                :disabled="isExporting"
                 @click="exportSVG"
               >
                 <template #prepend>
+                  <v-progress-circular
+                    v-if="isExporting"
+                    indeterminate
+                    size="18"
+                    width="2"
+                    color="secondary"
+                    class="mr-4"
+                  />
                   <v-icon
+                    v-else
                     icon="mdi-svg"
                     color="secondary"
                   />
@@ -211,10 +221,20 @@
               </v-list-item>
               <v-list-item
                 class="glass-list-item mb-1 rounded-lg ma-1"
+                :disabled="isExporting"
                 @click="exportPNG"
               >
                 <template #prepend>
+                  <v-progress-circular
+                    v-if="isExporting"
+                    indeterminate
+                    size="18"
+                    width="2"
+                    color="secondary"
+                    class="mr-4"
+                  />
                   <v-icon
+                    v-else
                     icon="mdi-file-image-outline"
                     color="secondary"
                   />
@@ -223,10 +243,20 @@
               </v-list-item>
               <v-list-item
                 class="glass-list-item rounded-lg ma-1"
+                :disabled="isExporting"
                 @click="exportPDF"
               >
                 <template #prepend>
+                  <v-progress-circular
+                    v-if="isExporting"
+                    indeterminate
+                    size="18"
+                    width="2"
+                    color="secondary"
+                    class="mr-4"
+                  />
                   <v-icon
+                    v-else
                     icon="mdi-file-pdf-box"
                     color="secondary"
                   />
@@ -399,6 +429,17 @@ type ChartComponentRef = {
   };
 } | null
 
+type ChartInstanceRef = {
+  chart?: ChartJS;
+} | null
+
+type C2SCtor = new (w: number, h: number) => CanvasRenderingContext2D
+
+type ExportCanvasResult = {
+  canvas: HTMLCanvasElement;
+  cleanup: () => void;
+}
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -426,7 +467,9 @@ const emit = defineEmits<{
   "update:anchor-date": [value: string];
 }>()
 
-const { t, locale } = useI18n()
+const {
+  t, locale,
+} = useI18n()
 const store = useMainStore()
 const { smAndUp } = useVDisplay()
 const activeTab = ref("area")
@@ -442,6 +485,7 @@ const showIncome = ref(true)
 const showExpense = ref(true)
 const showExpensePie = ref(true)
 const showIncomePie = ref(true)
+const isExporting = ref(false)
 const timeRangeModel = computed({
   get: () => props.timeRange,
   set: (v: string) => emit("update:time-range", v),
@@ -507,7 +551,8 @@ const formatAreaLabel = (rawLabel: unknown) => {
     return ""
   }
 
-  const [ y, m, d ] = label.split("-").map(Number)
+  const [ y, m, d ] = label.split("-")
+    .map(Number)
 
   if (!y || !m) {
     return label
@@ -521,13 +566,15 @@ const formatAreaLabel = (rawLabel: unknown) => {
       day: "2-digit",
       month: "short",
       year: "numeric",
-    }).format(date)
+    })
+      .format(date)
   }
 
   return new Intl.DateTimeFormat(locale.value, {
     day: "2-digit",
     month: "short",
-  }).format(date)
+  })
+    .format(date)
 }
 
 const getWeekStartAndEnd = (date: Date): {
@@ -558,7 +605,8 @@ const formatBarLabel = (rawLabel: unknown) => {
     return ""
   }
 
-  const [ y, m, d ] = label.split("-").map(Number)
+  const [ y, m, d ] = label.split("-")
+    .map(Number)
 
   if (!y || !m) {
     return label
@@ -696,7 +744,8 @@ const areaChartData = computed(() => {
 
   if (showBalance.value) {
     datasets.push({
-      label: t("app.charts.balance").split(" ")[0] ?? "",
+      label: t("app.charts.balance")
+        .split(" ")[0] ?? "",
       data: balanceData,
       borderColor: "#3b82f6",
       backgroundColor: "rgba(59, 130, 246, 0.2)",
@@ -894,7 +943,7 @@ const expensesPieChartOptions = computed(() => ({
         label: (ctx: TooltipItem<"pie">) => {
           const label = ctx.label ?? ""
           const value = Number(ctx.raw ?? 0)
-          const total = (ctx.dataset.data as number[]).reduce((a, b) => a + Number(b), 0) || 1
+          const total = ctx.dataset.data.reduce((a, b) => a + Number(b), 0) || 1
           const pct = (value / total) * 100
 
           return `${label} : ${value.toFixed(2)} (${pct.toFixed(1)}%)`
@@ -944,7 +993,7 @@ const incomePieChartOptions = computed(() => ({
         label: (ctx: TooltipItem<"pie">) => {
           const label = ctx.label ?? ""
           const value = Number(ctx.raw ?? 0)
-          const total = (ctx.dataset.data as number[]).reduce((a, b) => a + Number(b), 0) || 1
+          const total = ctx.dataset.data.reduce((a, b) => a + Number(b), 0) || 1
           const pct = (value / total) * 100
 
           return `${label} : ${value.toFixed(2)} (${pct.toFixed(1)}%)`
@@ -1093,7 +1142,7 @@ const doughnutChartData = computed(() => {
       t("app.spending.expense"),
     ],
     datasets: [
-      // OUTER ring: income vs expense
+      // OUTER ring : income vs expense
       {
         data: [ income, expense ],
         backgroundColor: [
@@ -1107,7 +1156,7 @@ const doughnutChartData = computed(() => {
         weight: 2,
       },
 
-      // INNER ring: savings/deficit percent wedge + transparent remainder
+      // INNER ring : savings/deficit percent wedge + transparent remainder
       {
         data: [ shown, remainder ],
         backgroundColor: [
@@ -1132,12 +1181,69 @@ const doughnutChartOptions = computed(() => ({
   plugins: {
     legend: {
       display: effectiveShowLegend.value,
-      position: smAndUp.value
-        ? ("right" as const)
-        : ("bottom" as const),
+      position: "bottom" as const,
       labels: {
         color: textColor.value,
         usePointStyle: true,
+        generateLabels: (chart: ChartJS) => {
+          const legendLabelColor = chart.options.plugins?.legend?.labels?.color as string
+            ?? textColor.value
+          const labels = Array.isArray(chart.data.labels)
+            ? chart.data.labels
+            : []
+          const dataset = chart.data.datasets?.[0]
+          const background = dataset?.backgroundColor
+          const border = dataset?.borderColor
+          const items = labels.map((label, index) => {
+            const fill = Array.isArray(background)
+              ? background[index] ?? background[0]
+              : background
+            const stroke = Array.isArray(border)
+              ? border[index] ?? border[0]
+              : border
+
+            return {
+              text: String(label ?? ""),
+              fillStyle: fill ?? "#9ca3af",
+              strokeStyle: stroke ?? fill ?? "#9ca3af",
+              lineWidth: 0,
+              fontColor: legendLabelColor,
+              hidden: !chart.getDataVisibility(index),
+              index,
+            }
+          })
+
+          const innerDataset = chart.data.datasets?.[1]
+          const innerColor = Array.isArray(innerDataset?.backgroundColor)
+            ? innerDataset?.backgroundColor?.[0]
+            : innerDataset?.backgroundColor
+
+          if (innerColor) {
+            const outerData = chart.data.datasets?.[0]?.data
+            const income = Array.isArray(outerData)
+              ? Number(outerData[0] ?? 0)
+              : 0
+            const expense = Array.isArray(outerData)
+              ? Number(outerData[1] ?? 0)
+              : 0
+            const isPositive = income - expense >= 0
+            const innerLabel = isPositive
+              ? t("app.charts.savings")
+              : t("app.charts.deficit")
+
+            items.push({
+              text: innerLabel,
+              fillStyle: innerColor as string,
+              strokeStyle: innerColor as string,
+              lineWidth: 0,
+              fontColor: legendLabelColor,
+              hidden: false,
+              index: items.length,
+            })
+          }
+
+          return items
+        },
       },
     },
     title: {
@@ -1219,78 +1325,687 @@ const getCurrentChartInstance = (): ChartComponentRef => {
   }
 }
 
-const getChartCanvas = (): HTMLCanvasElement | null => {
-  const chartInstance = getCurrentChartInstance()
+const getChartInstanceFromRef = (refValue: unknown): ChartJS | null => {
+  const maybe = refValue as ChartInstanceRef
 
-  return chartInstance?.chart?.canvas ?? null
+  return maybe?.chart ?? null
 }
 
-const exportPNG = () => {
-  const canvas = getChartCanvas()
+const getCurrentChartInstanceRef = (): ChartJS | null => {
+  const refValue = getCurrentChartInstance() as ChartInstanceRef
 
-  if (!canvas) {
+  return refValue?.chart ?? null
+}
+
+const clonePreserveFunctions = <T>(value: T, seen = new WeakMap<object, unknown>()): T => {
+  if (value === null || value === undefined) {
+    return value
+  }
+
+  if (typeof value !== "object") {
+    return value
+  }
+
+  if (value instanceof Date) {
+    return new Date(value.getTime()) as T
+  }
+
+  if (value instanceof RegExp) {
+    return new RegExp(value.source, value.flags) as T
+  }
+
+  if (seen.has(value)) {
+    return seen.get(value) as T
+  }
+
+  if (Array.isArray(value)) {
+    const arr: unknown[] = []
+
+    seen.set(value, arr)
+
+    for (const item of value) {
+      arr.push(clonePreserveFunctions(item, seen))
+    }
+
+    return arr as T
+  }
+
+  const out: Record<string, unknown> = {}
+
+  seen.set(value, out)
+
+  for (const [ key, entry ] of Object.entries(value)) {
+    out[key] = clonePreserveFunctions(entry, seen)
+  }
+
+  return out as T
+}
+
+const normalizeChartOptions = (options: ChartJS["options"]) => {
+  const raw = toRaw(options) as ChartJS["options"]
+
+  return clonePreserveFunctions(raw)
+}
+
+const scaleNumber = (value: unknown, scale: number) => (typeof value === "number"
+  ? value * scale
+  : value)
+
+const scaleFont = (value: unknown, scale: number) => {
+  if (!value || typeof value !== "object") {
+    return value
+  }
+
+  const font = value as { size?: number }
+
+  return {
+    ...font,
+    size: typeof font.size === "number"
+      ? Math.round(font.size * scale)
+      : font.size,
+  }
+}
+
+const scalePadding = (value: unknown, scale: number) => {
+  if (typeof value === "number") {
+    return Math.round(value * scale)
+  }
+
+  if (!value || typeof value !== "object") {
+    return value
+  }
+
+  const padding = value as Record<string, unknown>
+
+  return Object.fromEntries(Object.entries(padding)
+    .map(([ key, entry ]) => [ key, scaleNumber(entry, scale) ]))
+}
+
+const getLightExportOptions = (
+  options: ChartJS["options"],
+  scale: number,
+  chartType: string | undefined,
+) => {
+  const baseOptions = normalizeChartOptions(options)
+  const lightText = "rgba(0, 0, 0, 0.87)"
+  const lightGrid = "rgba(0, 0, 0, 0.1)"
+  const visualScale = Math.max(1, scale)
+  const datasetOptions = baseOptions?.datasets as Record<string, Record<string, unknown>> | undefined
+  const isNonCartesian = chartType === "pie" || chartType === "doughnut"
+  const rawScales = !isNonCartesian && baseOptions?.scales && typeof baseOptions.scales === "object"
+    ? Object.fromEntries(Object.entries(baseOptions.scales)
+        .filter(([ , value ]) => value && typeof value === "object"))
+    : undefined
+
+  return {
+    ...baseOptions,
+    responsive: false,
+    animation: false as const,
+    maintainAspectRatio: false,
+    devicePixelRatio: 1,
+    elements: {
+      ...baseOptions?.elements,
+      line: {
+        ...baseOptions?.elements?.line,
+        segment: baseOptions?.elements?.line?.segment ?? {},
+        borderWidth: scaleNumber(baseOptions?.elements?.line?.borderWidth, visualScale),
+      },
+      point: {
+        ...baseOptions?.elements?.point,
+        radius: scaleNumber(baseOptions?.elements?.point?.radius, visualScale),
+        hoverRadius: scaleNumber(baseOptions?.elements?.point?.hoverRadius, visualScale),
+      },
+      bar: {
+        ...baseOptions?.elements?.bar,
+        borderWidth: scaleNumber(baseOptions?.elements?.bar?.borderWidth, visualScale),
+      },
+      arc: {
+        ...baseOptions?.elements?.arc,
+        borderWidth: scaleNumber(baseOptions?.elements?.arc?.borderWidth, visualScale),
+      },
+    },
+    datasets: {
+      ...baseOptions?.datasets,
+      line: {
+        ...datasetOptions?.line,
+        segment: datasetOptions?.line?.segment ?? {},
+      },
+      bar: {
+        ...datasetOptions?.bar,
+      },
+      doughnut: {
+        ...datasetOptions?.doughnut,
+      },
+      pie: {
+        ...datasetOptions?.pie,
+      },
+    },
+    plugins: {
+      ...baseOptions?.plugins,
+      legend: {
+        ...baseOptions?.plugins?.legend,
+        labels: {
+          ...baseOptions?.plugins?.legend?.labels,
+          color: lightText,
+          boxWidth: scaleNumber(baseOptions?.plugins?.legend?.labels?.boxWidth, visualScale),
+          padding: scaleNumber(baseOptions?.plugins?.legend?.labels?.padding, visualScale),
+          font: scaleFont(baseOptions?.plugins?.legend?.labels?.font, visualScale),
+        },
+      },
+      title: {
+        ...baseOptions?.plugins?.title,
+        color: lightText,
+        font: scaleFont(baseOptions?.plugins?.title?.font, visualScale),
+        padding: scalePadding(baseOptions?.plugins?.title?.padding, visualScale),
+      },
+    },
+    layout: {
+      ...baseOptions?.layout,
+      padding: scalePadding(baseOptions?.layout?.padding, visualScale),
+    },
+    scales: rawScales
+      ? {
+          ...rawScales,
+          x: (rawScales as typeof options.scales)?.x
+            ? {
+                ...(rawScales as typeof options.scales)?.x,
+                ticks: {
+                  ...(rawScales as typeof options.scales)?.x?.ticks,
+                  color: lightText,
+                  font: scaleFont((rawScales as typeof options.scales)?.x?.ticks?.font, visualScale),
+                },
+                grid: {
+                  ...(rawScales as typeof options.scales)?.x?.grid,
+                  color: lightGrid,
+                  lineWidth: scaleNumber((rawScales as typeof options.scales)?.x?.grid?.lineWidth, visualScale),
+                },
+              }
+            : (rawScales as typeof options.scales)?.x,
+          y: (rawScales as typeof options.scales)?.y
+            ? {
+                ...(rawScales as typeof options.scales)?.y,
+                ticks: {
+                  ...(rawScales as typeof options.scales)?.y?.ticks,
+                  color: lightText,
+                  font: scaleFont((rawScales as typeof options.scales)?.y?.ticks?.font, visualScale),
+                },
+                grid: {
+                  ...(rawScales as typeof options.scales)?.y?.grid,
+                  color: lightGrid,
+                  lineWidth: scaleNumber((rawScales as typeof options.scales)?.y?.grid?.lineWidth, visualScale),
+                },
+              }
+            : (rawScales as typeof options.scales)?.y,
+        }
+      : undefined,
+  }
+}
+
+const clampExportScaleToMaxSize = (width: number, height: number, scale: number) => {
+  const maxDimension = 12000
+  const scaleX = maxDimension / Math.max(width, 1)
+  const scaleY = maxDimension / Math.max(height, 1)
+  const maxScale = Math.min(scaleX, scaleY)
+
+  return Math.max(1, Math.floor(Math.min(scale, maxScale)))
+}
+
+const nextFrame = () => new Promise<void>((resolve) => {
+  requestAnimationFrame(() => resolve())
+})
+
+const hasRenderablePieData = (chart: ChartJS | null) => {
+  if (!chart) {
+    return false
+  }
+
+  const datasets = chart.data?.datasets ?? []
+  let total = 0
+
+  for (const dataset of datasets) {
+    const values = Array.isArray(dataset.data)
+      ? dataset.data
+      : []
+
+    for (const value of values) {
+      const num = Number(value)
+
+      if (Number.isFinite(num)) {
+        total += num
+      }
+    }
+  }
+
+  return total > 0
+}
+
+const normalizePieDataForExport = (data: unknown) => {
+  if (!data || typeof data !== "object") {
     return
   }
 
+  const typed = data as {
+    labels?: unknown[];
+    datasets?: Array<Record<string, unknown>>;
+  }
+
+  if (!Array.isArray(typed.datasets) || typed.datasets.length === 0) {
+    return
+  }
+
+  let total = 0
+
+  for (const dataset of typed.datasets) {
+    const values = Array.isArray(dataset.data)
+      ? dataset.data
+      : []
+
+    const normalized = values.map((value) => {
+      const num = Number(value)
+
+      if (Number.isFinite(num)) {
+        total += num
+
+        return num
+      }
+
+      return 0
+    })
+
+    dataset.data = normalized
+  }
+
+  if (total > 0) {
+    return
+  }
+
+  const first = typed.datasets[0]
+
+  if (first) {
+    first.data = [1]
+    first.backgroundColor = ["#e5e7eb"]
+    first.borderColor = "#ffffff"
+    first.borderWidth = 1
+  }
+
+  typed.labels = [t("app.charts.no-data")]
+}
+
+const isValidPngDataUrl = (url: string) => url.startsWith("data:image/png")
+
+const getPngDataUrlFromCanvas = (canvas: HTMLCanvasElement) => {
+  try {
+    const url = canvas.toDataURL("image/png")
+
+    return isValidPngDataUrl(url)
+      ? url
+      : ""
+  } catch {
+    return ""
+  }
+}
+
+const downloadDataUrl = (dataUrl: string, filename: string) => {
   const link = document.createElement("a")
 
-  link.download = `chart-${activeTab.value}-${anchorDateModel.value}.png`
-  link.href = canvas.toDataURL("image/png")
+  link.href = dataUrl
+  link.download = filename
+  document.body.appendChild(link)
   link.click()
+  link.remove()
 }
 
-const exportSVG = () => {
-  const canvas = getChartCanvas()
+const renderChartToSvg = async (chart: ChartJS, scale: number): Promise<{
+  svg: string; width: number; height: number; cleanup: () => void;
+} | null> => {
+  const rect = chart.canvas?.getBoundingClientRect?.()
+  const width = chart.width || chart.canvas?.width || rect?.width || 0
+  const height = chart.height || chart.canvas?.height || rect?.height || 0
 
-  if (!canvas) {
+  if (!width || !height) {
+    return null
+  }
+
+  const svgWidth = Math.round(width * scale)
+  const svgHeight = Math.round(height * scale)
+
+  const { default: C2S } = (await import("canvas-to-svg")) as { "default": C2SCtor }
+  const ctx = new C2S(svgWidth, svgHeight)
+  const fakeCanvas = document.createElement("canvas") as HTMLCanvasElement & {
+    getContext: (...args: unknown[]) => CanvasRenderingContext2D;
+  }
+
+  fakeCanvas.width = svgWidth
+  fakeCanvas.height = svgHeight
+  // override getContext for svg context rendering
+  ;(fakeCanvas as unknown as { getContext: (...args: unknown[]) => CanvasRenderingContext2D }).getContext = () => ctx
+  ;(ctx as unknown as { canvas: HTMLCanvasElement }).canvas = fakeCanvas
+
+  if (!("setTransform" in ctx)) {
+    (ctx as unknown as { setTransform?: (...args: number[]) => void }).setTransform = (
+      a = 1,
+      b = 0,
+      c = 0,
+      d = 1,
+      e = 0,
+      f = 0,
+    ) => {
+      if (typeof (ctx as CanvasRenderingContext2D).transform === "function") {
+        (ctx as CanvasRenderingContext2D).transform(a, b, c, d, e, f)
+      }
+    }
+  }
+
+  if (!("resetTransform" in ctx)) {
+    (ctx as unknown as { resetTransform?: () => void }).resetTransform = () => {
+      if (typeof (ctx as CanvasRenderingContext2D).setTransform === "function") {
+        (ctx as CanvasRenderingContext2D).setTransform(1, 0, 0, 1, 0, 0)
+      }
+    }
+  }
+
+  const chartType = (chart.config as { type?: unknown }).type as string | undefined
+  const data = clonePreserveFunctions(toRaw(chart.config.data))
+
+  if (chartType === "pie") {
+    normalizePieDataForExport(data)
+  }
+
+  if (chartType === "line" && Array.isArray((data as unknown as { datasets?: unknown[] }).datasets)) {
+    const datasets = (data as unknown as { datasets: Array<Record<string, unknown>> }).datasets
+
+    ;(data as unknown as { datasets: Array<Record<string, unknown>> }).datasets = datasets.map((dataset) => Object.assign({}, dataset, {
+      segment: dataset.segment ?? {},
+    }))
+  }
+
+  const options = getLightExportOptions(chart.options, scale, chartType) as ChartJS["options"]
+
+  const originalPath2D = (window as unknown as { Path2D?: unknown }).Path2D
+
+  ;(window as unknown as { Path2D?: unknown }).Path2D = undefined
+
+  const exportChart = new ChartJS(fakeCanvas, {
+    type: chartType as never,
+    data,
+    options: options as never,
+  } as never)
+
+  exportChart.resize(svgWidth, svgHeight)
+  exportChart.update("none")
+  exportChart.draw()
+  await nextFrame()
+
+  const svg = (ctx as unknown as { getSerializedSvg: () => string }).getSerializedSvg()
+
+  return {
+    svg,
+    width: svgWidth,
+    height: svgHeight,
+    cleanup: () => {
+      exportChart.destroy()
+      ;(window as unknown as { Path2D?: unknown }).Path2D = originalPath2D
+    },
+  }
+}
+
+const injectSvgPosition = (svg: string, x: number, y: number) => svg
+  .replace("<svg", `<svg x="${x}" y="${y}"`)
+
+const buildExportSvg = async (svgScale = 1) => {
+  const chart = getCurrentChartInstanceRef()
+
+  if (activeTab.value === "pie") {
+    const expenseChart = getChartInstanceFromRef(expensesPieChartInstance.value)
+    const incomeChart = getChartInstanceFromRef(incomePieChartInstance.value)
+    const charts = [ expenseChart, incomeChart ]
+      .filter((item): item is ChartJS => Boolean(item))
+      .filter((item) => hasRenderablePieData(item))
+
+    if (charts.length === 0) {
+      return null
+    }
+
+    const rendered = (await Promise.all(charts.map((c) => renderChartToSvg(c, svgScale))))
+      .filter((item): item is {
+        svg: string; width: number; height: number; cleanup: () => void;
+      } => Boolean(item))
+
+    if (rendered.length === 0) {
+      return null
+    }
+
+    if (rendered.length === 1) {
+      const single = rendered[0]
+
+      if (!single) {
+        return null
+      }
+
+      const svgData = single.svg
+
+      single.cleanup()
+
+      return {
+        svg: svgData,
+        width: single.width,
+        height: single.height,
+      }
+    }
+
+    const [ left, right ] = rendered
+
+    if (!left || !right) {
+      return null
+    }
+
+    const isStacked = !smAndUp.value
+    const gap = 12 * svgScale
+    const width = isStacked
+      ? Math.max(left.width, right.width)
+      : (left.width + right.width + gap)
+    const height = isStacked
+      ? (left.height + right.height + gap)
+      : Math.max(left.height, right.height)
+
+    const leftSvg = injectSvgPosition(left.svg, 0, 0)
+    const rightSvg = isStacked
+      ? injectSvgPosition(right.svg, 0, left.height + gap)
+      : injectSvgPosition(right.svg, left.width + gap, 0)
+
+    const svgData = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+  <rect width="100%" height="100%" fill="#ffffff" />
+  ${leftSvg}
+  ${rightSvg}
+</svg>`
+
+    left.cleanup()
+    right.cleanup()
+
+    return {
+      svg: svgData,
+      width,
+      height,
+    }
+  }
+
+  if (!chart) {
+    return null
+  }
+
+  const rendered = await renderChartToSvg(chart, svgScale)
+
+  if (!rendered) {
+    return null
+  }
+
+  const svgData = rendered.svg
+  const width = rendered.width
+  const height = rendered.height
+
+  rendered.cleanup()
+
+  return {
+    svg: svgData,
+    width,
+    height,
+  }
+}
+
+const svgToPngDataUrl = async (svg: string, width: number, height: number, scale: number) => {
+  const finalScale = clampExportScaleToMaxSize(width, height, scale)
+  const canvas = document.createElement("canvas")
+
+  canvas.width = Math.round(width * finalScale)
+  canvas.height = Math.round(height * finalScale)
+
+  const ctx = canvas.getContext("2d")
+
+  if (!ctx) {
+    return ""
+  }
+
+  ctx.fillStyle = "#ffffff"
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+  const svgBlob = new Blob([svg], { type: "image/svg+xml" })
+  const url = URL.createObjectURL(svgBlob)
+  const img = new Image()
+
+  img.decoding = "async"
+
+  const loaded = new Promise<void>((resolve, reject) => {
+    const onLoad = () => {
+      cleanup()
+      resolve()
+    }
+
+    const onError = () => {
+      cleanup()
+      reject(new Error("Failed to load SVG"))
+    }
+
+    const cleanup = () => {
+      img.removeEventListener("load", onLoad)
+      img.removeEventListener("error", onError)
+    }
+
+    img.addEventListener("load", onLoad, { once: true })
+    img.addEventListener("error", onError, { once: true })
+  })
+
+  img.src = url
+
+  try {
+    await loaded
+
+    if (typeof img.decode === "function") {
+      await img.decode()
+    }
+  } finally {
+    URL.revokeObjectURL(url)
+  }
+
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+  return getPngDataUrlFromCanvas(canvas)
+}
+
+const exportPNG = async () => {
+  if (isExporting.value) {
     return
   }
 
-  const svgNS = "http://www.w3.org/2000/svg"
-  const svg = document.createElementNS(svgNS, "svg")
+  isExporting.value = true
+  await nextFrame()
+  await new Promise((resolve) => setTimeout(resolve, 0))
+  const svgResult = await buildExportSvg(1)
 
-  svg.setAttribute("width", canvas.width.toString())
-  svg.setAttribute("height", canvas.height.toString())
-  svg.setAttribute("xmlns", svgNS)
+  if (!svgResult) {
+    isExporting.value = false
 
-  const image = document.createElementNS(svgNS, "image")
+    return
+  }
 
-  image.setAttribute("width", canvas.width.toString())
-  image.setAttribute("height", canvas.height.toString())
-  image.setAttribute("href", canvas.toDataURL("image/png"))
-  svg.appendChild(image)
+  const filename = `chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.png`
+  const dataUrl = await svgToPngDataUrl(svgResult.svg, svgResult.width, svgResult.height, 6)
 
-  const svgData = new XMLSerializer()
-    .serializeToString(svg)
+  if (!dataUrl) {
+    isExporting.value = false
+
+    return
+  }
+
+  downloadDataUrl(dataUrl, filename)
+
+  isExporting.value = false
+}
+
+const exportSVG = async () => {
+  if (isExporting.value) {
+    return
+  }
+
+  isExporting.value = true
+  await nextFrame()
+  await new Promise((resolve) => setTimeout(resolve, 0))
+  const svgResult = await buildExportSvg(1)
+
+  if (!svgResult) {
+    isExporting.value = false
+
+    return
+  }
+
+  const svgData = svgResult.svg
   const blob = new Blob([svgData], { type: "image/svg+xml" })
   const url = URL.createObjectURL(blob)
   const link = document.createElement("a")
 
-  link.download = `chart-${activeTab.value}-${anchorDateModel.value}.svg`
+  link.download = `chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.svg`
   link.href = url
   link.click()
   URL.revokeObjectURL(url)
+  isExporting.value = false
 }
 
 const exportPDF = async () => {
-  const canvas = getChartCanvas()
+  if (isExporting.value) {
+    return
+  }
 
-  if (!canvas) {
+  isExporting.value = true
+  await nextFrame()
+  await new Promise((resolve) => setTimeout(resolve, 0))
+  const svgResult = await buildExportSvg(1)
+
+  if (!svgResult) {
+    isExporting.value = false
+
+    return
+  }
+
+  const imgData = await svgToPngDataUrl(svgResult.svg, svgResult.width, svgResult.height, 6)
+
+  if (!imgData) {
+    isExporting.value = false
+
     return
   }
 
   const { jsPDF } = await import("jspdf")
-  const imgData = canvas.toDataURL("image/png")
   const pdf = new jsPDF({
-    orientation: canvas.width > canvas.height
+    orientation: svgResult.width > svgResult.height
       ? "landscape"
       : "portrait",
     unit: "px",
-    format: [ canvas.width, canvas.height ],
+    format: [ Math.round(svgResult.width * 6), Math.round(svgResult.height * 6) ],
   })
 
-  pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height)
-  pdf.save(`chart-${activeTab.value}-${anchorDateModel.value}.pdf`)
+  pdf.addImage(imgData, "PNG", 0, 0, Math.round(svgResult.width * 6), Math.round(svgResult.height * 6))
+  pdf.save(`chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.pdf`)
+  isExporting.value = false
 }
 </script>
 

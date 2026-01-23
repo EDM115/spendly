@@ -15,6 +15,7 @@
     "@vueuse/nuxt": "~14.1.0",
     "bcryptjs": "~3.0.3",
     "better-sqlite3": "~12.6.2",
+    "canvas-to-svg": "~1.0.3",
     "chart.js": "~4.5.1",
     "jsonwebtoken": "~9.0.3",
     "jspdf": "4.0.0",
@@ -63,9 +64,9 @@
     "dev:expose:global": "nuxt dev --no-clear --tunnel",
     "dev:expose:local": "nuxt dev --no-clear --public",
     "format": "eslint -c eslint.stylistic.config.ts --concurrency=auto --fix .",
-    "lint": "pnpm run \"/^lint:eslint|^lint:oxlint/\"",
+    "lint": "pnpm run --stream \"/^lint:eslint|^lint:oxlint/\"",
     "lint:eslint": "eslint --cache --cache-location .eslintcache --concurrency=auto .",
-    "lint:fix": "pnpm run \"/^lint:fix:.*/\"",
+    "lint:fix": "pnpm run --stream \"/^lint:fix:.*/\"",
     "lint:fix:eslint": "eslint --concurrency=auto --fix .",
     "lint:fix:oxlint": "oxlint --fix --type-aware .",
     "lint:oxlint": "oxlint --type-aware .",
@@ -75,5 +76,5 @@
     "typecheck": "nuxt typecheck"
   },
   "type": "module",
-  "version": "0.8.1"
+  "version": "0.8.2"
 }

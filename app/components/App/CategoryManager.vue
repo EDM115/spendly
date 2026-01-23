@@ -335,7 +335,7 @@ const tokensMatchScore = (fieldTokens: string[], queryTokens: string[]) => {
 
   const extraTokens = Math.max(fieldTokens.length - queryTokens.length, 0)
 
-  return total - extraTokens * 2
+  return total - (extraTokens * 2)
 }
 
 const scoreTokens = (
@@ -356,7 +356,8 @@ const scoreTokens = (
     return exactScore
   }
 
-  const fieldTokens = normalized.split(splitPattern).filter(Boolean)
+  const fieldTokens = normalized.split(splitPattern)
+    .filter(Boolean)
 
   const matchScore = tokensMatchScore(fieldTokens, queryTokens)
 
@@ -389,12 +390,18 @@ const filteredIconItems = computed(() => {
       ), 0) ?? 0
       const score = Math.max(nameScore, aliasScore, tagScore)
 
-      return score > 0 ? { item, score } : null
+      return score > 0
+        ? {
+            item, score,
+          }
+        : null
     })
-    .filter((match): match is { item: MdiMetaItem; score: number } => Boolean(match))
+    .filter((match): match is {
+      item: MdiMetaItem; score: number;
+    } => Boolean(match))
 
   return scoredMatches
-    .sort((a, b) => b.score - a.score || a.item.name.localeCompare(b.item.name))
+    .toSorted((a, b) => b.score - a.score || a.item.name.localeCompare(b.item.name))
     .map((match) => match.item)
     .slice(0, 100)
 })

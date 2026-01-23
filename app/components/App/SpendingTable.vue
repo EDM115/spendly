@@ -45,18 +45,42 @@
               </v-btn>
             </template>
             <v-list class="glass-panel">
-              <v-list-item @click="exportJSON">
+              <v-list-item
+                :disabled="isExporting"
+                @click="exportJSON"
+              >
                 <template #prepend>
+                  <v-progress-circular
+                    v-if="isExporting"
+                    indeterminate
+                    size="18"
+                    width="2"
+                    color="secondary"
+                    class="mr-4"
+                  />
                   <v-icon
+                    v-else
                     icon="mdi-code-json"
                     color="secondary"
                   />
                 </template>
                 <v-list-item-title>{{ $t("app.spending.export-json") }}</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="exportCSV">
+              <v-list-item
+                :disabled="isExporting"
+                @click="exportCSV"
+              >
                 <template #prepend>
+                  <v-progress-circular
+                    v-if="isExporting"
+                    indeterminate
+                    size="18"
+                    width="2"
+                    color="secondary"
+                    class="mr-4"
+                  />
                   <v-icon
+                    v-else
                     icon="mdi-file-delimited-outline"
                     color="secondary"
                   />
@@ -453,6 +477,7 @@ const showAddDialog = ref(false)
 const showDeleteDialog = ref(false)
 const dateMenu = ref(false)
 const tempDate = ref<string | null>(null)
+const isExporting = ref(false)
 const editingSpending = ref<Spending | null>(null)
 const deletingSpending = ref<Spending | null>(null)
 const spendingForm = ref({
@@ -703,7 +728,14 @@ const deleteSpending = async () => {
   }
 }
 
-const exportJSON = () => {
+const exportJSON = async () => {
+  if (isExporting.value) {
+    return
+  }
+
+  isExporting.value = true
+
+
   const data = filteredSpendings.value.map((s) => ({
     name: s.name,
     amount: s.value,
@@ -719,12 +751,20 @@ const exportJSON = () => {
   const a = document.createElement("a")
 
   a.href = url
-  a.download = `transactions-${props.timeRange}-${anchorDateModel.value}.json`
+  a.download = `transactions-${props.timeRange}-${anchorDateModel.value}-${timeRangeModel.value}.json`
   a.click()
   URL.revokeObjectURL(url)
+
+  isExporting.value = false
 }
 
-const exportCSV = () => {
+const exportCSV = async () => {
+  if (isExporting.value) {
+    return
+  }
+
+  isExporting.value = true
+
   const headers = [ "Name", "Amount", "Type", "Category", "Date" ]
   const rows = filteredSpendings.value.map((s) => [
     `"${s.name.replace(/"/g, "\"\"")}"`,
@@ -742,9 +782,11 @@ const exportCSV = () => {
   const a = document.createElement("a")
 
   a.href = url
-  a.download = `transactions-${props.timeRange}-${anchorDateModel.value}.csv`
+  a.download = `transactions-${props.timeRange}-${anchorDateModel.value}-${timeRangeModel.value}.csv`
   a.click()
   URL.revokeObjectURL(url)
+
+  isExporting.value = false
 }
 </script>
 
