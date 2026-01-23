@@ -66,12 +66,12 @@
                 >
                   <template #activator="{ props: tooltipProps }">
                     <v-btn
-                      v-if="canEdit"
                       v-bind="tooltipProps"
                       icon="mdi-pencil-outline"
                       variant="text"
                       size="small"
                       color="secondary"
+                      :disabled="!canEdit"
                       @click="openEditDialog(category)"
                     />
                   </template>
@@ -83,12 +83,12 @@
                 >
                   <template #activator="{ props: tooltipProps }">
                     <v-btn
-                      v-if="canEdit"
                       v-bind="tooltipProps"
                       icon="mdi-delete-outline"
                       variant="text"
                       size="small"
                       color="error"
+                      :disabled="!canEdit"
                       @click="openDeleteDialog(category)"
                     />
                   </template>
