@@ -47,6 +47,7 @@
                     v-model="showTitle"
                     density="compact"
                     color="secondary"
+                    class="pl-4"
                     hide-details
                     inset
                     :disabled="simplifiedMode"
@@ -60,6 +61,7 @@
                     v-model="showLegend"
                     density="compact"
                     color="secondary"
+                    class="pl-4"
                     hide-details
                     inset
                     :disabled="simplifiedMode"
@@ -73,6 +75,7 @@
                     v-model="showXAxis"
                     density="compact"
                     color="secondary"
+                    class="pl-4"
                     hide-details
                     inset
                     :disabled="simplifiedMode"
@@ -86,6 +89,7 @@
                     v-model="showYAxis"
                     density="compact"
                     color="secondary"
+                    class="pl-4"
                     hide-details
                     inset
                     :disabled="simplifiedMode"
@@ -99,6 +103,7 @@
                     v-model="showGrid"
                     density="compact"
                     color="secondary"
+                    class="pl-4"
                     hide-details
                     inset
                     :disabled="simplifiedMode"
@@ -112,6 +117,7 @@
                     v-model="showPoints"
                     density="compact"
                     color="secondary"
+                    class="pl-4"
                     hide-details
                     inset
                     :disabled="simplifiedMode"
@@ -129,6 +135,7 @@
                     v-model="showBalance"
                     density="compact"
                     color="info"
+                    class="pl-4"
                     hide-details
                     inset
                   />
@@ -141,6 +148,7 @@
                     v-model="showIncome"
                     density="compact"
                     color="success"
+                    class="pl-4"
                     hide-details
                     inset
                   />
@@ -153,6 +161,7 @@
                     v-model="showExpense"
                     density="compact"
                     color="error"
+                    class="pl-4"
                     hide-details
                     inset
                   />
@@ -165,6 +174,7 @@
                     v-model="showExpensePie"
                     density="compact"
                     color="error"
+                    class="pl-4"
                     hide-details
                     inset
                   />
@@ -177,6 +187,7 @@
                     v-model="showIncomePie"
                     density="compact"
                     color="success"
+                    class="pl-4"
                     hide-details
                     inset
                   />

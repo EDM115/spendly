@@ -101,6 +101,9 @@
       "add": "Ajouter",
       "amount": "Montant",
       "balance": "Solde (de la période)",
+      "balance-all-time": "Solde (tout temps)",
+      "balance-options": "Options du solde",
+      "balance-until-now": "Solde (jusqu'à aujourd'hui)",
       "cancel": "Annuler",
       "category": "Catégorie",
       "date": "Date",
@@ -112,6 +115,7 @@
       "export": "Exporter",
       "export-csv": "CSV",
       "export-json": "JSON",
+      "include-future": "Inclure les entrées futures",
       "income": "Revenu",
       "name": "Description",
       "no-spending": "Aucune transaction pour le moment",
@@ -119,7 +123,8 @@
       "title": "Transactions",
       "total-expense": "Total dépenses",
       "total-income": "Total revenus",
-      "type": "Type"
+      "type": "Type",
+      "use-total-balance": "Utiliser le solde total"
     },
     "time-range": {
       "all": "Tout",

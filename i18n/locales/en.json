@@ -101,6 +101,9 @@
       "add": "Add",
       "amount": "Amount",
       "balance": "Balance (of the period)",
+      "balance-all-time": "Balance (all time)",
+      "balance-options": "Balance options",
+      "balance-until-now": "Balance (until now)",
       "cancel": "Cancel",
       "category": "Category",
       "date": "Date",
@@ -112,6 +115,7 @@
       "export": "Export",
       "export-csv": "CSV",
       "export-json": "JSON",
+      "include-future": "Include future entries",
       "income": "Income",
       "name": "Description",
       "no-spending": "No transactions yet",
@@ -119,7 +123,8 @@
       "title": "Transactions",
       "total-expense": "Total expenses",
       "total-income": "Total income",
-      "type": "Type"
+      "type": "Type",
+      "use-total-balance": "Use total balance"
     },
     "time-range": {
       "all": "All time",

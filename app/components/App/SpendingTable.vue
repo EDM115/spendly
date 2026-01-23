@@ -28,6 +28,51 @@
           >
             {{ $t("app.spending.add") }}
           </v-btn>
+          <v-menu content-class="glass-menu-content">
+            <template #activator="{ props: balanceMenuProps }">
+              <v-btn
+                v-bind="balanceMenuProps"
+                color="secondary"
+                variant="tonal"
+                prepend-icon="mdi-tune-variant"
+                rounded="lg"
+                :block="false"
+              >
+                {{ $t("app.spending.balance-options") }}
+              </v-btn>
+            </template>
+            <v-list
+              class="glass-card pa-2 border-thin"
+              :disabled="timeRangeModel === 'all'"
+            >
+              <v-list-item>
+                <v-list-item-title>{{ $t("app.spending.use-total-balance") }}</v-list-item-title>
+                <template #append>
+                  <v-switch
+                    v-model="useTotalBalance"
+                    density="compact"
+                    color="secondary"
+                    class="pl-4"
+                    hide-details
+                    inset
+                  />
+                </template>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-title>{{ $t("app.spending.include-future") }}</v-list-item-title>
+                <template #append>
+                  <v-switch
+                    v-model="includeFutureEntries"
+                    density="compact"
+                    color="secondary"
+                    class="pl-4"
+                    hide-details
+                    inset
+                  />
+                </template>
+              </v-list-item>
+            </v-list>
+          </v-menu>
           <v-menu
             v-if="filteredSpendings.length > 0"
             content-class="glass-menu-content"
@@ -149,7 +194,7 @@
             <div :class="['summary-bg', balance >= 0 ? 'bg-info' : 'bg-warning']" />
             <v-card-text class="text-center position-relative z-10">
               <div class="text-caption font-weight-bold text-uppercase mb-1 opacity-70">
-                {{ $t("app.spending.balance") }}
+                {{ balanceLabel }}
               </div>
               <div :class="[smAndUp ? 'text-h4' : 'text-h5', 'font-weight-black', 'text-code', balance >= 0 ? 'text-info' : 'text-warning']">
                 {{ formatCurrency(balance) }}
@@ -480,6 +525,8 @@ const tempDate = ref<string | null>(null)
 const isExporting = ref(false)
 const editingSpending = ref<Spending | null>(null)
 const deletingSpending = ref<Spending | null>(null)
+const useTotalBalance = ref(false)
+const includeFutureEntries = ref(false)
 const spendingForm = ref({
   name: "",
   value: 0,
@@ -580,6 +627,53 @@ const searchLabel = computed(() => {
   return `${t("app.spending.search")} (${visibleCount}/${totalCount})`
 })
 
+const parseSpendingDate = (dateValue: string) => {
+  if (!dateValue) {
+    return null
+  }
+
+  if (dateValue.includes("T")) {
+    return new Date(dateValue)
+  }
+
+  return new Date(`${dateValue}T00:00:00`)
+}
+
+const todayBounds = computed(() => {
+  const start = new Date()
+  const end = new Date()
+
+  start.setHours(0, 0, 0, 0)
+  end.setHours(23, 59, 59, 999)
+
+  return {
+    start,
+    end,
+  }
+})
+
+const balanceSpendings = computed(() => {
+  if (includeFutureEntries.value) {
+    return props.spendings
+  }
+
+  if (useTotalBalance.value) {
+    const {
+      end,
+    } = todayBounds.value
+
+    return props.spendings.filter((s) => {
+      const date = parseSpendingDate(s.date)
+
+      return date
+        ? date <= end
+        : false
+    })
+  }
+
+  return filteredSpendings.value
+})
+
 const totalIncome = computed(() => filteredSpendings.value
   .filter((s) => !s.is_spending)
   .reduce((acc, s) => acc + s.value, 0))
@@ -588,7 +682,31 @@ const totalExpense = computed(() => filteredSpendings.value
   .filter((s) => s.is_spending)
   .reduce((acc, s) => acc + s.value, 0))
 
-const balance = computed(() => totalIncome.value - totalExpense.value)
+const balanceIncome = computed(() => balanceSpendings.value
+  .filter((s) => !s.is_spending)
+  .reduce((acc, s) => acc + s.value, 0))
+
+const balanceExpense = computed(() => balanceSpendings.value
+  .filter((s) => s.is_spending)
+  .reduce((acc, s) => acc + s.value, 0))
+
+const balance = computed(() => balanceIncome.value - balanceExpense.value)
+
+const balanceLabel = computed(() => {
+  if (timeRangeModel.value === "all") {
+    return t("app.spending.balance-all-time")
+  }
+
+  if (includeFutureEntries.value) {
+    return t("app.spending.balance-all-time")
+  }
+
+  if (useTotalBalance.value) {
+    return t("app.spending.balance-until-now")
+  }
+
+  return t("app.spending.balance")
+})
 
 const isFormValid = computed(() => Boolean(spendingForm.value.name.trim()
   && spendingForm.value.value > 0
