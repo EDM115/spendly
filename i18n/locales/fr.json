@@ -64,10 +64,12 @@
       "controls": "Options du graphique",
       "deficit": "Déficit",
       "doughnut": "Distribution",
+      "expense-repartition": "Dépenses par catégorie",
       "export": "Télécharger",
       "export-pdf": "PDF",
       "export-png": "PNG",
       "export-svg": "SVG",
+      "income-repartition": "Revenus par catégorie",
       "income-vs-expense": "Revenus vs Dépenses",
       "no-data": "Aucune donnée disponible pour les graphiques",
       "of-plural": "des",
@@ -80,6 +82,7 @@
       "show-grid": "Afficher la grille",
       "show-income": "Revenus",
       "show-legend": "Afficher la légende",
+      "show-points": "Afficher les points",
       "show-title": "Afficher le titre",
       "simplified": "Simplifié",
       "title": "Graphiques & Analyses"
@@ -96,7 +99,7 @@
       "actions": "Actions",
       "add": "Ajouter",
       "amount": "Montant",
-      "balance": "Solde",
+      "balance": "Solde (de la période)",
       "cancel": "Annuler",
       "category": "Catégorie",
       "date": "Date",
@@ -132,6 +135,7 @@
     "title": "Erreur"
   },
   "landing": {
+    "demo": "Essayer la démo",
     "features": {
       "charts": {
         "desc": "Comprenez vos habitudes de dépenses avec de beaux graphiques",

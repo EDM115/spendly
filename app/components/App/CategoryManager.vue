@@ -10,7 +10,7 @@
         <span class="font-weight-bold">{{ $t("app.category.title") }}</span>
       </div>
       <v-btn
-        v-if="canEdit"
+        :disabled="!canEdit"
         color="primary"
         prepend-icon="mdi-plus"
         class="glow-button"
@@ -230,10 +230,9 @@ const emit = defineEmits<{
 }>()
 
 const store = useMainStore()
-const { smAndUp } = useVDisplay()
 const theme = useVTheme()
 
-const canEdit = computed(() => store.canEditData)
+const canEdit = computed(() => store.canEditData && !store.isDemo)
 const showAddDialog = ref(false)
 const showDeleteDialog = ref(false)
 const editingCategory = ref<Category | null>(null)
@@ -291,6 +290,10 @@ const validateIcon = async (iconName: string) => {
 }
 
 const openEditDialog = (category: Category) => {
+  if (!canEdit.value) {
+    return
+  }
+
   editingCategory.value = category
   categoryForm.value = {
     name: category.name,
@@ -302,6 +305,10 @@ const openEditDialog = (category: Category) => {
 }
 
 const openDeleteDialog = (category: Category) => {
+  if (!canEdit.value) {
+    return
+  }
+
   deletingCategory.value = category
   showDeleteDialog.value = true
 }
@@ -318,6 +325,10 @@ const closeDialog = () => {
 }
 
 const saveCategory = async () => {
+  if (!canEdit.value) {
+    return
+  }
+
   if (!categoryForm.value.name.trim() || !isValidIcon.value) {
     return
   }
@@ -351,6 +362,10 @@ const saveCategory = async () => {
 }
 
 const deleteCategory = async () => {
+  if (!canEdit.value) {
+    return
+  }
+
   if (!deletingCategory.value) {
     return
   }

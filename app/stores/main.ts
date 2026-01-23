@@ -28,6 +28,7 @@ export const useMainStore = defineStore("main", () => {
   const getSelectedBudgetTrackerId = computed(() => selectedBudgetTrackerId.value)
   const getCurrentBudgetTrackerRole = computed(() => currentBudgetTrackerRole.value)
   const getIsValidatingToken = computed(() => isValidatingToken.value)
+  const isDemo = computed(() => user.value?.username === "demo")
   const canEditTracker = computed(() => [ "owner", "admin" ].includes(currentBudgetTrackerRole.value ?? ""))
   const canDeleteTracker = computed(() => currentBudgetTrackerRole.value === "owner")
   const canManageUsers = computed(() => [ "owner", "admin" ].includes(currentBudgetTrackerRole.value ?? ""))
@@ -197,6 +198,7 @@ export const useMainStore = defineStore("main", () => {
     getSelectedBudgetTrackerId,
     getCurrentBudgetTrackerRole,
     getIsValidatingToken,
+    isDemo,
     canEditTracker,
     canDeleteTracker,
     canManageUsers,

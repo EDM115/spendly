@@ -36,7 +36,7 @@
     "edm115-lint": "~0.1.6",
     "eslint": "~9.39.2",
     "eslint-plugin-vue": "~10.7.0",
-    "globals": "~17.0.0",
+    "globals": "~17.1.0",
     "jiti": "~2.6.1",
     "lightningcss": "~1.31.1",
     "oxlint": "~1.41.0",
@@ -45,7 +45,7 @@
     "sass-loader": "~16.0.6",
     "typescript": "~5.9.3",
     "vue-eslint-parser": "~10.2.0",
-    "vue-tsc": "~3.2.2"
+    "vue-tsc": "~3.2.3"
   },
   "license": "MIT",
   "name": "spendly",
@@ -69,10 +69,10 @@
     "lint:fix:oxlint": "oxlint --fix --type-aware .",
     "lint:oxlint": "oxlint --type-aware .",
     "preview": "dotenvx run -- nuxt preview --port 88",
-    "seed": "dotenvx run -- node --experimental-strip-types init/seed_db.ts",
+    "seed": "dotenvx run --env SEED=true --overload -- node --experimental-strip-types init/seed_db.ts",
     "start": "dotenvx run -- node .output/server/index.mjs",
     "typecheck": "nuxt typecheck"
   },
   "type": "module",
-  "version": "0.6.0"
+  "version": "0.7.0"
 }

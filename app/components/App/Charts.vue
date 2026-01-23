@@ -91,6 +91,19 @@
                   />
                 </template>
               </v-list-item>
+              <v-list-item>
+                <v-list-item-title>{{ $t("app.charts.show-points") }}</v-list-item-title>
+                <template #append>
+                  <v-switch
+                    v-model="showPoints"
+                    density="compact"
+                    color="primary"
+                    hide-details
+                    inset
+                    :disabled="simplifiedMode"
+                  />
+                </template>
+              </v-list-item>
               <v-divider
                 v-if="activeTab === 'area'"
                 class="my-2"
@@ -126,6 +139,34 @@
                     v-model="showExpense"
                     density="compact"
                     color="error"
+                    hide-details
+                    inset
+                  />
+                </template>
+              </v-list-item>
+              <v-divider
+                v-if="activeTab === 'pie'"
+                class="my-2"
+              />
+              <v-list-item v-if="activeTab === 'pie'">
+                <v-list-item-title>{{ $t("app.charts.show-expense") }}</v-list-item-title>
+                <template #append>
+                  <v-switch
+                    v-model="showExpensePie"
+                    density="compact"
+                    color="error"
+                    hide-details
+                    inset
+                  />
+                </template>
+              </v-list-item>
+              <v-list-item v-if="activeTab === 'pie'">
+                <v-list-item-title>{{ $t("app.charts.show-income") }}</v-list-item-title>
+                <template #append>
+                  <v-switch
+                    v-model="showIncomePie"
+                    density="compact"
+                    color="success"
                     hide-details
                     inset
                   />
@@ -269,15 +310,29 @@
           </div>
         </v-tabs-window-item>
         <v-tabs-window-item value="pie">
-          <div
-            ref="pieChartRef"
-            :class="['chart-container', 'mt-4', 'glass-panel', smAndUp ? 'pa-4' : 'pa-3', 'rounded-xl', 'border-thin', 'bg-transparent']"
-          >
-            <Pie
-              ref="pieChartInstance"
-              :data="pieChartData"
-              :options="pieChartOptions"
-            />
+          <div :class="['pie-grid', 'mt-4', !smAndUp ? 'pie-grid--stack' : '']">
+            <div
+              v-if="showExpensePie"
+              ref="pieChartRef"
+              :class="['chart-container', 'pie-chart', 'glass-panel', smAndUp ? 'pa-4' : 'pa-3', 'rounded-xl', 'border-thin', 'bg-transparent']"
+            >
+              <Pie
+                ref="pieChartInstance"
+                :data="pieChartData"
+                :options="pieChartOptions"
+              />
+            </div>
+            <div
+              v-if="showIncomePie"
+              ref="incomePieChartRef"
+              :class="['chart-container', 'pie-chart', 'glass-panel', smAndUp ? 'pa-4' : 'pa-3', 'rounded-xl', 'border-thin', 'bg-transparent']"
+            >
+              <Pie
+                ref="incomePieChartInstance"
+                :data="incomePieChartData"
+                :options="incomePieChartOptions"
+              />
+            </div>
           </div>
         </v-tabs-window-item>
         <v-tabs-window-item value="bar">
@@ -373,9 +428,12 @@ const showTitle = ref(true)
 const showLegend = ref(true)
 const showAxes = ref(true)
 const showGrid = ref(true)
+const showPoints = ref(true)
 const showBalance = ref(true)
 const showIncome = ref(true)
 const showExpense = ref(true)
+const showExpensePie = ref(true)
+const showIncomePie = ref(true)
 const timeRangeModel = computed({
   get: () => props.timeRange,
   set: (v: string) => emit("update:time-range", v),
@@ -401,6 +459,7 @@ watch(smAndUp, (val, prev) => {
 
 const areaChartInstance = ref<InstanceType<typeof Line> | null>(null)
 const pieChartInstance = ref<InstanceType<typeof Pie> | null>(null)
+const incomePieChartInstance = ref<InstanceType<typeof Pie> | null>(null)
 const barChartInstance = ref<InstanceType<typeof Bar> | null>(null)
 const doughnutChartInstance = ref<InstanceType<typeof Doughnut> | null>(null)
 
@@ -558,6 +617,19 @@ const areaChartOptions = computed(() => ({
       },
     },
   },
+  elements: {
+    point: {
+      radius: showPoints.value
+        ? 3
+        : 0,
+      hoverRadius: showPoints.value
+        ? 4
+        : 0,
+      pointStyle: showPoints.value
+        ? "circle"
+        : "false",
+    },
+  },
   scales: {
     x: {
       display: effectiveShowAxes.value,
@@ -617,6 +689,45 @@ const pieChartData = computed(() => {
   }
 })
 
+// Pie Chart Data - Category distribution for income
+const incomePieChartData = computed(() => {
+  const categoryTotals = new Map<string, {
+    total: number; color: string;
+  }>()
+
+  for (const spending of filteredSpendings.value) {
+    if (!spending.is_spending) {
+      const existing = categoryTotals.get(spending.category_name) || {
+        total: 0,
+        color: spending.icon_color,
+      }
+
+      existing.total += spending.value
+      categoryTotals.set(spending.category_name, existing)
+    }
+  }
+
+  const labels = Array.from(categoryTotals.keys())
+  const data = Array.from(categoryTotals.values())
+    .map((v) => v.total)
+  const backgroundColors = Array.from(categoryTotals.values())
+    .map((v) => v.color)
+
+  return {
+    labels,
+    datasets: [
+      {
+        data,
+        backgroundColor: backgroundColors,
+        borderWidth: 2,
+        borderColor: isDark.value
+          ? "rgba(0,0,0,0.5)"
+          : "#ffffff",
+      },
+    ],
+  }
+})
+
 const pieChartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
@@ -624,17 +735,23 @@ const pieChartOptions = computed(() => ({
   plugins: {
     legend: {
       display: effectiveShowLegend.value,
-      position: smAndUp.value
-        ? ("right" as const)
-        : ("bottom" as const),
+      position: "bottom" as const,
+      align: "start" as const,
       labels: {
         color: textColor.value,
         usePointStyle: true,
+        boxWidth: 10,
+        padding: 12,
+        font: {
+          size: smAndUp.value
+            ? 12
+            : 11,
+        },
       },
     },
     title: {
       display: effectiveShowTitle.value,
-      text: t("app.charts.pie"),
+      text: t("app.charts.expense-repartition"),
       color: textColor.value,
       font: {
         size: 16, weight: 700,
@@ -651,6 +768,62 @@ const pieChartOptions = computed(() => ({
           return `${label} : ${value.toFixed(2)} (${pct.toFixed(1)}%)`
         },
       },
+    },
+  },
+  layout: {
+    padding: {
+      top: 6,
+      bottom: 6,
+    },
+  },
+}))
+
+const incomePieChartOptions = computed(() => ({
+  responsive: true,
+  maintainAspectRatio: false,
+  animation: pieAnimation.value,
+  plugins: {
+    legend: {
+      display: effectiveShowLegend.value,
+      position: "bottom" as const,
+      align: "start" as const,
+      labels: {
+        color: textColor.value,
+        usePointStyle: true,
+        boxWidth: 10,
+        padding: 12,
+        font: {
+          size: smAndUp.value
+            ? 12
+            : 11,
+        },
+      },
+    },
+    title: {
+      display: effectiveShowTitle.value,
+      text: t("app.charts.income-repartition"),
+      color: textColor.value,
+      font: {
+        size: 16, weight: 700,
+      },
+    },
+    tooltip: {
+      callbacks: {
+        label: (ctx: TooltipItem<"pie">) => {
+          const label = ctx.label ?? ""
+          const value = Number(ctx.raw ?? 0)
+          const total = (ctx.dataset.data as number[]).reduce((a, b) => a + Number(b), 0) || 1
+          const pct = (value / total) * 100
+
+          return `${label} : ${value.toFixed(2)} (${pct.toFixed(1)}%)`
+        },
+      },
+    },
+  },
+  layout: {
+    padding: {
+      top: 6,
+      bottom: 6,
     },
   },
 }))
@@ -988,9 +1161,27 @@ const exportPDF = async () => {
   position: relative;
 }
 
+.pie-chart {
+  height: 420px;
+}
+
+.pie-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.pie-grid--stack {
+  grid-template-columns: 1fr;
+}
+
 @media (max-width: 600px) {
   .chart-container {
     height: 280px;
+  }
+
+  .pie-chart {
+    height: 360px;
   }
 }
 

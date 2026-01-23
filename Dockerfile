@@ -28,7 +28,6 @@ COPY .env /app/.env
 ENV NODE_ENV=production
 
 RUN mkdir -p db && \
-    sed -i 's/SEED=false/SEED=true/' .env && \
     pnpm seed && \
     rm -fr init
 

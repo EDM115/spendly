@@ -1,19 +1,30 @@
+export type BudgetTrackerRole = "owner" | "admin" | "editor" | "viewer" | null
+
+export type DemoUserEnv = {
+  username: string;
+  password: string;
+}
+
 export type User = {
   id: string;
   username: string;
-  role: string;
+  role: Exclude<BudgetTrackerRole, null>;
+}
+
+export type SeedUser = Omit<User, "id"> & {
+  password: string;
 }
 
 export type BudgetTracker = {
   id: string;
   name: string;
-  role: string;
+  role: Exclude<BudgetTrackerRole, null>;
 }
 
 export type SharedUser = {
   user_id: string;
   username: string;
-  role: string;
+  role: Exclude<BudgetTrackerRole, null>;
 }
 
 export type Category = {
@@ -48,10 +59,9 @@ export type StoreUser = {
   id: string;
   username: string;
   token: string;
-  role: string;
+  role: Exclude<BudgetTrackerRole, null>;
 } | null
 
-export type BudgetTrackerRole = "owner" | "admin" | "editor" | "viewer" | null
 
 export type Language = "en" | "fr"
 

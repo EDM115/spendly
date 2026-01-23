@@ -62,6 +62,17 @@
                 {{ $t('navbar.connect') }}
               </v-btn>
               <v-btn
+                variant="tonal"
+                size="x-large"
+                color="secondary"
+                to="/demo"
+                prepend-icon="mdi-eye-outline"
+                rounded="xl"
+                class="px-8 glass-button"
+              >
+                {{ $t('landing.demo') }}
+              </v-btn>
+              <v-btn
                 variant="outlined"
                 size="x-large"
                 color="secondary"

@@ -64,10 +64,12 @@
       "controls": "Chart options",
       "deficit": "Deficit",
       "doughnut": "Distribution",
+      "expense-repartition": "Expenses by category",
       "export": "Download",
       "export-pdf": "PDF",
       "export-png": "PNG",
       "export-svg": "SVG",
+      "income-repartition": "Income by category",
       "income-vs-expense": "Income vs Expenses",
       "no-data": "No data available for charts",
       "of-plural": "of",
@@ -80,6 +82,7 @@
       "show-grid": "Show grid",
       "show-income": "Income",
       "show-legend": "Show legend",
+      "show-points": "Show points",
       "show-title": "Show title",
       "simplified": "Simplified",
       "title": "Charts & Analytics"
@@ -96,7 +99,7 @@
       "actions": "Actions",
       "add": "Add",
       "amount": "Amount",
-      "balance": "Balance",
+      "balance": "Balance (of the period)",
       "cancel": "Cancel",
       "category": "Category",
       "date": "Date",
@@ -132,6 +135,7 @@
     "title": "Error"
   },
   "landing": {
+    "demo": "Try the demo",
     "features": {
       "charts": {
         "desc": "Understand your spending habits with beautiful charts",

@@ -18,7 +18,7 @@
 
         <div :class="['spending-actions', !smAndUp ? 'spending-actions--stack' : '']">
           <v-btn
-            v-if="canEdit"
+            :disabled="!canEdit"
             color="primary"
             class="glow-button"
             prepend-icon="mdi-plus"
@@ -134,13 +134,18 @@
 
       <v-text-field
         v-model="search"
-        :label="$t('app.spending.search')"
+        :label="searchLabel"
         prepend-inner-icon="mdi-magnify"
         variant="outlined"
         hide-details
+        clearable
+        max-width="600"
+        min-width="400"
         class="mb-6 search-field"
         rounded="pill"
         :density="smAndUp ? 'comfortable' : 'compact'"
+        style="justify-self: center;"
+        @click:clear="search = ''"
       />
 
       <v-data-table-virtual
@@ -150,6 +155,7 @@
         :height="Math.min((filteredSpendings.length === 0 ? 1 : filteredSpendings.length + 1) * tableRowHeight, maxTableHeight)"
         :item-height="tableRowHeight"
         :search
+        :custom-filter="searchFilter"
         hover
         :class="['bg-transparent', 'spending-table', !smAndUp ? 'spending-table--compact' : '']"
         :no-data-text="$t('app.spending.no-spending')"
@@ -180,7 +186,7 @@
           >
             <template #activator="{ props: tooltipProps }">
               <v-btn
-                v-if="canEdit"
+                :disabled="!canEdit"
                 v-bind="tooltipProps"
                 icon="mdi-pencil-outline"
                 variant="text"
@@ -196,7 +202,7 @@
           >
             <template #activator="{ props: tooltipProps }">
               <v-btn
-                v-if="canEdit"
+                :disabled="!canEdit"
                 v-bind="tooltipProps"
                 icon="mdi-delete-outline"
                 variant="text"
@@ -435,7 +441,7 @@ const sortBy = ref<{
     key: "date", order: "desc",
   },
 ])
-const canEdit = computed(() => store.canEditData)
+const canEdit = computed(() => store.canEditData && !store.isDemo)
 const showAddDialog = ref(false)
 const showDeleteDialog = ref(false)
 const dateMenu = ref(false)
@@ -502,6 +508,46 @@ const filteredSpendings = computed(() => {
   return props.spendings.filter((s) => s.date >= win.start && s.date < win.end)
 })
 
+const searchFilter = (_value: string | number | boolean | null, query: string, item: unknown) => {
+  if (!query) {
+    return true
+  }
+
+  const row = (item as { raw?: Spending }).raw ?? item as Spending
+  const haystack = [
+    row.name,
+    row.category_name,
+    row.date,
+    String(row.value),
+  ]
+    .join(" ")
+    .toLowerCase()
+
+  return haystack.includes(query.toLowerCase())
+}
+
+const searchLabel = computed(() => {
+  const totalCount = filteredSpendings.value.length
+  const term = search.value.trim()
+
+  if (!term) {
+    return `${t("app.spending.search")} (${totalCount}/${totalCount})`
+  }
+
+  const needle = term.toLowerCase()
+  const visibleCount = filteredSpendings.value.filter((s) => [
+    s.name,
+    s.category_name,
+    s.date,
+    String(s.value),
+  ]
+    .join(" ")
+    .toLowerCase()
+    .includes(needle)).length
+
+  return `${t("app.spending.search")} (${visibleCount}/${totalCount})`
+})
+
 const totalIncome = computed(() => filteredSpendings.value
   .filter((s) => !s.is_spending)
   .reduce((acc, s) => acc + s.value, 0))
@@ -546,6 +592,10 @@ const formatDate = (dateStr: string) => {
 }
 
 const openEditDialog = (spending: Spending) => {
+  if (!canEdit.value) {
+    return
+  }
+
   dateMenu.value = false
   editingSpending.value = spending
   spendingForm.value = {
@@ -559,6 +609,10 @@ const openEditDialog = (spending: Spending) => {
 }
 
 const openDeleteDialog = (spending: Spending) => {
+  if (!canEdit.value) {
+    return
+  }
+
   deletingSpending.value = spending
   showDeleteDialog.value = true
 }
@@ -579,6 +633,10 @@ const closeDialog = () => {
 }
 
 const saveSpending = async () => {
+  if (!canEdit.value) {
+    return
+  }
+
   if (!isFormValid.value) {
     return
   }
@@ -613,6 +671,10 @@ const saveSpending = async () => {
 }
 
 const deleteSpending = async () => {
+  if (!canEdit.value) {
+    return
+  }
+
   if (!deletingSpending.value) {
     return
   }

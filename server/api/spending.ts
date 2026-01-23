@@ -107,6 +107,12 @@ export default defineEventHandler(async (event) => {
       }
     }
     case "POST": {
+      if (event.context.auth?.username === "demo") {
+        throw createError({
+          status: 403, message: "Demo users cannot manage transactions",
+        })
+      }
+
       const {
         name, budget_tracker_id, value, is_spending, category_id, date,
       }: {
@@ -142,10 +148,10 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const categoryExists = db.prepare<[string]>(`
-        SELECT 1 FROM Category WHERE id = ?
+      const categoryExists = db.prepare<[string, string]>(`
+        SELECT 1 FROM Category WHERE id = ? AND budget_tracker_id = ?
       `)
-        .get(category_id)
+        .get(category_id, budget_tracker_id)
 
       if (!categoryExists) {
         throw createError({
@@ -172,6 +178,12 @@ export default defineEventHandler(async (event) => {
       }
     }
     case "PUT": {
+      if (event.context.auth?.username === "demo") {
+        throw createError({
+          status: 403, message: "Demo users cannot manage transactions",
+        })
+      }
+
       const {
         id, name, value, is_spending, category_id, date, budget_tracker_id,
       }: {
@@ -208,10 +220,21 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const categoryExists = db.prepare<[string]>(`
-        SELECT 1 FROM Category WHERE id = ?
+      const spendingExists = db.prepare<[string, string], { id: string }>(`
+        SELECT id FROM Spending WHERE id = ? AND budget_tracker_id = ?
       `)
-        .get(category_id)
+        .get(id, budget_tracker_id)
+
+      if (!spendingExists) {
+        throw createError({
+          status: 404, message: "Spending not found",
+        })
+      }
+
+      const categoryExists = db.prepare<[string, string]>(`
+        SELECT 1 FROM Category WHERE id = ? AND budget_tracker_id = ?
+      `)
+        .get(category_id, budget_tracker_id)
 
       if (!categoryExists) {
         throw createError({
@@ -236,6 +259,12 @@ export default defineEventHandler(async (event) => {
       }
     }
     case "DELETE": {
+      if (event.context.auth?.username === "demo") {
+        throw createError({
+          status: 403, message: "Demo users cannot manage transactions",
+        })
+      }
+
       const {
         id, budget_tracker_id,
       }: {
@@ -264,6 +293,17 @@ export default defineEventHandler(async (event) => {
       if (!canEditSpending(userAccess.role)) {
         throw createError({
           status: 403, message: "You do not have permission to delete transactions",
+        })
+      }
+
+      const spendingExists = db.prepare<[string, string], { id: string }>(`
+        SELECT id FROM Spending WHERE id = ? AND budget_tracker_id = ?
+      `)
+        .get(id, budget_tracker_id)
+
+      if (!spendingExists) {
+        throw createError({
+          status: 404, message: "Spending not found",
         })
       }
 

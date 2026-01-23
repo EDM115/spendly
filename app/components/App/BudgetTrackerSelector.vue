@@ -68,6 +68,7 @@
             :class="['glow-button', smAndUp ? 'ma-2' : 'ma-1']"
             prepend-icon="mdi-plus"
             :block="!smAndUp"
+            :disabled="isDemo"
             @click="showAddDialog = true"
           >
             {{ $t("app.budget-tracker.add") }}
@@ -78,6 +79,7 @@
             :class="['glow-button', smAndUp ? 'ma-2' : 'ma-1']"
             prepend-icon="mdi-pencil-outline"
             :block="!smAndUp"
+            :disabled="isDemo"
             @click="openEditDialog"
           >
             {{ $t("app.budget-tracker.edit") }}
@@ -88,6 +90,7 @@
             :class="['glow-button', smAndUp ? 'ma-2' : 'ma-1']"
             prepend-icon="mdi-account-multiple-outline"
             :block="!smAndUp"
+            :disabled="isDemo"
             @click="showShareDialog = true"
           >
             {{ $t("app.budget-tracker.share") }}
@@ -98,6 +101,7 @@
             :class="['glow-button', smAndUp ? 'ma-2' : 'ma-1']"
             prepend-icon="mdi-delete-outline"
             :block="!smAndUp"
+            :disabled="isDemo"
             @click="showDeleteDialog = true"
           >
             {{ $t("app.budget-tracker.delete") }}
@@ -367,6 +371,7 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const store = useMainStore()
 const { smAndUp } = useVDisplay()
+const isDemo = computed(() => store.isDemo)
 
 const selectedTracker = ref<string | null>(props.modelValue)
 const showAddDialog = ref(false)
@@ -440,6 +445,10 @@ const onTrackerChange = (value: string | null) => {
 }
 
 const openEditDialog = () => {
+  if (isDemo.value) {
+    return
+  }
+
   const tracker = props.budgetTrackers.find((t) => t.id === selectedTracker.value)
 
   if (tracker) {
@@ -449,6 +458,10 @@ const openEditDialog = () => {
 }
 
 const addTracker = async () => {
+  if (isDemo.value) {
+    return
+  }
+
   if (!newTrackerName.value.trim()) {
     return
   }
@@ -476,6 +489,10 @@ const addTracker = async () => {
 }
 
 const updateTracker = async () => {
+  if (isDemo.value) {
+    return
+  }
+
   if (!editTrackerName.value.trim() || !selectedTracker.value) {
     return
   }
@@ -497,6 +514,10 @@ const updateTracker = async () => {
 }
 
 const deleteTracker = async () => {
+  if (isDemo.value) {
+    return
+  }
+
   if (!selectedTracker.value) {
     return
   }
@@ -536,6 +557,10 @@ const fetchSharedUsers = async () => {
 }
 
 const addUser = async () => {
+  if (isDemo.value) {
+    return
+  }
+
   if (!newUsername.value.trim() || !selectedTracker.value) {
     return
   }
@@ -559,6 +584,10 @@ const addUser = async () => {
 }
 
 const updateUserRole = async (userId: string, role: string) => {
+  if (isDemo.value) {
+    return
+  }
+
   if (!selectedTracker.value) {
     return
   }
@@ -580,6 +609,10 @@ const updateUserRole = async (userId: string, role: string) => {
 }
 
 const removeUser = async (userId: string) => {
+  if (isDemo.value) {
+    return
+  }
+
   if (!selectedTracker.value) {
     return
   }

@@ -22,7 +22,10 @@ export default defineEventHandler(async (event) => {
         username: string;
       }
 
-      event.context.auth = { userId: payload.id }
+      event.context.auth = {
+        userId: payload.id,
+        username: payload.username,
+      }
     } catch {
       return sendError(event, createError({
         status: 401,
