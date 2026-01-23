@@ -28,7 +28,10 @@
           >
             {{ $t("app.spending.add") }}
           </v-btn>
-          <v-menu>
+          <v-menu
+            v-if="filteredSpendings.length > 0"
+            content-class="glass-menu-content"
+          >
             <template #activator="{ props: menuProps }">
               <v-btn
                 v-bind="menuProps"
@@ -140,9 +143,10 @@
         hide-details
         clearable
         max-width="600"
-        min-width="400"
+        :min-width="smAndUp ? 400 : 300"
         class="mb-6 search-field"
         rounded="pill"
+        autocomplete="suppress"
         :density="smAndUp ? 'comfortable' : 'compact'"
         style="justify-self: center;"
         @click:clear="search = ''"
@@ -152,7 +156,7 @@
         :headers
         :items="filteredSpendings"
         :sort-by="sortBy"
-        :height="Math.min((filteredSpendings.length === 0 ? 1 : filteredSpendings.length + 1) * tableRowHeight, maxTableHeight)"
+        :height="Math.min((filteredSpendings.length === 0 ? 2 : filteredSpendings.length + 1) * tableRowHeight, maxTableHeight)"
         :item-height="tableRowHeight"
         :search
         :custom-filter="searchFilter"
@@ -233,6 +237,7 @@
                 v-model="spendingForm.name"
                 :label="$t('app.spending.name')"
                 variant="outlined"
+                autocomplete="suppress"
                 :rules="[v => !!v || 'Required']"
               />
             </v-col>
@@ -245,6 +250,7 @@
                 :label="$t('app.spending.amount')"
                 inset
                 variant="outlined"
+                autocomplete="suppress"
                 :min="0"
                 :precision="2"
                 :rules="[v => v > 0 || 'Must be positive']"
@@ -310,6 +316,7 @@
                     :label="$t('app.spending.date')"
                     variant="outlined"
                     readonly
+                    autocomplete="suppress"
                     append-inner-icon="mdi-calendar-outline"
                     :rules="[v => !!v || 'Required']"
                   />

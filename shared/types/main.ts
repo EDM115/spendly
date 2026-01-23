@@ -68,3 +68,15 @@ export type Language = "en" | "fr"
 export type Theme = "light" | "dark"
 
 export type ExportFormat = "csv" | "json" | "sql" | "sqlite"
+
+export type MdiMetaItem = {
+  id: string;
+  name: string;
+  codepoint: string;
+  aliases: string[];
+  tags: string[];
+  styles: string[];
+  author: string;
+  version: string;
+  deprecated: boolean;
+}

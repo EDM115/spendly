@@ -27,17 +27,17 @@ Create a `.env` file in the root directory and add the following variables :
 ```env
 JWT_SECRET=4451b7b6411db0854895824f2fce24721989ac47da45c862cb1baf15383dbc6ef07c1f700304693dde08207bcf75e7e50ad9b146e8bdc4ebf16ade6e6cb9f173
 SEED_USERS='[{"username": "admin", "password": "admin", "role": "admin"}, {"username": "test", "password": "test", "role": "user"}]'
-SEED=true
+SEED=false
 DEFAULT_UI_LANG=en
+DEMO_USER='{"username": "example", "password": "example123"}'
 ```
 - `JWT_SECRET` : generate with `node -e "import('crypto').then(crypto => console.log(crypto.randomBytes(64).toString('hex')))"`
 - `SEED_USERS` : if any value should contain a quote, write instead `\'` (or `\"`)
+- `SEED` : protection so Nuxt doesn't accidentally re-seed in dev mode as it runs the file for some reason
 - `DEFAULT_UI_LANG` : the default language of the UI, either `en` or `fr`
+- `DEMO_USER` : the user that will be used to create the demo. PLEASE make it extra complex and non deterministic, as anyone accessing it can deface or delete your demo
 ```pwsh
 pnpm seed
-```
-Put `SEED` to `false` once the DB is seeded.
-```pwsh
 pnpm i --frozen-lockfile
 pnpm dev
 ```

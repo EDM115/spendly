@@ -118,6 +118,7 @@
                   flat
                   density="comfortable"
                   class="rounded-lg"
+                  autocomplete="suppress"
                   :error="!newUser.username.trim()"
                 />
               </v-col>
@@ -135,6 +136,7 @@
                   flat
                   density="comfortable"
                   class="rounded-lg"
+                  autocomplete="suppress"
                   :error="!newUser.password.trim()"
                 />
               </v-col>

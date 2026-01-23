@@ -4,35 +4,17 @@
     fluid
   >
     <div v-if="!hasLoaded">
-      <v-row v-if="smAndUp">
-        <v-col cols="6">
-          <v-skeleton-loader
-            type="heading,table-thead,table-tbody"
-            class="mb-4"
-          />
-        </v-col>
-        <v-col cols="6">
-          <v-skeleton-loader
-            type="heading,image"
-            class="mb-4"
-          />
-        </v-col>
-      </v-row>
-
-      <v-col
-        v-else
-        cols="12"
-      >
+      <v-col cols="12">
         <v-row>
           <v-skeleton-loader
-            type="heading,table-thead,table-tbody"
-            class="mb-4"
+            type="heading,image"
+            class="mb-4 w-100"
           />
         </v-row>
         <v-row>
           <v-skeleton-loader
-            type="heading,image"
-            class="mb-4"
+            type="heading,table-thead,table-tbody"
+            class="mb-4 w-100"
           />
         </v-row>
       </v-col>

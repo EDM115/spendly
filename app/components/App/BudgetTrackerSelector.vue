@@ -126,6 +126,7 @@
           :label="$t('app.budget-tracker.name')"
           variant="outlined"
           autofocus
+          autocomplete="suppress"
           bg-color="transparent"
           @keyup.enter="addTracker"
         />
@@ -167,6 +168,7 @@
           :label="$t('app.budget-tracker.name')"
           variant="outlined"
           autofocus
+          autocomplete="suppress"
           bg-color="transparent"
           @keyup.enter="updateTracker"
         />
@@ -316,6 +318,7 @@
               variant="outlined"
               density="compact"
               hide-details
+              autocomplete="suppress"
               bg-color="transparent"
             />
           </v-col>

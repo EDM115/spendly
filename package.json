@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "@mdi/font": "~7.4.47",
+    "@mdi/svg": "~7.4.47",
     "@nuxt/fonts": "~0.13.0",
     "@nuxt/image": "~2.0.0",
     "@nuxtjs/i18n": "~10.2.1",
@@ -26,8 +27,8 @@
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "~1.52.0",
-    "@nuxt/eslint": "~1.12.1",
-    "@stylistic/eslint-plugin": "~5.7.0",
+    "@nuxt/eslint": "~1.13.0",
+    "@stylistic/eslint-plugin": "~5.7.1",
     "@types/better-sqlite3": "^7.6.13",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "latest",
@@ -74,5 +75,5 @@
     "typecheck": "nuxt typecheck"
   },
   "type": "module",
-  "version": "0.7.0"
+  "version": "0.8.0"
 }

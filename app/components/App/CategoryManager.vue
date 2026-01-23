@@ -124,6 +124,7 @@
           v-model="categoryForm.name"
           :label="$t('app.category.name')"
           variant="outlined"
+          autocomplete="suppress"
           class="mb-4"
           bg-color="transparent"
         />
@@ -143,14 +144,40 @@
             </v-avatar>
           </v-col>
           <v-col>
-            <v-text-field
+            <v-autocomplete
               v-model="iconInput"
+              v-model:search="iconSearch"
+              :items="filteredIconItems"
+              item-title="name"
+              item-value="name"
               :label="$t('app.category.icon')"
               variant="outlined"
               hide-details
               :error="!isValidIcon"
               bg-color="transparent"
-            />
+              clearable
+              autocomplete="suppress"
+              auto-select-first
+              :no-filter="true"
+              :menu-props="{ maxHeight: 320 }"
+            >
+              <template #item="{ props: itemProps, item }">
+                <v-list-item v-bind="itemProps">
+                  <template #prepend>
+                    <v-icon
+                      :icon="`mdi-${item.raw.name}`"
+                      class="mr-n4"
+                    />
+                  </template>
+                  <v-list-item-subtitle
+                    v-if="item.raw.aliases && item.raw.aliases.length > 0"
+                    style="max-width: 250px;"
+                  >
+                    {{ item.raw.aliases.map(alias => alias.split("-").join(" ")).join(", ") }}
+                  </v-list-item-subtitle>
+                </v-list-item>
+              </template>
+            </v-autocomplete>
           </v-col>
         </v-row>
         <v-color-picker
@@ -220,6 +247,8 @@
 <script lang="ts" setup>
 import type { VIcon } from "vuetify/components"
 
+import mdiMetaRaw from "@mdi/svg/meta.json"
+
 const props = defineProps<{
   categories: Category[];
   budgetTrackerId: string;
@@ -240,10 +269,13 @@ const deletingCategory = ref<Category | null>(null)
 const categoryForm = ref({
   name: "",
   icon: "mdi-",
-  color: theme.current.value.colors.primary,
+  color: computed(() => theme.current.value.colors.primary).value,
 })
 const isValidIcon = ref(false)
 const testIcon = ref<InstanceType<typeof VIcon> | HTMLElement | null>(null)
+const iconSearch = ref("")
+
+const mdiMeta = mdiMetaRaw as MdiMetaItem[]
 
 const iconInput = computed({
   get: () => categoryForm.value.icon.replace(/^mdi-/, ""),
@@ -256,6 +288,117 @@ const iconInput = computed({
       : "mdi-"
     void validateIcon(categoryForm.value.icon)
   },
+})
+
+const normalizeQuery = (value: string) => value
+  .toLowerCase()
+  .replace(/\//g, " ")
+  .trim()
+
+const splitTokens = (value: string) => normalizeQuery(value)
+  .split(/[\s-]+/)
+  .filter(Boolean)
+
+const tokenMatchScore = (fieldToken: string, queryToken: string) => {
+  if (fieldToken === queryToken) {
+    return 30
+  }
+
+  if (fieldToken.startsWith(queryToken)) {
+    return 20
+  }
+
+  if (fieldToken.includes(queryToken)) {
+    return 10
+  }
+
+  return 0
+}
+
+const tokensMatchScore = (fieldTokens: string[], queryTokens: string[]) => {
+  if (queryTokens.length === 0) {
+    return 0
+  }
+
+  let total = 0
+
+  for (const queryToken of queryTokens) {
+    const best = fieldTokens.reduce(
+      (max, fieldToken) => Math.max(max, tokenMatchScore(fieldToken, queryToken)),
+      0,
+    )
+
+    if (best === 0) {
+      return 0
+    }
+
+    total += best
+  }
+
+  const extraTokens = Math.max(fieldTokens.length - queryTokens.length, 0)
+
+  return total - extraTokens * 2
+}
+
+const scoreTokens = (
+  fieldValue: string,
+  query: string,
+  queryTokens: string[],
+  splitPattern: RegExp,
+  exactScore: number,
+  tokenScore: number,
+) => {
+  if (!fieldValue) {
+    return 0
+  }
+
+  const normalized = normalizeQuery(fieldValue)
+
+  if (normalized === query) {
+    return exactScore
+  }
+
+  const fieldTokens = normalized.split(splitPattern).filter(Boolean)
+
+  const matchScore = tokensMatchScore(fieldTokens, queryTokens)
+
+  if (matchScore > 0) {
+    return tokenScore + matchScore
+  }
+
+  return 0
+}
+
+const filteredIconItems = computed(() => {
+  const query = normalizeQuery(iconSearch.value)
+
+  if (!query) {
+    return [] as MdiMetaItem[]
+  }
+
+  const queryTokens = splitTokens(query)
+
+  const scoredMatches = mdiMeta
+    .map((item) => {
+      const nameScore = scoreTokens(item.name, query, queryTokens, /-/, 100, 80)
+      const aliasScore = item.aliases?.reduce((best, alias) => Math.max(
+        best,
+        scoreTokens(alias, query, queryTokens, /-/, 70, 60),
+      ), 0) ?? 0
+      const tagScore = item.tags?.reduce((best, tag) => Math.max(
+        best,
+        scoreTokens(tag, query, queryTokens, /\s+/, 40, 30),
+      ), 0) ?? 0
+      const score = Math.max(nameScore, aliasScore, tagScore)
+
+      return score > 0 ? { item, score } : null
+    })
+    .filter((match): match is { item: MdiMetaItem; score: number } => Boolean(match))
+
+  return scoredMatches
+    .sort((a, b) => b.score - a.score || a.item.name.localeCompare(b.item.name))
+    .map((match) => match.item)
+    .slice(0, 100)
 })
 
 const validateIcon = async (iconName: string) => {
@@ -301,6 +444,7 @@ const openEditDialog = (category: Category) => {
     color: category.color,
   }
   isValidIcon.value = true
+  iconSearch.value = iconInput.value
   showAddDialog.value = true
 }
 
@@ -322,7 +466,14 @@ const closeDialog = () => {
     color: "#4ADE80",
   }
   isValidIcon.value = false
+  iconSearch.value = ""
 }
+
+watch(showAddDialog, (isOpen) => {
+  if (isOpen) {
+    iconSearch.value = iconInput.value
+  }
+})
 
 const saveCategory = async () => {
   if (!canEdit.value) {

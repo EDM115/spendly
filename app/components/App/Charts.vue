@@ -15,7 +15,10 @@
           v-model:time-range="timeRangeModel"
           v-model:anchor-date="anchorDateModel"
         />
-        <div :class="['chart-actions', !smAndUp ? 'chart-actions--inline' : '']">
+        <div
+          v-if="spendings.length > 0"
+          :class="['chart-actions', !smAndUp ? 'chart-actions--inline' : '']"
+        >
           <v-btn
             :color="simplifiedMode ? 'primary' : 'info'"
             variant="tonal"
@@ -25,9 +28,7 @@
             {{ $t("app.charts.simplified") }} {{ simplifiedMode ? '✅' : '❌' }}
           </v-btn>
 
-          <v-menu
-            content-class="glass-menu-content"
-          >
+          <v-menu content-class="glass-menu-content">
             <template #activator="{ props: settingsProps }">
               <v-btn
                 v-bind="settingsProps"
@@ -39,7 +40,7 @@
               </v-btn>
             </template>
             <v-list class="glass-card pa-2 border-thin">
-              <v-list-item>
+              <v-list-item v-if="!simplifiedMode">
                 <v-list-item-title>{{ $t("app.charts.show-title") }}</v-list-item-title>
                 <template #append>
                   <v-switch
@@ -52,7 +53,7 @@
                   />
                 </template>
               </v-list-item>
-              <v-list-item>
+              <v-list-item v-if="!simplifiedMode">
                 <v-list-item-title>{{ $t("app.charts.show-legend") }}</v-list-item-title>
                 <template #append>
                   <v-switch
@@ -65,7 +66,7 @@
                   />
                 </template>
               </v-list-item>
-              <v-list-item>
+              <v-list-item v-if="!simplifiedMode">
                 <v-list-item-title>{{ $t("app.charts.show-axes") }}</v-list-item-title>
                 <template #append>
                   <v-switch
@@ -78,7 +79,7 @@
                   />
                 </template>
               </v-list-item>
-              <v-list-item>
+              <v-list-item v-if="!simplifiedMode">
                 <v-list-item-title>{{ $t("app.charts.show-grid") }}</v-list-item-title>
                 <template #append>
                   <v-switch
@@ -91,7 +92,7 @@
                   />
                 </template>
               </v-list-item>
-              <v-list-item>
+              <v-list-item v-if="!simplifiedMode">
                 <v-list-item-title>{{ $t("app.charts.show-points") }}</v-list-item-title>
                 <template #append>
                   <v-switch
@@ -105,7 +106,7 @@
                 </template>
               </v-list-item>
               <v-divider
-                v-if="activeTab === 'area'"
+                v-if="['area', 'pie'].includes(activeTab) && !simplifiedMode"
                 class="my-2"
               />
               <v-list-item v-if="activeTab === 'area'">
@@ -144,10 +145,6 @@
                   />
                 </template>
               </v-list-item>
-              <v-divider
-                v-if="activeTab === 'pie'"
-                class="my-2"
-              />
               <v-list-item v-if="activeTab === 'pie'">
                 <v-list-item-title>{{ $t("app.charts.show-expense") }}</v-list-item-title>
                 <template #append>
@@ -175,10 +172,7 @@
             </v-list>
           </v-menu>
 
-          <v-menu
-            v-if="spendings.length > 0"
-            content-class="glass-menu-content"
-          >
+          <v-menu content-class="glass-menu-content">
             <template #activator="{ props: menuProps }">
               <v-btn
                 v-bind="menuProps"
@@ -483,6 +477,9 @@ const effectiveShowAxes = computed(() => (simplifiedMode.value
 const effectiveShowGrid = computed(() => (simplifiedMode.value
   ? false
   : showGrid.value))
+const effectiveShowPoints = computed(() => (simplifiedMode.value
+  ? false
+  : showPoints.value))
 
 const pieAnimation = computed(() => ({
   duration: 650,
@@ -619,13 +616,13 @@ const areaChartOptions = computed(() => ({
   },
   elements: {
     point: {
-      radius: showPoints.value
+      radius: effectiveShowPoints.value
         ? 3
         : 0,
-      hoverRadius: showPoints.value
+      hoverRadius: effectiveShowPoints.value
         ? 4
         : 0,
-      pointStyle: showPoints.value
+      pointStyle: effectiveShowPoints.value
         ? "circle"
         : "false",
     },
