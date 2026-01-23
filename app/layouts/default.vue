@@ -32,6 +32,27 @@ useHead({
     {
       name: "description", content: t("main.description"),
     },
+    {
+      name: "og:image:type", content: "image/png",
+    },
+    {
+      name: "og:image:width", content: "1920",
+    },
+    {
+      name: "og:image:height", content: "1080",
+    },
+    {
+      name: "twitter:card", content: "summary_large_image",
+    },
+    {
+      name: "twitter:image:src", content: "/images/og.png",
+    },
+    {
+      name: "twitter:image:width", content: "1920",
+    },
+    {
+      name: "twitter:image:height", content: "1080",
+    },
   ],
   link: [
     {
