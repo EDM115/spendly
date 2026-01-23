@@ -247,7 +247,7 @@
 <script lang="ts" setup>
 import type { VIcon } from "vuetify/components"
 
-import mdiMetaRaw from "@mdi/svg/meta.json"
+const mdiMetaRaw = await import("@mdi/svg/meta.json")
 
 const props = defineProps<{
   categories: Category[];

@@ -65,7 +65,7 @@ export default defineNuxtConfig({
   },
   vite: {
     build: {
-      chunkSizeWarningLimit: 2000,
+      chunkSizeWarningLimit: 2500,
       cssMinify: "lightningcss",
     },
     clearScreen: false,
