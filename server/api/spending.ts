@@ -9,7 +9,8 @@ function canEditSpending(role: Exclude<BudgetTrackerRole, null>): boolean {
 export default defineEventHandler(async (event) => {
   if (![ "GET", "POST", "PUT", "DELETE" ].includes(event.method)) {
     throw createError({
-      status: 405, message: "Method not allowed",
+      status: 405,
+      message: "Method not allowed",
     })
   }
 
@@ -17,14 +18,18 @@ export default defineEventHandler(async (event) => {
 
   if (!userId) {
     throw createError({
-      status: 401, message: "Unauthorized",
+      status: 401,
+      message: "Unauthorized",
     })
   }
 
   switch (event.method) {
     case "GET": {
       const {
-        budget_tracker_id, spending_id, start_date, end_date,
+        budget_tracker_id,
+        spending_id,
+        start_date,
+        end_date,
       }: {
         budget_tracker_id?: string;
         spending_id?: string;
@@ -34,11 +39,13 @@ export default defineEventHandler(async (event) => {
 
       if (!budget_tracker_id) {
         throw createError({
-          status: 400, message: "Missing budget_tracker_id",
+          status: 400,
+          message: "Missing budget_tracker_id",
         })
       }
 
-      const hasAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
+      const hasAccess = db
+        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
@@ -46,12 +53,14 @@ export default defineEventHandler(async (event) => {
 
       if (!hasAccess) {
         throw createError({
-          status: 403, message: "Access denied",
+          status: 403,
+          message: "Access denied",
         })
       }
 
       if (spending_id) {
-        const spending = db.prepare<[string, string], Spending>(`
+        const spending = db
+          .prepare<[string, string], Spending>(`
           SELECT s.*, c.name as category_name, c.color as icon_color, c.icon
           FROM Spending s
           INNER JOIN Category c ON s.category_id = c.id
@@ -109,12 +118,18 @@ export default defineEventHandler(async (event) => {
     case "POST": {
       if (event.context.auth?.username === "demo") {
         throw createError({
-          status: 403, message: "Demo users cannot manage transactions",
+          status: 403,
+          message: "Demo users cannot manage transactions",
         })
       }
 
       const {
-        name, budget_tracker_id, value, is_spending, category_id, date,
+        name,
+        budget_tracker_id,
+        value,
+        is_spending,
+        category_id,
+        date,
       }: {
         name?: string;
         budget_tracker_id?: string;
@@ -124,13 +139,22 @@ export default defineEventHandler(async (event) => {
         date?: string;
       } = await readBody(event)
 
-      if (!name || !budget_tracker_id || value === undefined || is_spending === undefined || !category_id || !date) {
+      if (
+        !name
+        || !budget_tracker_id
+        || value === undefined
+        || is_spending === undefined
+        || !category_id
+        || !date
+      ) {
         throw createError({
-          status: 400, message: "Missing required fields",
+          status: 400,
+          message: "Missing required fields",
         })
       }
 
-      const userAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
+      const userAccess = db
+        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
@@ -138,24 +162,28 @@ export default defineEventHandler(async (event) => {
 
       if (!userAccess) {
         throw createError({
-          status: 403, message: "Access denied",
+          status: 403,
+          message: "Access denied",
         })
       }
 
       if (!canEditSpending(userAccess.role)) {
         throw createError({
-          status: 403, message: "You do not have permission to add transactions",
+          status: 403,
+          message: "You do not have permission to add transactions",
         })
       }
 
-      const categoryExists = db.prepare<[string, string]>(`
+      const categoryExists = db
+        .prepare<[string, string]>(`
         SELECT 1 FROM Category WHERE id = ? AND budget_tracker_id = ?
       `)
         .get(category_id, budget_tracker_id)
 
       if (!categoryExists) {
         throw createError({
-          status: 404, message: "Category not found",
+          status: 404,
+          message: "Category not found",
         })
       }
 
@@ -180,12 +208,19 @@ export default defineEventHandler(async (event) => {
     case "PUT": {
       if (event.context.auth?.username === "demo") {
         throw createError({
-          status: 403, message: "Demo users cannot manage transactions",
+          status: 403,
+          message: "Demo users cannot manage transactions",
         })
       }
 
       const {
-        id, name, value, is_spending, category_id, date, budget_tracker_id,
+        id,
+        name,
+        value,
+        is_spending,
+        category_id,
+        date,
+        budget_tracker_id,
       }: {
         id?: string;
         name?: string;
@@ -196,13 +231,23 @@ export default defineEventHandler(async (event) => {
         budget_tracker_id?: string;
       } = await readBody(event)
 
-      if (!id || !name || value === undefined || is_spending === undefined || !category_id || !date || !budget_tracker_id) {
+      if (
+        !id
+        || !name
+        || value === undefined
+        || is_spending === undefined
+        || !category_id
+        || !date
+        || !budget_tracker_id
+      ) {
         throw createError({
-          status: 400, message: "Missing required fields",
+          status: 400,
+          message: "Missing required fields",
         })
       }
 
-      const userAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
+      const userAccess = db
+        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
@@ -210,35 +255,41 @@ export default defineEventHandler(async (event) => {
 
       if (!userAccess) {
         throw createError({
-          status: 403, message: "Access denied",
+          status: 403,
+          message: "Access denied",
         })
       }
 
       if (!canEditSpending(userAccess.role)) {
         throw createError({
-          status: 403, message: "You do not have permission to edit transactions",
+          status: 403,
+          message: "You do not have permission to edit transactions",
         })
       }
 
-      const spendingExists = db.prepare<[string, string], { id: string }>(`
+      const spendingExists = db
+        .prepare<[string, string], { id: string }>(`
         SELECT id FROM Spending WHERE id = ? AND budget_tracker_id = ?
       `)
         .get(id, budget_tracker_id)
 
       if (!spendingExists) {
         throw createError({
-          status: 404, message: "Spending not found",
+          status: 404,
+          message: "Spending not found",
         })
       }
 
-      const categoryExists = db.prepare<[string, string]>(`
+      const categoryExists = db
+        .prepare<[string, string]>(`
         SELECT 1 FROM Category WHERE id = ? AND budget_tracker_id = ?
       `)
         .get(category_id, budget_tracker_id)
 
       if (!categoryExists) {
         throw createError({
-          status: 404, message: "Category not found",
+          status: 404,
+          message: "Category not found",
         })
       }
 
@@ -261,12 +312,14 @@ export default defineEventHandler(async (event) => {
     case "DELETE": {
       if (event.context.auth?.username === "demo") {
         throw createError({
-          status: 403, message: "Demo users cannot manage transactions",
+          status: 403,
+          message: "Demo users cannot manage transactions",
         })
       }
 
       const {
-        id, budget_tracker_id,
+        id,
+        budget_tracker_id,
       }: {
         id?: string;
         budget_tracker_id?: string;
@@ -274,11 +327,13 @@ export default defineEventHandler(async (event) => {
 
       if (!id || !budget_tracker_id) {
         throw createError({
-          status: 400, message: "Missing required fields",
+          status: 400,
+          message: "Missing required fields",
         })
       }
 
-      const userAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
+      const userAccess = db
+        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
@@ -286,24 +341,28 @@ export default defineEventHandler(async (event) => {
 
       if (!userAccess) {
         throw createError({
-          status: 403, message: "Access denied",
+          status: 403,
+          message: "Access denied",
         })
       }
 
       if (!canEditSpending(userAccess.role)) {
         throw createError({
-          status: 403, message: "You do not have permission to delete transactions",
+          status: 403,
+          message: "You do not have permission to delete transactions",
         })
       }
 
-      const spendingExists = db.prepare<[string, string], { id: string }>(`
+      const spendingExists = db
+        .prepare<[string, string], { id: string }>(`
         SELECT id FROM Spending WHERE id = ? AND budget_tracker_id = ?
       `)
         .get(id, budget_tracker_id)
 
       if (!spendingExists) {
         throw createError({
-          status: 404, message: "Spending not found",
+          status: 404,
+          message: "Spending not found",
         })
       }
 
@@ -322,7 +381,8 @@ export default defineEventHandler(async (event) => {
     }
     default: {
       throw createError({
-        status: 405, message: "Method not allowed",
+        status: 405,
+        message: "Method not allowed",
       })
     }
   }

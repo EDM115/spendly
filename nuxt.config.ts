@@ -18,7 +18,8 @@ export default defineNuxtConfig({
   },
   app: {
     pageTransition: {
-      name: "page", mode: "out-in",
+      name: "page",
+      mode: "out-in",
     },
   },
   css: ["~/assets/styles/main.scss"],
@@ -37,12 +38,15 @@ export default defineNuxtConfig({
     clientFallback: true,
     clientNodeCompat: true,
     crossOriginPrefetch: true,
-    defaults: { nuxtLink: {
-      prefetch: true,
-      prefetchOn: {
-        interaction: true, visibility: false,
+    defaults: {
+      nuxtLink: {
+        prefetch: true,
+        prefetchOn: {
+          interaction: true,
+          visibility: false,
+        },
       },
-    } },
+    },
     entryImportMap: true,
     extractAsyncDataHandlers: true,
     inlineRouteRules: true,
@@ -74,22 +78,26 @@ export default defineNuxtConfig({
     },
   },
   typescript: {
-    tsConfig: { compilerOptions: {
-      allowArbitraryExtensions: true,
-      disableSizeLimit: true,
-      emitDecoratorMetadata: true,
-      experimentalDecorators: true,
-      incremental: true,
-      noErrorTruncation: true,
-      preserveWatchOutput: true,
-      removeComments: true,
-    } },
+    tsConfig: {
+      compilerOptions: {
+        allowArbitraryExtensions: true,
+        disableSizeLimit: true,
+        emitDecoratorMetadata: true,
+        experimentalDecorators: true,
+        incremental: true,
+        noErrorTruncation: true,
+        preserveWatchOutput: true,
+        removeComments: true,
+      },
+    },
     typeCheck: false,
   },
-  eslint: { config: {
-    autoInit: false,
-    standalone: false,
-  } },
+  eslint: {
+    config: {
+      autoInit: false,
+      standalone: false,
+    },
+  },
   fonts: {
     devtools: true,
     families: [
@@ -150,10 +158,14 @@ export default defineNuxtConfig({
     experimental: { typedOptionsAndMessages: "all" },
     locales: [
       {
-        code: "en", name: "English", language: "en-US",
+        code: "en",
+        name: "English",
+        language: "en-US",
       },
       {
-        code: "fr", name: "Français", language: "fr-FR",
+        code: "fr",
+        name: "Français",
+        language: "fr-FR",
       },
     ],
     strategy: "no_prefix",
@@ -216,7 +228,17 @@ export default defineNuxtConfig({
           },
         },
         variations: {
-          colors: [ "accent", "background", "error", "info", "primary", "secondary", "success", "text", "warning" ],
+          colors: [
+            "accent",
+            "background",
+            "error",
+            "info",
+            "primary",
+            "secondary",
+            "success",
+            "text",
+            "warning",
+          ],
           lighten: 5,
           darken: 5,
         },

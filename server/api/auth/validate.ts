@@ -5,7 +5,8 @@ const JWT_SECRET = process.env.JWT_SECRET ?? "secret"
 export default defineEventHandler((event) => {
   if (event.method !== "GET") {
     throw createError({
-      status: 405, message: "Method not allowed",
+      status: 405,
+      message: "Method not allowed",
     })
   }
 

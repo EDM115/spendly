@@ -7,10 +7,13 @@ export default defineEventHandler(async (event) => {
     const authHeader = event.node.req.headers.authorization
 
     if (!authHeader) {
-      return sendError(event, createError({
-        status: 401,
-        statusText: "Unauthorized",
-      }))
+      return sendError(
+        event,
+        createError({
+          status: 401,
+          statusText: "Unauthorized",
+        }),
+      )
     }
 
     const [ , token ] = authHeader.split(" ")
@@ -27,33 +30,43 @@ export default defineEventHandler(async (event) => {
         username: payload.username,
       }
     } catch {
-      return sendError(event, createError({
-        status: 401,
-        statusText: "Unauthorized",
-      }))
+      return sendError(
+        event,
+        createError({
+          status: 401,
+          statusText: "Unauthorized",
+        }),
+      )
     }
 
     if ((/^\/api\/admin(\/.*)?$/).test(event.node.req.url ?? "")) {
       const userId: string | undefined = event.context.auth?.userId
 
       if (!userId) {
-        return sendError(event, createError({
-          status: 401,
-          statusText: "Unauthorized",
-        }))
+        return sendError(
+          event,
+          createError({
+            status: 401,
+            statusText: "Unauthorized",
+          }),
+        )
       }
 
-      const admin = db.prepare(`
+      const admin = db
+        .prepare(`
           SELECT 1 FROM User
           WHERE id = ? AND role = 'admin'
         `)
         .get(userId)
 
       if (!admin) {
-        return sendError(event, createError({
-          status: 403,
-          statusText: "Admin not found or insufficient permissions",
-        }))
+        return sendError(
+          event,
+          createError({
+            status: 403,
+            statusText: "Admin not found or insufficient permissions",
+          }),
+        )
       }
     }
   }

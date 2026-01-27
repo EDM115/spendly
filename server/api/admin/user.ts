@@ -8,7 +8,8 @@ const SALT_ROUNDS = 10
 export default defineEventHandler(async (event) => {
   if (![ "GET", "POST", "PUT", "DELETE" ].includes(event.method)) {
     throw createError({
-      status: 405, message: "Method not allowed",
+      status: 405,
+      message: "Method not allowed",
     })
   }
 
@@ -17,7 +18,8 @@ export default defineEventHandler(async (event) => {
       const { user_id }: { user_id?: string } = getQuery(event)
 
       if (user_id) {
-        const user = db.prepare<[string], User>(`
+        const user = db
+          .prepare<[string], User>(`
           SELECT * FROM User
           WHERE id = ?
         `)
@@ -38,7 +40,8 @@ export default defineEventHandler(async (event) => {
           },
         }
       } else {
-        const users = db.prepare<[], User>(`
+        const users = db
+          .prepare<[], User>(`
           SELECT * FROM User
         `)
           .all()
@@ -54,7 +57,9 @@ export default defineEventHandler(async (event) => {
     }
     case "POST": {
       const {
-        username, password, role,
+        username,
+        password,
+        role,
       }: {
         username?: string;
         password?: string;
@@ -63,7 +68,8 @@ export default defineEventHandler(async (event) => {
 
       if (!username || !role || !password) {
         throw createError({
-          status: 400, message: "Missing required fields",
+          status: 400,
+          message: "Missing required fields",
         })
       }
 
@@ -86,14 +92,17 @@ export default defineEventHandler(async (event) => {
     }
     case "PUT": {
       const {
-        id, role,
+        id,
+        role,
       }: {
-        id?: string; role?: string;
+        id?: string;
+        role?: string;
       } = await readBody(event)
 
       if (!id || !role) {
         throw createError({
-          status: 400, message: "Missing required fields",
+          status: 400,
+          message: "Missing required fields",
         })
       }
 
@@ -116,7 +125,8 @@ export default defineEventHandler(async (event) => {
 
       if (!id) {
         throw createError({
-          status: 400, message: "Missing required fields",
+          status: 400,
+          message: "Missing required fields",
         })
       }
 
@@ -135,7 +145,8 @@ export default defineEventHandler(async (event) => {
     }
     default: {
       throw createError({
-        status: 405, message: "Method not allowed",
+        status: 405,
+        message: "Method not allowed",
       })
     }
   }

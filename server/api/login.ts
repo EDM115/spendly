@@ -9,7 +9,8 @@ const JWT_SECRET = process.env.JWT_SECRET ?? "secret"
 export default defineEventHandler(async (event) => {
   if (event.method !== "POST") {
     throw createError({
-      status: 405, message: "Method not allowed",
+      status: 405,
+      message: "Method not allowed",
     })
   }
 
@@ -21,7 +22,8 @@ export default defineEventHandler(async (event) => {
     password: string;
   } = await readBody(event)
 
-  const user = db.prepare<[string], User & { password: string }>(`
+  const user = db
+    .prepare<[string], User & { password: string }>(`
     SELECT id, username, password, role
     FROM User
     WHERE username = ?
@@ -30,7 +32,8 @@ export default defineEventHandler(async (event) => {
 
   if (!user) {
     throw createError({
-      status: 401, message: "The user does not exist",
+      status: 401,
+      message: "The user does not exist",
     })
   }
 
@@ -38,7 +41,8 @@ export default defineEventHandler(async (event) => {
 
   if (!passwordMatch) {
     throw createError({
-      status: 401, message: "Invalid password",
+      status: 401,
+      message: "Invalid password",
     })
   }
 

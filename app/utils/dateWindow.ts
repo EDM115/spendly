@@ -45,6 +45,7 @@ export function getDateWindow(timeRange: string, anchorDate: string) {
     .padStart(2, "0")}`
 
   return {
-    start: toStr(start), end: toStr(end),
+    start: toStr(start),
+    end: toStr(end),
   }
 }

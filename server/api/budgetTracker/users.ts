@@ -25,7 +25,8 @@ function canChangeRole(
 export default defineEventHandler(async (event) => {
   if (![ "GET", "POST", "PUT", "DELETE" ].includes(event.method)) {
     throw createError({
-      status: 405, message: "Method not allowed",
+      status: 405,
+      message: "Method not allowed",
     })
   }
 
@@ -33,7 +34,8 @@ export default defineEventHandler(async (event) => {
 
   if (!userId) {
     throw createError({
-      status: 401, message: "Unauthorized",
+      status: 401,
+      message: "Unauthorized",
     })
   }
 
@@ -43,11 +45,13 @@ export default defineEventHandler(async (event) => {
 
       if (!budget_tracker_id) {
         throw createError({
-          status: 400, message: "Missing budget_tracker_id",
+          status: 400,
+          message: "Missing budget_tracker_id",
         })
       }
 
-      const hasAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
+      const hasAccess = db
+        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
@@ -55,11 +59,13 @@ export default defineEventHandler(async (event) => {
 
       if (!hasAccess) {
         throw createError({
-          status: 403, message: "Access denied",
+          status: 403,
+          message: "Access denied",
         })
       }
 
-      const users = db.prepare<[string], SharedUser>(`
+      const users = db
+        .prepare<[string], SharedUser>(`
         SELECT u.id as user_id, u.username, ubt.role FROM User u
         INNER JOIN UserBudgetTracker ubt ON u.id = ubt.user_id
         WHERE ubt.budget_tracker_id = ?
@@ -77,12 +83,15 @@ export default defineEventHandler(async (event) => {
     case "POST": {
       if (event.context.auth?.username === "demo") {
         throw createError({
-          status: 403, message: "Demo users cannot manage budget tracker users",
+          status: 403,
+          message: "Demo users cannot manage budget tracker users",
         })
       }
 
       const {
-        budget_tracker_id, username, role = "viewer",
+        budget_tracker_id,
+        username,
+        role = "viewer",
       }: {
         budget_tracker_id?: string;
         username?: string;
@@ -91,17 +100,20 @@ export default defineEventHandler(async (event) => {
 
       if (!budget_tracker_id || !username) {
         throw createError({
-          status: 400, message: "Missing required fields",
+          status: 400,
+          message: "Missing required fields",
         })
       }
 
       if (!VALID_ROLES.has(role)) {
         throw createError({
-          status: 400, message: "Invalid role. Must be viewer, editor, or admin",
+          status: 400,
+          message: "Invalid role. Must be viewer, editor, or admin",
         })
       }
 
-      const userAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
+      const userAccess = db
+        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
@@ -109,32 +121,40 @@ export default defineEventHandler(async (event) => {
 
       if (!userAccess) {
         throw createError({
-          status: 403, message: "Access denied",
+          status: 403,
+          message: "Access denied",
         })
       }
 
       if (!canManageUsers(userAccess.role)) {
         throw createError({
-          status: 403, message: "You do not have permission to manage users",
+          status: 403,
+          message: "You do not have permission to manage users",
         })
       }
 
-      const targetUser = db.prepare<[string], { id: string }>(`
+      const targetUser = db
+        .prepare<[string], { id: string }>(`
         SELECT id FROM User WHERE username = ?
       `)
         .get(username)
 
       if (!targetUser) {
         throw createError({
-          status: 404, message: "User not found",
+          status: 404,
+          message: "User not found",
         })
       }
 
-      const alreadyHasAccess = db.prepare<[string, string], {
-        user_id: string;
-        budget_tracker_id: string;
-        role: Exclude<BudgetTrackerRole, null>;
-      }>(`
+      const alreadyHasAccess = db
+        .prepare<
+        [string, string],
+        {
+          user_id: string;
+          budget_tracker_id: string;
+          role: Exclude<BudgetTrackerRole, null>;
+        }
+      >(`
         SELECT 1 FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
@@ -142,7 +162,8 @@ export default defineEventHandler(async (event) => {
 
       if (alreadyHasAccess) {
         throw createError({
-          status: 400, message: "User already has access",
+          status: 400,
+          message: "User already has access",
         })
       }
 
@@ -162,12 +183,15 @@ export default defineEventHandler(async (event) => {
     case "PUT": {
       if (event.context.auth?.username === "demo") {
         throw createError({
-          status: 403, message: "Demo users cannot manage budget tracker users",
+          status: 403,
+          message: "Demo users cannot manage budget tracker users",
         })
       }
 
       const {
-        budget_tracker_id, target_user_id, role,
+        budget_tracker_id,
+        target_user_id,
+        role,
       }: {
         budget_tracker_id?: string;
         target_user_id?: string;
@@ -176,17 +200,20 @@ export default defineEventHandler(async (event) => {
 
       if (!budget_tracker_id || !target_user_id || !role) {
         throw createError({
-          status: 400, message: "Missing required fields",
+          status: 400,
+          message: "Missing required fields",
         })
       }
 
       if (!VALID_ROLES.has(role)) {
         throw createError({
-          status: 400, message: "Invalid role. Must be viewer, editor, or admin",
+          status: 400,
+          message: "Invalid role. Must be viewer, editor, or admin",
         })
       }
 
-      const userAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
+      const userAccess = db
+        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
@@ -194,11 +221,13 @@ export default defineEventHandler(async (event) => {
 
       if (!userAccess) {
         throw createError({
-          status: 403, message: "Access denied",
+          status: 403,
+          message: "Access denied",
         })
       }
 
-      const targetUserAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
+      const targetUserAccess = db
+        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
@@ -206,19 +235,22 @@ export default defineEventHandler(async (event) => {
 
       if (!targetUserAccess) {
         throw createError({
-          status: 404, message: "Target user not found in this budget tracker",
+          status: 404,
+          message: "Target user not found in this budget tracker",
         })
       }
 
       if (targetUserAccess.role === "owner") {
         throw createError({
-          status: 403, message: "Cannot change the owner's role",
+          status: 403,
+          message: "Cannot change the owner's role",
         })
       }
 
       if (!canChangeRole(userAccess.role, targetUserAccess.role, role)) {
         throw createError({
-          status: 403, message: "You do not have permission to change this user's role",
+          status: 403,
+          message: "You do not have permission to change this user's role",
         })
       }
 
@@ -239,12 +271,14 @@ export default defineEventHandler(async (event) => {
     case "DELETE": {
       if (event.context.auth?.username === "demo") {
         throw createError({
-          status: 403, message: "Demo users cannot manage budget tracker users",
+          status: 403,
+          message: "Demo users cannot manage budget tracker users",
         })
       }
 
       const {
-        budget_tracker_id, target_user_id,
+        budget_tracker_id,
+        target_user_id,
       }: {
         budget_tracker_id?: string;
         target_user_id?: string;
@@ -252,11 +286,13 @@ export default defineEventHandler(async (event) => {
 
       if (!budget_tracker_id || !target_user_id) {
         throw createError({
-          status: 400, message: "Missing required fields",
+          status: 400,
+          message: "Missing required fields",
         })
       }
 
-      const userAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
+      const userAccess = db
+        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
@@ -264,17 +300,20 @@ export default defineEventHandler(async (event) => {
 
       if (!userAccess) {
         throw createError({
-          status: 403, message: "Access denied",
+          status: 403,
+          message: "Access denied",
         })
       }
 
       if (target_user_id === userId) {
         throw createError({
-          status: 400, message: "Cannot remove yourself from budget tracker",
+          status: 400,
+          message: "Cannot remove yourself from budget tracker",
         })
       }
 
-      const targetUserAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
+      const targetUserAccess = db
+        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
@@ -282,19 +321,22 @@ export default defineEventHandler(async (event) => {
 
       if (!targetUserAccess) {
         throw createError({
-          status: 404, message: "Target user not found in this budget tracker",
+          status: 404,
+          message: "Target user not found in this budget tracker",
         })
       }
 
       if (targetUserAccess.role === "owner") {
         throw createError({
-          status: 403, message: "Cannot remove the owner from budget tracker",
+          status: 403,
+          message: "Cannot remove the owner from budget tracker",
         })
       }
 
       if (!canManageUsers(userAccess.role)) {
         throw createError({
-          status: 403, message: "You do not have permission to remove users",
+          status: 403,
+          message: "You do not have permission to remove users",
         })
       }
 
@@ -313,7 +355,8 @@ export default defineEventHandler(async (event) => {
     }
     default: {
       throw createError({
-        status: 405, message: "Method not allowed",
+        status: 405,
+        message: "Method not allowed",
       })
     }
   }

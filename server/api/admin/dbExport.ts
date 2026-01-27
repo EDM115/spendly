@@ -11,7 +11,8 @@ const execAsync = promisify(exec)
 export default defineEventHandler(async (event) => {
   if (event.method !== "GET") {
     throw createError({
-      status: 405, message: "Method not allowed",
+      status: 405,
+      message: "Method not allowed",
     })
   }
 
@@ -59,8 +60,9 @@ export default defineEventHandler(async (event) => {
       await fs.unlink(outputPath)
 
       return {
+        table,
         // oxlint-disable-next-line no-unsafe-type-assertion
-        table, data: JSON.parse(content) as unknown[],
+        data: JSON.parse(content) as unknown[],
       }
     }))
 

@@ -48,12 +48,14 @@ export type Spending = {
   icon: string;
 }
 
-export type ErrorType = {
-  data?: {
-    message: string;
-    statusText: string;
-  };
-} | string
+export type ErrorType
+  = | {
+    data?: {
+      message: string;
+      statusText: string;
+    };
+  }
+  | string
 
 export type StoreUser = {
   id: string;
@@ -61,7 +63,6 @@ export type StoreUser = {
   token: string;
   role: Exclude<BudgetTrackerRole, null>;
 } | null
-
 
 export type Language = "en" | "fr"
 

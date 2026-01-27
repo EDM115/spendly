@@ -13,7 +13,8 @@ function canDeleteTracker(role: Exclude<BudgetTrackerRole, null>): boolean {
 export default defineEventHandler(async (event) => {
   if (![ "GET", "POST", "PUT", "DELETE" ].includes(event.method)) {
     throw createError({
-      status: 405, message: "Method not allowed",
+      status: 405,
+      message: "Method not allowed",
     })
   }
 
@@ -21,7 +22,8 @@ export default defineEventHandler(async (event) => {
 
   if (!userId) {
     throw createError({
-      status: 401, message: "Unauthorized",
+      status: 401,
+      message: "Unauthorized",
     })
   }
 
@@ -30,7 +32,8 @@ export default defineEventHandler(async (event) => {
       const { budget_tracker_id }: { budget_tracker_id?: string } = getQuery(event)
 
       if (budget_tracker_id) {
-        const budgetTracker = db.prepare<[string, string], BudgetTracker>(`
+        const budgetTracker = db
+          .prepare<[string, string], BudgetTracker>(`
           SELECT bt.*, ubt.role FROM BudgetTracker bt
           INNER JOIN UserBudgetTracker ubt ON bt.id = ubt.budget_tracker_id
           WHERE bt.id = ? AND ubt.user_id = ?
@@ -52,7 +55,8 @@ export default defineEventHandler(async (event) => {
           },
         }
       } else {
-        const budgetTrackers = db.prepare<[string], BudgetTracker>(`
+        const budgetTrackers = db
+          .prepare<[string], BudgetTracker>(`
           SELECT bt.*, ubt.role FROM BudgetTracker bt
           INNER JOIN UserBudgetTracker ubt ON bt.id = ubt.budget_tracker_id
           WHERE ubt.user_id = ?
@@ -71,7 +75,8 @@ export default defineEventHandler(async (event) => {
     case "POST": {
       if (event.context.auth?.username === "demo") {
         throw createError({
-          status: 403, message: "Demo users cannot create budget trackers",
+          status: 403,
+          message: "Demo users cannot create budget trackers",
         })
       }
 
@@ -79,7 +84,8 @@ export default defineEventHandler(async (event) => {
 
       if (!name) {
         throw createError({
-          status: 400, message: "Missing required fields",
+          status: 400,
+          message: "Missing required fields",
         })
       }
 
@@ -108,23 +114,28 @@ export default defineEventHandler(async (event) => {
     case "PUT": {
       if (event.context.auth?.username === "demo") {
         throw createError({
-          status: 403, message: "Demo users cannot edit budget trackers",
+          status: 403,
+          message: "Demo users cannot edit budget trackers",
         })
       }
 
       const {
-        id, name,
+        id,
+        name,
       }: {
-        id?: string; name?: string;
+        id?: string;
+        name?: string;
       } = await readBody(event)
 
       if (!id || !name) {
         throw createError({
-          status: 400, message: "Missing required fields",
+          status: 400,
+          message: "Missing required fields",
         })
       }
 
-      const userAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
+      const userAccess = db
+        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
@@ -132,13 +143,15 @@ export default defineEventHandler(async (event) => {
 
       if (!userAccess) {
         throw createError({
-          status: 403, message: "Access denied",
+          status: 403,
+          message: "Access denied",
         })
       }
 
       if (!canEditTracker(userAccess.role)) {
         throw createError({
-          status: 403, message: "You do not have permission to edit this budget tracker",
+          status: 403,
+          message: "You do not have permission to edit this budget tracker",
         })
       }
 
@@ -159,7 +172,8 @@ export default defineEventHandler(async (event) => {
     case "DELETE": {
       if (event.context.auth?.username === "demo") {
         throw createError({
-          status: 403, message: "Demo users cannot delete budget trackers",
+          status: 403,
+          message: "Demo users cannot delete budget trackers",
         })
       }
 
@@ -167,11 +181,13 @@ export default defineEventHandler(async (event) => {
 
       if (!id) {
         throw createError({
-          status: 400, message: "Missing required fields",
+          status: 400,
+          message: "Missing required fields",
         })
       }
 
-      const userAccess = db.prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
+      const userAccess = db
+        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
         SELECT role FROM UserBudgetTracker
         WHERE user_id = ? AND budget_tracker_id = ?
       `)
@@ -179,13 +195,15 @@ export default defineEventHandler(async (event) => {
 
       if (!userAccess) {
         throw createError({
-          status: 403, message: "Access denied",
+          status: 403,
+          message: "Access denied",
         })
       }
 
       if (!canDeleteTracker(userAccess.role)) {
         throw createError({
-          status: 403, message: "Only the owner can delete this budget tracker",
+          status: 403,
+          message: "Only the owner can delete this budget tracker",
         })
       }
 
@@ -204,7 +222,8 @@ export default defineEventHandler(async (event) => {
     }
     default: {
       throw createError({
-        status: 405, message: "Method not allowed",
+        status: 405,
+        message: "Method not allowed",
       })
     }
   }
