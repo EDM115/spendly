@@ -54,6 +54,7 @@
       "empty": "Ajoutez une catégorie pour commencer à organiser vos dépenses",
       "icon": "Icône",
       "name": "Nom",
+      "search": "🔍 Rechercher des icônes...",
       "title": "Catégories"
     },
     "charts": {
@@ -118,6 +119,7 @@
       "include-future": "Inclure les entrées futures",
       "income": "Revenu",
       "name": "Description",
+      "no-categories": "Créez d'abord une catégorie",
       "no-spending": "Aucune transaction pour le moment",
       "search": "Rechercher des transactions",
       "title": "Transactions",
@@ -133,8 +135,7 @@
       "month": "Mois",
       "week": "Semaine",
       "year": "Année"
-    },
-    "welcome": "Bienvenue"
+    }
   },
   "error": {
     "back": "Retour à l'accueil",

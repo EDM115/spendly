@@ -15,14 +15,12 @@
           v-model:time-range="timeRangeModel"
           v-model:anchor-date="anchorDateModel"
         />
-        <div
-          v-if="spendings.length > 0"
-          :class="['chart-actions', !smAndUp ? 'chart-actions--inline' : '']"
-        >
+        <div :class="['chart-actions', !smAndUp ? 'chart-actions--inline' : '']">
           <v-btn
             :color="simplifiedMode ? 'primary' : 'info'"
             variant="tonal"
             prepend-icon="mdi-auto-fix"
+            :disabled="filteredSpendings.length === 0"
             @click="toggleSimplified"
           >
             {{ $t("app.charts.simplified") }} {{ simplifiedMode ? '✅' : '❌' }}
@@ -35,6 +33,7 @@
                 variant="tonal"
                 color="secondary"
                 prepend-icon="mdi-tune-variant"
+                :disabled="filteredSpendings.length === 0"
               >
                 {{ $t("app.charts.controls") }}
               </v-btn>
@@ -203,6 +202,7 @@
                 variant="tonal"
                 color="info"
                 prepend-icon="mdi-download-outline"
+                :disabled="filteredSpendings.length === 0"
               >
                 {{ $t("app.charts.export") }}
               </v-btn>
@@ -280,7 +280,7 @@
       </div>
     </v-card-title>
     <v-card-text
-      v-if="spendings.length === 0"
+      v-if="filteredSpendings.length === 0"
       :class="smAndUp ? 'pt-4' : 'pt-3 px-3'"
     >
       <v-alert

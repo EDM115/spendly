@@ -74,34 +74,34 @@
             {{ $t("app.budget-tracker.add") }}
           </v-btn>
           <v-btn
-            v-if="selectedTracker && canEdit"
+            v-if="selectedTracker"
             color="secondary"
             :class="['glow-button', smAndUp ? 'ma-2' : 'ma-1']"
             prepend-icon="mdi-pencil-outline"
             :block="!smAndUp"
-            :disabled="isDemo"
+            :disabled="isDemo || !canEdit"
             @click="openEditDialog"
           >
             {{ $t("app.budget-tracker.edit") }}
           </v-btn>
           <v-btn
-            v-if="selectedTracker && canManageUsers"
+            v-if="selectedTracker"
             color="warning"
             :class="['glow-button', smAndUp ? 'ma-2' : 'ma-1']"
             prepend-icon="mdi-account-multiple-outline"
             :block="!smAndUp"
-            :disabled="isDemo"
+            :disabled="isDemo || !canManageUsers"
             @click="showShareDialog = true"
           >
             {{ $t("app.budget-tracker.share") }}
           </v-btn>
           <v-btn
-            v-if="selectedTracker && canDelete"
+            v-if="selectedTracker"
             color="error"
             :class="['glow-button', smAndUp ? 'ma-2' : 'ma-1']"
             prepend-icon="mdi-delete-outline"
             :block="!smAndUp"
-            :disabled="isDemo"
+            :disabled="isDemo || !canDelete"
             @click="showDeleteDialog = true"
           >
             {{ $t("app.budget-tracker.delete") }}

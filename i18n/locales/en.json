@@ -54,6 +54,7 @@
       "empty": "Add a category to start organizing your expenses",
       "icon": "Icon",
       "name": "Name",
+      "search": "🔍 Search icons...",
       "title": "Categories"
     },
     "charts": {
@@ -118,6 +119,7 @@
       "include-future": "Include future entries",
       "income": "Income",
       "name": "Description",
+      "no-categories": "Go create a category first",
       "no-spending": "No transactions yet",
       "search": "Search transactions",
       "title": "Transactions",
@@ -133,8 +135,7 @@
       "month": "Month",
       "week": "Week",
       "year": "Year"
-    },
-    "welcome": "Welcome"
+    }
   },
   "error": {
     "back": "Go back home",

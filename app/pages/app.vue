@@ -1,6 +1,6 @@
 <template>
   <v-container
-    :class="['app-container', smAndUp ? 'app-container--desktop' : 'app-container--mobile', selectedBudgetTrackerId && !smAndUp ? 'app-container--with-bottom-nav' : '']"
+    :class="['app-container', smAndUp ? 'app-container--desktop' : 'app-container--mobile', selectedBudgetTrackerId]"
     fluid
   >
     <div v-if="!hasLoaded">
@@ -21,14 +21,6 @@
     </div>
 
     <template v-else>
-      <v-row :class="['mb-4', smAndUp ? 'pa-1' : 'pa-0']">
-        <v-col cols="12">
-          <h1 class="text-h4">
-            {{ $t("app.welcome") }}, {{ store.getUser?.username }} 👋
-          </h1>
-        </v-col>
-      </v-row>
-
       <v-row>
         <v-col cols="12">
           <AppBudgetTrackerSelector
@@ -103,7 +95,9 @@
         <v-bottom-navigation
           v-if="!smAndUp"
           v-model="selectedTab"
+          color="primary"
           grow
+          mandatory="force"
           mode="shift"
           class="glass-panel app-bottom-nav"
         >
@@ -295,10 +289,6 @@ onMounted(async () => {
   padding-bottom: 16px;
   padding-left: 10px;
   padding-right: 10px;
-}
-
-.app-container--with-bottom-nav {
-  padding-bottom: calc(104px + env(safe-area-inset-bottom));
 }
 
 .app-bottom-nav {

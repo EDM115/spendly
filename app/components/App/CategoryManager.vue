@@ -153,6 +153,7 @@
               :label="$t('app.category.icon')"
               variant="outlined"
               hide-details
+              :no-data-text="$t('app.category.search')"
               :error="!isValidIcon"
               bg-color="transparent"
               clearable

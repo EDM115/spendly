@@ -73,10 +73,7 @@
               </v-list-item>
             </v-list>
           </v-menu>
-          <v-menu
-            v-if="filteredSpendings.length > 0"
-            content-class="glass-menu-content"
-          >
+          <v-menu content-class="glass-menu-content">
             <template #activator="{ props: menuProps }">
               <v-btn
                 v-bind="menuProps"
@@ -84,6 +81,7 @@
                 variant="tonal"
                 prepend-icon="mdi-download-outline"
                 rounded="lg"
+                :disabled="filteredSpendings.length === 0"
                 :block="false"
               >
                 {{ $t("app.spending.export") }}
@@ -212,7 +210,7 @@
         hide-details
         clearable
         max-width="600"
-        :min-width="smAndUp ? 400 : 300"
+        :min-width="smAndUp ? 400 : 350"
         class="mb-6 search-field"
         rounded="pill"
         autocomplete="suppress"
@@ -222,6 +220,7 @@
       />
 
       <v-data-table-virtual
+        v-if="smAndUp"
         :headers
         :items="filteredSpendings"
         :sort-by="sortBy"
@@ -230,7 +229,7 @@
         :search
         :custom-filter="searchFilter"
         hover
-        :class="['bg-transparent', 'spending-table', !smAndUp ? 'spending-table--compact' : '']"
+        class="bg-transparent spending-table"
         :no-data-text="$t('app.spending.no-spending')"
       >
         <template #[`item.category`]="{ item }">
@@ -286,6 +285,78 @@
           </v-tooltip>
         </template>
       </v-data-table-virtual>
+
+      <div
+        v-else
+        class="spending-mobile-wrapper"
+      >
+        <div
+          v-if="mobileGroupedSpendings.length === 0"
+          class="text-medium-emphasis text-center py-8"
+        >
+          {{ $t("app.spending.no-spending") }}
+        </div>
+        <v-virtual-scroll
+          v-else
+          :items="mobileGroupedSpendings"
+          item-key="date"
+          :height="maxTableHeight"
+          class="spending-mobile-list pr-2"
+        >
+          <template #default="{ item }">
+            <div class="spending-date-block">
+              <h3 class="text-h6 font-weight-bold mb-2">
+                {{ formatDate(item.date) }}
+              </h3>
+              <v-card
+                v-for="spending in item.items"
+                :key="spending.id"
+                class="spending-mobile-card"
+                rounded="lg"
+                elevation="0"
+              >
+                <v-card-text class="d-flex align-center justify-space-between">
+                  <div class="font-weight-medium spending-mobile-info">
+                    {{ spending.name }}
+                  </div>
+                  <v-spacer />
+                  <span :class="['text-code', 'font-weight-bold', spending.is_spending ? 'text-error' : 'text-success']">
+                    {{ spending.is_spending ? "-" : "+" }}{{ formatCurrency(spending.value) }}
+                  </span>
+                </v-card-text>
+                <v-card-actions class="py-0">
+                  <div class="spending-mobile-info">
+                    <v-chip
+                      :prepend-icon="spending.icon"
+                      :color="spending.icon_color"
+                      label
+                      variant="tonal"
+                      class="font-weight-medium rounded-lg ml-1"
+                    >
+                      {{ spending.category_name }}
+                    </v-chip>
+                  </div>
+                  <v-spacer />
+                  <v-btn
+                    :disabled="!canEdit"
+                    icon="mdi-pencil-outline"
+                    variant="text"
+                    color="secondary"
+                    @click="openEditDialog(spending)"
+                  />
+                  <v-btn
+                    :disabled="!canEdit"
+                    icon="mdi-delete-outline"
+                    variant="text"
+                    color="error"
+                    @click="openDeleteDialog(spending)"
+                  />
+                </v-card-actions>
+              </v-card>
+            </div>
+          </template>
+        </v-virtual-scroll>
+      </div>
     </v-card-text>
   </v-card>
 
@@ -346,6 +417,7 @@
                 item-title="name"
                 item-value="id"
                 :label="$t('app.spending.category')"
+                :no-data-text="$t('app.spending.no-categories')"
                 variant="outlined"
                 :rules="[v => !!v || 'Required']"
               >
@@ -625,6 +697,77 @@ const searchLabel = computed(() => {
     .includes(needle)).length
 
   return `${t("app.spending.search")} (${visibleCount}/${totalCount})`
+})
+
+const searchedSpendings = computed(() => {
+  const term = search.value.trim()
+    .toLowerCase()
+
+  if (!term) {
+    return filteredSpendings.value
+  }
+
+  return filteredSpendings.value.filter((s) => searchFilter(null, term, s))
+})
+
+const compareText = (left: string, right: string) => left.localeCompare(right, locale.value === "fr"
+  ? "fr"
+  : "en", {
+  sensitivity: "base",
+  numeric: true,
+})
+
+const mobileSortedSpendings = computed(() => [...searchedSpendings.value]
+  .toSorted((a, b) => {
+    const aDate = parseSpendingDate(a.date)
+    const bDate = parseSpendingDate(b.date)
+    const dateDiff = (bDate?.getTime() ?? 0) - (aDate?.getTime() ?? 0)
+
+    if (dateDiff !== 0) {
+      return dateDiff
+    }
+
+    const nameDiff = compareText(a.name, b.name)
+
+    if (nameDiff !== 0) {
+      return nameDiff
+    }
+
+    const categoryDiff = compareText(a.category_name, b.category_name)
+
+    if (categoryDiff !== 0) {
+      return categoryDiff
+    }
+
+    return b.value - a.value
+  }))
+
+const mobileGroupedSpendings = computed(() => {
+  const groups: {
+    date: string; items: Spending[];
+  }[] = []
+  const groupMap = new Map<string, Spending[]>()
+
+  mobileSortedSpendings.value.forEach((spending) => {
+    const dateKey = spending.date.includes("T")
+      ? spending.date.split("T")[0]
+      : spending.date
+
+    if (dateKey) {
+      if (!groupMap.has(dateKey)) {
+        groupMap.set(dateKey, [])
+        groups.push({
+          date: dateKey,
+          items: groupMap.get(dateKey)!,
+        })
+      }
+
+      groupMap.get(dateKey)
+        ?.push(spending)
+    }
+  })
+
+  return groups
 })
 
 const parseSpendingDate = (dateValue: string) => {
@@ -957,11 +1100,6 @@ const exportCSV = async () => {
   }
 }
 
-.spending-table--compact :deep(.v-data-table__td),
-.spending-table--compact :deep(.v-data-table__th) {
-  padding: 8px 10px !important;
-}
-
 .date-cell {
   white-space: normal;
   line-height: 1.2;
@@ -991,5 +1129,24 @@ const exportCSV = async () => {
 
 .mobile-small-padding {
   padding: 6px 12px !important;
+}
+
+.spending-mobile-wrapper {
+  width: 100%;
+}
+
+.spending-date-block {
+  padding-bottom: 12px;
+}
+
+.spending-mobile-card {
+  margin-bottom: 8px;
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.05);
+  background: rgba(var(--v-theme-surface), 0.35) !important;
+  backdrop-filter: blur(8px);
+}
+
+.spending-mobile-info {
+  max-width: 70%;
 }
 </style>
