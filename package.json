@@ -14,9 +14,11 @@
     "@vueuse/core": "~14.1.0",
     "@vueuse/nuxt": "~14.1.0",
     "bcryptjs": "~3.0.3",
+    "better-auth": "~1.4.18",
     "better-sqlite3": "~12.6.2",
     "canvas-to-svg": "~1.0.3",
     "chart.js": "~4.5.1",
+    "drizzle-orm": "beta",
     "jsonwebtoken": "~9.0.3",
     "jspdf": "4.0.0",
     "nuxt": "~4.3.0",
@@ -24,7 +26,7 @@
     "pinia": "~3.0.4",
     "vue": "~3.5.27",
     "vue-chartjs": "~5.3.3",
-    "vuetify-nuxt-module": "~0.19.3"
+    "vuetify-nuxt-module": "~0.19.5"
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "~1.52.0",
@@ -35,16 +37,19 @@
     "@types/node": "latest",
     "@typescript-eslint/parser": "~8.54.0",
     "country-flag-emoji-polyfill": "~0.1.8",
+    "drizzle-kit": "beta",
     "edm115-lint": "~0.1.6",
     "eslint": "~9.39.2",
+    "eslint-plugin-drizzle": "beta",
     "eslint-plugin-vue": "~10.7.0",
     "globals": "~17.2.0",
     "jiti": "~2.6.1",
     "lightningcss": "~1.31.1",
     "oxlint": "~1.42.0",
-    "oxlint-tsgolint": "~0.11.2",
+    "oxlint-tsgolint": "~0.11.4",
     "sass-embedded": "~1.97.3",
     "sass-loader": "~16.0.6",
+    "tsx": "~4.21.0",
     "typescript": "~5.9.3",
     "vue-eslint-parser": "~10.2.0",
     "vue-tsc": "~3.2.4"
@@ -60,6 +65,8 @@
   "scripts": {
     "build": "dotenvx run -- nuxt build",
     "cleanup": "nuxt cleanup",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
     "dev": "nuxt dev --no-clear",
     "dev:expose:global": "nuxt dev --no-clear --tunnel",
     "dev:expose:local": "nuxt dev --no-clear --public",
@@ -71,10 +78,10 @@
     "lint:fix:oxlint": "oxlint --fix --type-aware .",
     "lint:oxlint": "oxlint --type-aware .",
     "preview": "dotenvx run -- nuxt preview --port 88",
-    "seed": "dotenvx run --env SEED=true --overload -- node --experimental-strip-types init/seed_db.ts",
+    "seed": "dotenvx run --env SEED=true --overload -- tsx init/seed_db.ts",
     "start": "dotenvx run -- node .output/server/index.mjs",
     "typecheck": "nuxt typecheck"
   },
   "type": "module",
-  "version": "0.9.0"
+  "version": "0.10.0"
 }

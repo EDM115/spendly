@@ -109,7 +109,7 @@ const logoSrc = computed(() => (store.getTheme === "light"
   : "/images/logo.webp"))
 
 onMounted(async () => {
-  if (store.getUser !== null) {
+  if (store.getUser !== null && !store.isDemo) {
     await navigateTo("/app", { redirectCode: 302 })
   }
 })

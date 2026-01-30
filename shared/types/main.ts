@@ -1,4 +1,6 @@
-export type BudgetTrackerRole = "owner" | "admin" | "editor" | "viewer" | null
+export type BudgetTrackerRole = "owner" | "admin" | "editor" | "viewer"
+
+export type UserType = "admin" | "user"
 
 export type DemoUserEnv = {
   username: string;
@@ -8,7 +10,7 @@ export type DemoUserEnv = {
 export type User = {
   id: string;
   username: string;
-  role: Exclude<BudgetTrackerRole, null>;
+  role: UserType;
 }
 
 export type SeedUser = Omit<User, "id"> & {
@@ -18,13 +20,13 @@ export type SeedUser = Omit<User, "id"> & {
 export type BudgetTracker = {
   id: string;
   name: string;
-  role: Exclude<BudgetTrackerRole, null>;
+  role: BudgetTrackerRole;
 }
 
 export type SharedUser = {
   user_id: string;
   username: string;
-  role: Exclude<BudgetTrackerRole, null>;
+  role: BudgetTrackerRole;
 }
 
 export type Category = {
@@ -40,7 +42,7 @@ export type Spending = {
   name: string;
   budget_tracker_id: string;
   value: number;
-  is_spending: number;
+  is_spending: boolean;
   category_id: string;
   date: string;
   category_name: string;
@@ -61,7 +63,7 @@ export type StoreUser = {
   id: string;
   username: string;
   token: string;
-  role: Exclude<BudgetTrackerRole, null>;
+  role: UserType;
 } | null
 
 export type Language = "en" | "fr"

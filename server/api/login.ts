@@ -1,8 +1,10 @@
-import db from "#server/api/db"
+import db from "#shared/db/drizzle"
+import { User } from "#shared/db/schema"
 
 import jwt from "jsonwebtoken"
 
 import { compare } from "bcryptjs"
+import { eq } from "drizzle-orm"
 
 const JWT_SECRET = process.env.JWT_SECRET ?? "secret"
 
@@ -22,22 +24,19 @@ export default defineEventHandler(async (event) => {
     password: string;
   } = await readBody(event)
 
-  const user = db
-    .prepare<[string], User & { password: string }>(`
-    SELECT id, username, password, role
-    FROM User
-    WHERE username = ?
-  `)
-    .get(username)
+  const user = await db.select()
+    .from(User)
+    .where(eq(User.username, username))
+    .limit(1)
 
-  if (!user) {
+  if (user.length === 0) {
     throw createError({
       status: 401,
       message: "The user does not exist",
     })
   }
 
-  const passwordMatch = await compare(password, user.password)
+  const passwordMatch = await compare(password, user[0]!.password)
 
   if (!passwordMatch) {
     throw createError({
@@ -48,8 +47,8 @@ export default defineEventHandler(async (event) => {
 
   const token = jwt.sign(
     {
-      id: user.id,
-      username: user.username,
+      id: user[0]!.id,
+      username: user[0]!.username,
     },
     JWT_SECRET,
     { expiresIn: "1d" },
@@ -60,10 +59,10 @@ export default defineEventHandler(async (event) => {
     body: {
       success: "User connected",
       user: {
-        id: user.id,
-        username: user.username,
+        id: user[0]!.id,
+        username: user[0]!.username,
         token,
-        role: user.role,
+        role: user[0]!.role,
       },
     },
   }

@@ -1,15 +1,24 @@
-import db from "#server/api/db"
+import db from "#shared/db/drizzle"
+import {
+  User,
+  UserBudgetTracker,
+} from "#shared/db/schema"
+
+import {
+  and,
+  eq,
+} from "drizzle-orm"
 
 const VALID_ROLES = new Set([ "viewer", "editor", "admin" ])
 
-function canManageUsers(role: Exclude<BudgetTrackerRole, null>): boolean {
+function canManageUsers(role: BudgetTrackerRole): boolean {
   return [ "owner", "admin" ].includes(role)
 }
 
 function canChangeRole(
-  currentUserRole: Exclude<BudgetTrackerRole, null>,
-  targetRole: Exclude<BudgetTrackerRole, null>,
-  newRole: Exclude<BudgetTrackerRole, null>,
+  currentUserRole: BudgetTrackerRole,
+  targetRole: BudgetTrackerRole,
+  newRole: BudgetTrackerRole,
 ): boolean {
   if (currentUserRole === "owner") {
     return true
@@ -50,27 +59,28 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const hasAccess = db
-        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
-        SELECT role FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(userId, budget_tracker_id)
+      const userAccess = await db.select()
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, userId),
+          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+        ))
 
-      if (!hasAccess) {
+      if (userAccess.length === 0) {
         throw createError({
           status: 403,
           message: "Access denied",
         })
       }
 
-      const users = db
-        .prepare<[string], SharedUser>(`
-        SELECT u.id as user_id, u.username, ubt.role FROM User u
-        INNER JOIN UserBudgetTracker ubt ON u.id = ubt.user_id
-        WHERE ubt.budget_tracker_id = ?
-      `)
-        .all(budget_tracker_id)
+      const users = await db.select({
+        user_id: User.id,
+        username: User.username,
+        role: UserBudgetTracker.role,
+      })
+        .from(User)
+        .innerJoin(UserBudgetTracker, eq(User.id, UserBudgetTracker.user_id))
+        .where(eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id))
 
       return {
         status: 200,
@@ -95,7 +105,7 @@ export default defineEventHandler(async (event) => {
       }: {
         budget_tracker_id?: string;
         username?: string;
-        role?: Exclude<BudgetTrackerRole, null>;
+        role?: BudgetTrackerRole;
       } = await readBody(event)
 
       if (!budget_tracker_id || !username) {
@@ -112,66 +122,60 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = db
-        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
-        SELECT role FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(userId, budget_tracker_id)
+      const userAccess = await db.select()
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, userId),
+          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+        ))
 
-      if (!userAccess) {
+      if (userAccess.length === 0) {
         throw createError({
           status: 403,
           message: "Access denied",
         })
       }
 
-      if (!canManageUsers(userAccess.role)) {
+      if (!canManageUsers(userAccess[0]!.role)) {
         throw createError({
           status: 403,
           message: "You do not have permission to manage users",
         })
       }
 
-      const targetUser = db
-        .prepare<[string], { id: string }>(`
-        SELECT id FROM User WHERE username = ?
-      `)
-        .get(username)
+      const targetUser = await db.select({ id: User.id })
+        .from(User)
+        .where(eq(User.username, username))
+        .limit(1)
 
-      if (!targetUser) {
+      if (targetUser.length === 0) {
         throw createError({
           status: 404,
           message: "User not found",
         })
       }
 
-      const alreadyHasAccess = db
-        .prepare<
-        [string, string],
-        {
-          user_id: string;
-          budget_tracker_id: string;
-          role: Exclude<BudgetTrackerRole, null>;
-        }
-      >(`
-        SELECT 1 FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(targetUser.id, budget_tracker_id)
+      const alreadyHasAccess = await db.select()
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, targetUser[0]!.id),
+          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+        ))
+        .limit(1)
 
-      if (alreadyHasAccess) {
+      if (alreadyHasAccess.length > 0) {
         throw createError({
           status: 400,
           message: "User already has access",
         })
       }
 
-      db.prepare<[string, string, Exclude<BudgetTrackerRole, null>]>(`
-        INSERT INTO UserBudgetTracker (user_id, budget_tracker_id, role)
-        VALUES (?, ?, ?)
-      `)
-        .run(targetUser.id, budget_tracker_id, role)
+      await db.insert(UserBudgetTracker)
+        .values({
+          user_id: targetUser[0]!.id,
+          budget_tracker_id,
+          role,
+        })
 
       return {
         status: 201,
@@ -195,7 +199,7 @@ export default defineEventHandler(async (event) => {
       }: {
         budget_tracker_id?: string;
         target_user_id?: string;
-        role?: Exclude<BudgetTrackerRole, null>;
+        role?: BudgetTrackerRole;
       } = await readBody(event)
 
       if (!budget_tracker_id || !target_user_id || !role) {
@@ -212,54 +216,55 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = db
-        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
-        SELECT role FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(userId, budget_tracker_id)
+      const userAccess = await db.select()
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, userId),
+          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+        ))
 
-      if (!userAccess) {
+      if (userAccess.length === 0) {
         throw createError({
           status: 403,
           message: "Access denied",
         })
       }
 
-      const targetUserAccess = db
-        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
-        SELECT role FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(target_user_id, budget_tracker_id)
+      const targetUserAccess = await db.select({ role: UserBudgetTracker.role })
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, target_user_id),
+          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+        ))
+        .limit(1)
 
-      if (!targetUserAccess) {
+      if (targetUserAccess.length === 0) {
         throw createError({
           status: 404,
           message: "Target user not found in this budget tracker",
         })
       }
 
-      if (targetUserAccess.role === "owner") {
+      if (targetUserAccess[0]!.role === "owner") {
         throw createError({
           status: 403,
           message: "Cannot change the owner's role",
         })
       }
 
-      if (!canChangeRole(userAccess.role, targetUserAccess.role, role)) {
+      if (!canChangeRole(userAccess[0]!.role , targetUserAccess[0]!.role , role)) {
         throw createError({
           status: 403,
           message: "You do not have permission to change this user's role",
         })
       }
 
-      db.prepare<[Exclude<BudgetTrackerRole, null>, string, string]>(`
-        UPDATE UserBudgetTracker
-        SET role = ?
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .run(role, target_user_id, budget_tracker_id)
+      await db.update(UserBudgetTracker)
+        .set({ role })
+        .where(and(
+          eq(UserBudgetTracker.user_id, target_user_id),
+          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+        ))
 
       return {
         status: 200,
@@ -291,14 +296,14 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = db
-        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
-        SELECT role FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(userId, budget_tracker_id)
+      const userAccess = await db.select()
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, userId),
+          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+        ))
 
-      if (!userAccess) {
+      if (userAccess.length === 0) {
         throw createError({
           status: 403,
           message: "Access denied",
@@ -312,39 +317,40 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const targetUserAccess = db
-        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
-        SELECT role FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(target_user_id, budget_tracker_id)
+      const targetUserAccess = await db.select({ role: UserBudgetTracker.role })
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, target_user_id),
+          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+        ))
+        .limit(1)
 
-      if (!targetUserAccess) {
+      if (targetUserAccess.length === 0) {
         throw createError({
           status: 404,
           message: "Target user not found in this budget tracker",
         })
       }
 
-      if (targetUserAccess.role === "owner") {
+      if (targetUserAccess[0]!.role === "owner") {
         throw createError({
           status: 403,
           message: "Cannot remove the owner from budget tracker",
         })
       }
 
-      if (!canManageUsers(userAccess.role)) {
+      if (!canManageUsers(userAccess[0]!.role )) {
         throw createError({
           status: 403,
           message: "You do not have permission to remove users",
         })
       }
 
-      db.prepare<[string, string]>(`
-        DELETE FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .run(target_user_id, budget_tracker_id)
+      await db.delete(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, target_user_id),
+          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+        ))
 
       return {
         status: 200,

@@ -1,4 +1,4 @@
-import db from "#server/api/db"
+import db from "#shared/db/drizzle"
 
 import fs from "node:fs/promises"
 import path from "node:path"
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
   if (format === "sql") {
     const dumpPath = path.join(tempDir, `backup_${timestamp}.sql`)
 
-    await execAsync(`sqlite3 "${db.name}" .dump > "${dumpPath}"`)
+    await execAsync(`sqlite3 "${db.$client.name}" .dump > "${dumpPath}"`)
 
     const fileContent = await fs.readFile(dumpPath)
 
@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
   } else if (format === "sqlite") {
     const dbCopyPath = path.join(tempDir, `backup_${timestamp}.db`)
 
-    await fs.copyFile(db.name, dbCopyPath)
+    await fs.copyFile(db.$client.name, dbCopyPath)
 
     const fileContent = await fs.readFile(dbCopyPath)
 
@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
     const jsonResults = await Promise.all(tables.map(async (table) => {
       const outputPath = path.join(tempDir, `${table}_${timestamp}.json`)
 
-      await execAsync(`sqlite3 -json "${db.name}" "SELECT * FROM ${table};" > "${outputPath}"`)
+      await execAsync(`sqlite3 -json "${db.$client.name}" "SELECT * FROM ${table};" > "${outputPath}"`)
 
       const content = await fs.readFile(outputPath, "utf-8")
 
@@ -85,7 +85,7 @@ export default defineEventHandler(async (event) => {
     const csvData = await Promise.all(tables.map(async (table) => {
       const outputPath = path.join(tempDir, `${table}_${timestamp}.csv`)
 
-      await execAsync(`sqlite3 -header -csv "${db.name}" "SELECT * FROM ${table};" > "${outputPath}"`)
+      await execAsync(`sqlite3 -header -csv "${db.$client.name}" "SELECT * FROM ${table};" > "${outputPath}"`)
       const content = await fs.readFile(outputPath, "utf-8")
 
       await fs.unlink(outputPath)

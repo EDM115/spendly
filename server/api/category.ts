@@ -1,8 +1,16 @@
-import db from "#server/api/db"
+import db from "#shared/db/drizzle"
+import {
+  Category,
+  UserBudgetTracker,
+} from "#shared/db/schema"
 
+import {
+  and,
+  eq,
+} from "drizzle-orm"
 import { randomUUID } from "node:crypto"
 
-function canEditCategory(role: Exclude<BudgetTrackerRole, null>): boolean {
+function canEditCategory(role: BudgetTrackerRole): boolean {
   return [ "owner", "admin", "editor" ].includes(role)
 }
 
@@ -34,36 +42,27 @@ export default defineEventHandler(async (event) => {
       } = getQuery(event)
 
       if (category_id) {
-        const category = db
-          .prepare<[string], Category>(`
-          SELECT c.*
-          FROM Category c
-          WHERE c.id = ?
-        `)
-          .get(category_id)
+        const category = await db.select()
+          .from(Category)
+          .where(eq(Category.id, category_id))
+          .limit(1)
 
-        if (!category) {
+        if (category.length === 0) {
           throw createError({
             status: 404,
             message: "Category not found",
           })
         }
 
-        const hasAccess = db
-          .prepare<
-          [string, string],
-          {
-            user_id: string;
-            budget_tracker_id: string;
-            role: Exclude<BudgetTrackerRole, null>;
-          }
-        >(`
-          SELECT 1 FROM UserBudgetTracker
-          WHERE user_id = ? AND budget_tracker_id = ?
-        `)
-          .get(userId, category.budget_tracker_id)
+        const hasAccess = await db.select()
+          .from(UserBudgetTracker)
+          .where(and(
+            eq(UserBudgetTracker.user_id, userId),
+            eq(UserBudgetTracker.budget_tracker_id, category[0]!.budget_tracker_id),
+          ))
+          .limit(1)
 
-        if (!hasAccess) {
+        if (hasAccess.length === 0) {
           throw createError({
             status: 403,
             message: "Access denied",
@@ -74,7 +73,7 @@ export default defineEventHandler(async (event) => {
           status: 200,
           body: {
             success: "Category retrieved",
-            category,
+            category: category[0]!,
           },
         }
       } else {
@@ -85,34 +84,24 @@ export default defineEventHandler(async (event) => {
           })
         }
 
-        const hasAccess = db
-          .prepare<
-          [string, string],
-          {
-            user_id: string;
-            budget_tracker_id: string;
-            role: Exclude<BudgetTrackerRole, null>;
-          }
-        >(`
-          SELECT 1 FROM UserBudgetTracker
-          WHERE user_id = ? AND budget_tracker_id = ?
-        `)
-          .get(userId, budget_tracker_id)
+        const hasAccess = await db.select()
+          .from(UserBudgetTracker)
+          .where(and(
+            eq(UserBudgetTracker.user_id, userId),
+            eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+          ))
+          .limit(1)
 
-        if (!hasAccess) {
+        if (hasAccess.length === 0) {
           throw createError({
             status: 403,
             message: "Access denied",
           })
         }
 
-        const categories = db
-          .prepare<[string], Category>(`
-          SELECT c.*
-          FROM Category c
-          WHERE c.budget_tracker_id = ?
-        `)
-          .all(budget_tracker_id)
+        const categories = await db.select()
+          .from(Category)
+          .where(eq(Category.budget_tracker_id, budget_tracker_id))
 
         return {
           status: 200,
@@ -150,21 +139,21 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = db
-        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
-        SELECT role FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(userId, budget_tracker_id)
+      const userAccess = await db.select()
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, userId),
+          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+        ))
 
-      if (!userAccess) {
+      if (userAccess.length === 0) {
         throw createError({
           status: 403,
           message: "Access denied",
         })
       }
 
-      if (!canEditCategory(userAccess.role)) {
+      if (!canEditCategory(userAccess[0]!.role )) {
         throw createError({
           status: 403,
           message: "You do not have permission to add categories",
@@ -173,11 +162,14 @@ export default defineEventHandler(async (event) => {
 
       const categoryId = randomUUID()
 
-      db.prepare<[string, string, string, string, string]>(`
-        INSERT INTO Category (id, name, icon, color, budget_tracker_id)
-        VALUES (?, ?, ?, ?, ?)
-      `)
-        .run(categoryId, name, icon, color, budget_tracker_id)
+      await db.insert(Category)
+        .values({
+          id: categoryId,
+          name,
+          icon,
+          color,
+          budget_tracker_id,
+        })
 
       return {
         status: 201,
@@ -214,44 +206,46 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const category = db
-        .prepare<[string], { budget_tracker_id: string }>("SELECT budget_tracker_id FROM Category WHERE id = ?")
-        .get(id)
+      const category = await db.select({ budget_tracker_id: Category.budget_tracker_id })
+        .from(Category)
+        .where(eq(Category.id, id))
+        .limit(1)
 
-      if (!category) {
+      if (category.length === 0) {
         throw createError({
           status: 404,
           message: "Category not found",
         })
       }
 
-      const userAccess = db
-        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
-        SELECT role FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(userId, category.budget_tracker_id)
+      const userAccess = await db.select()
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, userId),
+          eq(UserBudgetTracker.budget_tracker_id, category[0]!.budget_tracker_id),
+        ))
 
-      if (!userAccess) {
+      if (userAccess.length === 0) {
         throw createError({
           status: 403,
           message: "Access denied",
         })
       }
 
-      if (!canEditCategory(userAccess.role)) {
+      if (!canEditCategory(userAccess[0]!.role )) {
         throw createError({
           status: 403,
           message: "You do not have permission to edit categories",
         })
       }
 
-      db.prepare<[string, string, string, string]>(`
-        UPDATE Category
-        SET name = ?, icon = ?, color = ?
-        WHERE id = ?
-      `)
-        .run(name, icon, color, id)
+      await db.update(Category)
+        .set({
+          name,
+          icon,
+          color,
+        })
+        .where(eq(Category.id, id))
 
       return {
         status: 200,
@@ -277,43 +271,41 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const category = db
-        .prepare<[string], { budget_tracker_id: string }>("SELECT budget_tracker_id FROM Category WHERE id = ?")
-        .get(id)
+      const category = await db.select({ budget_tracker_id: Category.budget_tracker_id })
+        .from(Category)
+        .where(eq(Category.id, id))
+        .limit(1)
 
-      if (!category) {
+      if (category.length === 0) {
         throw createError({
           status: 404,
           message: "Category not found",
         })
       }
 
-      const userAccess = db
-        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
-        SELECT role FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(userId, category.budget_tracker_id)
+      const userAccess = await db.select()
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, userId),
+          eq(UserBudgetTracker.budget_tracker_id, category[0]!.budget_tracker_id),
+        ))
 
-      if (!userAccess) {
+      if (userAccess.length === 0) {
         throw createError({
           status: 403,
           message: "Access denied",
         })
       }
 
-      if (!canEditCategory(userAccess.role)) {
+      if (!canEditCategory(userAccess[0]!.role )) {
         throw createError({
           status: 403,
           message: "You do not have permission to delete categories",
         })
       }
 
-      db.prepare<[string]>(`
-        DELETE FROM Category
-        WHERE id = ?
-      `)
-        .run(id)
+      await db.delete(Category)
+        .where(eq(Category.id, id))
 
       return {
         status: 200,

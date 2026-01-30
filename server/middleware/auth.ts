@@ -1,6 +1,12 @@
-import db from "#server/api/db"
+import db from "#shared/db/drizzle"
+import { User } from "#shared/db/schema"
 
 import jwt from "jsonwebtoken"
+
+import {
+  and,
+  eq,
+} from "drizzle-orm"
 
 export default defineEventHandler(async (event) => {
   if ((/^\/api(\/(?!login|auth\/validate).*)?$/).test(event.node.req.url ?? "")) {
@@ -52,14 +58,15 @@ export default defineEventHandler(async (event) => {
         )
       }
 
-      const admin = db
-        .prepare(`
-          SELECT 1 FROM User
-          WHERE id = ? AND role = 'admin'
-        `)
-        .get(userId)
+      const admin = await db.select()
+        .from(User)
+        .where(and(
+          eq(User.id, userId),
+          eq(User.role, "admin"),
+        ))
+        .limit(1)
 
-      if (!admin) {
+      if (admin.length === 0) {
         return sendError(
           event,
           createError({

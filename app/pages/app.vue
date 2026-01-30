@@ -253,7 +253,7 @@ watch(selectedBudgetTrackerId, async () => {
 })
 
 onMounted(async () => {
-  if (store.getUser === null) {
+  if (store.getUser === null || store.isDemo) {
     await navigateTo("/", { redirectCode: 401 })
 
     return

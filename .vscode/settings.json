@@ -15,14 +15,16 @@
   "eslint.format.enable": true,
   "eslint.ignoreUntitled": true,
   "eslint.options": {
-    "flags": ["unstable_ts_config"]
+    "flags": [
+      "unstable_ts_config"
+    ]
   },
   "eslint.useFlatConfig": true,
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
-    "nuxt.config.*": "app.config.*, error.vue, tsconfig.json, .env, .nuxtignore",
     "Dockerfile": ".dockerignore, .node-version",
     "eslint.config.ts": ".oxlintrc.json, .eslintcache, eslint.*.config.ts",
+    "nuxt.config.*": "app.config.*, error.vue, drizzle.config.ts, tsconfig.json, .env, .nuxtignore",
     "package.json": "package-lock.json, pnpm*",
     "README.md": "LICENSE, .gitignore, renovate.json",
     "tsconfig.json": "tsconfig.*.json, *.tsbuildinfo, *.d.ts, *.d.mts"
@@ -44,6 +46,10 @@
     "pnpm-lock.yaml": true
   },
   "styled-colors.decoration_type": "background",
+  "typescript.inlayHints.enumMemberValues.enabled": false,
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": false,
+  "typescript.inlayHints.parameterNames.enabled": "none",
+  "typescript.inlayHints.propertyDeclarationTypes.enabled": false,
   "typescript.tsdk": "node_modules\\typescript\\lib",
   "vue.autoInsert.dotValue": true,
   "vue.editor.focusMode": true,

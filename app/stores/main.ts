@@ -19,7 +19,7 @@ export const useMainStore = defineStore("main", () => {
   const theme = ref<Theme>("dark")
   const user = ref<StoreUser>(null)
   const selectedBudgetTrackerId = ref<string | null>(null)
-  const currentBudgetTrackerRole = ref<BudgetTrackerRole>(null)
+  const currentBudgetTrackerRole = ref<BudgetTrackerRole | null>(null)
   const isValidatingToken = ref(false)
 
   const getI18n = computed(() => i18n.value)
@@ -153,7 +153,7 @@ export const useMainStore = defineStore("main", () => {
     localStorage.removeItem("selectedBudgetTrackerId")
   }
 
-  function setSelectedBudgetTracker(id: string | null, role: BudgetTrackerRole = null) {
+  function setSelectedBudgetTracker(id: string | null, role: BudgetTrackerRole | null = null) {
     selectedBudgetTrackerId.value = id
     currentBudgetTrackerRole.value = role
 

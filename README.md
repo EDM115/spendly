@@ -1,6 +1,10 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/EDM115/spendly/master/public/images/logo.webp" alt="Spendly" width="300" height="300">
+<picture>
+  <source width="300" height="300" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/EDM115/spendly/master/public/images/logo.webp">
+  <source width="300" height="300" media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/EDM115/spendly/master/public/images/logo_alt.webp">
+  <img alt="Spendly" width="300" height="300" src="https://raw.githubusercontent.com/EDM115/spendly/master/public/images/logo.webp">
+</picture>
 
 # spendly
 **WIP**  
@@ -16,9 +20,8 @@ Made for my gf
 Hi :wave:  
 ...
 
-<details><summary><h2>Developer documentation</h2></summary>
-
-## Get started
+## Developer documentation
+### Get started
 ```pwsh
 git clone https://github.com/EDM115/spendly.git
 cd spendly
@@ -29,27 +32,29 @@ JWT_SECRET=4451b7b6411db0854895824f2fce24721989ac47da45c862cb1baf15383dbc6ef07c1
 SEED_USERS='[{"username": "admin", "password": "admin", "role": "admin"}, {"username": "test", "password": "test", "role": "user"}]'
 SEED=false
 DEFAULT_UI_LANG=en
-DEMO_USER='{"username": "example", "password": "example123"}'
+DB_FILE_NAME=db/data.db
 ```
 - `JWT_SECRET` : generate with `node -e "import('crypto').then(crypto => console.log(crypto.randomBytes(64).toString('hex')))"`
 - `SEED_USERS` : if any value should contain a quote, write instead `\'` (or `\"`)
 - `SEED` : protection so Nuxt doesn't accidentally re-seed in dev mode as it runs the file for some reason
 - `DEFAULT_UI_LANG` : the default language of the UI, either `en` or `fr`
-- `DEMO_USER` : the user that will be used to create the demo. PLEASE make it extra complex and non deterministic, as anyone accessing it can deface or delete your demo
+- `DB_FILE_NAME` : the path to the SQLite database file, please keep as-is
 ```pwsh
+pnpm db:migrate
 pnpm seed
 pnpm i --frozen-lockfile
 pnpm dev
 ```
 
-## Build and run
+### Build and run
 ```pwsh
 docker build -t edm115/spendly .
 docker run -d -p 60000:60000 --env-file .env -v spendly_db:/app/db --name spendly edm115/spendly
 ```
 
-## DB Schema
-### User
+<details><summary><h3>DB Schema</h3></summary>
+
+#### User
 | Column   | Type   | Extra                                 |
 | :------- | :----- | :------------------------------------ |
 | id       | string | Primary Key, UUIDv4                   |
@@ -57,20 +62,20 @@ docker run -d -p 60000:60000 --env-file .env -v spendly_db:/app/db --name spendl
 | password | string | Not Null                              |
 | role     | string | Not Null, "admin" or "user" (default) |
 
-### BudgetTracker
+#### BudgetTracker
 | Column | Type   | Extra               |
 | :----- | :----- | :------------------ |
 | id     | string | Primary Key, UUIDv4 |
 | name   | string | Not Null            |
 
-### BudgetTracker
+#### BudgetTracker
 | Column            | Type   | Extra                            |
 | :---------------- | :----- | :------------------------------- |
 | user_id           | string | Primary Key, Foreign Key, UUIDv4 |
 | budget_tracker_id | string | Primary Key, Foreign Key, UUIDv4 |
 | role              | string | Not Null, default "viewer"       |
 
-### Category
+#### Category
 | Column            | Type   | Extra                 |
 | :---------------- | :----- | :-------------------- |
 | id                | string | Primary Key, UUIDv4   |
@@ -79,7 +84,7 @@ docker run -d -p 60000:60000 --env-file .env -v spendly_db:/app/db --name spendl
 | color             | string | Not Null              |
 | budget_tracker_id | string | Not Null, Foreign Key |
 
-### Spending
+#### Spending
 | Column            | Type    | Extra                  |
 | :---------------- | :------ | :--------------------- |
 | id                | string  | Primary Key, UUIDv4    |
@@ -89,6 +94,8 @@ docker run -d -p 60000:60000 --env-file .env -v spendly_db:/app/db --name spendl
 | is_spending       | boolean | Not Null, default true |
 | category_id       | string  | Foreign Key, Not Null  |
 | date              | date    | Not Null               |
+
+#### Mermaid diagram
 
 ```mermaid
 erDiagram

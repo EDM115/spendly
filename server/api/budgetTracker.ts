@@ -1,12 +1,20 @@
-import db from "#server/api/db"
+import db from "#shared/db/drizzle"
+import {
+  BudgetTracker,
+  UserBudgetTracker,
+} from "#shared/db/schema"
 
+import {
+  and,
+  eq,
+} from "drizzle-orm"
 import { randomUUID } from "node:crypto"
 
-function canEditTracker(role: Exclude<BudgetTrackerRole, null>): boolean {
+function canEditTracker(role: BudgetTrackerRole): boolean {
   return [ "owner", "admin" ].includes(role)
 }
 
-function canDeleteTracker(role: Exclude<BudgetTrackerRole, null>): boolean {
+function canDeleteTracker(role: BudgetTrackerRole): boolean {
   return role === "owner"
 }
 
@@ -32,15 +40,20 @@ export default defineEventHandler(async (event) => {
       const { budget_tracker_id }: { budget_tracker_id?: string } = getQuery(event)
 
       if (budget_tracker_id) {
-        const budgetTracker = db
-          .prepare<[string, string], BudgetTracker>(`
-          SELECT bt.*, ubt.role FROM BudgetTracker bt
-          INNER JOIN UserBudgetTracker ubt ON bt.id = ubt.budget_tracker_id
-          WHERE bt.id = ? AND ubt.user_id = ?
-        `)
-          .get(budget_tracker_id, userId)
+        const budgetTracker = await db.select({
+          id: BudgetTracker.id,
+          name: BudgetTracker.name,
+          role: UserBudgetTracker.role,
+        })
+          .from(BudgetTracker)
+          .innerJoin(UserBudgetTracker, eq(BudgetTracker.id, UserBudgetTracker.budget_tracker_id))
+          .where(and(
+            eq(BudgetTracker.id, budget_tracker_id),
+            eq(UserBudgetTracker.user_id, userId),
+          ))
+          .limit(1)
 
-        if (!budgetTracker) {
+        if (budgetTracker.length === 0) {
           throw createError({
             status: 404,
             message: "Budget tracker not found or access denied",
@@ -51,17 +64,18 @@ export default defineEventHandler(async (event) => {
           status: 200,
           body: {
             success: "Budget tracker retrieved",
-            budgetTracker,
+            budgetTracker: budgetTracker[0]!,
           },
         }
       } else {
-        const budgetTrackers = db
-          .prepare<[string], BudgetTracker>(`
-          SELECT bt.*, ubt.role FROM BudgetTracker bt
-          INNER JOIN UserBudgetTracker ubt ON bt.id = ubt.budget_tracker_id
-          WHERE ubt.user_id = ?
-        `)
-          .all(userId)
+        const budgetTrackers = await db.select({
+          id: BudgetTracker.id,
+          name: BudgetTracker.name,
+          role: UserBudgetTracker.role,
+        })
+          .from(BudgetTracker)
+          .innerJoin(UserBudgetTracker, eq(BudgetTracker.id, UserBudgetTracker.budget_tracker_id))
+          .where(eq(UserBudgetTracker.user_id, userId))
 
         return {
           status: 200,
@@ -91,17 +105,18 @@ export default defineEventHandler(async (event) => {
 
       const budgetTrackerId = randomUUID()
 
-      db.prepare<[string, string]>(`
-        INSERT INTO BudgetTracker (id, name)
-        VALUES (?, ?)
-      `)
-        .run(budgetTrackerId, name)
+      await db.insert(BudgetTracker)
+        .values({
+          id: budgetTrackerId,
+          name,
+        })
 
-      db.prepare<[string, string]>(`
-        INSERT INTO UserBudgetTracker (user_id, budget_tracker_id, role)
-        VALUES (?, ?, 'owner')
-      `)
-        .run(userId, budgetTrackerId)
+      await db.insert(UserBudgetTracker)
+        .values({
+          user_id: userId,
+          budget_tracker_id: budgetTrackerId,
+          role: "owner",
+        })
 
       return {
         status: 201,
@@ -134,33 +149,30 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = db
-        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
-        SELECT role FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(userId, id)
+      const userAccess = await db.select()
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, userId),
+          eq(UserBudgetTracker.budget_tracker_id, id),
+        ))
 
-      if (!userAccess) {
+      if (userAccess.length === 0) {
         throw createError({
           status: 403,
           message: "Access denied",
         })
       }
 
-      if (!canEditTracker(userAccess.role)) {
+      if (!canEditTracker(userAccess[0]!.role )) {
         throw createError({
           status: 403,
           message: "You do not have permission to edit this budget tracker",
         })
       }
 
-      db.prepare<[string, string]>(`
-        UPDATE BudgetTracker
-        SET name = ?
-        WHERE id = ?
-      `)
-        .run(name, id)
+      await db.update(BudgetTracker)
+        .set({ name })
+        .where(eq(BudgetTracker.id, id))
 
       return {
         status: 200,
@@ -186,32 +198,29 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = db
-        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
-        SELECT role FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(userId, id)
+      const userAccess = await db.select()
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, userId),
+          eq(UserBudgetTracker.budget_tracker_id, id),
+        ))
 
-      if (!userAccess) {
+      if (userAccess.length === 0) {
         throw createError({
           status: 403,
           message: "Access denied",
         })
       }
 
-      if (!canDeleteTracker(userAccess.role)) {
+      if (!canDeleteTracker(userAccess[0]!.role )) {
         throw createError({
           status: 403,
           message: "Only the owner can delete this budget tracker",
         })
       }
 
-      db.prepare<[string]>(`
-        DELETE FROM BudgetTracker
-        WHERE id = ?
-      `)
-        .run(id)
+      await db.delete(BudgetTracker)
+        .where(eq(BudgetTracker.id, id))
 
       return {
         status: 200,

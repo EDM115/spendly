@@ -1,8 +1,20 @@
-import db from "#server/api/db"
+import db from "#shared/db/drizzle"
+import {
+  Category,
+  Spending,
+  UserBudgetTracker,
+} from "#shared/db/schema"
 
+import {
+  and,
+  desc,
+  eq,
+  gte,
+  lte,
+} from "drizzle-orm"
 import { randomUUID } from "node:crypto"
 
-function canEditSpending(role: Exclude<BudgetTrackerRole, null>): boolean {
+function canEditSpending(role: BudgetTrackerRole): boolean {
   return [ "owner", "admin", "editor" ].includes(role)
 }
 
@@ -44,14 +56,14 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const hasAccess = db
-        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
-        SELECT role FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(userId, budget_tracker_id)
+      const userAccess = await db.select()
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, userId),
+          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+        ))
 
-      if (!hasAccess) {
+      if (userAccess.length === 0) {
         throw createError({
           status: 403,
           message: "Access denied",
@@ -59,16 +71,27 @@ export default defineEventHandler(async (event) => {
       }
 
       if (spending_id) {
-        const spending = db
-          .prepare<[string, string], Spending>(`
-          SELECT s.*, c.name as category_name, c.color as icon_color, c.icon
-          FROM Spending s
-          INNER JOIN Category c ON s.category_id = c.id
-          WHERE s.id = ? AND s.budget_tracker_id = ?
-        `)
-          .get(spending_id, budget_tracker_id)
+        const spending = await db.select({
+          id: Spending.id,
+          name: Spending.name,
+          budget_tracker_id: Spending.budget_tracker_id,
+          value: Spending.value,
+          is_spending: Spending.is_spending,
+          category_id: Spending.category_id,
+          date: Spending.date,
+          category_name: Category.name,
+          icon_color: Category.color,
+          icon: Category.icon,
+        })
+          .from(Spending)
+          .innerJoin(Category, eq(Spending.category_id, Category.id))
+          .where(and(
+            eq(Spending.id, spending_id),
+            eq(Spending.budget_tracker_id, budget_tracker_id),
+          ))
+          .limit(1)
 
-        if (!spending) {
+        if (spending.length === 0) {
           throw createError({
             status: 404,
             message: "Spending not found",
@@ -79,32 +102,34 @@ export default defineEventHandler(async (event) => {
           status: 200,
           body: {
             success: "Spending retrieved",
-            spending,
+            spending: spending[0]!,
           },
         }
       } else {
-        let query = `
-          SELECT s.*, c.name as category_name, c.color as icon_color, c.icon
-          FROM Spending s
-          INNER JOIN Category c ON s.category_id = c.id
-          WHERE s.budget_tracker_id = ?
-        `
-        const params: string[] = [budget_tracker_id]
-
-        if (start_date && typeof start_date === "string") {
-          query += " AND s.date >= ?"
-          params.push(start_date)
-        }
-
-        if (end_date && typeof end_date === "string") {
-          query += " AND s.date <= ?"
-          params.push(end_date)
-        }
-
-        query += " ORDER BY s.date DESC"
-
-        const spendings = db.prepare<[...string[]], Spending>(query)
-          .all(...params)
+        const spendings = await db.select({
+          id: Spending.id,
+          name: Spending.name,
+          budget_tracker_id: Spending.budget_tracker_id,
+          value: Spending.value,
+          is_spending: Spending.is_spending,
+          category_id: Spending.category_id,
+          date: Spending.date,
+          category_name: Category.name,
+          icon_color: Category.color,
+          icon: Category.icon,
+        })
+          .from(Spending)
+          .innerJoin(Category, eq(Spending.category_id, Category.id))
+          .where(and(
+            eq(Spending.budget_tracker_id, budget_tracker_id),
+            start_date
+              ? gte(Spending.date, start_date)
+              : undefined,
+            end_date
+              ? lte(Spending.date, end_date)
+              : undefined,
+          ))
+          .orderBy(desc(Spending.date))
 
         return {
           status: 200,
@@ -153,34 +178,36 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = db
-        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
-        SELECT role FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(userId, budget_tracker_id)
+      const userAccess = await db.select()
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, userId),
+          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+        ))
 
-      if (!userAccess) {
+      if (userAccess.length === 0) {
         throw createError({
           status: 403,
           message: "Access denied",
         })
       }
 
-      if (!canEditSpending(userAccess.role)) {
+      if (!canEditSpending(userAccess[0]!.role )) {
         throw createError({
           status: 403,
           message: "You do not have permission to add transactions",
         })
       }
 
-      const categoryExists = db
-        .prepare<[string, string]>(`
-        SELECT 1 FROM Category WHERE id = ? AND budget_tracker_id = ?
-      `)
-        .get(category_id, budget_tracker_id)
+      const categoryExists = await db.select()
+        .from(Category)
+        .where(and(
+          eq(Category.id, category_id),
+          eq(Category.budget_tracker_id, budget_tracker_id),
+        ))
+        .limit(1)
 
-      if (!categoryExists) {
+      if (categoryExists.length === 0) {
         throw createError({
           status: 404,
           message: "Category not found",
@@ -189,13 +216,16 @@ export default defineEventHandler(async (event) => {
 
       const spendingId = randomUUID()
 
-      db.prepare<[string, string, string, number, number, string, string]>(`
-        INSERT INTO Spending (id, name, budget_tracker_id, value, is_spending, category_id, date)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `)
-        .run(spendingId, name, budget_tracker_id, value, is_spending
-          ? 1
-          : 0, category_id, date)
+      await db.insert(Spending)
+        .values({
+          id: spendingId,
+          name,
+          budget_tracker_id,
+          value,
+          is_spending,
+          category_id,
+          date,
+        })
 
       return {
         status: 201,
@@ -246,61 +276,69 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = db
-        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
-        SELECT role FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(userId, budget_tracker_id)
+      const userAccess = await db.select()
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, userId),
+          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+        ))
 
-      if (!userAccess) {
+      if (userAccess.length === 0) {
         throw createError({
           status: 403,
           message: "Access denied",
         })
       }
 
-      if (!canEditSpending(userAccess.role)) {
+      if (!canEditSpending(userAccess[0]!.role )) {
         throw createError({
           status: 403,
           message: "You do not have permission to edit transactions",
         })
       }
 
-      const spendingExists = db
-        .prepare<[string, string], { id: string }>(`
-        SELECT id FROM Spending WHERE id = ? AND budget_tracker_id = ?
-      `)
-        .get(id, budget_tracker_id)
+      const spendingExists = await db.select()
+        .from(Spending)
+        .where(and(
+          eq(Spending.id, id),
+          eq(Spending.budget_tracker_id, budget_tracker_id),
+        ))
+        .limit(1)
 
-      if (!spendingExists) {
+      if (spendingExists.length === 0) {
         throw createError({
           status: 404,
           message: "Spending not found",
         })
       }
 
-      const categoryExists = db
-        .prepare<[string, string]>(`
-        SELECT 1 FROM Category WHERE id = ? AND budget_tracker_id = ?
-      `)
-        .get(category_id, budget_tracker_id)
+      const categoryExists = await db.select()
+        .from(Category)
+        .where(and(
+          eq(Category.id, category_id),
+          eq(Category.budget_tracker_id, budget_tracker_id),
+        ))
+        .limit(1)
 
-      if (!categoryExists) {
+      if (categoryExists.length === 0) {
         throw createError({
           status: 404,
           message: "Category not found",
         })
       }
 
-      db.prepare<[string, number, number, string, string, string, string]>(`
-        UPDATE Spending
-        SET name = ?, value = ?, is_spending = ?, category_id = ?, date = ?
-        WHERE id = ? AND budget_tracker_id = ?
-      `)
-        .run(name, value, is_spending
-          ? 1
-          : 0, category_id, date, id, budget_tracker_id)
+      await db.update(Spending)
+        .set({
+          name,
+          value,
+          is_spending,
+          category_id,
+          date,
+        })
+        .where(and(
+          eq(Spending.id, id),
+          eq(Spending.budget_tracker_id, budget_tracker_id),
+        ))
 
       return {
         status: 200,
@@ -332,45 +370,47 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = db
-        .prepare<[string, string], { role: Exclude<BudgetTrackerRole, null> }>(`
-        SELECT role FROM UserBudgetTracker
-        WHERE user_id = ? AND budget_tracker_id = ?
-      `)
-        .get(userId, budget_tracker_id)
+      const userAccess = await db.select()
+        .from(UserBudgetTracker)
+        .where(and(
+          eq(UserBudgetTracker.user_id, userId),
+          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+        ))
 
-      if (!userAccess) {
+      if (userAccess.length === 0) {
         throw createError({
           status: 403,
           message: "Access denied",
         })
       }
 
-      if (!canEditSpending(userAccess.role)) {
+      if (!canEditSpending(userAccess[0]!.role )) {
         throw createError({
           status: 403,
           message: "You do not have permission to delete transactions",
         })
       }
 
-      const spendingExists = db
-        .prepare<[string, string], { id: string }>(`
-        SELECT id FROM Spending WHERE id = ? AND budget_tracker_id = ?
-      `)
-        .get(id, budget_tracker_id)
+      const spendingExists = await db.select()
+        .from(Spending)
+        .where(and(
+          eq(Spending.id, id),
+          eq(Spending.budget_tracker_id, budget_tracker_id),
+        ))
+        .limit(1)
 
-      if (!spendingExists) {
+      if (spendingExists.length === 0) {
         throw createError({
           status: 404,
           message: "Spending not found",
         })
       }
 
-      db.prepare<[string, string]>(`
-        DELETE FROM Spending
-        WHERE id = ? AND budget_tracker_id = ?
-      `)
-        .run(id, budget_tracker_id)
+      await db.delete(Spending)
+        .where(and(
+          eq(Spending.id, id),
+          eq(Spending.budget_tracker_id, budget_tracker_id),
+        ))
 
       return {
         status: 200,

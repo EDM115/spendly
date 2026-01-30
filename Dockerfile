@@ -6,7 +6,7 @@ ENV NODE_ENV=development
 
 RUN apk update && \
     apk upgrade --no-cache && \
-    apk add --no-cache bash ca-certificates && \
+    apk add --no-cache bash ca-certificates sqlite && \
     update-ca-certificates
 
 SHELL ["/bin/bash", "-c"]
@@ -18,9 +18,8 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 ENV PNPM_HOME=/root/.local/share/pnpm
 ENV PATH=$PNPM_HOME:/app/node_modules/.bin:$PATH
 
-RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
-
-RUN pnpm i --frozen-lockfile
+RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash - && \
+    pnpm i --frozen-lockfile
 
 COPY . /app/
 COPY .env /app/.env
@@ -28,6 +27,7 @@ COPY .env /app/.env
 ENV NODE_ENV=production
 
 RUN mkdir -p db && \
+    pnpm db:migrate && \
     pnpm seed && \
     rm -fr init
 

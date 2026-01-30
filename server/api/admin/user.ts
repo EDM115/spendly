@@ -1,6 +1,8 @@
-import db from "#server/api/db"
+import db from "#shared/db/drizzle"
+import { User } from "#shared/db/schema"
 
 import { hash } from "bcryptjs"
+import { eq } from "drizzle-orm"
 import { randomUUID } from "node:crypto"
 
 const SALT_ROUNDS = 10
@@ -18,14 +20,12 @@ export default defineEventHandler(async (event) => {
       const { user_id }: { user_id?: string } = getQuery(event)
 
       if (user_id) {
-        const user = db
-          .prepare<[string], User>(`
-          SELECT * FROM User
-          WHERE id = ?
-        `)
-          .get(user_id)
+        const user = await db.select()
+          .from(User)
+          .where(eq(User.id, user_id))
+          .limit(1)
 
-        if (!user) {
+        if (user.length === 0) {
           throw createError({
             status: 404,
             message: "User not found",
@@ -36,15 +36,12 @@ export default defineEventHandler(async (event) => {
           status: 200,
           body: {
             success: "User retrieved",
-            user,
+            user: user[0]!,
           },
         }
       } else {
-        const users = db
-          .prepare<[], User>(`
-          SELECT * FROM User
-        `)
-          .all()
+        const users = await db.select()
+          .from(User)
 
         return {
           status: 200,
@@ -63,7 +60,7 @@ export default defineEventHandler(async (event) => {
       }: {
         username?: string;
         password?: string;
-        role?: string;
+        role?: UserType;
       } = await readBody(event)
 
       if (!username || !role || !password) {
@@ -76,11 +73,13 @@ export default defineEventHandler(async (event) => {
       const userId = randomUUID()
       const hashed = await hash(password, SALT_ROUNDS)
 
-      db.prepare<[string, string, string, string]>(`
-        INSERT INTO User (id, username, password, role)
-        VALUES (?, ?, ?, ?)
-      `)
-        .run(userId, username, hashed, role)
+      await db.insert(User)
+        .values({
+          id: userId,
+          username,
+          password: hashed,
+          role,
+        })
 
       return {
         status: 201,
@@ -96,7 +95,7 @@ export default defineEventHandler(async (event) => {
         role,
       }: {
         id?: string;
-        role?: string;
+        role?: UserType;
       } = await readBody(event)
 
       if (!id || !role) {
@@ -106,12 +105,9 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      db.prepare<[string, string]>(`
-        UPDATE User
-        SET role = ?
-        WHERE id = ?
-      `)
-        .run(role, id)
+      await db.update(User)
+        .set({ role })
+        .where(eq(User.id, id))
 
       return {
         status: 200,
@@ -130,11 +126,8 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      db.prepare<[string]>(`
-        DELETE FROM User
-        WHERE id = ?
-      `)
-        .run(id)
+      await db.delete(User)
+        .where(eq(User.id, id))
 
       return {
         status: 200,
