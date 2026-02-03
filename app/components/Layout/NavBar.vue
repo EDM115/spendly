@@ -9,12 +9,12 @@
   >
     <template #prepend>
       <NuxtLink
-        :to="store.getUser && !store.isDemo ? '/app' : '/'"
+        :to="connected && !store.isDemo ? '/app' : '/'"
         class="flex items-center"
       >
         <NuxtImg
           :src="logoSrc"
-          alt="Spendly"
+          :alt="$t('main.title')"
           :draggable="false"
           height="40px"
           width="40px"
@@ -27,16 +27,16 @@
     </template>
     <v-app-bar-title v-if="smAndUp">
       <NuxtLink
-        :to="store.getUser && !store.isDemo ? '/app' : '/'"
+        :to="connected && !store.isDemo ? '/app' : '/'"
         class="text-h6 font-weight-bold"
       >
-        Spendly
+        {{ $t('main.title') }}
       </NuxtLink>
       <NuxtLink
         to="/admin"
       >
         <v-btn
-          v-if="store.getUser?.role === 'admin'"
+          v-if="store.getUser?.data?.user.role === 'admin'"
           icon="mdi-shield-account-outline"
           :variant="route.path === '/admin' ? 'outlined' : 'text'"
         />
@@ -48,7 +48,7 @@
         to="/admin"
       >
         <v-btn
-          v-if="store.getUser?.role === 'admin'"
+          v-if="store.getUser?.data?.user.role === 'admin'"
           icon="mdi-shield-account-outline"
           :variant="route.path === '/admin' ? 'outlined' : 'text'"
         />
@@ -105,6 +105,8 @@
 </template>
 
 <script lang="ts" setup>
+import { authClient } from "~/utils/authClient"
+
 const store = useMainStore()
 const route = useRoute()
 const { toggleTheme } = useCustomTheme()
@@ -118,7 +120,7 @@ const {
 const i18nSwitch = ref(false)
 const userLocale = computed(() => store.getI18n)
 const accountIcon = ref("mdi-login")
-const connected = computed(() => store.getUser !== null && !store.getIsValidatingToken)
+const connected = computed(() => store.getUser?.data !== null || store.getRawUser !== null)
 const accountText = computed(() => (connected.value
   ? t("navbar.disconnect")
   : t("navbar.connect")))
@@ -134,12 +136,6 @@ watch(connected, (value) => {
   accountIcon.value = value
     ? "mdi-logout"
     : "mdi-login"
-})
-
-onMounted(async () => {
-  if (store.getUser?.token) {
-    await store.validateToken()
-  }
 })
 
 const switchLocale = (newLocale: Language) => {
@@ -161,6 +157,7 @@ const getFlagEmoji = (l: string): string => {
 async function handleConnect() {
   if (connected.value) {
     store.logout()
+    await authClient.signOut()
     await navigateTo("/")
   } else {
     await navigateTo("/login")

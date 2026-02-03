@@ -1,17 +1,10 @@
 import {
-  relations,
-  sql,
+  relations, sql,
 } from "drizzle-orm"
 import {
-  index,
-  integer,
-  primaryKey,
-  real,
-  sqliteTable,
-  text,
+  sqliteTable, text, integer, index,
 } from "drizzle-orm/sqlite-core"
 
-// #region Better Auth
 export const user = sqliteTable("user", {
   id: text("id")
     .primaryKey(),
@@ -131,102 +124,7 @@ export const verification = sqliteTable(
       .on(table.identifier),
   ],
 )
-// #endregion
 
-// #region Spendly
-export const budget_tracker = sqliteTable(
-  "budget_tracker",
-  {
-    id: text()
-      .primaryKey(),
-    name: text()
-      .notNull(),
-  },
-)
-
-export const user_budget_tracker = sqliteTable(
-  "user_budget_tracker",
-  {
-    user_id: text()
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    budget_tracker_id: text()
-      .notNull()
-      .references(() => budget_tracker.id, { onDelete: "cascade" }),
-    role: text({ "enum": [ "viewer", "editor", "admin", "owner" ] })
-      .notNull()
-      .default("viewer"),
-  },
-  (table) => [
-    primaryKey({ columns: [ table.user_id, table.budget_tracker_id ] }),
-    index("ubt_budget_tracker_id_idx")
-      .on(table.budget_tracker_id),
-  ],
-)
-
-export const category = sqliteTable(
-  "category",
-  {
-    id: text()
-      .primaryKey(),
-    name: text()
-      .notNull(),
-    icon: text()
-      .notNull(),
-    color: text()
-      .notNull(),
-    budget_tracker_id: text()
-      .notNull()
-      .references(() => budget_tracker.id, { onDelete: "cascade" }),
-  },
-  (table) => [
-    index("category_budget_tracker_id_idx")
-      .on(table.budget_tracker_id),
-  ],
-)
-
-export const spending = sqliteTable(
-  "spending",
-  {
-    id: text()
-      .primaryKey(),
-    name: text()
-      .notNull(),
-    budget_tracker_id: text()
-      .notNull()
-      .references(() => budget_tracker.id, { onDelete: "cascade" }),
-    value: real()
-      .notNull(),
-    is_spending: integer({ mode: "boolean" })
-      .notNull()
-      .default(true),
-    category_id: text()
-      .notNull()
-      .references(() => category.id, { onDelete: "cascade" }),
-    date: text()
-      .notNull(),
-  },
-  (table) => [
-    index("spending_tracker_date_idx")
-      .on(table.budget_tracker_id, table.date),
-    index("spending_category_id_idx")
-      .on(table.category_id),
-  ],
-)
-// #endregion
-
-export const schema = {
-  user,
-  session,
-  account,
-  verification,
-  budget_tracker,
-  user_budget_tracker,
-  category,
-  spending,
-} as const
-
-// #region Relations
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
@@ -245,6 +143,3 @@ export const accountRelations = relations(account, ({ one }) => ({
     references: [user.id],
   }),
 }))
-// #endregion
-
-export default schema

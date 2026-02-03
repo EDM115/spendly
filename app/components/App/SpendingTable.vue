@@ -943,7 +943,6 @@ const saveSpending = async () => {
           budget_tracker_id: props.budgetTrackerId,
           ...spendingForm.value,
         },
-        headers: { Authorization: `Bearer ${store.getUser?.token}` },
       })
     } else {
       await $fetch("/api/spending", {
@@ -952,7 +951,6 @@ const saveSpending = async () => {
           budget_tracker_id: props.budgetTrackerId,
           ...spendingForm.value,
         },
-        headers: { Authorization: `Bearer ${store.getUser?.token}` },
       })
     }
 
@@ -979,7 +977,6 @@ const deleteSpending = async () => {
         id: deletingSpending.value.id,
         budget_tracker_id: props.budgetTrackerId,
       },
-      headers: { Authorization: `Bearer ${store.getUser?.token}` },
     })
     showDeleteDialog.value = false
     deletingSpending.value = null

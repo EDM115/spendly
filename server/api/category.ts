@@ -1,7 +1,7 @@
-import db from "#shared/db/drizzle"
+import { db } from "#shared/db/drizzle"
 import {
-  Category,
-  UserBudgetTracker,
+  category,
+  user_budget_tracker,
 } from "#shared/db/schema"
 
 import {
@@ -42,23 +42,23 @@ export default defineEventHandler(async (event) => {
       } = getQuery(event)
 
       if (category_id) {
-        const category = await db.select()
-          .from(Category)
-          .where(eq(Category.id, category_id))
+        const dbCategory = await db.select()
+          .from(category)
+          .where(eq(category.id, category_id))
           .limit(1)
 
-        if (category.length === 0) {
+        if (dbCategory.length === 0) {
           throw createError({
             status: 404,
-            message: "Category not found",
+            message: "category not found",
           })
         }
 
         const hasAccess = await db.select()
-          .from(UserBudgetTracker)
+          .from(user_budget_tracker)
           .where(and(
-            eq(UserBudgetTracker.user_id, userId),
-            eq(UserBudgetTracker.budget_tracker_id, category[0]!.budget_tracker_id),
+            eq(user_budget_tracker.user_id, userId),
+            eq(user_budget_tracker.budget_tracker_id, dbCategory[0]!.budget_tracker_id),
           ))
           .limit(1)
 
@@ -72,8 +72,8 @@ export default defineEventHandler(async (event) => {
         return {
           status: 200,
           body: {
-            success: "Category retrieved",
-            category: category[0]!,
+            success: "category retrieved",
+            category: dbCategory[0]!,
           },
         }
       } else {
@@ -85,10 +85,10 @@ export default defineEventHandler(async (event) => {
         }
 
         const hasAccess = await db.select()
-          .from(UserBudgetTracker)
+          .from(user_budget_tracker)
           .where(and(
-            eq(UserBudgetTracker.user_id, userId),
-            eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+            eq(user_budget_tracker.user_id, userId),
+            eq(user_budget_tracker.budget_tracker_id, budget_tracker_id),
           ))
           .limit(1)
 
@@ -100,8 +100,8 @@ export default defineEventHandler(async (event) => {
         }
 
         const categories = await db.select()
-          .from(Category)
-          .where(eq(Category.budget_tracker_id, budget_tracker_id))
+          .from(category)
+          .where(eq(category.budget_tracker_id, budget_tracker_id))
 
         return {
           status: 200,
@@ -140,10 +140,10 @@ export default defineEventHandler(async (event) => {
       }
 
       const userAccess = await db.select()
-        .from(UserBudgetTracker)
+        .from(user_budget_tracker)
         .where(and(
-          eq(UserBudgetTracker.user_id, userId),
-          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+          eq(user_budget_tracker.user_id, userId),
+          eq(user_budget_tracker.budget_tracker_id, budget_tracker_id),
         ))
 
       if (userAccess.length === 0) {
@@ -153,7 +153,7 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      if (!canEditCategory(userAccess[0]!.role )) {
+      if (!canEditCategory(userAccess[0]!.role)) {
         throw createError({
           status: 403,
           message: "You do not have permission to add categories",
@@ -162,7 +162,7 @@ export default defineEventHandler(async (event) => {
 
       const categoryId = randomUUID()
 
-      await db.insert(Category)
+      await db.insert(category)
         .values({
           id: categoryId,
           name,
@@ -174,7 +174,7 @@ export default defineEventHandler(async (event) => {
       return {
         status: 201,
         body: {
-          success: "Category created",
+          success: "category created",
           id: categoryId,
         },
       }
@@ -206,23 +206,23 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const category = await db.select({ budget_tracker_id: Category.budget_tracker_id })
-        .from(Category)
-        .where(eq(Category.id, id))
+      const dbCategory = await db.select({ budget_tracker_id: category.budget_tracker_id })
+        .from(category)
+        .where(eq(category.id, id))
         .limit(1)
 
-      if (category.length === 0) {
+      if (dbCategory.length === 0) {
         throw createError({
           status: 404,
-          message: "Category not found",
+          message: "category not found",
         })
       }
 
       const userAccess = await db.select()
-        .from(UserBudgetTracker)
+        .from(user_budget_tracker)
         .where(and(
-          eq(UserBudgetTracker.user_id, userId),
-          eq(UserBudgetTracker.budget_tracker_id, category[0]!.budget_tracker_id),
+          eq(user_budget_tracker.user_id, userId),
+          eq(user_budget_tracker.budget_tracker_id, dbCategory[0]!.budget_tracker_id),
         ))
 
       if (userAccess.length === 0) {
@@ -232,25 +232,25 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      if (!canEditCategory(userAccess[0]!.role )) {
+      if (!canEditCategory(userAccess[0]!.role)) {
         throw createError({
           status: 403,
           message: "You do not have permission to edit categories",
         })
       }
 
-      await db.update(Category)
+      await db.update(category)
         .set({
           name,
           icon,
           color,
         })
-        .where(eq(Category.id, id))
+        .where(eq(category.id, id))
 
       return {
         status: 200,
         body: {
-          success: "Category updated",
+          success: "category updated",
         },
       }
     }
@@ -271,23 +271,23 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const category = await db.select({ budget_tracker_id: Category.budget_tracker_id })
-        .from(Category)
-        .where(eq(Category.id, id))
+      const dbCategory = await db.select({ budget_tracker_id: category.budget_tracker_id })
+        .from(category)
+        .where(eq(category.id, id))
         .limit(1)
 
-      if (category.length === 0) {
+      if (dbCategory.length === 0) {
         throw createError({
           status: 404,
-          message: "Category not found",
+          message: "category not found",
         })
       }
 
       const userAccess = await db.select()
-        .from(UserBudgetTracker)
+        .from(user_budget_tracker)
         .where(and(
-          eq(UserBudgetTracker.user_id, userId),
-          eq(UserBudgetTracker.budget_tracker_id, category[0]!.budget_tracker_id),
+          eq(user_budget_tracker.user_id, userId),
+          eq(user_budget_tracker.budget_tracker_id, dbCategory[0]!.budget_tracker_id),
         ))
 
       if (userAccess.length === 0) {
@@ -297,20 +297,20 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      if (!canEditCategory(userAccess[0]!.role )) {
+      if (!canEditCategory(userAccess[0]!.role)) {
         throw createError({
           status: 403,
           message: "You do not have permission to delete categories",
         })
       }
 
-      await db.delete(Category)
-        .where(eq(Category.id, id))
+      await db.delete(category)
+        .where(eq(category.id, id))
 
       return {
         status: 200,
         body: {
-          success: "Category deleted",
+          success: "category deleted",
         },
       }
     }

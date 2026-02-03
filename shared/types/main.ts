@@ -7,25 +7,15 @@ export type DemoUserEnv = {
   password: string;
 }
 
-export type User = {
-  id: string;
+export type SharedUser = {
+  user_id: string;
   username: string;
-  role: UserType;
-}
-
-export type SeedUser = Omit<User, "id"> & {
-  password: string;
+  role: BudgetTrackerRole;
 }
 
 export type BudgetTracker = {
   id: string;
   name: string;
-  role: BudgetTrackerRole;
-}
-
-export type SharedUser = {
-  user_id: string;
-  username: string;
   role: BudgetTrackerRole;
 }
 
@@ -58,13 +48,6 @@ export type ErrorType
     };
   }
   | string
-
-export type StoreUser = {
-  id: string;
-  username: string;
-  token: string;
-  role: UserType;
-} | null
 
 export type Language = "en" | "fr"
 

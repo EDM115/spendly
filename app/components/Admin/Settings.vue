@@ -53,7 +53,7 @@
                   <v-select
                     v-model="user.role"
                     hide-details
-                    :disabled="user.id === store.getUser?.id"
+                    :disabled="user.id === store.getUser?.data?.user.id"
                     :items="['user', 'admin']"
                     density="compact"
                     variant="solo"
@@ -67,7 +67,7 @@
                   class="pa-2 d-flex justify-end"
                 >
                   <v-btn
-                    :disabled="user.id === store.getUser?.id"
+                    :disabled="user.id === store.getUser?.data?.user.id"
                     color="primary"
                     class="mr-2"
                     icon="mdi-pencil-outline"
@@ -76,7 +76,7 @@
                     @click="updateUser(user.id, user.role)"
                   />
                   <v-btn
-                    :disabled="user.id === store.getUser?.id"
+                    :disabled="user.id === store.getUser?.data?.user.id"
                     icon="mdi-delete-outline"
                     color="error"
                     variant="tonal"
@@ -309,11 +309,7 @@ const resetNewUser = () => {
 }
 
 const fetchData = async () => {
-  const usersData = await $fetch("/api/admin/user", {
-    headers: {
-      Authorization: `Bearer ${store.getUser?.token}`,
-    },
-  })
+  const usersData = await $fetch("/api/admin/user")
 
   if ("users" in usersData.body) {
     users.value = usersData.body.users
@@ -326,9 +322,6 @@ const addUser = async () => {
   await $fetch("/api/admin/user", {
     method: "POST",
     body: newUser.value,
-    headers: {
-      Authorization: `Bearer ${store.getUser?.token}`,
-    },
   })
   resetNewUser()
   await fetchData()
@@ -340,9 +333,6 @@ const updateUser = async (userId: string, role: string) => {
     body: {
       id: userId, role,
     },
-    headers: {
-      Authorization: `Bearer ${store.getUser?.token}`,
-    },
   })
   await fetchData()
 }
@@ -352,9 +342,6 @@ const deleteUser = async () => {
     method: "DELETE",
     body: {
       id: userToDelete.value,
-    },
-    headers: {
-      Authorization: `Bearer ${store.getUser?.token}`,
     },
   })
   showDeleteDialog.value = false
@@ -372,7 +359,6 @@ const downloadBackup = async (format: ExportFormat) => {
     exporting.value = true
     const response = await $fetch("/api/admin/dbExport", {
       params: { format },
-      headers: { Authorization: `Bearer ${store.getUser?.token}` },
     })
 
     const binaryString = atob(response.body)

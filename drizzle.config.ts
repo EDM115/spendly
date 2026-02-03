@@ -1,8 +1,4 @@
-import dotenvx from "@dotenvx/dotenvx"
-
 import { defineConfig } from "drizzle-kit"
-
-dotenvx.config()
 
 export default defineConfig({
   dbCredentials: {

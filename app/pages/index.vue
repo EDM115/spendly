@@ -21,7 +21,7 @@
               <NuxtImg
                 :src="logoSrc"
                 sizes="300px md:450px"
-                alt="Spendly Logo"
+                :alt="$t('main.title')"
                 :draggable="false"
                 preload
               />
@@ -206,7 +206,7 @@
         />
       </div>
       <div class="text-body-2 text-medium-emphasis">
-        {{ new Date().getFullYear() }} - <strong class="gradient-text">Spendly</strong>
+        {{ new Date().getFullYear() }} - <strong class="gradient-text">{{ $t('main.title') }}</strong>
       </div>
     </v-footer>
   </div>
@@ -242,7 +242,7 @@ const logoSrc = computed(() => (store.getTheme === "light"
   : "/images/logo.webp"))
 
 onMounted(async () => {
-  if (store.getUser !== null && !store.isDemo) {
+  if (store.getUser?.data && !store.isDemo) {
     await navigateTo("/app", { redirectCode: 302 })
   }
 })

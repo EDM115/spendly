@@ -158,9 +158,7 @@ const selectedTab = ref<string | null>(null)
 
 const fetchBudgetTrackers = async () => {
   try {
-    const response = await $fetch("/api/budgetTracker", {
-      headers: { Authorization: `Bearer ${store.getUser?.token}` },
-    })
+    const response = await $fetch("/api/budgetTracker")
 
     if ("budgetTrackers" in response.body) {
       budgetTrackers.value = response.body.budgetTrackers
@@ -204,7 +202,6 @@ const fetchCategories = async () => {
   try {
     const response = await $fetch("/api/category", {
       params: { budget_tracker_id: selectedBudgetTrackerId.value },
-      headers: { Authorization: `Bearer ${store.getUser?.token}` },
     })
 
     if ("categories" in response.body) {
@@ -226,7 +223,6 @@ const fetchSpendings = async () => {
   try {
     const response = await $fetch("/api/spending", {
       params: { budget_tracker_id: selectedBudgetTrackerId.value },
-      headers: { Authorization: `Bearer ${store.getUser?.token}` },
     })
 
     if ("spendings" in response.body) {
@@ -253,15 +249,7 @@ watch(selectedBudgetTrackerId, async () => {
 })
 
 onMounted(async () => {
-  if (store.getUser === null || store.isDemo) {
-    await navigateTo("/", { redirectCode: 401 })
-
-    return
-  }
-
-  const isValid = await store.validateToken()
-
-  if (!isValid) {
+  if (!store.getUser?.data || store.isDemo) {
     await navigateTo("/", { redirectCode: 401 })
 
     return

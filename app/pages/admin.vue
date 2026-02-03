@@ -26,19 +26,18 @@ const store = useMainStore()
 const { data } = await useAsyncData<{
   users: User[];
 }>("admin-page-data", async () => {
-  const token = store.getUser?.token
-  const adminId = store.getUser?.id
+  const adminId = store.getUser?.data?.user.id
 
-  if (!token || !adminId) {
+  if (!adminId) {
     throw createError({
       status: 401,
       statusText: "Unauthorized",
     })
   }
 
-  const usersData = await $fetch<{ body: { users?: User[] } }>("/api/admin/user", {
+  // ! TODO, redo the route
+  const usersData = await $fetch("/api/admin/user", {
     params: { admin_id: adminId },
-    headers: { Authorization: `Bearer ${token}` },
   })
 
   return {
@@ -47,16 +46,10 @@ const { data } = await useAsyncData<{
 })
 
 onMounted(async () => {
-  if (store.getUser === null || store.getUser.role !== "admin") {
+  if (!store.getUser?.data || store.getUser?.data.user.role !== "admin") {
     await navigateTo("/", { redirectCode: 403 })
 
     return
-  }
-
-  const isValid = await store.validateToken()
-
-  if (!isValid) {
-    await navigateTo("/", { redirectCode: 401 })
   }
 })
 </script>

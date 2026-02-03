@@ -139,7 +139,8 @@
   },
   "error": {
     "back": "Go back home",
-    "title": "Error"
+    "title": "Error",
+    "unknown": "An unknown error has occurred"
   },
   "landing": {
     "demo": "Try the demo",
@@ -177,11 +178,16 @@
     }
   },
   "login": {
+    "email": "Email",
+    "github": "Sign in with GitHub",
+    "google": "Sign in with Google",
+    "last-used": "Last used",
     "login": "Log in",
+    "magic-link": "Magic link",
     "password": "Password",
     "title": "Login",
     "username": "Username",
-    "welcome": "Welcome back! Please enter your details."
+    "welcome": "Welcome back ! Please enter your details."
   },
   "main": {
     "description": "Simple, powerful, and free budget tracking for everyone with tables, stats and charts",
@@ -190,5 +196,210 @@
   "navbar": {
     "connect": "Log in",
     "disconnect": "Log out"
+  },
+  "privacy-policy": {
+    "1": {
+      "content": "This Privacy Policy applies to information processed by Spendly when you use the Service, including when you create an account, sign in (including via OAuth like Google), enter financial tracking information, or request support.",
+      "title": "1) Scope"
+    },
+    "10": {
+      "content": "We may update this Privacy Policy from time to time. If we make changes, we will revise the \"Effective date\" at the top. Your continued use of the Service after changes take effect means you accept the updated policy.",
+      "title": "10) Changes to this Privacy Policy"
+    },
+    "11": {
+      "content": "For privacy questions, data requests, or account issues, contact the aforementioned email address.",
+      "title": "11) Contact"
+    },
+    "2": {
+      "a": {
+        "content": "Depending on how you sign in, we may collect :\n- **Email address**\n- **Username**\n- **Password**\n\n**Important note about passwords :** If you use password-based authentication, your password is not accessible to us in plaintext. We **cannot** read your password and **cannot** retrieve it in case you lost it. However, you can reset your password, as long as you provided an email address.",
+        "title": "A. Account and login information"
+      },
+      "b": {
+        "content": "If you sign in using OAuth (Google/GitHub/any other provider we might add in the future), we store an **OAuth token** or equivalent credential required to authenticate you and operate the Service. This token may allow us to retrieve limited profile information on your behalf, such as :\n- **Your name and/or username** associated with your OAuth account (as provided by the provider and permitted by the OAuth scopes you approve)\n\nWe do not use OAuth access for any unrelated purpose. We do not attempt to access or collect information outside what you authorize through the consent screen and what is necessary to provide the Service.",
+        "title": "B. OAuth / third-party sign-in information"
+      },
+      "c": {
+        "content": "Spendly is a financial habits tracking app. We collect and store the information you enter into the app, which may include (depending on features you use) :\n- Spending/income entries\n- Categories, budgets, recurring items\n- Notes, tags, and other metadata you choose to attach\n- Any other financial tracking details you input for the purpose of using the Service",
+        "title": "C. Financial and usage data you input"
+      },
+      "content": "We collect only the data you voluntarily provide to us or that is necessary for the Service to function as intended.",
+      "d": {
+        "content": "If you contact us (for example, to request help, deletion, or a data copy), we will receive :\n- The contents of your email and any information you include\n- Your email address and any metadata your email provider includes (e.g., timestamp)",
+        "title": "D. Support and communications"
+      },
+      "e": {
+        "content": "We do not intentionally collect data that you do not provide and that is not needed for the Service to work. We do not send marketing emails and do not use your email address for promotional communications. We will **never** share any of the information you provide with third parties for their own marketing purposes, analytics or advertising.",
+        "title": "E. What we do **not** collect"
+      },
+      "title": "2) The information we collect"
+    },
+    "3": {
+      "content": "We use your information for the following purposes :\n\n1. **Provide and operate the Service**\n  - Create and manage your account\n  - Authenticate you at login (including via OAuth)\n  - Store and display the financial tracking data you enter\n\n2. **Account-related communications**\n  - Send necessary emails such as password reset or other account/security-related notices\n  - We do not send newsletters, marketing, or non-essential communications\n\n3. **Support and troubleshooting**\n  - Respond to your requests and support inquiries\n  - Diagnose bugs, resolve issues, and improve reliability\n\n4. **Security, integrity, and enforcement**\n  - Detect abuse, fraud, or misuse\n  - Enforce our Terms of Use, including account restrictions or bans when warranted",
+      "title": "3) How we use your information"
+    },
+    "4": {
+      "content": "Service administrators may have the ability to **impersonate** a user account, meaning they can view that user's data without requiring the user's authentication credentials.\n**This capability is strictly for support purposes**, such as debugging, troubleshooting, and help **when the user has requested or agreed to such assistance**. We do not use impersonation to access user data for unrelated reasons.",
+      "title": "4) Admin access and \"impersonation\" for support"
+    },
+    "5": {
+      "content": "We do not sell your personal information.\nWe may share information only in limited situations :\n- **With service providers** that help us run the Service (for example, hosting or infrastructure). These providers may process data on our behalf to operate the Service.\n- **For legal compliance or protection**, if we believe in good faith it is necessary to comply with applicable law, protect the Service, enforce our Terms of Use, or respond to lawful requests.\n\nWhen you use OAuth, the OAuth provider may process information according to its own policies. Your use of the OAuth services is governed by the OAuth provider's applicable terms and privacy policies.",
+      "title": "5) How we share your information"
+    },
+    "6": {
+      "content": "We keep the data you provide **indefinitely** unless one of the following occurs :\n1. **The Service ceases to exist** (for example, if the Service is shut down)\n2. **You delete your data manually** (where the Service provides deletion functionality)\n3. **A service administrator deletes your data** (for example, in response to a request or as part of enforcement or maintenance)\n\nBecause retention is indefinite by default, you control deletion by using in-app deletion tools (if available) or by contacting us.",
+      "title": "6) Data retention"
+    },
+    "7": {
+      "content": "You can request the following at any time by emailing the aforementioned email address :\n- **A copy of your data** (export)\n- **Deletion of your account and/or data**\n\nWe will make reasonable efforts to fulfill requests. In some cases, deletion may not be possible if the Service has already ceased to exist or if technical limitations prevent retrieval/export. If we cannot complete a request, we will explain why to the extent we can.",
+      "title": "7) Your rights and choices"
+    },
+    "8": {
+      "content": "We take reasonable steps to operate the Service, but **the availability of the Service is not guaranteed**. Additionally, **the safety of any data stored in the Service is not guaranteed**. No method of storage or transmission is 100% secure, and you use the Service with this understanding.\nWe recommend that you avoid storing any information you consider highly sensitive or irreplaceable.",
+      "title": "8) Security and risk disclosure"
+    },
+    "9": {
+      "content": "Administrators may **shut down the Service at any moment**. In the event of shutdown, you may lose access to your account and data. Where feasible, we may attempt to provide notice, but we are not obligated or guaranteed to do so.",
+      "title": "9) Service shutdown"
+    },
+    "description": {
+      "0": "Spendly (\"**Spendly**\", \"**we**\", \"**us**\", or \"**our**\") provides a personal finance habits tracking application (the \"**Service**\"). This Privacy Policy explains what information we collect, how we use it, how we store it, and what choices you have.",
+      "1": "If you have questions about this Privacy Policy or your data, contact us at"
+    },
+    "effective_date": "Effective date",
+    "email": "spendly{'@'}edm115.dev",
+    "title": "Privacy Policy - Spendly"
+  },
+  "rules": {
+    "email": {
+      "required": "E-mail is required",
+      "valid": "E-mail must be valid"
+    },
+    "password": {
+      "lowercase": "Password must contain at least one lowercase letter",
+      "match": "Passwords must match",
+      "max": "Password must be at most {max} characters",
+      "min": "Password must be at least {min} characters",
+      "number": "Password must contain at least one digit",
+      "required": "Password is required",
+      "special": "Password must contain at least one non alphanumeric character",
+      "uppercase": "Password must contain at least one uppercase letter"
+    },
+    "username": {
+      "already-taken": "Username is already taken",
+      "max": "Username must be at most {max} characters",
+      "min": "Username must be at least {min} characters",
+      "required": "Username is required"
+    }
+  },
+  "signup": {
+    "email": "Email",
+    "last-used": "Last used",
+    "oauth": "You will be able to link a Google/GitHub account for easier login just after signing up!",
+    "password": "Password",
+    "passwordConfirm": "Confirm password",
+    "signup": "Sign up",
+    "title": "Signup",
+    "username": "Username",
+    "welcome": "Welcome ! Please enter your details to create an account."
+  },
+  "terms-of-use": {
+    "1": {
+      "content": "Spendly is a financial habits tracking app that allows users to record and view personal financial information for tracking purposes. The Service may include features such as account creation, OAuth login, data entry, dashboards, charts, and exports (features may change over time).",
+      "title": "1) The Service"
+    },
+    "10": {
+      "content": {
+        "0": "Spendly's source code is publicly available on GitHub and is licensed under the **MIT License**. You may **view, audit, copy, modify, distribute, and reuse** the code, provided you comply with the MIT License terms (including any required copyright and license notices).",
+        "1": "You retain all rights to your **User Data**. By using the Service, you grant Spendly only the limited rights necessary to host, process, and display your User Data in order to operate the Service and provide its features to you.",
+        "2": "Repository (for reference) :"
+      },
+      "title": "10) Intellectual property"
+    },
+    "11": {
+      "content": "We will not send promotional communications. We may send **account-related communications only**, such as password reset emails or essential notices related to your account's operation or security.",
+      "title": "11) Communications"
+    },
+    "12": {
+      "content": {
+        "0": "To the fullest extent permitted by law :\n- Spendly and its administrators will not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of data, profits, or revenues, arising out of your use of (or inability to use) the Service.\n- The Service is **entirely free** and will **never introduce a paid plan**. Accordingly, to the maximum extent allowed by law, Spendly's total aggregate liability for any claim related to the Service will not exceed **0** (since no fees are charged).",
+        "1": "Because the Service is provided without guaranteed availability or data safety, you understand and accept that you use it **at your own risk**."
+      },
+      "title": "12) Limitation of liability"
+    },
+    "13": {
+      "content": "We may update these Terms at any time. If we do, we will change the \"Effective date\" at the top. Continued use of the Service after changes become effective means you accept the updated Terms.",
+      "title": "13) Changes to these Terms"
+    },
+    "14": {
+      "content": "For support, deletion requests, or questions about these Terms, email aforementioned email address.",
+      "title": "14) Contact"
+    },
+    "2": {
+      "content": "You must provide accurate information when creating or using an account. You are responsible for maintaining the confidentiality of your login credentials and for all activities that occur under your account.\nIf you use OAuth to sign in, you are responsible for maintaining access to your OAuth provider account and complying with their terms.",
+      "title": "2) Eligibility and accounts"
+    },
+    "3": {
+      "content": {
+        "0": "You control what you input into the Service, including financial data (\"**User Data**\"). You represent and warrant that :",
+        "1": "- You have the right to provide the User Data you submit.\n- Your use of the Service and submission of User Data will not violate applicable laws or the rights of others.",
+        "2": "You are solely responsible for :\n- The accuracy, completeness, and usefulness of your User Data\n- Any decisions you make based on the Service's outputs or summaries",
+        "3": "**Spendly does not provide financial, legal, or tax advice.** The Service is for tracking and informational purposes only."
+      },
+      "title": "3) User content and your responsibilities"
+    },
+    "4": {
+      "content": {
+        "0": "You agree not to :",
+        "1": "- Use the Service in a way that violates any law or regulation\n- Attempt to gain unauthorized access to the Service, other accounts, or related systems\n- Interfere with or disrupt the operation, security, or integrity of the Service\n- Upload or transmit malicious code, or attempt to exploit vulnerabilities\n- Use the Service to harass, abuse, or harm others"
+      },
+      "title": "4) Prohibited conduct"
+    },
+    "5": {
+      "content": {
+        "0": "Administrators may take enforcement actions, including **suspending or banning accounts**, if they determine an account is acting against these Terms or the integrity of the Service.",
+        "1": "We may also restrict or terminate your access :\n- To protect the Service or other users\n- To comply with legal obligations\n- For any reason related to misuse, abuse, or violations of these Terms",
+        "2": "Termination may result in loss of access to your account and User Data without recoverability."
+      },
+      "title": "5) Admin enforcement, bans, and termination"
+    },
+    "6": {
+      "content": "To provide support and resolve issues, Service administrators may have the ability to **impersonate a user** and view that user's data without requiring the user's authentication credentials.\nThis capability exists **solely** for **user-accorded** debugging, troubleshooting, and help. If you request support that requires access to your account, you acknowledge that such access may occur.",
+      "title": "6) Support access and impersonation"
+    },
+    "7": {
+      "content": {
+        "0": "By default, User Data you provide is retained **indefinitely** unless :\n1. The Service ceases to exist\n2. You manually delete your data (where functionality exists)\n3. An administrator deletes your data (for example, at your request or for operational/enforcement reasons)",
+        "1": "You may request :\n- **A copy of your data**, or\n- **Deletion of your account/data**\n  by emailing the aforementioned email address.",
+        "2": "We will make reasonable efforts to respond, but we do not guarantee data export or deletion in all cases (e.g., if the Service has already been shut down or if technical limitations prevent retrieval)."
+      },
+      "title": "7) Data retention and deletion"
+    },
+    "8": {
+      "content": {
+        "0": "You understand and agree that :",
+        "1": "- **Availability of the Service is not guaranteed in any way.**\n- **Safety of the data stored in the Service is not guaranteed in any way.**",
+        "2": "The Service is provided on an \"**AS IS**\" and \"**AS AVAILABLE**\" basis. We may change, suspend, or discontinue any part of the Service at any time."
+      },
+      "title": "8) Availability, uptime, and data safety disclaimers"
+    },
+    "9": {
+      "content": "Administrators may **shut down the Service at any moment**, with or without notice. If the Service is shut down, you may lose access to your account and User Data. You are responsible for maintaining your own backups of any information you do not want to lose.",
+      "title": "9) Service shutdown"
+    },
+    "effective_date": "Effective date",
+    "email": "spendly{'@'}edm115.dev",
+    "intro": {
+      "0": "These Terms of Use (\"**Terms**\") govern your use of Spendly (the \"**Service**\"). By accessing or using the Service, you agree to these Terms. If you do not agree, do not use the Service.",
+      "1": "If you have questions about these Terms, contact"
+    },
+    "title": "Terms of Use - Spendly"
+  },
+  "turnstile": {
+    "error": "A Turnstile error has occurred",
+    "expired": "The Turnstile verification has expired",
+    "refresh": "Try to refresh the page",
+    "timeout": "The Turnstile verification has timed out",
+    "wait": "Wait for the captcha to verify again"
   }
 }

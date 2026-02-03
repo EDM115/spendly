@@ -2,14 +2,14 @@
   <v-slide-y-transition>
     <v-alert
       v-if="!close"
-      class="mx-auto glass-error my-4 rounded-xl"
+      :class="['mx-auto', color === 'warning' ? 'glass-warning' :'glass-error', 'my-4', 'rounded-xl']"
       :color="color ?? 'error'"
       closable
       variant="tonal"
       width="100%"
       style="max-width: 600px;"
       border="start"
-      border-color="error"
+      :border-color="color ?? 'error'"
       @click:close="close = true"
     >
       <template #prepend>
@@ -20,7 +20,7 @@
             icon="mdi-alert-circle-outline"
             variant="flat"
             size="small"
-            class="glow-error-btn"
+            :class="color === 'warning' ? 'glow-warning-btn' : 'glow-error-btn'"
             @click="more = !more"
           />
           <v-icon
@@ -67,8 +67,19 @@ const close = ref(false)
   box-shadow: 0 4px 20px rgba(var(--v-theme-error), 0.15);
 }
 
+.glass-warning {
+  backdrop-filter: blur(10px);
+  background: rgba(var(--v-theme-warning), 0.1) !important;
+  border: 1px solid rgba(var(--v-theme-warning), 0.2);
+  box-shadow: 0 4px 20px rgba(var(--v-theme-warning), 0.15);
+}
+
 .glow-error-btn {
   box-shadow: 0 0 10px rgba(var(--v-theme-error), 0.4);
+}
+
+.glow-warning-btn {
+  box-shadow: 0 0 10px rgba(var(--v-theme-warning), 0.4);
 }
 
 .code-font {

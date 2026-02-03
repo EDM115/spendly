@@ -1,4 +1,4 @@
-import db from "#shared/db/drizzle"
+import { db } from "#shared/db/drizzle"
 
 import fs from "node:fs/promises"
 import path from "node:path"
@@ -18,6 +18,9 @@ export default defineEventHandler(async (event) => {
 
   const { format } = getQuery(event)
   const timestamp = Date.now()
+  const dateYMD = new Date()
+    .toISOString()
+    .split("T")[0]
   const tempDir = path.join(process.cwd(), "temp")
 
   await fs.mkdir(tempDir, { recursive: true })
@@ -34,7 +37,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       body: fileContent.toString("base64"),
-      filename: "spendly-backup.sql",
+      filename: `spendly-backup-${dateYMD}.sql`,
     }
   } else if (format === "sqlite") {
     const dbCopyPath = path.join(tempDir, `backup_${timestamp}.db`)
@@ -47,7 +50,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       body: fileContent.toString("base64"),
-      filename: "spendly-backup.db",
+      filename: `spendly-backup-${dateYMD}.db`,
     }
   } else if (format === "json") {
     const jsonResults = await Promise.all(tables.map(async (table) => {
@@ -79,7 +82,7 @@ export default defineEventHandler(async (event) => {
     return {
       body: Buffer.from(jsonString)
         .toString("base64"),
-      filename: "spendly-backup.json",
+      filename: `spendly-backup-${dateYMD}.json`,
     }
   } else {
     const csvData = await Promise.all(tables.map(async (table) => {
@@ -96,7 +99,7 @@ export default defineEventHandler(async (event) => {
     return {
       body: Buffer.from(csvData.join("\n"))
         .toString("base64"),
-      filename: "spendly-backup.csv",
+      filename: `spendly-backup-${dateYMD}.csv`,
     }
   }
 })

@@ -1,7 +1,7 @@
-import db from "#shared/db/drizzle"
+import { db } from "#shared/db/drizzle"
 import {
-  User,
-  UserBudgetTracker,
+  user,
+  user_budget_tracker,
 } from "#shared/db/schema"
 
 import {
@@ -60,10 +60,10 @@ export default defineEventHandler(async (event) => {
       }
 
       const userAccess = await db.select()
-        .from(UserBudgetTracker)
+        .from(user_budget_tracker)
         .where(and(
-          eq(UserBudgetTracker.user_id, userId),
-          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+          eq(user_budget_tracker.user_id, userId),
+          eq(user_budget_tracker.budget_tracker_id, budget_tracker_id),
         ))
 
       if (userAccess.length === 0) {
@@ -74,13 +74,13 @@ export default defineEventHandler(async (event) => {
       }
 
       const users = await db.select({
-        user_id: User.id,
-        username: User.username,
-        role: UserBudgetTracker.role,
+        user_id: user.id,
+        username: user.name,
+        role: user_budget_tracker.role,
       })
-        .from(User)
-        .innerJoin(UserBudgetTracker, eq(User.id, UserBudgetTracker.user_id))
-        .where(eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id))
+        .from(user)
+        .innerJoin(user_budget_tracker, eq(user.id, user_budget_tracker.user_id))
+        .where(eq(user_budget_tracker.budget_tracker_id, budget_tracker_id))
 
       return {
         status: 200,
@@ -123,10 +123,10 @@ export default defineEventHandler(async (event) => {
       }
 
       const userAccess = await db.select()
-        .from(UserBudgetTracker)
+        .from(user_budget_tracker)
         .where(and(
-          eq(UserBudgetTracker.user_id, userId),
-          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+          eq(user_budget_tracker.user_id, userId),
+          eq(user_budget_tracker.budget_tracker_id, budget_tracker_id),
         ))
 
       if (userAccess.length === 0) {
@@ -143,34 +143,34 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const targetUser = await db.select({ id: User.id })
-        .from(User)
-        .where(eq(User.username, username))
+      const targetUser = await db.select({ id: user.id })
+        .from(user)
+        .where(eq(user.name, username))
         .limit(1)
 
       if (targetUser.length === 0) {
         throw createError({
           status: 404,
-          message: "User not found",
+          message: "user not found",
         })
       }
 
       const alreadyHasAccess = await db.select()
-        .from(UserBudgetTracker)
+        .from(user_budget_tracker)
         .where(and(
-          eq(UserBudgetTracker.user_id, targetUser[0]!.id),
-          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+          eq(user_budget_tracker.user_id, targetUser[0]!.id),
+          eq(user_budget_tracker.budget_tracker_id, budget_tracker_id),
         ))
         .limit(1)
 
       if (alreadyHasAccess.length > 0) {
         throw createError({
           status: 400,
-          message: "User already has access",
+          message: "user already has access",
         })
       }
 
-      await db.insert(UserBudgetTracker)
+      await db.insert(user_budget_tracker)
         .values({
           user_id: targetUser[0]!.id,
           budget_tracker_id,
@@ -180,7 +180,7 @@ export default defineEventHandler(async (event) => {
       return {
         status: 201,
         body: {
-          success: "User added to budget tracker",
+          success: "user added to budget tracker",
         },
       }
     }
@@ -217,10 +217,10 @@ export default defineEventHandler(async (event) => {
       }
 
       const userAccess = await db.select()
-        .from(UserBudgetTracker)
+        .from(user_budget_tracker)
         .where(and(
-          eq(UserBudgetTracker.user_id, userId),
-          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+          eq(user_budget_tracker.user_id, userId),
+          eq(user_budget_tracker.budget_tracker_id, budget_tracker_id),
         ))
 
       if (userAccess.length === 0) {
@@ -230,11 +230,11 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const targetUserAccess = await db.select({ role: UserBudgetTracker.role })
-        .from(UserBudgetTracker)
+      const targetUserAccess = await db.select({ role: user_budget_tracker.role })
+        .from(user_budget_tracker)
         .where(and(
-          eq(UserBudgetTracker.user_id, target_user_id),
-          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+          eq(user_budget_tracker.user_id, target_user_id),
+          eq(user_budget_tracker.budget_tracker_id, budget_tracker_id),
         ))
         .limit(1)
 
@@ -252,24 +252,24 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      if (!canChangeRole(userAccess[0]!.role , targetUserAccess[0]!.role , role)) {
+      if (!canChangeRole(userAccess[0]!.role, targetUserAccess[0]!.role, role)) {
         throw createError({
           status: 403,
           message: "You do not have permission to change this user's role",
         })
       }
 
-      await db.update(UserBudgetTracker)
+      await db.update(user_budget_tracker)
         .set({ role })
         .where(and(
-          eq(UserBudgetTracker.user_id, target_user_id),
-          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+          eq(user_budget_tracker.user_id, target_user_id),
+          eq(user_budget_tracker.budget_tracker_id, budget_tracker_id),
         ))
 
       return {
         status: 200,
         body: {
-          success: "User role updated",
+          success: "user role updated",
         },
       }
     }
@@ -297,10 +297,10 @@ export default defineEventHandler(async (event) => {
       }
 
       const userAccess = await db.select()
-        .from(UserBudgetTracker)
+        .from(user_budget_tracker)
         .where(and(
-          eq(UserBudgetTracker.user_id, userId),
-          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+          eq(user_budget_tracker.user_id, userId),
+          eq(user_budget_tracker.budget_tracker_id, budget_tracker_id),
         ))
 
       if (userAccess.length === 0) {
@@ -317,11 +317,11 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const targetUserAccess = await db.select({ role: UserBudgetTracker.role })
-        .from(UserBudgetTracker)
+      const targetUserAccess = await db.select({ role: user_budget_tracker.role })
+        .from(user_budget_tracker)
         .where(and(
-          eq(UserBudgetTracker.user_id, target_user_id),
-          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+          eq(user_budget_tracker.user_id, target_user_id),
+          eq(user_budget_tracker.budget_tracker_id, budget_tracker_id),
         ))
         .limit(1)
 
@@ -339,23 +339,23 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      if (!canManageUsers(userAccess[0]!.role )) {
+      if (!canManageUsers(userAccess[0]!.role)) {
         throw createError({
           status: 403,
           message: "You do not have permission to remove users",
         })
       }
 
-      await db.delete(UserBudgetTracker)
+      await db.delete(user_budget_tracker)
         .where(and(
-          eq(UserBudgetTracker.user_id, target_user_id),
-          eq(UserBudgetTracker.budget_tracker_id, budget_tracker_id),
+          eq(user_budget_tracker.user_id, target_user_id),
+          eq(user_budget_tracker.budget_tracker_id, budget_tracker_id),
         ))
 
       return {
         status: 200,
         body: {
-          success: "User removed from budget tracker",
+          success: "user removed from budget tracker",
         },
       }
     }

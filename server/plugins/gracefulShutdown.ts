@@ -1,4 +1,4 @@
-import db from "#shared/db/drizzle"
+import { db } from "#shared/db/drizzle"
 
 export default defineNitroPlugin((nitroApp) => {
   nitroApp.hooks.hook("close", () => {

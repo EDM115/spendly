@@ -1,58 +1,76 @@
-import type { SeedUser } from "../shared/types/main"
+import type { UserType } from "../shared/types/main"
 
-import db from "../shared/db/drizzle"
-import { User } from "../shared/db/schema"
+import { auth } from "../server/utils/auth"
+import { db } from "../shared/db/drizzle"
+import { schema } from "../shared/db/schema"
+import { eq } from "drizzle-orm"
 
-import { hash } from "bcryptjs"
-import { randomUUID } from "node:crypto"
+type SeedUser = {
+  email: string;
+  username: string;
+  password: string;
+  role: UserType;
+}
 
-const SALT_ROUNDS = 10
-
-async function seedUsers() {
-  const raw = process.env.SEED_USERS
-    ?.replace("\\'", "'")
-    .replace("\\\"", "\"") || "[]"
-  let users: Array<SeedUser> = []
+function parseSeedUsers(): SeedUser[] {
+  const raw = (process.env.SEED_USERS ?? "[]")
+    .replace("\\'", "'")
+    .replace("\\\"", "\"")
 
   try {
-    users = JSON.parse(raw)
+    return JSON.parse(raw)
   } catch (e) {
-    console.error("❌ failed to parse SEED_USERS :", e)
-    users = []
-  }
+    console.error("❌ failed to parse SEED_USERS:", e)
 
-  await Promise.all(users.map(async ({
-    username, password, role,
-  }) => {
-    const id = randomUUID()
-    const hashed = await hash(password, SALT_ROUNDS)
-    const newUser: typeof User.$inferInsert = {
-      id,
-      username,
-      password: hashed,
-      role,
+    return []
+  }
+}
+
+async function seedUsers() {
+  const users = parseSeedUsers()
+
+  for (const u of users) {
+    // oxlint-disable-next-line no-await-in-loop
+    const existing = await db.query.user.findFirst({
+      where: eq(schema.user.email, u.email),
+      columns: {
+        id: true, email: true,
+      },
+    })
+
+    if (existing) {
+      console.log(`↩️  User already exists : ${u.email}, skipping`)
+
+      continue
     }
 
-    await db.insert(User)
-      .values(newUser)
-    console.log(`Seeded user : ${username}`)
-  }))
+    // oxlint-disable-next-line no-await-in-loop
+    await auth.api.createUser({
+      body: {
+        email: u.email,
+        password: u.password,
+        name: u.username,
+        role: u.role,
+        data: {
+          username: u.username,
+          displayUsername: u.username,
+        },
+      },
+    })
 
-  console.log("\n✅ User seeding completed\n")
+    console.log(`✅ Seeded user : ${u.username} (${u.email})`)
+  }
 }
 
 async function main() {
-  if (process.env.SEED === "true") {
-    try {
-      await seedUsers()
-    } catch (e) {
-      console.error("❌ Error seeding database :", e)
-    }
-
-    console.log("✅ Database and seeded")
-  } else {
+  if (process.env.SEED !== "true") {
     console.log("❌ Skipping database initialization")
+
+    return
   }
+
+  await seedUsers()
+  console.log("✅ User seeding completed")
 }
 
 await main()

@@ -15,7 +15,7 @@
           class="text-h1 font-weight-black gradient-text mb-4"
           style="font-size: 8rem !important; line-height: 1;"
         >
-          {{ error.statusCode }}
+          {{ error.status }}
         </h1>
 
         <v-alert

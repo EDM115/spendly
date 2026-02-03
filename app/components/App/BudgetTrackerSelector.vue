@@ -295,7 +295,7 @@
               >
                 <template #activator="{ props: tooltipProps }">
                   <v-btn
-                    v-if="user.user_id !== store.getUser?.id && user.role !== 'owner'"
+                    v-if="user.user_id !== store.getUser?.data?.user.id && user.role !== 'owner'"
                     v-bind="tooltipProps"
                     icon="mdi-delete-outline"
                     color="error"
@@ -473,7 +473,6 @@ const addTracker = async () => {
     const response = await $fetch("/api/budgetTracker", {
       method: "POST",
       body: { name: newTrackerName.value },
-      headers: { Authorization: `Bearer ${store.getUser?.token}` },
     })
 
     newTrackerName.value = ""
@@ -507,7 +506,6 @@ const updateTracker = async () => {
         id: selectedTracker.value,
         name: editTrackerName.value,
       },
-      headers: { Authorization: `Bearer ${store.getUser?.token}` },
     })
     showEditDialog.value = false
     emit("refresh")
@@ -529,7 +527,6 @@ const deleteTracker = async () => {
     await $fetch("/api/budgetTracker", {
       method: "DELETE",
       body: { id: selectedTracker.value },
-      headers: { Authorization: `Bearer ${store.getUser?.token}` },
     })
     showDeleteDialog.value = false
     store.setSelectedBudgetTracker(null, null)
@@ -548,7 +545,6 @@ const fetchSharedUsers = async () => {
   try {
     const response = await $fetch("/api/budgetTracker/users", {
       params: { budget_tracker_id: selectedTracker.value },
-      headers: { Authorization: `Bearer ${store.getUser?.token}` },
     })
 
     if ("users" in response.body) {
@@ -576,7 +572,6 @@ const addUser = async () => {
         username: newUsername.value,
         role: newUserRole.value,
       },
-      headers: { Authorization: `Bearer ${store.getUser?.token}` },
     })
     newUsername.value = ""
     newUserRole.value = "viewer"
@@ -603,7 +598,6 @@ const updateUserRole = async (userId: string, role: string) => {
         target_user_id: userId,
         role,
       },
-      headers: { Authorization: `Bearer ${store.getUser?.token}` },
     })
     await fetchSharedUsers()
   } catch (error) {
@@ -627,7 +621,6 @@ const removeUser = async (userId: string) => {
         budget_tracker_id: selectedTracker.value,
         target_user_id: userId,
       },
-      headers: { Authorization: `Bearer ${store.getUser?.token}` },
     })
     await fetchSharedUsers()
   } catch (error) {

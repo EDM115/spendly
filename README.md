@@ -28,22 +28,45 @@ cd spendly
 ```
 Create a `.env` file in the root directory and add the following variables :
 ```env
-JWT_SECRET=4451b7b6411db0854895824f2fce24721989ac47da45c862cb1baf15383dbc6ef07c1f700304693dde08207bcf75e7e50ad9b146e8bdc4ebf16ade6e6cb9f173
-SEED_USERS='[{"username": "admin", "password": "admin", "role": "admin"}, {"username": "test", "password": "test", "role": "user"}]'
+JWT_SECRET=0x0x0x
+SEED_USERS='[{"email": "admin@example.test", "username": "admin", "password": "admin", "role": "admin"}, {"email": "user@example.test", "username": "test", "password": "test", "role": "user"}]'
 SEED=false
 DEFAULT_UI_LANG=en
 DB_FILE_NAME=db/data.db
+BETTER_AUTH_SECRET=x0x0x0
+BETTER_AUTH_URL=http://localhost:8888
+RESEND_API_KEY=re_xxxxxxxxx
+GITHUB_CLIENT_ID=xxxx
+GITHUB_CLIENT_SECRET=xxxx0000
+GOOGLE_CLIENT_ID=0000-xxxx.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=xxxx-0000-xxxx-
+TURNSTILE_SITE_KEY=0x4AAAAAA00
+TURNSTILE_SECRET_KEY=0x4AAAAAA00-XX
 ```
 - `JWT_SECRET` : generate with `node -e "import('crypto').then(crypto => console.log(crypto.randomBytes(64).toString('hex')))"`
 - `SEED_USERS` : if any value should contain a quote, write instead `\'` (or `\"`)
 - `SEED` : protection so Nuxt doesn't accidentally re-seed in dev mode as it runs the file for some reason
 - `DEFAULT_UI_LANG` : the default language of the UI, either `en` or `fr`
 - `DB_FILE_NAME` : the path to the SQLite database file, please keep as-is
+- `BETTER_AUTH_SECRET` : same as `JWT_SECRET`
+- `BETTER_AUTH_URL` : the base URL of Spendly, port 8888 in dev and 60000 by default in prod, change with the proper URL
+- `RESEND_API_KEY` : to send emails
+- `GITHUB_CLIENT_ID` & `GITHUB_CLIENT_SECRET` : for GitHub OAuth
+- `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET` : for Google OAuth
+- `TURNSTILE_SITE_KEY` & `TURNSTILE_SECRET_KEY` : for Cloudflare Turnstile CAPTCHA
 ```pwsh
+pnpm i --frozen-lockfile
 pnpm db:migrate
 pnpm seed
-pnpm i --frozen-lockfile
 pnpm dev
+```
+
+### On Drizzle DB schema/Better Auth config changes
+```pwsh
+pnpm better-auth:generate
+# diff shared/db/auth.schema.ts with shared/db/schema.ts and update the Better Auth tables accordingly
+pnpm db:generate
+pnpm db:migrate
 ```
 
 ### Build and run
@@ -54,28 +77,20 @@ docker run -d -p 60000:60000 --env-file .env -v spendly_db:/app/db --name spendl
 
 <details><summary><h3>DB Schema</h3></summary>
 
-#### User
-| Column   | Type   | Extra                                 |
-| :------- | :----- | :------------------------------------ |
-| id       | string | Primary Key, UUIDv4                   |
-| username | string | Not Null, Unique                      |
-| password | string | Not Null                              |
-| role     | string | Not Null, "admin" or "user" (default) |
-
-#### BudgetTracker
+#### budget_tracker
 | Column | Type   | Extra               |
 | :----- | :----- | :------------------ |
 | id     | string | Primary Key, UUIDv4 |
 | name   | string | Not Null            |
 
-#### BudgetTracker
+#### user_budget_tracker
 | Column            | Type   | Extra                            |
 | :---------------- | :----- | :------------------------------- |
 | user_id           | string | Primary Key, Foreign Key, UUIDv4 |
 | budget_tracker_id | string | Primary Key, Foreign Key, UUIDv4 |
 | role              | string | Not Null, default "viewer"       |
 
-#### Category
+#### category
 | Column            | Type   | Extra                 |
 | :---------------- | :----- | :-------------------- |
 | id                | string | Primary Key, UUIDv4   |
@@ -84,7 +99,7 @@ docker run -d -p 60000:60000 --env-file .env -v spendly_db:/app/db --name spendl
 | color             | string | Not Null              |
 | budget_tracker_id | string | Not Null, Foreign Key |
 
-#### Spending
+#### spending
 | Column            | Type    | Extra                  |
 | :---------------- | :------ | :--------------------- |
 | id                | string  | Primary Key, UUIDv4    |
@@ -99,25 +114,18 @@ docker run -d -p 60000:60000 --env-file .env -v spendly_db:/app/db --name spendl
 
 ```mermaid
 erDiagram
-  User {
-    TEXT id PK
-    TEXT username
-    TEXT password
-    TEXT role
-  }
-
-  BudgetTracker {
+  budget_tracker {
     TEXT id PK
     TEXT name
   }
 
-  UserBudgetTracker {
+  user_budget_tracker {
     TEXT user_id PK FK
     TEXT budget_tracker_id PK FK
     TEXT role
   }
 
-  Category {
+  category {
     TEXT id PK
     TEXT name
     TEXT icon
@@ -125,7 +133,7 @@ erDiagram
     TEXT budget_tracker_id FK
   }
 
-  Spending {
+  spending {
     TEXT id PK
     TEXT name
     TEXT budget_tracker_id FK
@@ -135,11 +143,10 @@ erDiagram
     DATETIME date
   }
 
-  User ||--o{ UserBudgetTracker : participates
-  BudgetTracker ||--o{ UserBudgetTracker : has
-  BudgetTracker ||--o{ Spending : contains
-  BudgetTracker ||--o{ Category : has
-  Category ||--o{ Spending : classifies
+  budget_tracker ||--o{ user_budget_tracker : has
+  budget_tracker ||--o{ spending : contains
+  budget_tracker ||--o{ category : has
+  category ||--o{ spending : classifies
 ```
 
 </details>

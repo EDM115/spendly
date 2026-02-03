@@ -1,41 +1,38 @@
 import {
   computed,
+  computedAsync,
   defineStore,
   ref,
   type BudgetTrackerRole,
   type Language,
-  type StoreUser,
   type Theme,
 } from "#imports"
+import { authClient } from "~/utils/authClient"
 
-function ssrSafe() {
-  return import.meta.client
-    && typeof window !== "undefined"
-    && typeof localStorage !== "undefined"
-}
+const ssrSafe = import.meta.client && typeof window !== "undefined" && typeof localStorage !== "undefined"
 
 export const useMainStore = defineStore("main", () => {
   const i18n = ref<Language>("fr")
   const theme = ref<Theme>("dark")
-  const user = ref<StoreUser>(null)
+  const user = ref<unknown>(null)
   const selectedBudgetTrackerId = ref<string | null>(null)
   const currentBudgetTrackerRole = ref<BudgetTrackerRole | null>(null)
-  const isValidatingToken = ref(false)
 
   const getI18n = computed(() => i18n.value)
   const getTheme = computed(() => theme.value)
-  const getUser = computed(() => user.value)
+  const getUser = computedAsync(async () => await authClient.getSession())
+  const getRawUser = computed(() => user.value)
   const getSelectedBudgetTrackerId = computed(() => selectedBudgetTrackerId.value)
   const getCurrentBudgetTrackerRole = computed(() => currentBudgetTrackerRole.value)
-  const getIsValidatingToken = computed(() => isValidatingToken.value)
-  const isDemo = computed(() => user.value?.username === "demo")
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+  const isDemo = computed(() => getUser.value?.data?.user.username === "demo" || (user.value as { username?: string })?.username === "demo")
   const canEditTracker = computed(() => [ "owner", "admin" ].includes(currentBudgetTrackerRole.value ?? ""))
   const canDeleteTracker = computed(() => currentBudgetTrackerRole.value === "owner")
   const canManageUsers = computed(() => [ "owner", "admin" ].includes(currentBudgetTrackerRole.value ?? ""))
   const canEditData = computed(() => [ "owner", "admin", "editor" ].includes(currentBudgetTrackerRole.value ?? ""))
 
   function initI18n() {
-    if (!ssrSafe()) {
+    if (!ssrSafe) {
       return
     }
 
@@ -46,7 +43,7 @@ export const useMainStore = defineStore("main", () => {
   }
 
   function initTheme() {
-    if (!ssrSafe()) {
+    if (!ssrSafe) {
       return
     }
 
@@ -58,116 +55,8 @@ export const useMainStore = defineStore("main", () => {
     }
   }
 
-  function initUser() {
-    if (!ssrSafe()) {
-      return
-    }
-
-    const storedUser = localStorage.getItem("user")
-
-    if (storedUser && storedUser.length > 0) {
-      try {
-        // Temporarily set the user from localStorage
-        // The token will be validated asynchronously
-        user.value = JSON.parse(decodeURI(storedUser))
-      } catch (e) {
-        console.error("Error parsing user data :", e)
-        logout()
-      }
-    }
-  }
-
-  async function validateToken(): Promise<boolean> {
-    if (!ssrSafe() || !user.value?.token) {
-      return false
-    }
-
-    isValidatingToken.value = true
-
-    try {
-      const response = await $fetch<{
-        status: number;
-        body: {
-          valid: boolean;
-          user?: {
-            id: string;
-            username: string;
-          };
-        };
-      }>("/api/auth/validate", {
-        headers: { Authorization: `Bearer ${user.value.token}` },
-      })
-
-      if (!response.body.valid || !response.body.user) {
-        logout()
-
-        return false
-      }
-
-      return true
-    } catch {
-      logout()
-
-      return false
-    } finally {
-      isValidatingToken.value = false
-    }
-  }
-
-  function setI18n(i18nParam: Language) {
-    if (!ssrSafe()) {
-      return
-    }
-
-    i18n.value = i18nParam
-    localStorage.setItem("i18n", i18n.value)
-  }
-
-  function setTheme(themeParam: Theme) {
-    if (!ssrSafe()) {
-      return
-    }
-
-    theme.value = themeParam
-    localStorage.setItem("theme", theme.value)
-  }
-
-  function setUser(userParam: StoreUser) {
-    if (!ssrSafe()) {
-      return
-    }
-
-    user.value = userParam
-    localStorage.setItem("user", encodeURI(JSON.stringify(user.value)))
-  }
-
-  function logout() {
-    if (!ssrSafe()) {
-      return
-    }
-
-    user.value = null
-    selectedBudgetTrackerId.value = null
-    currentBudgetTrackerRole.value = null
-    localStorage.removeItem("user")
-    localStorage.removeItem("selectedBudgetTrackerId")
-  }
-
-  function setSelectedBudgetTracker(id: string | null, role: BudgetTrackerRole | null = null) {
-    selectedBudgetTrackerId.value = id
-    currentBudgetTrackerRole.value = role
-
-    if (ssrSafe()) {
-      if (id !== null) {
-        localStorage.setItem("selectedBudgetTrackerId", id)
-      } else {
-        localStorage.removeItem("selectedBudgetTrackerId")
-      }
-    }
-  }
-
   function initBudgetTracker() {
-    if (!ssrSafe()) {
+    if (!ssrSafe) {
       return
     }
 
@@ -178,10 +67,55 @@ export const useMainStore = defineStore("main", () => {
     }
   }
 
+  function setI18n(i18nParam: Language) {
+    if (!ssrSafe) {
+      return
+    }
+
+    i18n.value = i18nParam
+    localStorage.setItem("i18n", i18n.value)
+  }
+
+  function setTheme(themeParam: Theme) {
+    if (!ssrSafe) {
+      return
+    }
+
+    theme.value = themeParam
+    localStorage.setItem("theme", theme.value)
+  }
+
+  function setUser(userParam: unknown) {
+    user.value = userParam
+  }
+
+  function setSelectedBudgetTracker(id: string | null, role: BudgetTrackerRole | null = null) {
+    selectedBudgetTrackerId.value = id
+    currentBudgetTrackerRole.value = role
+
+    if (ssrSafe) {
+      if (id !== null) {
+        localStorage.setItem("selectedBudgetTrackerId", id)
+      } else {
+        localStorage.removeItem("selectedBudgetTrackerId")
+      }
+    }
+  }
+
+  async function logout() {
+    if (!ssrSafe) {
+      return
+    }
+
+    user.value = null
+    selectedBudgetTrackerId.value = null
+    currentBudgetTrackerRole.value = null
+    localStorage.removeItem("selectedBudgetTrackerId")
+  }
+
   function initStore() {
     initI18n()
     initTheme()
-    initUser()
     initBudgetTracker()
   }
 
@@ -191,13 +125,12 @@ export const useMainStore = defineStore("main", () => {
     user,
     selectedBudgetTrackerId,
     currentBudgetTrackerRole,
-    isValidatingToken,
     getI18n,
     getTheme,
     getUser,
+    getRawUser,
     getSelectedBudgetTrackerId,
     getCurrentBudgetTrackerRole,
-    getIsValidatingToken,
     isDemo,
     canEditTracker,
     canDeleteTracker,
@@ -207,7 +140,6 @@ export const useMainStore = defineStore("main", () => {
     setTheme,
     setUser,
     setSelectedBudgetTracker,
-    validateToken,
     logout,
     initStore,
   }

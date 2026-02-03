@@ -498,7 +498,6 @@ const saveCategory = async () => {
           id: editingCategory.value.id,
           ...categoryForm.value,
         },
-        headers: { Authorization: `Bearer ${store.getUser?.token}` },
       })
     } else {
       await $fetch("/api/category", {
@@ -507,7 +506,6 @@ const saveCategory = async () => {
           budget_tracker_id: props.budgetTrackerId,
           ...categoryForm.value,
         },
-        headers: { Authorization: `Bearer ${store.getUser?.token}` },
       })
     }
 
@@ -531,7 +529,6 @@ const deleteCategory = async () => {
     await $fetch("/api/category", {
       method: "DELETE",
       body: { id: deletingCategory.value.id },
-      headers: { Authorization: `Bearer ${store.getUser?.token}` },
     })
     showDeleteDialog.value = false
     deletingCategory.value = null

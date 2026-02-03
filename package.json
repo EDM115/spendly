@@ -11,21 +11,21 @@
     "@nuxt/image": "~2.0.0",
     "@nuxtjs/i18n": "~10.2.1",
     "@pinia/nuxt": "~0.11.3",
-    "@vueuse/core": "~14.1.0",
-    "@vueuse/nuxt": "~14.1.0",
-    "bcryptjs": "~3.0.3",
+    "@vueuse/core": "~14.2.0",
+    "@vueuse/nuxt": "~14.2.0",
     "better-auth": "~1.4.18",
     "better-sqlite3": "~12.6.2",
     "canvas-to-svg": "~1.0.3",
     "chart.js": "~4.5.1",
-    "drizzle-orm": "beta",
-    "jsonwebtoken": "~9.0.3",
-    "jspdf": "4.0.0",
+    "drizzle-orm": "~0.45.1",
+    "jspdf": "4.1.0",
     "nuxt": "~4.3.0",
     "nuxt-svgo": "~4.2.6",
     "pinia": "~3.0.4",
+    "resend": "~6.9.1",
     "vue": "~3.5.27",
     "vue-chartjs": "~5.3.3",
+    "vue-cloudflare-turnstile": "~1.0.3",
     "vuetify-nuxt-module": "~0.19.5"
   },
   "devDependencies": {
@@ -33,19 +33,18 @@
     "@nuxt/eslint": "~1.13.0",
     "@stylistic/eslint-plugin": "~5.7.1",
     "@types/better-sqlite3": "^7.6.13",
-    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "latest",
     "@typescript-eslint/parser": "~8.54.0",
     "country-flag-emoji-polyfill": "~0.1.8",
-    "drizzle-kit": "beta",
+    "drizzle-kit": "~0.31.8",
     "edm115-lint": "~0.1.6",
     "eslint": "~9.39.2",
-    "eslint-plugin-drizzle": "beta",
+    "eslint-plugin-drizzle": "~0.2.3",
     "eslint-plugin-vue": "~10.7.0",
-    "globals": "~17.2.0",
+    "globals": "~17.3.0",
     "jiti": "~2.6.1",
     "lightningcss": "~1.31.1",
-    "oxlint": "~1.42.0",
+    "oxlint": "~1.43.0",
     "oxlint-tsgolint": "~0.11.4",
     "sass-embedded": "~1.97.3",
     "sass-loader": "~16.0.6",
@@ -53,6 +52,13 @@
     "typescript": "~5.9.3",
     "vue-eslint-parser": "~10.2.0",
     "vue-tsc": "~3.2.4"
+  },
+  "peerDependencies": {
+    "@better-fetch/fetch": "*"
+  },
+  "imports": {
+    "#shared/*": "./shared/*",
+    "#server/*": "./server/*"
   },
   "license": "MIT",
   "name": "spendly",
@@ -63,10 +69,13 @@
     "url": "git+https://github.com/EDM115/spendly.git"
   },
   "scripts": {
+    "better-auth:generate": "pnpm db:ensure && pnpm dlx @better-auth/cli@latest generate --config server/utils/auth.ts --output shared/db/auth.schema.ts -y",
+    "better-auth:fix-schema": "tsx shared/db/fix-auth-relations.codemod.ts shared/db/auth.schema.ts --write",
     "build": "dotenvx run -- nuxt build",
     "cleanup": "nuxt cleanup",
+    "db:ensure": "node -e \"import('fs').then(fs => {try{fs.mkdirSync('db')}catch{}})\"",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "pnpm db:ensure && drizzle-kit migrate",
     "dev": "nuxt dev --no-clear",
     "dev:expose:global": "nuxt dev --no-clear --tunnel",
     "dev:expose:local": "nuxt dev --no-clear --public",
@@ -83,5 +92,5 @@
     "typecheck": "nuxt typecheck"
   },
   "type": "module",
-  "version": "0.10.0"
+  "version": "0.11.0"
 }

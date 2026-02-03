@@ -23,6 +23,11 @@ export default defineNuxtConfig({
     },
   },
   css: ["~/assets/styles/main.scss"],
+  runtimeConfig: {
+    "public": {
+      turnstileSiteKey: process.env.TURNSTILE_SITE_KEY,
+    },
+  },
   sourcemap: {
     client: true,
     server: true,

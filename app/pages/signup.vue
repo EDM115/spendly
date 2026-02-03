@@ -86,14 +86,14 @@
 
             <div class="mb-8">
               <h2 class="text-h4 font-weight-bold mb-2">
-                {{ $t('login.title') }}
+                {{ $t('signup.title') }}
               </h2>
               <p class="text-medium-emphasis">
-                {{ $t('login.welcome') }}
+                {{ $t('signup.welcome') }}
               </p>
             </div>
 
-            <AuthLogin />
+            <AuthSignUp />
           </v-card>
         </v-container>
       </v-col>
