@@ -21,35 +21,56 @@
 </template>
 
 <script lang="ts" setup>
-const store = useMainStore()
+import type { UserType } from "#shared/types/main"
+import { authClient } from "~/utils/authClient"
+
+type AdminUser = {
+  id: string;
+  username: string;
+  role: UserType;
+}
 
 const { data } = await useAsyncData<{
-  users: User[];
+  users: AdminUser[];
 }>("admin-page-data", async () => {
-  const adminId = store.getUser?.data?.user.id
+  const event = useRequestEvent()
+  const serverAuth = event?.context.auth ?? null
+  const sessionState = serverAuth?.userId
+    ? {
+        isAuthenticated: true, isAdmin: serverAuth.role === "admin",
+      }
+    : null
 
-  if (!adminId) {
+  if (!sessionState) {
+    const { data: session } = await authClient.useSession(useFetch)
+    const userData = session.value ?? null
+
+    if (!userData) {
+      throw createError({
+        status: 401,
+        statusText: "Unauthorized",
+      })
+    }
+
+    if (userData.user?.role !== "admin") {
+      throw createError({
+        status: 403,
+        statusText: "Forbidden",
+      })
+    }
+  } else if (!sessionState.isAdmin) {
     throw createError({
-      status: 401,
-      statusText: "Unauthorized",
+      status: 403,
+      statusText: "Forbidden",
     })
   }
 
   // ! TODO, redo the route
-  const usersData = await $fetch("/api/admin/user", {
-    params: { admin_id: adminId },
-  })
+  const usersData = await $fetch<{ body: { users?: AdminUser[] } }>("/api/admin/user")
 
   return {
-    users: usersData.body.users ?? [],
+    users: usersData.body?.users ?? [],
   }
 })
 
-onMounted(async () => {
-  if (!store.getUser?.data || store.getUser?.data.user.role !== "admin") {
-    await navigateTo("/", { redirectCode: 403 })
-
-    return
-  }
-})
 </script>

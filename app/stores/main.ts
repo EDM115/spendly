@@ -1,8 +1,8 @@
 import {
   computed,
-  computedAsync,
   defineStore,
   ref,
+  useRequestEvent,
   type BudgetTrackerRole,
   type Language,
   type Theme,
@@ -14,18 +14,31 @@ const ssrSafe = import.meta.client && typeof window !== "undefined" && typeof lo
 export const useMainStore = defineStore("main", () => {
   const i18n = ref<Language>("fr")
   const theme = ref<Theme>("dark")
-  const user = ref<unknown>(null)
+  const isDemo = ref(false)
   const selectedBudgetTrackerId = ref<string | null>(null)
   const currentBudgetTrackerRole = ref<BudgetTrackerRole | null>(null)
+  const session = authClient.useSession()
+  const serverAuth = useRequestEvent()?.context.auth ?? null
 
   const getI18n = computed(() => i18n.value)
   const getTheme = computed(() => theme.value)
-  const getUser = computedAsync(async () => await authClient.getSession())
-  const getRawUser = computed(() => user.value)
+  const getSession = computed(() => session.value.data ?? null)
+  const getServerUser = computed(() => (serverAuth?.userId
+    ? {
+        id: serverAuth.userId,
+        role: serverAuth.role ?? null,
+        name: serverAuth.username ?? null,
+      }
+    : null))
+  const getUser = computed(() => getSession.value?.user ?? getServerUser.value)
+  const getUserId = computed(() => getUser.value?.id ?? null)
+  const getUserRole = computed(() => getUser.value?.role ?? null)
+  const getIsAuthenticated = computed(() => Boolean(getUser.value))
+  const getIsAdmin = computed(() => getUserRole.value === "admin")
+  const getIsDemo = computed(() => isDemo.value)
   const getSelectedBudgetTrackerId = computed(() => selectedBudgetTrackerId.value)
   const getCurrentBudgetTrackerRole = computed(() => currentBudgetTrackerRole.value)
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  const isDemo = computed(() => getUser.value?.data?.user.username === "demo" || (user.value as { username?: string })?.username === "demo")
+
   const canEditTracker = computed(() => [ "owner", "admin" ].includes(currentBudgetTrackerRole.value ?? ""))
   const canDeleteTracker = computed(() => currentBudgetTrackerRole.value === "owner")
   const canManageUsers = computed(() => [ "owner", "admin" ].includes(currentBudgetTrackerRole.value ?? ""))
@@ -67,6 +80,10 @@ export const useMainStore = defineStore("main", () => {
     }
   }
 
+  function setIsDemo(demo: boolean) {
+    isDemo.value = demo
+  }
+
   function setI18n(i18nParam: Language) {
     if (!ssrSafe) {
       return
@@ -85,10 +102,6 @@ export const useMainStore = defineStore("main", () => {
     localStorage.setItem("theme", theme.value)
   }
 
-  function setUser(userParam: unknown) {
-    user.value = userParam
-  }
-
   function setSelectedBudgetTracker(id: string | null, role: BudgetTrackerRole | null = null) {
     selectedBudgetTrackerId.value = id
     currentBudgetTrackerRole.value = role
@@ -103,14 +116,12 @@ export const useMainStore = defineStore("main", () => {
   }
 
   async function logout() {
-    if (!ssrSafe) {
-      return
-    }
-
-    user.value = null
     selectedBudgetTrackerId.value = null
     currentBudgetTrackerRole.value = null
-    localStorage.removeItem("selectedBudgetTrackerId")
+
+    if (ssrSafe) {
+      localStorage.removeItem("selectedBudgetTrackerId")
+    }
   }
 
   function initStore() {
@@ -122,23 +133,26 @@ export const useMainStore = defineStore("main", () => {
   return {
     i18n,
     theme,
-    user,
     selectedBudgetTrackerId,
     currentBudgetTrackerRole,
     getI18n,
     getTheme,
+    getSession,
     getUser,
-    getRawUser,
+    getUserId,
+    getUserRole,
+    getIsAuthenticated,
+    getIsAdmin,
     getSelectedBudgetTrackerId,
     getCurrentBudgetTrackerRole,
-    isDemo,
+    getIsDemo,
     canEditTracker,
     canDeleteTracker,
     canManageUsers,
     canEditData,
+    setIsDemo,
     setI18n,
     setTheme,
-    setUser,
     setSelectedBudgetTracker,
     logout,
     initStore,

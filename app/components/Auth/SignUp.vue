@@ -29,6 +29,7 @@
           v-model="state.username"
           variant="outlined"
           color="primary"
+          rounded="lg"
           :label="$t('signup.username')"
           :rules="usernameRules"
           prepend-inner-icon="mdi-account-circle-outline"
@@ -41,6 +42,7 @@
           v-model="state.email"
           variant="outlined"
           color="primary"
+          rounded="lg"
           :label="$t('signup.email')"
           :rules="emailRules"
           prepend-inner-icon="mdi-email-outline"
@@ -54,6 +56,7 @@
           :type="showPassword ? 'text' : 'password'"
           variant="outlined"
           color="primary"
+          rounded="lg"
           :label="$t('signup.password')"
           :rules="passwordRules"
           prepend-inner-icon="mdi-key-outline"
@@ -80,6 +83,7 @@
           :type="showPassword ? 'text' : 'password'"
           variant="outlined"
           color="primary"
+          rounded="lg"
           :label="$t('signup.passwordConfirm')"
           :rules="passwordConfirmRules"
           prepend-inner-icon="mdi-key-outline"
@@ -101,7 +105,10 @@
       </div>
 
       <VueTurnstile
+        ref="turnstileRef"
         :site-key="turnstileKey"
+        :language="storeLang ?? 'auto'"
+        :theme="storeTheme ?? 'auto'"
         appearance="execute"
         @success="onTurnstileSuccess"
         @error="onTurnstileError"
@@ -113,13 +120,13 @@
         block
         color="primary"
         size="large"
+        rounded="xl"
         type="submit"
         variant="flat"
-        :loading
+        :loading="loading"
         :disabled="btnDisabled || !form?.isValid"
         prepend-icon="mdi-login-variant"
-        class="text-none font-weight-bold rounded-xl glow-button"
-        elevation="4"
+        class="text-none font-weight-bold glow-button"
       >
         {{ $t('signup.signup') }}
       </v-btn>
@@ -130,10 +137,11 @@
         block
         color="primary"
         size="large"
+        rounded="xl"
         type="submit"
         variant="tonal"
         prepend-icon="mdi-login"
-        class="text-none font-weight-bold rounded-xl mt-4"
+        class="text-none font-weight-bold mt-4"
       >
         {{ $t('login.login') }}
       </v-btn>
@@ -150,16 +158,20 @@ import type {
 import { authClient } from "~/utils/authClient"
 import { VueTurnstile } from "vue-cloudflare-turnstile"
 
-const store = useMainStore()
 const config = useRuntimeConfig()
+const store = useMainStore()
 const { t } = useI18n()
 
+const storeLang = computed(() => store.getI18n)
+const storeTheme = computed(() => store.getTheme)
 const errorMessage = ref("")
 const issueMessage = ref("")
 const messageColor = ref("error")
 const showPassword = ref(false)
 const loading = ref(false)
 const btnDisabled = ref(true)
+const turnstileRef = ref<InstanceType<typeof VueTurnstile> | null>(null)
+const lastErrorTurnstile = ref(false)
 const turnstileToken = ref("")
 const form = ref<{
   id: number | string;
@@ -234,6 +246,9 @@ const state = reactive({ ...initialState })
 function clear() {
   Object.assign(state, initialState)
   form.value?.reset()
+  turnstileRef.value?.reset()
+  btnDisabled.value = true
+  turnstileToken.value = ""
 }
 
 function handleError(error: {
@@ -248,13 +263,18 @@ function handleError(error: {
 }
 
 function onTurnstileSuccess(token: string) {
-  errorMessage.value = ""
-  issueMessage.value = ""
+  if (lastErrorTurnstile.value) {
+    lastErrorTurnstile.value = false
+    errorMessage.value = ""
+    issueMessage.value = ""
+  }
+
   btnDisabled.value = false
   turnstileToken.value = token
 }
 
 function onTurnstileError(errorCode: string | undefined) {
+  lastErrorTurnstile.value = true
   handleError({
     code: errorCode,
     message: t("turnstile.error"),
@@ -264,6 +284,7 @@ function onTurnstileError(errorCode: string | undefined) {
 }
 
 function onTurnstileExpired() {
+  lastErrorTurnstile.value = true
   handleError({
     message: t("turnstile.expired"),
     statusText: t("turnstile.wait"),
@@ -273,6 +294,7 @@ function onTurnstileExpired() {
 }
 
 function onTurnstileTimeout() {
+  lastErrorTurnstile.value = true
   handleError({
     message: t("turnstile.timeout"),
     statusText: t("turnstile.wait"),
@@ -286,9 +308,7 @@ async function signup() {
   issueMessage.value = ""
   loading.value = true
 
-  const {
-    data, error,
-  } = await authClient.signUp.email({
+  const { error } = await authClient.signUp.email({
     email: state.email,
     name: state.username,
     password: state.password,
@@ -303,9 +323,9 @@ async function signup() {
   })
 
   if (error) {
+    lastErrorTurnstile.value = false
     handleError(error)
   } else {
-    store.setUser(data)
     await navigateTo("/app", { redirectCode: 302 })
   }
 

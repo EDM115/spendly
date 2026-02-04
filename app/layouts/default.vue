@@ -6,6 +6,36 @@
     <v-main>
       <slot />
     </v-main>
+    <v-footer
+      v-if="!['/app', '/admin', '/account', '/demo'].includes(route.path)"
+      class="bg-transparent py-8 text-center d-flex flex-column"
+    >
+      <div class="d-flex ga-4 mb-2 align-center">
+        <v-btn
+          icon="mdi-github"
+          variant="text"
+          href="https://github.com/EDM115/spendly#readme"
+          target="_blank"
+          color="secondary"
+        />
+      </div>
+      <div class="text-body-2 text-medium-emphasis mb-2">
+        {{ new Date().getFullYear() }} - <strong class="gradient-text">{{ $t('main.title') }}</strong>
+      </div>
+      <div class="text-body-2 text-medium-emphasis mb-2">
+        <NuxtLink
+          to="/privacy-policy"
+          style="color: rgb(var(--v-theme-secondary))"
+        >
+          {{ $t('privacy-policy.title').split('-')[0]?.trim() }}
+        </NuxtLink> - <NuxtLink
+          to="/terms-of-use"
+          style="color: rgb(var(--v-theme-secondary))"
+        >
+          {{ $t('terms-of-use.title').split('-')[0]?.trim() }}
+        </NuxtLink>
+      </div>
+    </v-footer>
   </v-app>
 </template>
 
@@ -13,6 +43,7 @@
 import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill"
 
 const i18nHead = useLocaleHead()
+const route = useRoute()
 const {
   t,
   setLocale,

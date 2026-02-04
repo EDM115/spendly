@@ -22,6 +22,7 @@
             :label="$t('app.budget-tracker.select')"
             variant="outlined"
             hide-details
+            rounded="lg"
             clearable
             bg-color="transparent"
             @update:model-value="onTrackerChange"
@@ -65,7 +66,8 @@
         >
           <v-btn
             color="primary"
-            :class="['glow-button', smAndUp ? 'ma-2' : 'ma-1']"
+            :class="[smAndUp ? 'ma-2' : 'ma-1']"
+            rounded="lg"
             prepend-icon="mdi-plus"
             :block="!smAndUp"
             :disabled="isDemo"
@@ -76,7 +78,8 @@
           <v-btn
             v-if="selectedTracker"
             color="secondary"
-            :class="['glow-button', smAndUp ? 'ma-2' : 'ma-1']"
+            :class="[smAndUp ? 'ma-2' : 'ma-1']"
+            rounded="lg"
             prepend-icon="mdi-pencil-outline"
             :block="!smAndUp"
             :disabled="isDemo || !canEdit"
@@ -87,7 +90,8 @@
           <v-btn
             v-if="selectedTracker"
             color="warning"
-            :class="['glow-button', smAndUp ? 'ma-2' : 'ma-1']"
+            :class="[smAndUp ? 'ma-2' : 'ma-1']"
+            rounded="lg"
             prepend-icon="mdi-account-multiple-outline"
             :block="!smAndUp"
             :disabled="isDemo || !canManageUsers"
@@ -98,7 +102,8 @@
           <v-btn
             v-if="selectedTracker"
             color="error"
-            :class="['glow-button', smAndUp ? 'ma-2' : 'ma-1']"
+            :class="[smAndUp ? 'ma-2' : 'ma-1']"
+            rounded="lg"
             prepend-icon="mdi-delete-outline"
             :block="!smAndUp"
             :disabled="isDemo || !canDelete"
@@ -118,13 +123,14 @@
   >
     <v-card class="glass-card pa-1 border-thin">
       <v-card-title class="text-h6 font-weight-bold">
-        {{ $t("app.budget-tracker.add") }}
+        {{ $t("app.budget-tracker.add-title") }}
       </v-card-title>
       <v-card-text>
         <v-text-field
           v-model="newTrackerName"
           :label="$t('app.budget-tracker.name')"
           variant="outlined"
+          rounded="lg"
           autofocus
           autocomplete="suppress"
           bg-color="transparent"
@@ -135,6 +141,7 @@
         <v-spacer />
         <v-btn
           color="secondary"
+          rounded="lg"
           variant="text"
           @click="showAddDialog = false"
         >
@@ -142,7 +149,7 @@
         </v-btn>
         <v-btn
           color="primary"
-          class="glow-button"
+          rounded="lg"
           variant="elevated"
           :disabled="!newTrackerName.trim()"
           @click="addTracker"
@@ -160,13 +167,14 @@
   >
     <v-card class="glass-card pa-1 border-thin">
       <v-card-title class="text-h6 font-weight-bold">
-        {{ $t("app.budget-tracker.edit") }}
+        {{ $t("app.budget-tracker.edit-title") }}
       </v-card-title>
       <v-card-text>
         <v-text-field
           v-model="editTrackerName"
           :label="$t('app.budget-tracker.name')"
           variant="outlined"
+          rounded="lg"
           autofocus
           autocomplete="suppress"
           bg-color="transparent"
@@ -177,6 +185,7 @@
         <v-spacer />
         <v-btn
           color="secondary"
+          rounded="lg"
           variant="text"
           @click="showEditDialog = false"
         >
@@ -184,7 +193,7 @@
         </v-btn>
         <v-btn
           color="primary"
-          class="glow-button"
+          rounded="lg"
           variant="elevated"
           :disabled="!editTrackerName.trim()"
           @click="updateTracker"
@@ -211,6 +220,7 @@
         <v-spacer />
         <v-btn
           color="secondary"
+          rounded="lg"
           variant="text"
           @click="showDeleteDialog = false"
         >
@@ -218,7 +228,7 @@
         </v-btn>
         <v-btn
           color="error"
-          class="glow-button"
+          rounded="lg"
           variant="elevated"
           @click="deleteTracker"
         >
@@ -245,7 +255,8 @@
           <v-list-item
             v-for="user in sharedUsers"
             :key="user.user_id"
-            class="rounded-lg mb-1"
+            class="mb-1"
+            rounded="lg"
             style="background: rgba(var(--v-theme-surface), 0.3)"
           >
             <template #prepend>
@@ -285,6 +296,7 @@
                 variant="outlined"
                 hide-details
                 class="mr-2"
+                rounded="lg"
                 bg-color="transparent"
                 style="max-width: 140px;"
                 @update:model-value="updateUserRole(user.user_id, $event)"
@@ -295,7 +307,7 @@
               >
                 <template #activator="{ props: tooltipProps }">
                   <v-btn
-                    v-if="user.user_id !== store.getUser?.data?.user.id && user.role !== 'owner'"
+                    v-if="user.user_id !== store.getUserId && user.role !== 'owner'"
                     v-bind="tooltipProps"
                     icon="mdi-delete-outline"
                     color="error"
@@ -317,6 +329,7 @@
               :label="$t('app.budget-tracker.username')"
               variant="outlined"
               density="compact"
+              rounded="lg"
               hide-details
               autocomplete="suppress"
               bg-color="transparent"
@@ -331,6 +344,7 @@
               :label="$t('app.budget-tracker.role')"
               variant="outlined"
               density="compact"
+              rounded="lg"
               hide-details
               bg-color="transparent"
             />
@@ -339,7 +353,6 @@
             <v-btn
               color="primary"
               icon="mdi-account-plus-outline"
-              class="glow-button"
               :disabled="!newUsername.trim()"
               @click="addUser"
             />
@@ -350,6 +363,7 @@
         <v-spacer />
         <v-btn
           color="secondary"
+          rounded="lg"
           variant="text"
           @click="showShareDialog = false"
         >
@@ -374,7 +388,7 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const store = useMainStore()
 const { smAndUp } = useVDisplay()
-const isDemo = computed(() => store.isDemo)
+const isDemo = computed(() => store.getIsDemo)
 
 const selectedTracker = ref<string | null>(props.modelValue)
 const showAddDialog = ref(false)

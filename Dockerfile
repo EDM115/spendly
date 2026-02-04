@@ -28,7 +28,7 @@ ENV NODE_ENV=production
 
 RUN mkdir -p db && \
     pnpm db:migrate && \
-    pnpm seed && \
+    pnpm db:seed && \
     rm -fr init
 
 RUN pnpm build

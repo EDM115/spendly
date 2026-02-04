@@ -9,6 +9,7 @@ import {
   eq,
 } from "drizzle-orm"
 import { randomUUID } from "node:crypto"
+import { requireUserId } from "#server/utils/session"
 
 function canEditTracker(role: BudgetTrackerRole): boolean {
   return [ "owner", "admin" ].includes(role)
@@ -26,14 +27,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const userId: string | undefined = event.context.auth?.userId
-
-  if (!userId) {
-    throw createError({
-      status: 401,
-      message: "Unauthorized",
-    })
-  }
+  const userId = requireUserId(event.context.auth)
 
   switch (event.method) {
     case "GET": {

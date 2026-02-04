@@ -1,6 +1,5 @@
 import {
   adminClient,
-  emailOTPClient,
   lastLoginMethodClient,
   magicLinkClient,
   usernameClient,
@@ -10,8 +9,9 @@ import { createAuthClient } from "better-auth/vue"
 export const authClient = createAuthClient({
   plugins: [
     adminClient(),
-    emailOTPClient(),
-    lastLoginMethodClient(),
+    lastLoginMethodClient({
+      cookieName: "spendly.last_used_login_method",
+    }),
     magicLinkClient(),
     usernameClient(),
   ],

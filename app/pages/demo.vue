@@ -2451,14 +2451,9 @@ watch(locale, async () => {
 onMounted(async () => {
   hasLoaded.value = false
 
+  store.setIsDemo(true)
   budgetTrackers.value = demoBudgetTrackers.value
   selectedBudgetTrackerId.value = demoBudgetTrackers.value[0]?.id ?? null
-  store.setUser({
-    id: "aaaaaaaa-3000-0000-0000-zzzzzzzzzzzz",
-    ...demoCredentials,
-    token: "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImFhYWFhYWFhLTMwMDAtMDAwMC0wMDAwLXp6enp6enp6enp6eiIsInVzZXJuYW1lIjoiZGVtbyJ9.C8UEF3dy_s7CHMz9lIrGRBqMtFAuFCJ37FVGt36H90o",
-    role: "user",
-  })
   store.setSelectedBudgetTracker(selectedBudgetTrackerId.value, "viewer")
 
   hasLoaded.value = true

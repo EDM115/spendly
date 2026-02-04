@@ -54,6 +54,7 @@ async function seedUsers() {
         data: {
           username: u.username,
           displayUsername: u.username,
+          emailVerified: true,
         },
       },
     })

@@ -8,6 +8,7 @@ import {
   and,
   eq,
 } from "drizzle-orm"
+import { requireUserId } from "#server/utils/session"
 
 const VALID_ROLES = new Set([ "viewer", "editor", "admin" ])
 
@@ -39,14 +40,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const userId: string | undefined = event.context.auth?.userId
-
-  if (!userId) {
-    throw createError({
-      status: 401,
-      message: "Unauthorized",
-    })
-  }
+  const userId = requireUserId(event.context.auth)
 
   switch (event.method) {
     case "GET": {

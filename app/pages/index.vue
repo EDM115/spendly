@@ -1,7 +1,7 @@
 <template>
   <div class="landing-page">
     <div style="height: 64px; display: block; width: 100vw;" />
-    <section class="hero-section position-relative d-flex align-center overflow-hidden">
+    <section class="hero-section position-relative d-flex align-center overflow-visible">
       <div class="hero-blob blob-1" />
       <div class="hero-blob blob-2" />
 
@@ -49,17 +49,17 @@
               {{ $t('landing.hero.subtitle') }}
             </p>
 
-            <div class="d-flex justify-center justify-md-start ga-4 flex-wrap">
+            <div class="d-flex justify-center justify-md-start ga-4 flex-wrap mobile-btn-group">
               <v-btn
                 color="primary"
+                variant="flat"
                 size="x-large"
                 to="/login"
                 prepend-icon="mdi-rocket-launch"
-                elevation="8"
                 rounded="xl"
                 class="px-8 font-weight-bold glow-button"
               >
-                {{ $t('navbar.connect') }}
+                {{ $t('landing.get-started') }}
               </v-btn>
               <v-btn
                 variant="tonal"
@@ -72,19 +72,7 @@
               >
                 {{ $t('landing.demo') }}
               </v-btn>
-              <v-btn
-                variant="outlined"
-                size="x-large"
-                color="secondary"
-                href="https://github.com/EDM115/spendly#readme"
-                target="_blank"
-                prepend-icon="mdi-github"
-                rounded="xl"
-                class="px-8 glass-button"
-              >
-                {{ $t('landing.github') }}
-              </v-btn>
-              <div class="scroll-mouse-indicator ml-md-2">
+              <div class="scroll-mouse-indicator flex-column ml-md-4">
                 <div class="mouse-wheel" />
               </div>
             </div>
@@ -116,7 +104,8 @@
             md="4"
           >
             <v-card
-              class="glass-card h-100 py-8 px-6 rounded-xl"
+              class="glass-card h-100 py-8 px-6"
+              rounded="xl"
               elevation="0"
             >
               <div
@@ -139,82 +128,13 @@
         </v-row>
       </v-container>
     </section>
-
-    <section class="py-16 position-relative overflow-hidden">
-      <div
-        style="
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 80%;
-          height: 80%;
-          background: radial-gradient(circle, rgba(var(--v-theme-primary), 0.1) 0%, transparent 70%);
-          filter: blur(80px);
-          z-index: 0;
-        "
-      />
-
-      <v-container class="position-relative z-10">
-        <div class="glass-panel rounded-xl overflow-hidden pa-1">
-          <v-card
-            color="transparent"
-            class="overflow-hidden"
-            rounded="xl"
-            elevation="0"
-          >
-            <v-row class="ma-0">
-              <v-col
-                cols="12"
-                md="6"
-                class="pa-12 d-flex flex-column justify-center"
-              >
-                <h2 class="text-h3 font-weight-bold mb-6">
-                  {{ $t('landing.join.title') }}
-                </h2>
-                <p class="text-h6 font-weight-light mb-8 opacity-90">
-                  {{ $t('landing.join.text') }}
-                </p>
-                <div>
-                  <v-btn
-                    color="primary"
-                    variant="flat"
-                    size="large"
-                    href="mailto:spendly@edm115.dev"
-                    prepend-icon="mdi-email-outline"
-                    rounded="lg"
-                    class="glow-button px-8"
-                  >
-                    spendly@edm115.dev
-                  </v-btn>
-                </div>
-              </v-col>
-            </v-row>
-          </v-card>
-        </div>
-      </v-container>
-    </section>
-
-    <v-footer class="bg-transparent py-8 text-center d-flex flex-column">
-      <div class="d-flex ga-4 mb-2 align-center">
-        <v-btn
-          icon="mdi-github"
-          variant="text"
-          href="https://github.com/EDM115/spendly#readme"
-          target="_blank"
-          color="secondary"
-        />
-      </div>
-      <div class="text-body-2 text-medium-emphasis">
-        {{ new Date().getFullYear() }} - <strong class="gradient-text">{{ $t('main.title') }}</strong>
-      </div>
-    </v-footer>
   </div>
 </template>
 
 <script lang="ts" setup>
 const store = useMainStore()
 const { t } = useI18n()
+const hasRedirected = ref(false)
 
 const features = computed(() => [
   {
@@ -242,7 +162,15 @@ const logoSrc = computed(() => (store.getTheme === "light"
   : "/images/logo.webp"))
 
 onMounted(async () => {
-  if (store.getUser?.data && !store.isDemo) {
+  if (store.getIsAuthenticated && !hasRedirected.value) {
+    hasRedirected.value = true
+    await navigateTo("/app", { redirectCode: 302 })
+  }
+})
+
+watch(() => store.getIsAuthenticated, async (isAuthenticated) => {
+  if (isAuthenticated && !hasRedirected.value) {
+    hasRedirected.value = true
     await navigateTo("/app", { redirectCode: 302 })
   }
 })
@@ -372,5 +300,13 @@ onMounted(async () => {
 
 .glass-card:hover .icon-box {
   transform: scale(1.1) rotate(-5deg);
+}
+
+@media (max-width: 600px) {
+  .mobile-btn-group {
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+  }
 }
 </style>

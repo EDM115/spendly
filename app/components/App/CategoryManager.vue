@@ -13,7 +13,7 @@
         :disabled="!canEdit"
         color="primary"
         prepend-icon="mdi-plus"
-        class="glow-button"
+        rounded="lg"
         :block="false"
         @click="showAddDialog = true"
       >
@@ -117,13 +117,14 @@
   >
     <v-card class="glass-card pa-1 border-thin">
       <v-card-title class="text-h6 font-weight-bold">
-        {{ editingCategory ? $t("app.category.edit") : $t("app.category.add") }}
+        {{ editingCategory ? $t("app.category.edit-title") : $t("app.category.add-title") }}
       </v-card-title>
       <v-card-text>
         <v-text-field
           v-model="categoryForm.name"
           :label="$t('app.category.name')"
           variant="outlined"
+          rounded="lg"
           autocomplete="suppress"
           class="mb-4"
           bg-color="transparent"
@@ -156,6 +157,7 @@
               :no-data-text="$t('app.category.search')"
               :error="!isValidIcon"
               bg-color="transparent"
+              rounded="lg"
               clearable
               autocomplete="suppress"
               auto-select-first
@@ -184,6 +186,7 @@
         <v-color-picker
           v-model="categoryForm.color"
           mode="hex"
+          rounded="lg"
           :modes="['hex']"
           class="mb-4 glass-panel border-thin w-100"
           elevation="0"
@@ -193,6 +196,7 @@
         <v-spacer />
         <v-btn
           color="secondary"
+          rounded="lg"
           variant="text"
           @click="closeDialog"
         >
@@ -200,7 +204,7 @@
         </v-btn>
         <v-btn
           color="primary"
-          class="glow-button"
+          rounded="lg"
           variant="elevated"
           :disabled="!categoryForm.name.trim() || !isValidIcon"
           @click="saveCategory"
@@ -234,7 +238,6 @@
         </v-btn>
         <v-btn
           color="error"
-          class="glow-button"
           variant="elevated"
           @click="deleteCategory"
         >
@@ -262,7 +265,7 @@ const emit = defineEmits<{
 const store = useMainStore()
 const theme = useVTheme()
 
-const canEdit = computed(() => store.canEditData && !store.isDemo)
+const canEdit = computed(() => store.canEditData && !store.getIsDemo)
 const showAddDialog = ref(false)
 const showDeleteDialog = ref(false)
 const editingCategory = ref<Category | null>(null)

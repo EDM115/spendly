@@ -4,7 +4,7 @@
       class="fill-height justify-center"
     >
       <v-card
-        class="glass-panel rounded-xl pa-8 text-center position-relative overflow-hidden"
+        class="glass-panel rounded-xl pa-8 text-center position-relative"
         elevation="0"
         max-width="600"
         width="100%"
@@ -21,7 +21,8 @@
         <v-alert
           color="error"
           variant="tonal"
-          class="mb-8 rounded-lg text-left glass-error"
+          rounded="lg"
+          class="mb-8 text-left glass-error"
           border="start"
         >
           <div class="text-h6 font-weight-bold mb-1">

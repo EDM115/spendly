@@ -57,7 +57,7 @@ TURNSTILE_SECRET_KEY=0x4AAAAAA00-XX
 ```pwsh
 pnpm i --frozen-lockfile
 pnpm db:migrate
-pnpm seed
+pnpm db:seed
 pnpm dev
 ```
 

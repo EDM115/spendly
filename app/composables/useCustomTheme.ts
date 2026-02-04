@@ -1,12 +1,22 @@
 import {
+  computed,
   useMainStore,
   useVTheme,
+  watch,
   type Theme,
 } from "#imports"
 
 export function useCustomTheme() {
   const vtheme = useVTheme()
   const store = useMainStore()
+
+  watch(
+    () => store.getTheme,
+    (t) => vtheme.change(t),
+    { immediate: true },
+  )
+
+  const currentTheme = computed(() => store.getTheme)
 
   function changeTheme(theme: Theme) {
     vtheme.change(theme)
@@ -20,6 +30,7 @@ export function useCustomTheme() {
   }
 
   return {
+    currentTheme,
     changeTheme,
     toggleTheme,
   }

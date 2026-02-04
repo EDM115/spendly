@@ -53,7 +53,7 @@
                   <v-select
                     v-model="user.role"
                     hide-details
-                    :disabled="user.id === store.getUser?.data?.user.id"
+                    :disabled="user.id === store.getUserId"
                     :items="['user', 'admin']"
                     density="compact"
                     variant="solo"
@@ -67,7 +67,7 @@
                   class="pa-2 d-flex justify-end"
                 >
                   <v-btn
-                    :disabled="user.id === store.getUser?.data?.user.id"
+                    :disabled="user.id === store.getUserId"
                     color="primary"
                     class="mr-2"
                     icon="mdi-pencil-outline"
@@ -76,7 +76,7 @@
                     @click="updateUser(user.id, user.role)"
                   />
                   <v-btn
-                    :disabled="user.id === store.getUser?.data?.user.id"
+                    :disabled="user.id === store.getUserId"
                     icon="mdi-delete-outline"
                     color="error"
                     variant="tonal"
@@ -166,7 +166,6 @@
                   icon="mdi-account-plus-outline"
                   :disabled="!newUser.username.trim() || !newUser.password.trim()"
                   type="submit"
-                  class="glow-button"
                 />
               </v-col>
             </v-row>
@@ -272,7 +271,6 @@
         />
         <v-btn
           color="error"
-          class="glow-button"
           variant="elevated"
           :text="$t('admin.users.delete-confirm')"
           @click="deleteUser"
@@ -283,13 +281,21 @@
 </template>
 
 <script lang="ts" setup>
+import type { UserType } from "#shared/types/main"
+
+type AdminUser = {
+  id: string;
+  username: string;
+  role: UserType;
+}
+
 const store = useMainStore()
 
 const props = defineProps<{
-  initialUsers?: User[];
+  initialUsers?: AdminUser[];
 }>()
 
-const users = ref<User[]>(props.initialUsers ?? [])
+const users = ref<AdminUser[]>(props.initialUsers ?? [])
 const exporting = ref(false)
 
 const showDeleteDialog = ref(false)
@@ -309,9 +315,9 @@ const resetNewUser = () => {
 }
 
 const fetchData = async () => {
-  const usersData = await $fetch("/api/admin/user")
+  const usersData = await $fetch<{ body: { users?: AdminUser[] } }>("/api/admin/user")
 
-  if ("users" in usersData.body) {
+  if (usersData.body?.users) {
     users.value = usersData.body.users
   } else {
     users.value = []
@@ -349,7 +355,7 @@ const deleteUser = async () => {
   await fetchData()
 }
 
-const showUserDeleteDialog = (user: User) => {
+const showUserDeleteDialog = (user: AdminUser) => {
   userToDelete.value = user.id
   showDeleteDialog.value = true
 }

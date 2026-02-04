@@ -185,9 +185,11 @@ body {
   background: rgba(var(--v-theme-surface), 0.6) !important;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(var(--v-theme-on-surface), 0.1);
+  border-radius: 16px !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
-  &:hover {
+  &:hover,
+  &:focus-within {
     background: rgba(var(--v-theme-surface), 0.8) !important;
     border-color: rgba(var(--v-theme-primary), 0.3);
   }
@@ -204,11 +206,11 @@ body {
 }
 
 .glow-button {
-  box-shadow: 0 0 20px rgba(var(--v-theme-primary), 0.5);
+  box-shadow: 0 0 15px rgba(var(--v-theme-primary), 0.4) !important;
   transition: all 0.3s ease;
 
   &:hover {
-    box-shadow: 0 0 40px rgba(var(--v-theme-primary), 0.6);
+    box-shadow: 0 0 30px rgba(var(--v-theme-primary), 0.6) !important;
     transform: translateY(-2px);
   }
 }
@@ -252,8 +254,14 @@ body {
   background: rgba(var(--v-theme-surface), 0.75) !important;
   backdrop-filter: blur(16px);
   border: 1px solid rgba(var(--v-theme-on-surface), 0.1);
+  border-radius: 16px !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
+}
+
+.v-field--rounded.v-field--variant-outlined .v-field__outline__start,
+[class^=rounded-].v-field--variant-outlined .v-field__outline__start,
+[class*=" rounded-"].v-field--variant-outlined .v-field__outline__start {
+  flex-basis: calc(var(--v-input-control-height) / 4 + 2px) !important;
 }
 
 @media (max-width: 600px) {

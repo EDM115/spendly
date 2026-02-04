@@ -13,10 +13,11 @@
       block
       color="primary"
       size="large"
+      rounded="xl"
       variant="tonal"
-      :loading
+      :loading="loading"
       :disabled="btnDisabled"
-      class="login-btn text-none font-weight-bold rounded-xl glow-button mb-4"
+      class="login-btn text-none font-weight-bold mb-4"
       elevation="4"
       prepend-icon="mdi-google"
       @click="socialLogin('google')"
@@ -26,7 +27,7 @@
       <v-chip
         v-if="lastUsedMethod === 'google'"
         class="last-used-chip last-used-chip--single"
-        color="secondary"
+        :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
         prepend-icon="mdi-history"
         pill
       >
@@ -37,10 +38,11 @@
       block
       color="primary"
       size="large"
+      rounded="xl"
       variant="tonal"
-      :loading
+      :loading="loading"
       :disabled="btnDisabled"
-      class="login-btn text-none font-weight-bold rounded-xl glow-button mb-4"
+      class="login-btn text-none font-weight-bold mb-4"
       elevation="4"
       prepend-icon="mdi-github"
       @click="socialLogin('github')"
@@ -50,7 +52,7 @@
       <v-chip
         v-if="lastUsedMethod === 'github'"
         class="last-used-chip last-used-chip--single"
-        color="secondary"
+        :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
         prepend-icon="mdi-history"
         pill
       >
@@ -80,7 +82,7 @@
           <v-chip
             v-if="lastUsedMethod === 'username'"
             class="last-used-chip last-used-chip--group"
-            color="secondary"
+            :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
             prepend-icon="mdi-history"
             pill
           >
@@ -98,7 +100,7 @@
           <v-chip
             v-if="lastUsedMethod === 'email'"
             class="last-used-chip last-used-chip--group"
-            color="secondary"
+            :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
             prepend-icon="mdi-history"
             pill
           >
@@ -117,7 +119,7 @@
           <v-chip
             v-if="lastUsedMethod === 'magic-link'"
             class="last-used-chip last-used-chip--group"
-            color="secondary"
+            :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
             prepend-icon="mdi-history"
             pill
           >
@@ -137,6 +139,7 @@
           v-model="state.username"
           variant="outlined"
           color="primary"
+          rounded="lg"
           :label="$t('login.username')"
           :rules="usernameRules"
           prepend-inner-icon="mdi-account-circle-outline"
@@ -147,6 +150,7 @@
           v-model="state.email"
           variant="outlined"
           color="primary"
+          rounded="lg"
           :label="$t('login.email')"
           :rules="emailRules"
           prepend-inner-icon="mdi-email-outline"
@@ -163,6 +167,7 @@
           :type="showPassword ? 'text' : 'password'"
           variant="outlined"
           color="primary"
+          rounded="lg"
           :label="$t('login.password')"
           :rules="passwordRules"
           prepend-inner-icon="mdi-key-outline"
@@ -184,7 +189,10 @@
       </div>
 
       <VueTurnstile
+        ref="turnstileRef"
         :site-key="turnstileKey"
+        :language="storeLang ?? 'auto'"
+        :theme="storeTheme ?? 'auto'"
         appearance="execute"
         @success="onTurnstileSuccess"
         @error="onTurnstileError"
@@ -196,13 +204,13 @@
         block
         color="primary"
         size="large"
+        rounded="xl"
         type="submit"
         variant="flat"
-        :loading
+        :loading="loading"
         :disabled="btnDisabled || !form?.isValid"
         :prepend-icon="loginMethod === 'magic-link' ? 'mdi-mailbox-open-up-outline' : 'mdi-login'"
-        class="text-none font-weight-bold rounded-xl glow-button"
-        elevation="4"
+        class="text-none font-weight-bold glow-button"
       >
         {{ $t('login.login') }}
       </v-btn>
@@ -213,10 +221,11 @@
         block
         color="primary"
         size="large"
+        rounded="xl"
         type="submit"
         variant="tonal"
         prepend-icon="mdi-login-variant"
-        class="text-none font-weight-bold rounded-xl mt-4"
+        class="text-none font-weight-bold mt-4"
       >
         {{ $t('signup.signup') }}
       </v-btn>
@@ -233,16 +242,21 @@ import type {
 import { authClient } from "~/utils/authClient"
 import { VueTurnstile } from "vue-cloudflare-turnstile"
 
-const store = useMainStore()
 const config = useRuntimeConfig()
+const store = useMainStore()
 const { t } = useI18n()
 
+const storeLang = computed(() => store.getI18n)
+const storeTheme = computed(() => store.getTheme)
+const lastUsedMethod = computed(() => authClient.getLastUsedLoginMethod())
 const errorMessage = ref("")
 const issueMessage = ref("")
 const messageColor = ref("error")
 const showPassword = ref(false)
 const loading = ref(false)
 const btnDisabled = ref(true)
+const turnstileRef = ref<InstanceType<typeof VueTurnstile> | null>(null)
+const lastErrorTurnstile = ref(false)
 const turnstileToken = ref("")
 const form = ref<{
   id: number | string;
@@ -253,8 +267,7 @@ const form = ref<{
   isValid: boolean | null;
   errorMessages: string[];
 }>()
-const loginMethod = ref<"username" | "email" | "magic-link">("username")
-const lastUsedMethod = ref(authClient.getLastUsedLoginMethod())
+const loginMethod = ref<"username" | "email" | "magic-link" | "google" | "github">("username")
 // to avoid blowing up the daily mail limit
 const showMagicLink = ref(0)
 
@@ -287,9 +300,12 @@ const initialState = {
 
 const state = reactive({ ...initialState })
 
-function clear() {
+async function clear() {
   Object.assign(state, initialState)
-  form.value?.reset()
+  await form.value?.reset()
+  turnstileRef.value?.reset()
+  btnDisabled.value = true
+  turnstileToken.value = ""
 }
 
 function handleError(error: {
@@ -304,13 +320,18 @@ function handleError(error: {
 }
 
 function onTurnstileSuccess(token: string) {
-  errorMessage.value = ""
-  issueMessage.value = ""
+  if (lastErrorTurnstile.value) {
+    lastErrorTurnstile.value = false
+    errorMessage.value = ""
+    issueMessage.value = ""
+  }
+
   btnDisabled.value = false
   turnstileToken.value = token
 }
 
 function onTurnstileError(errorCode: string | undefined) {
+  lastErrorTurnstile.value = true
   handleError({
     code: errorCode,
     message: t("turnstile.error"),
@@ -320,6 +341,7 @@ function onTurnstileError(errorCode: string | undefined) {
 }
 
 function onTurnstileExpired() {
+  lastErrorTurnstile.value = true
   handleError({
     message: t("turnstile.expired"),
     statusText: t("turnstile.wait"),
@@ -329,6 +351,7 @@ function onTurnstileExpired() {
 }
 
 function onTurnstileTimeout() {
+  lastErrorTurnstile.value = true
   handleError({
     message: t("turnstile.timeout"),
     statusText: t("turnstile.wait"),
@@ -342,9 +365,7 @@ async function usernameLogin() {
   issueMessage.value = ""
   loading.value = true
 
-  const {
-    data, error,
-  } = await authClient.signIn.username({
+  const { error } = await authClient.signIn.username({
     username: state.username,
     password: state.password,
     fetchOptions: {
@@ -356,9 +377,9 @@ async function usernameLogin() {
   })
 
   if (error) {
+    lastErrorTurnstile.value = false
     handleError(error)
   } else {
-    store.setUser(data)
     await navigateTo("/app", { redirectCode: 302 })
   }
 
@@ -370,9 +391,7 @@ async function emailLogin() {
   issueMessage.value = ""
   loading.value = true
 
-  const {
-    data, error,
-  } = await authClient.signIn.email({
+  const { error } = await authClient.signIn.email({
     email: state.email,
     password: state.password,
     fetchOptions: {
@@ -384,9 +403,9 @@ async function emailLogin() {
   })
 
   if (error) {
+    lastErrorTurnstile.value = false
     handleError(error)
   } else {
-    store.setUser(data)
     await navigateTo("/app", { redirectCode: 302 })
   }
 
@@ -398,9 +417,7 @@ async function socialLogin(provider: "google" | "github") {
   issueMessage.value = ""
   loading.value = true
 
-  const {
-    data, error,
-  } = await authClient.signIn.social({
+  const { error } = await authClient.signIn.social({
     provider,
     fetchOptions: {
       headers: {
@@ -411,11 +428,8 @@ async function socialLogin(provider: "google" | "github") {
   })
 
   if (error) {
+    lastErrorTurnstile.value = false
     handleError(error)
-  } else {
-    store.setUser(data)
-    // handled by the provider
-    // await navigateTo("/app", { redirectCode: 302 })
   }
 
   loading.value = false
@@ -441,9 +455,9 @@ async function magicLinkLogin() {
   })
 
   if (error) {
+    lastErrorTurnstile.value = false
     handleError(error)
   } else {
-    store.setUser(data)
     // ! TODO : add the notice to check emails
   }
 
@@ -469,7 +483,7 @@ async function submit() {
     }
   }
 
-  clear()
+  await clear()
 }
 
 watch(loginMethod, (newValue, oldValue) => {

@@ -35,7 +35,7 @@
         />
       </template>
 
-      <v-card class="glass-card pa-1 border-thin">
+      <v-card class="pa-1 border-thin bg-transparent">
         <v-card-text class="pa-0">
           <v-date-picker
             v-if="timeRangeModel === 'day' || timeRangeModel === 'week'"
@@ -45,6 +45,7 @@
             weeks-in-month="dynamic"
             weekday-format="short"
             color="secondary"
+            rounded="lg"
             bg-color="transparent"
             @update:model-value="(val) => {
               const v = Array.isArray(val)
@@ -97,6 +98,7 @@
               <div class="d-flex align-center ga-2 pa-3">
                 <v-btn
                   color="error"
+                  rounded="lg"
                   variant="text"
                   @click="menu = false"
                 >
@@ -108,6 +110,7 @@
                 <v-btn
                   v-if="step === 1"
                   variant="tonal"
+                  rounded="lg"
                   :color="color"
                   @click="next"
                 >
@@ -117,6 +120,7 @@
                 <v-btn
                   v-else
                   color="secondary"
+                  rounded="lg"
                   variant="text"
                   @click="prev"
                 >
@@ -126,6 +130,7 @@
                 <v-btn
                   v-if="step === 2"
                   variant="flat"
+                  rounded="lg"
                   :color="color"
                   :disabled="tempMonth === undefined || tempMonth === null"
                   @click="() => {
@@ -387,6 +392,11 @@ watch(timeRangeModel, (val) => {
 <style lang="scss" scoped>
 .v-btn-group--horizontal {
   overflow-x: clip;
+}
+
+:deep(.v-expansion-panels > .v-expansion-panel) {
+  background-color: transparent !important;
+  box-shadow: none !important;
 }
 
 .period-select :deep(.v-input__control > .v-field) {

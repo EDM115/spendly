@@ -20,7 +20,6 @@
           <v-btn
             :disabled="!canEdit"
             color="primary"
-            class="glow-button"
             prepend-icon="mdi-plus"
             rounded="lg"
             :block="false"
@@ -212,7 +211,7 @@
         max-width="600"
         :min-width="smAndUp ? 400 : 350"
         class="mb-6 search-field"
-        rounded="pill"
+        rounded="lg"
         autocomplete="suppress"
         :density="smAndUp ? 'comfortable' : 'compact'"
         style="justify-self: center;"
@@ -238,7 +237,8 @@
             :color="item.icon_color"
             label
             variant="tonal"
-            class="font-weight-medium rounded-lg"
+            rounded="lg"
+            class="font-weight-medium"
           >
             {{ item.category_name }}
           </v-chip>
@@ -331,7 +331,8 @@
                       :color="spending.icon_color"
                       label
                       variant="tonal"
-                      class="font-weight-medium rounded-lg ml-1"
+                      rounded="lg"
+                      class="font-weight-medium ml-1"
                     >
                       {{ spending.category_name }}
                     </v-chip>
@@ -365,9 +366,9 @@
     max-width="600"
     persistent
   >
-    <v-card class="pa-1">
+    <v-card class="glass-card pa-1">
       <v-card-title>
-        {{ editingSpending ? $t("app.spending.edit") : $t("app.spending.add") }}
+        {{ editingSpending ? $t("app.spending.edit-title") : $t("app.spending.add-title") }}
       </v-card-title>
       <v-card-text>
         <v-form ref="formRef">
@@ -377,6 +378,7 @@
                 v-model="spendingForm.name"
                 :label="$t('app.spending.name')"
                 variant="outlined"
+                rounded="lg"
                 autocomplete="suppress"
                 :rules="[v => !!v || 'Required']"
               />
@@ -391,6 +393,7 @@
                 inset
                 variant="outlined"
                 autocomplete="suppress"
+                rounded="lg"
                 :min="0"
                 :precision="2"
                 :rules="[v => v > 0 || 'Must be positive']"
@@ -403,6 +406,7 @@
               <v-select
                 v-model="spendingForm.is_spending"
                 :items="typeItems"
+                rounded="lg"
                 :label="$t('app.spending.type')"
                 variant="outlined"
               />
@@ -416,6 +420,7 @@
                 :items="categories"
                 item-title="name"
                 item-value="id"
+                rounded="lg"
                 :label="$t('app.spending.category')"
                 :no-data-text="$t('app.spending.no-categories')"
                 variant="outlined"
@@ -456,6 +461,7 @@
                     v-bind="activatorProps"
                     :label="$t('app.spending.date')"
                     variant="outlined"
+                    rounded="lg"
                     readonly
                     autocomplete="suppress"
                     append-inner-icon="mdi-calendar-outline"
@@ -470,6 +476,7 @@
                   :landscape="smAndUp"
                   :location="lgAndUp ? 'top' : undefined"
                   show-adjacent-months
+                  rounded="lg"
                   weekday-format="short"
                   weeks-in-month="dynamic"
                   @update:model-value="(val) => {
@@ -501,12 +508,14 @@
         <v-spacer />
         <v-btn
           color="secondary"
+          rounded="lg"
           @click="closeDialog"
         >
           {{ $t("app.spending.cancel") }}
         </v-btn>
         <v-btn
           color="primary"
+          rounded="lg"
           variant="elevated"
           :disabled="!isFormValid"
           @click="saveSpending"
@@ -522,7 +531,7 @@
     max-width="500"
     persistent
   >
-    <v-card class="pa-1">
+    <v-card class="glass-card pa-1">
       <v-card-title class="text-h5">
         {{ $t("app.spending.delete-title") }}
       </v-card-title>
@@ -533,12 +542,14 @@
         <v-spacer />
         <v-btn
           color="secondary"
+          rounded="lg"
           @click="showDeleteDialog = false"
         >
           {{ $t("app.spending.cancel") }}
         </v-btn>
         <v-btn
           color="error"
+          rounded="lg"
           variant="elevated"
           @click="deleteSpending"
         >
@@ -589,7 +600,7 @@ const sortBy = ref<{
     key: "date", order: "desc",
   },
 ])
-const canEdit = computed(() => store.canEditData && !store.isDemo)
+const canEdit = computed(() => store.canEditData && !store.getIsDemo)
 const showAddDialog = ref(false)
 const showDeleteDialog = ref(false)
 const dateMenu = ref(false)

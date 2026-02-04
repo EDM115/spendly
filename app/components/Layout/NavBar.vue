@@ -9,7 +9,7 @@
   >
     <template #prepend>
       <NuxtLink
-        :to="connected && !store.isDemo ? '/app' : '/'"
+        :to="connected && !store.getIsDemo ? '/app' : '/'"
         class="flex items-center"
       >
         <NuxtImg
@@ -25,82 +25,93 @@
         />
       </NuxtLink>
     </template>
-    <v-app-bar-title v-if="smAndUp">
+    <v-app-bar-title>
       <NuxtLink
-        :to="connected && !store.isDemo ? '/app' : '/'"
+        v-if="smAndUp"
+        :to="connected && !store.getIsDemo ? '/app' : '/'"
         class="text-h6 font-weight-bold"
       >
         {{ $t('main.title') }}
       </NuxtLink>
-      <NuxtLink
-        to="/admin"
-      >
-        <v-btn
-          v-if="store.getUser?.data?.user.role === 'admin'"
-          icon="mdi-shield-account-outline"
-          :variant="route.path === '/admin' ? 'outlined' : 'text'"
-        />
-      </NuxtLink>
-    </v-app-bar-title>
-
-    <v-app-bar-title v-else>
-      <NuxtLink
-        to="/admin"
-      >
-        <v-btn
-          v-if="store.getUser?.data?.user.role === 'admin'"
-          icon="mdi-shield-account-outline"
-          :variant="route.path === '/admin' ? 'outlined' : 'text'"
-        />
-      </NuxtLink>
     </v-app-bar-title>
     <v-spacer />
-    <v-btn
-      :prepend-icon="smAndUp ? accountIcon : undefined"
-      :icon="smAndUp ? undefined : accountIcon"
-      :text="smAndUp ? accountText : undefined"
-      variant="outlined"
-      @click="handleConnect"
-    />
-    <v-menu
-      open-on-click
-      open-on-focus
-      open-on-hover
-    >
+    <v-menu v-model="menuOpen">
       <template #activator="{ props }">
         <v-btn
           v-bind="props"
-          icon="mdi-translate"
-          @mouseleave="i18nSwitch = false"
-          @mouseover="i18nSwitch = true"
-        >
-          <div v-if="i18nSwitch">
-            {{ getFlagEmoji(userLocale) }}
-          </div>
-
-          <div v-else>
-            <v-icon icon="mdi-translate" />
-          </div>
-        </v-btn>
-      </template>
-      <v-list
-        class="small-list"
-        @mouseleave="i18nSwitch = false"
-        @mouseover="i18nSwitch = true"
-      >
-        <v-list-item
-          v-for="l in locales"
-          :key="l.name"
-          :active="l.code === userLocale"
-          :title="getFlagEmoji(l.code)"
-          @click="switchLocale(l.code)"
+          class="mr-4"
+          :icon="menuOpen ? 'mdi-close' : 'mdi-menu'"
         />
-      </v-list>
+      </template>
+      <div class="d-flex flex-column gap-2 mt-2 pa-2 glass-panel rounded-lg">
+        <v-btn
+          v-if="connected && !store.getIsDemo && store.getIsAdmin"
+          to="/admin"
+          class="mb-2"
+          variant="text"
+          rounded="lg"
+          prepend-icon="mdi-shield-account-outline"
+          :text="$t('navbar.admin')"
+        />
+        <v-btn
+          v-if="connected && !store.getIsDemo"
+          to="/account"
+          class="mb-4"
+          variant="text"
+          rounded="lg"
+          prepend-icon="mdi-account-circle-outline"
+          :text="$t('navbar.account')"
+        />
+        <v-btn-toggle
+          v-model="selectedTheme"
+          color="secondary"
+          class="mb-2"
+          rounded="lg"
+          mandatory
+          border
+          variant="outlined"
+        >
+          <v-btn
+            icon="mdi-weather-sunny"
+            class="w-50"
+            value="light"
+          />
+          <v-btn
+            icon="mdi-weather-night"
+            class="w-50"
+            value="dark"
+          />
+        </v-btn-toggle>
+        <v-btn-toggle
+          v-model="selectedLanguage"
+          color="secondary"
+          class="mb-4"
+          rounded="lg"
+          mandatory
+          border
+          variant="outlined"
+        >
+          <v-btn
+            v-for="l in locales"
+            :key="l.name"
+            :class="`w-${100 / locales.length}`"
+            style="font-size: 1.5rem;"
+            :value="l.code"
+          >
+            {{ getFlagEmoji(l.code) }}
+          </v-btn>
+        </v-btn-toggle>
+        <v-btn
+          :prepend-icon="accountIcon"
+          :text="accountText"
+          :color="accountColor"
+          class="mb-1"
+          variant="tonal"
+          rounded="lg"
+          @click="handleConnect"
+        />
+      </div>
     </v-menu>
-    <v-btn
-      :icon="iconTheme"
-      @click="toggleTheme"
-    />
   </v-app-bar>
 </template>
 
@@ -109,7 +120,7 @@ import { authClient } from "~/utils/authClient"
 
 const store = useMainStore()
 const route = useRoute()
-const { toggleTheme } = useCustomTheme()
+const { changeTheme } = useCustomTheme()
 const { smAndUp } = useVDisplay()
 const {
   t,
@@ -117,31 +128,32 @@ const {
   setLocale,
 } = useI18n()
 
-const i18nSwitch = ref(false)
-const userLocale = computed(() => store.getI18n)
-const accountIcon = ref("mdi-login")
-const connected = computed(() => store.getUser?.data !== null || store.getRawUser !== null)
+const menuOpen = ref(false)
+const selectedTheme = computed<Theme>({
+  get: () => store.getTheme,
+  set: (val) => changeTheme(val),
+})
+const selectedLanguage = computed<Language>({
+  get: () => store.getI18n,
+  set: (val) => {
+    setLocale(val)
+    store.setI18n(val)
+  },
+})
+const connected = computed(() => store.getIsAuthenticated)
+const accountIcon = computed(() => (connected.value
+  ? "mdi-logout"
+  : "mdi-login"))
 const accountText = computed(() => (connected.value
   ? t("navbar.disconnect")
   : t("navbar.connect")))
-const iconTheme = computed(() => (store.getTheme === "light"
-  ? "mdi-weather-night"
-  : "mdi-weather-sunny"))
+const accountColor = computed(() => (connected.value
+  ? "error"
+  : "success"))
 
-const logoSrc = computed(() => (store.getTheme === "light"
+const logoSrc = computed(() => (selectedTheme.value === "light"
   ? "/images/logo_alt.webp"
   : "/images/logo.webp"))
-
-watch(connected, (value) => {
-  accountIcon.value = value
-    ? "mdi-logout"
-    : "mdi-login"
-})
-
-const switchLocale = (newLocale: Language) => {
-  setLocale(newLocale)
-  store.setI18n(newLocale)
-}
 
 const getFlagEmoji = (l: string): string => {
   switch (l) {
@@ -176,7 +188,7 @@ async function handleConnect() {
 }
 
 .nav-desktop {
-  padding: 8px 32px 0;
+  padding: 8px 16px 0;
   margin: 0 16px 16px;
   width: calc(100% - 32px) !important;
 }
@@ -194,12 +206,7 @@ async function handleConnect() {
   }
 }
 
-.small-list :deep(.v-list-item__content) {
-  min-width: 0px !important;
-}
-
-.small-list :deep(.v-list-item--density-compact:not(.v-list-item--nav).v-list-item--one-line) {
-  padding-inline-end: 0px !important;
-  padding-inline-start: 16px !important;
+.v-btn-group--horizontal {
+  overflow-x: clip;
 }
 </style>

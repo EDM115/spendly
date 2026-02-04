@@ -1,4 +1,5 @@
 import { db } from "#shared/db/drizzle"
+import { requireUserId } from "#server/utils/session"
 
 import fs from "node:fs/promises"
 import path from "node:path"
@@ -16,7 +17,31 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  const auth = event.context.auth
+
+  requireUserId(auth)
+
+  if (auth?.role !== "admin") {
+    throw createError({
+      status: 403,
+      message: "Admin access required",
+    })
+  }
+
   const { format } = getQuery(event)
+  const requestedFormat = typeof format === "string"
+    ? format
+    : undefined
+  const supportedFormats = new Set([ "csv", "json", "sql", "sqlite" ])
+
+  if (requestedFormat && !supportedFormats.has(requestedFormat)) {
+    throw createError({
+      status: 400,
+      message: "Invalid export format",
+    })
+  }
+
+  const exportFormat = requestedFormat ?? "csv"
   const timestamp = Date.now()
   const dateYMD = new Date()
     .toISOString()
@@ -26,80 +51,97 @@ export default defineEventHandler(async (event) => {
   await fs.mkdir(tempDir, { recursive: true })
   const tables = [ "User", "BudgetTracker", "UserBudgetTracker", "Category", "Spending" ]
 
-  if (format === "sql") {
+  if (exportFormat === "sql") {
     const dumpPath = path.join(tempDir, `backup_${timestamp}.sql`)
 
-    await execAsync(`sqlite3 "${db.$client.name}" .dump > "${dumpPath}"`)
+    try {
+      await execAsync(`sqlite3 "${db.$client.name}" .dump > "${dumpPath}"`)
 
-    const fileContent = await fs.readFile(dumpPath)
-
-    await fs.unlink(dumpPath)
-
-    return {
-      body: fileContent.toString("base64"),
-      filename: `spendly-backup-${dateYMD}.sql`,
-    }
-  } else if (format === "sqlite") {
-    const dbCopyPath = path.join(tempDir, `backup_${timestamp}.db`)
-
-    await fs.copyFile(db.$client.name, dbCopyPath)
-
-    const fileContent = await fs.readFile(dbCopyPath)
-
-    await fs.unlink(dbCopyPath)
-
-    return {
-      body: fileContent.toString("base64"),
-      filename: `spendly-backup-${dateYMD}.db`,
-    }
-  } else if (format === "json") {
-    const jsonResults = await Promise.all(tables.map(async (table) => {
-      const outputPath = path.join(tempDir, `${table}_${timestamp}.json`)
-
-      await execAsync(`sqlite3 -json "${db.$client.name}" "SELECT * FROM ${table};" > "${outputPath}"`)
-
-      const content = await fs.readFile(outputPath, "utf-8")
-
-      await fs.unlink(outputPath)
+      const fileContent = await fs.readFile(dumpPath)
 
       return {
-        table,
-        // oxlint-disable-next-line no-unsafe-type-assertion
-        data: JSON.parse(content) as unknown[],
+        body: fileContent.toString("base64"),
+        filename: `spendly-backup-${dateYMD}.sql`,
       }
-    }))
-
-    const dataObj: Record<string, unknown[]> = {}
-
-    for (const {
-      table, data,
-    } of jsonResults) {
-      dataObj[table] = data
+    } finally {
+      await fs.rm(dumpPath, { force: true })
     }
+  } else if (exportFormat === "sqlite") {
+    const dbCopyPath = path.join(tempDir, `backup_${timestamp}.db`)
 
-    const jsonString = JSON.stringify(dataObj, null, 2)
+    try {
+      await fs.copyFile(db.$client.name, dbCopyPath)
 
-    return {
-      body: Buffer.from(jsonString)
-        .toString("base64"),
-      filename: `spendly-backup-${dateYMD}.json`,
+      const fileContent = await fs.readFile(dbCopyPath)
+
+      return {
+        body: fileContent.toString("base64"),
+        filename: `spendly-backup-${dateYMD}.db`,
+      }
+    } finally {
+      await fs.rm(dbCopyPath, { force: true })
+    }
+  } else if (exportFormat === "json") {
+    const outputPaths: string[] = []
+
+    try {
+      const jsonResults = await Promise.all(tables.map(async (table) => {
+        const outputPath = path.join(tempDir, `${table}_${timestamp}.json`)
+
+        outputPaths.push(outputPath)
+        await execAsync(`sqlite3 -json "${db.$client.name}" "SELECT * FROM ${table};" > "${outputPath}"`)
+
+        const content = await fs.readFile(outputPath, "utf-8")
+        const safeContent = content.trim() === ""
+          ? "[]"
+          : content
+
+        return {
+          table,
+          // oxlint-disable-next-line no-unsafe-type-assertion
+          data: JSON.parse(safeContent) as unknown[],
+        }
+      }))
+
+      const dataObj: Record<string, unknown[]> = {}
+
+      for (const {
+        table, data,
+      } of jsonResults) {
+        dataObj[table] = data
+      }
+
+      const jsonString = JSON.stringify(dataObj, null, 2)
+
+      return {
+        body: Buffer.from(jsonString)
+          .toString("base64"),
+        filename: `spendly-backup-${dateYMD}.json`,
+      }
+    } finally {
+      await Promise.all(outputPaths.map((outputPath) => fs.rm(outputPath, { force: true })))
     }
   } else {
-    const csvData = await Promise.all(tables.map(async (table) => {
-      const outputPath = path.join(tempDir, `${table}_${timestamp}.csv`)
+    const outputPaths: string[] = []
 
-      await execAsync(`sqlite3 -header -csv "${db.$client.name}" "SELECT * FROM ${table};" > "${outputPath}"`)
-      const content = await fs.readFile(outputPath, "utf-8")
+    try {
+      const csvData = await Promise.all(tables.map(async (table) => {
+        const outputPath = path.join(tempDir, `${table}_${timestamp}.csv`)
 
-      await fs.unlink(outputPath)
+        outputPaths.push(outputPath)
+        await execAsync(`sqlite3 -header -csv "${db.$client.name}" "SELECT * FROM ${table};" > "${outputPath}"`)
+        const content = await fs.readFile(outputPath, "utf-8")
 
-      return `-- ${table} --\n${content}`
-    }))
+        return `-- ${table} --\n${content}`
+      }))
 
-    return {
-      body: Buffer.from(csvData.join("\n"))
-        .toString("base64"),
-      filename: `spendly-backup-${dateYMD}.csv`,
+      return {
+        body: Buffer.from(csvData.join("\n"))
+          .toString("base64"),
+        filename: `spendly-backup-${dateYMD}.csv`,
+      }
+    } finally {
+      await Promise.all(outputPaths.map((outputPath) => fs.rm(outputPath, { force: true })))
     }
   }
 })

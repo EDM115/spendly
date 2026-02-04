@@ -2,9 +2,10 @@
   <v-slide-y-transition>
     <v-alert
       v-if="!close"
-      :class="['mx-auto', color === 'warning' ? 'glass-warning' :'glass-error', 'my-4', 'rounded-xl']"
+      :class="['mx-auto', color === 'warning' ? 'glass-warning' :'glass-error', 'my-4']"
       :color="color ?? 'error'"
       closable
+      rounded="xl"
       variant="tonal"
       width="100%"
       style="max-width: 600px;"

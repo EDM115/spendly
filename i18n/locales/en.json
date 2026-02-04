@@ -22,11 +22,13 @@
   "app": {
     "budget-tracker": {
       "add": "Add",
+      "add-title": "Add a budget tracker",
       "cancel": "Cancel",
       "delete": "Delete",
       "delete-description": "Are you sure you want to delete this budget tracker? All associated spendings will be deleted.",
       "delete-title": "Delete confirmation",
       "edit": "Edit",
+      "edit-title": "Edit budget tracker",
       "name": "Name",
       "no-tracker": "No budget tracker yet",
       "remove-user": "Remove user",
@@ -42,15 +44,17 @@
       "share-close": "Close",
       "title": "Budget Trackers",
       "username": "Username",
-      "users": "Shared users"
+      "users": "Share budget tracker"
     },
     "category": {
       "add": "Add",
+      "add-title": "Add a category",
       "cancel": "Cancel",
       "delete": "Delete",
       "delete-description": "Are you sure you want to delete this category? Warning, all associated transactions will also be deleted.",
       "delete-title": "Delete confirmation",
       "edit": "Edit",
+      "edit-title": "Edit category",
       "empty": "Add a category to start organizing your expenses",
       "icon": "Icon",
       "name": "Name",
@@ -100,6 +104,7 @@
     "spending": {
       "actions": "Actions",
       "add": "Add",
+      "add-title": "Add a transaction",
       "amount": "Amount",
       "balance": "Balance (of the period)",
       "balance-all-time": "Balance (all time)",
@@ -112,6 +117,7 @@
       "delete-description": "Are you sure you want to delete this transaction?",
       "delete-title": "Delete confirmation",
       "edit": "Edit",
+      "edit-title": "Edit transaction",
       "expense": "Expense",
       "export": "Export",
       "export-csv": "CSV",
@@ -160,7 +166,7 @@
         "title": "Easy tracking"
       }
     },
-    "github": "View on GitHub",
+    "get-started": "Get started",
     "hero": {
       "subtitle": "Simple, powerful, and free budget tracking for everyone",
       "tagline": {
@@ -171,10 +177,6 @@
         "4": ""
       },
       "title": "Master your money with Spendly"
-    },
-    "join": {
-      "text": "To create an account, simply send an email to",
-      "title": "Ready to join ?"
     }
   },
   "login": {
@@ -194,6 +196,8 @@
     "title": "Spendly"
   },
   "navbar": {
+    "account": "Account",
+    "admin": "Admin",
     "connect": "Log in",
     "disconnect": "Log out"
   },

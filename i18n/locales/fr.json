@@ -22,11 +22,13 @@
   "app": {
     "budget-tracker": {
       "add": "Ajouter",
+      "add-title": "Ajouter un budget",
       "cancel": "Annuler",
       "delete": "Supprimer",
       "delete-description": "Êtes-vous sûr de vouloir supprimer ce budget ? Toutes les transactions associées seront supprimées.",
       "delete-title": "Confirmation de suppression",
       "edit": "Modifier",
+      "edit-title": "Modifier le budget",
       "name": "Nom",
       "no-tracker": "Aucun budget pour le moment",
       "remove-user": "Retirer l'utilisateur",
@@ -42,15 +44,17 @@
       "share-close": "Fermer",
       "title": "Budgets",
       "username": "Nom d'utilisateur",
-      "users": "Utilisateurs partagés"
+      "users": "Partager le budget"
     },
     "category": {
       "add": "Ajouter",
+      "add-title": "Ajouter une catégorie",
       "cancel": "Annuler",
       "delete": "Supprimer",
       "delete-description": "Êtes-vous sûr de vouloir supprimer cette catégorie ? Attention, toutes les transactions associées seront également supprimées.",
       "delete-title": "Confirmation de suppression",
       "edit": "Modifier",
+      "edit-title": "Modifier la catégorie",
       "empty": "Ajoutez une catégorie pour commencer à organiser vos dépenses",
       "icon": "Icône",
       "name": "Nom",
@@ -100,6 +104,7 @@
     "spending": {
       "actions": "Actions",
       "add": "Ajouter",
+      "add-title": "Ajouter une transaction",
       "amount": "Montant",
       "balance": "Solde (de la période)",
       "balance-all-time": "Solde (tout temps)",
@@ -112,6 +117,7 @@
       "delete-description": "Êtes-vous sûr de vouloir supprimer cette transaction ?",
       "delete-title": "Confirmation de suppression",
       "edit": "Modifier",
+      "edit-title": "Modifier la transaction",
       "expense": "Dépense",
       "export": "Exporter",
       "export-csv": "CSV",
@@ -160,7 +166,7 @@
         "title": "Suivi facile"
       }
     },
-    "github": "Voir sur GitHub",
+    "get-started": "Commencer",
     "hero": {
       "subtitle": "Suivi budgétaire simple, puissant et gratuit pour tous",
       "tagline": {
@@ -171,10 +177,6 @@
         "4": " contrôle"
       },
       "title": "Maîtrisez votre budget avec Spendly"
-    },
-    "join": {
-      "text": "Pour créer un compte, envoyez simplement un email à",
-      "title": "Prêt à nous rejoindre ?"
     }
   },
   "login": {
@@ -194,6 +196,8 @@
     "title": "Spendly"
   },
   "navbar": {
+    "account": "Compte",
+    "admin": "Admin",
     "connect": "Connexion",
     "disconnect": "Déconnexion"
   },

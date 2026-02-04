@@ -18,6 +18,7 @@
         <div :class="['chart-actions', !smAndUp ? 'chart-actions--inline' : '']">
           <v-btn
             :color="simplifiedMode ? 'primary' : 'info'"
+            rounded="lg"
             variant="tonal"
             prepend-icon="mdi-auto-fix"
             :disabled="filteredSpendings.length === 0"
@@ -32,6 +33,7 @@
                 v-bind="settingsProps"
                 variant="tonal"
                 color="secondary"
+                rounded="lg"
                 prepend-icon="mdi-tune-variant"
                 :disabled="filteredSpendings.length === 0"
               >
@@ -201,6 +203,7 @@
                 v-bind="menuProps"
                 variant="tonal"
                 color="info"
+                rounded="lg"
                 prepend-icon="mdi-download-outline"
                 :disabled="filteredSpendings.length === 0"
               >
@@ -209,7 +212,8 @@
             </template>
             <v-list class="glass-card pa-0 border-thin">
               <v-list-item
-                class="glass-list-item mb-1 rounded-lg ma-1"
+                class="glass-list-item mb-1 ma-1"
+                rounded="lg"
                 :disabled="isExporting"
                 @click="exportSVG"
               >
@@ -231,7 +235,8 @@
                 <v-list-item-title>{{ $t("app.charts.export-svg") }}</v-list-item-title>
               </v-list-item>
               <v-list-item
-                class="glass-list-item mb-1 rounded-lg ma-1"
+                class="glass-list-item mb-1 ma-1"
+                rounded="lg"
                 :disabled="isExporting"
                 @click="exportPNG"
               >
@@ -253,7 +258,8 @@
                 <v-list-item-title>{{ $t("app.charts.export-png") }}</v-list-item-title>
               </v-list-item>
               <v-list-item
-                class="glass-list-item rounded-lg ma-1"
+                class="glass-list-item ma-1"
+                rounded="lg"
                 :disabled="isExporting"
                 @click="exportPDF"
               >

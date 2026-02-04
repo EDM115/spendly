@@ -13,7 +13,7 @@
         cols="12"
         md="6"
         lg="7"
-        class="d-none d-md-flex align-center justify-center position-relative overflow-hidden"
+        class="d-none d-md-flex align-center justify-center position-relative"
       >
         <div class="login-brand-bg" />
         <div
@@ -69,7 +69,8 @@
           style="max-width: 550px;"
         >
           <v-card
-            class="glass-card pa-8 rounded-xl mt-8"
+            class="glass-card pa-8 mt-8"
+            rounded="xl"
             elevation="0"
           >
             <div class="d-md-none text-center mb-8">
@@ -109,9 +110,7 @@ const logoSrc = computed(() => (store.getTheme === "light"
   : "/images/logo.webp"))
 
 onMounted(async () => {
-  if (store.getUser?.data && !store.isDemo) {
-    await navigateTo("/app", { redirectCode: 302 })
-  }
+  store.setIsDemo(false)
 })
 </script>
 
