@@ -1,9 +1,3 @@
-import type {
-  AuthContext, SessionSummary,
-} from "#shared/types/session"
-
-import { createError } from "h3"
-
 export const toAuthContext = (session: SessionSummary | null): AuthContext | null => {
   if (!session) {
     return null

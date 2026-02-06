@@ -1,11 +1,6 @@
-import {
-  defineEventHandler,
-  getRequestHeaders,
-  getRequestURL,
-  type H3Event,
-} from "h3"
+import type { H3Event } from "h3"
 
-import authInstance from "#server/utils/auth"
+import { auth } from "#server/utils/auth"
 import { toAuthContext } from "#server/utils/session"
 
 const shouldSkipAuth = (pathname: string): boolean => pathname === "/api/auth"
@@ -13,7 +8,7 @@ const shouldSkipAuth = (pathname: string): boolean => pathname === "/api/auth"
 
 export const applyAuthContext = async (
   event: H3Event,
-  getSessionFn: typeof authInstance.api.getSession = authInstance.api.getSession,
+  getSessionFn: typeof auth.api.getSession = auth.api.getSession,
 ): Promise<void> => {
   const headers = new Headers()
   const requestHeaders = getRequestHeaders(event)

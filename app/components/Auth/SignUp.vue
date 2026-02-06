@@ -243,9 +243,9 @@ const initialState = {
 
 const state = reactive({ ...initialState })
 
-function clear() {
+async function clear() {
   Object.assign(state, initialState)
-  form.value?.reset()
+  await form.value?.reset()
   turnstileRef.value?.reset()
   btnDisabled.value = true
   turnstileToken.value = ""
@@ -334,7 +334,7 @@ async function signup() {
 
 async function submit() {
   await signup()
-  clear()
+  await clear()
 }
 </script>
 
