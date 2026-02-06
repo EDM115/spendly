@@ -6,7 +6,7 @@
         class="mr-2"
         color="primary"
       />
-      <span class="font-weight-bold">{{ $t("app.budget-tracker.title") }}</span>
+      <span class="font-weight-bold">{{ t("app.budget-tracker.title") }}</span>
     </v-card-title>
     <v-card-text class="pt-4">
       <v-row align="center">
@@ -19,7 +19,7 @@
             :items="budgetTrackers"
             item-title="name"
             item-value="id"
-            :label="$t('app.budget-tracker.select')"
+            :label="t('app.budget-tracker.select')"
             variant="outlined"
             hide-details
             rounded="lg"
@@ -29,7 +29,7 @@
           >
             <template #no-data>
               <v-list-item>
-                <v-list-item-title>{{ $t("app.budget-tracker.no-tracker") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.budget-tracker.no-tracker") }}</v-list-item-title>
               </v-list-item>
             </template>
             <template #item="{ item, props: itemProps }">
@@ -41,7 +41,7 @@
                     variant="flat"
                     class="elevation-2"
                   >
-                    {{ $t(`app.budget-tracker.roles.${item.raw.role}`) }}
+                    {{ t(`app.budget-tracker.roles.${item.raw.role}`) }}
                   </v-chip>
                 </template>
               </v-list-item>
@@ -54,7 +54,7 @@
                 class="ml-2 elevation-1"
                 variant="flat"
               >
-                {{ $t(`app.budget-tracker.roles.${item.raw.role}`) }}
+                {{ t(`app.budget-tracker.roles.${item.raw.role}`) }}
               </v-chip>
             </template>
           </v-select>
@@ -73,7 +73,7 @@
             :disabled="isDemo"
             @click="showAddDialog = true"
           >
-            {{ $t("app.budget-tracker.add") }}
+            {{ t("app.budget-tracker.add") }}
           </v-btn>
           <v-btn
             v-if="selectedTracker"
@@ -85,7 +85,7 @@
             :disabled="isDemo || !canEdit"
             @click="openEditDialog"
           >
-            {{ $t("app.budget-tracker.edit") }}
+            {{ t("app.budget-tracker.edit") }}
           </v-btn>
           <v-btn
             v-if="selectedTracker"
@@ -97,7 +97,7 @@
             :disabled="isDemo || !canManageUsers"
             @click="showShareDialog = true"
           >
-            {{ $t("app.budget-tracker.share") }}
+            {{ t("app.budget-tracker.share") }}
           </v-btn>
           <v-btn
             v-if="selectedTracker"
@@ -109,7 +109,7 @@
             :disabled="isDemo || !canDelete"
             @click="showDeleteDialog = true"
           >
-            {{ $t("app.budget-tracker.delete") }}
+            {{ t("app.budget-tracker.delete") }}
           </v-btn>
         </v-col>
       </v-row>
@@ -123,12 +123,12 @@
   >
     <v-card class="glass-card pa-1 border-thin">
       <v-card-title class="text-h6 font-weight-bold">
-        {{ $t("app.budget-tracker.add-title") }}
+        {{ t("app.budget-tracker.add-title") }}
       </v-card-title>
       <v-card-text>
         <v-text-field
           v-model="newTrackerName"
-          :label="$t('app.budget-tracker.name')"
+          :label="t('app.budget-tracker.name')"
           variant="outlined"
           rounded="lg"
           autofocus
@@ -145,7 +145,7 @@
           variant="text"
           @click="showAddDialog = false"
         >
-          {{ $t("app.budget-tracker.cancel") }}
+          {{ t("app.budget-tracker.cancel") }}
         </v-btn>
         <v-btn
           color="primary"
@@ -154,7 +154,7 @@
           :disabled="!newTrackerName.trim()"
           @click="addTracker"
         >
-          {{ $t("app.budget-tracker.add") }}
+          {{ t("app.budget-tracker.add") }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -167,12 +167,12 @@
   >
     <v-card class="glass-card pa-1 border-thin">
       <v-card-title class="text-h6 font-weight-bold">
-        {{ $t("app.budget-tracker.edit-title") }}
+        {{ t("app.budget-tracker.edit-title") }}
       </v-card-title>
       <v-card-text>
         <v-text-field
           v-model="editTrackerName"
-          :label="$t('app.budget-tracker.name')"
+          :label="t('app.budget-tracker.name')"
           variant="outlined"
           rounded="lg"
           autofocus
@@ -189,7 +189,7 @@
           variant="text"
           @click="showEditDialog = false"
         >
-          {{ $t("app.budget-tracker.cancel") }}
+          {{ t("app.budget-tracker.cancel") }}
         </v-btn>
         <v-btn
           color="primary"
@@ -198,7 +198,7 @@
           :disabled="!editTrackerName.trim()"
           @click="updateTracker"
         >
-          {{ $t("app.budget-tracker.edit") }}
+          {{ t("app.budget-tracker.edit") }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -211,10 +211,10 @@
   >
     <v-card class="glass-card pa-1 border-thin">
       <v-card-title class="text-h5 text-error font-weight-bold">
-        {{ $t("app.budget-tracker.delete-title") }}
+        {{ t("app.budget-tracker.delete-title") }}
       </v-card-title>
       <v-card-text>
-        {{ $t("app.budget-tracker.delete-description") }}
+        {{ t("app.budget-tracker.delete-description") }}
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -224,7 +224,7 @@
           variant="text"
           @click="showDeleteDialog = false"
         >
-          {{ $t("app.budget-tracker.cancel") }}
+          {{ t("app.budget-tracker.cancel") }}
         </v-btn>
         <v-btn
           color="error"
@@ -232,7 +232,7 @@
           variant="elevated"
           @click="deleteTracker"
         >
-          {{ $t("app.budget-tracker.delete") }}
+          {{ t("app.budget-tracker.delete") }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -245,7 +245,7 @@
   >
     <v-card class="glass-card pa-1 border-thin">
       <v-card-title class="text-h6 font-weight-bold">
-        {{ $t("app.budget-tracker.users") }}
+        {{ t("app.budget-tracker.users") }}
       </v-card-title>
       <v-card-text>
         <v-list
@@ -282,7 +282,7 @@
                 variant="flat"
                 class="elevation-1"
               >
-                {{ $t(`app.budget-tracker.roles.${user.role}`) }}
+                {{ t(`app.budget-tracker.roles.${user.role}`) }}
               </v-chip>
             </v-list-item-subtitle>
             <template #append>
@@ -303,7 +303,7 @@
               />
               <v-tooltip
                 location="top"
-                :text="$t('app.budget-tracker.remove-user')"
+                :text="t('app.budget-tracker.remove-user')"
               >
                 <template #activator="{ props: tooltipProps }">
                   <v-btn
@@ -326,7 +326,7 @@
           <v-col cols="6">
             <v-text-field
               v-model="newUsername"
-              :label="$t('app.budget-tracker.username')"
+              :label="t('app.budget-tracker.username')"
               variant="outlined"
               density="compact"
               rounded="lg"
@@ -341,7 +341,7 @@
               :items="availableRoles"
               item-title="title"
               item-value="value"
-              :label="$t('app.budget-tracker.role')"
+              :label="t('app.budget-tracker.role')"
               variant="outlined"
               density="compact"
               rounded="lg"
@@ -367,7 +367,7 @@
           variant="text"
           @click="showShareDialog = false"
         >
-          {{ $t("app.budget-tracker.share-close") }}
+          {{ t("app.budget-tracker.share-close") }}
         </v-btn>
       </v-card-actions>
     </v-card>

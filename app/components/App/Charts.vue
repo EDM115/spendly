@@ -7,7 +7,7 @@
           class="mr-2"
           color="primary"
         />
-        <span class="font-weight-bold">{{ $t("app.charts.title") }}</span>
+        <span class="font-weight-bold">{{ t("app.charts.title") }}</span>
       </div>
 
       <div :class="['charts-header-actions', !smAndUp && 'charts-header-actions--mobile', !smAndUp && 'pt-2']">
@@ -24,7 +24,7 @@
             :disabled="filteredSpendings.length === 0"
             @click="toggleSimplified"
           >
-            {{ $t("app.charts.simplified") }} {{ simplifiedMode ? '✅' : '❌' }}
+            {{ t("app.charts.simplified") }} {{ simplifiedMode ? '✅' : '❌' }}
           </v-btn>
 
           <v-menu content-class="glass-menu-content">
@@ -37,12 +37,12 @@
                 prepend-icon="mdi-tune-variant"
                 :disabled="filteredSpendings.length === 0"
               >
-                {{ $t("app.charts.controls") }}
+                {{ t("app.charts.controls") }}
               </v-btn>
             </template>
             <v-list class="glass-card pa-2 border-thin">
               <v-list-item v-if="!simplifiedMode">
-                <v-list-item-title>{{ $t("app.charts.show-title") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.charts.show-title") }}</v-list-item-title>
                 <template #append>
                   <v-switch
                     v-model="showTitle"
@@ -56,7 +56,7 @@
                 </template>
               </v-list-item>
               <v-list-item v-if="!simplifiedMode">
-                <v-list-item-title>{{ $t("app.charts.show-legend") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.charts.show-legend") }}</v-list-item-title>
                 <template #append>
                   <v-switch
                     v-model="showLegend"
@@ -70,7 +70,7 @@
                 </template>
               </v-list-item>
               <v-list-item v-if="!simplifiedMode && ['area', 'bar'].includes(activeTab)">
-                <v-list-item-title>{{ $t("app.charts.show-x-axis") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.charts.show-x-axis") }}</v-list-item-title>
                 <template #append>
                   <v-switch
                     v-model="showXAxis"
@@ -84,7 +84,7 @@
                 </template>
               </v-list-item>
               <v-list-item v-if="!simplifiedMode && ['area', 'bar'].includes(activeTab)">
-                <v-list-item-title>{{ $t("app.charts.show-y-axis") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.charts.show-y-axis") }}</v-list-item-title>
                 <template #append>
                   <v-switch
                     v-model="showYAxis"
@@ -98,7 +98,7 @@
                 </template>
               </v-list-item>
               <v-list-item v-if="!simplifiedMode && ['area', 'bar'].includes(activeTab)">
-                <v-list-item-title>{{ $t("app.charts.show-grid") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.charts.show-grid") }}</v-list-item-title>
                 <template #append>
                   <v-switch
                     v-model="showGrid"
@@ -112,7 +112,7 @@
                 </template>
               </v-list-item>
               <v-list-item v-if="!simplifiedMode && activeTab === 'area'">
-                <v-list-item-title>{{ $t("app.charts.show-points") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.charts.show-points") }}</v-list-item-title>
                 <template #append>
                   <v-switch
                     v-model="showPoints"
@@ -130,7 +130,7 @@
                 class="my-2"
               />
               <v-list-item v-if="activeTab === 'area'">
-                <v-list-item-title>{{ $t("app.charts.show-balance") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.charts.show-balance") }}</v-list-item-title>
                 <template #append>
                   <v-switch
                     v-model="showBalance"
@@ -143,7 +143,7 @@
                 </template>
               </v-list-item>
               <v-list-item v-if="activeTab === 'area'">
-                <v-list-item-title>{{ $t("app.charts.show-income") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.charts.show-income") }}</v-list-item-title>
                 <template #append>
                   <v-switch
                     v-model="showIncome"
@@ -156,7 +156,7 @@
                 </template>
               </v-list-item>
               <v-list-item v-if="activeTab === 'area'">
-                <v-list-item-title>{{ $t("app.charts.show-expense") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.charts.show-expense") }}</v-list-item-title>
                 <template #append>
                   <v-switch
                     v-model="showExpense"
@@ -169,7 +169,7 @@
                 </template>
               </v-list-item>
               <v-list-item v-if="activeTab === 'pie'">
-                <v-list-item-title>{{ $t("app.charts.show-expense") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.charts.show-expense") }}</v-list-item-title>
                 <template #append>
                   <v-switch
                     v-model="showExpensePie"
@@ -182,7 +182,7 @@
                 </template>
               </v-list-item>
               <v-list-item v-if="activeTab === 'pie'">
-                <v-list-item-title>{{ $t("app.charts.show-income") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.charts.show-income") }}</v-list-item-title>
                 <template #append>
                   <v-switch
                     v-model="showIncomePie"
@@ -207,7 +207,7 @@
                 prepend-icon="mdi-download-outline"
                 :disabled="filteredSpendings.length === 0"
               >
-                {{ $t("app.charts.export") }}
+                {{ t("app.charts.export") }}
               </v-btn>
             </template>
             <v-list class="glass-card pa-0 border-thin">
@@ -232,7 +232,7 @@
                     color="secondary"
                   />
                 </template>
-                <v-list-item-title>{{ $t("app.charts.export-svg") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.charts.export-svg") }}</v-list-item-title>
               </v-list-item>
               <v-list-item
                 class="glass-list-item mb-1 ma-1"
@@ -255,7 +255,7 @@
                     color="secondary"
                   />
                 </template>
-                <v-list-item-title>{{ $t("app.charts.export-png") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.charts.export-png") }}</v-list-item-title>
               </v-list-item>
               <v-list-item
                 class="glass-list-item ma-1"
@@ -278,7 +278,7 @@
                     color="secondary"
                   />
                 </template>
-                <v-list-item-title>{{ $t("app.charts.export-pdf") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.charts.export-pdf") }}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -294,7 +294,7 @@
         variant="tonal"
         class="glass-panel border-thin"
       >
-        {{ $t("app.charts.no-data") }}
+        {{ t("app.charts.no-data") }}
       </v-alert>
     </v-card-text>
 
@@ -317,7 +317,7 @@
             icon="mdi-chart-areaspline-variant"
             class="mr-2"
           />
-          {{ $t("app.charts.area") }}
+          {{ t("app.charts.area") }}
         </v-tab>
         <v-tab
           value="pie"
@@ -327,7 +327,7 @@
             icon="mdi-chart-pie-outline"
             class="mr-2"
           />
-          {{ $t("app.charts.pie") }}
+          {{ t("app.charts.pie") }}
         </v-tab>
         <v-tab
           value="bar"
@@ -337,7 +337,7 @@
             icon="mdi-chart-bar"
             class="mr-2"
           />
-          {{ $t("app.charts.bar") }}
+          {{ t("app.charts.bar") }}
         </v-tab>
         <v-tab
           value="doughnut"
@@ -347,7 +347,7 @@
             icon="mdi-chart-donut"
             class="mr-2"
           />
-          {{ $t("app.charts.doughnut") }}
+          {{ t("app.charts.doughnut") }}
         </v-tab>
       </v-tabs>
       <v-tabs-window v-model="activeTab">

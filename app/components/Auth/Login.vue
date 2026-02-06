@@ -22,7 +22,7 @@
       prepend-icon="mdi-google"
       @click="socialLogin('google')"
     >
-      {{ $t('login.google') }}
+      {{ t('login.google') }}
 
       <v-chip
         v-if="lastUsedMethod === 'google'"
@@ -31,7 +31,7 @@
         prepend-icon="mdi-history"
         pill
       >
-        {{ $t('login.last-used') }}
+        {{ t('login.last-used') }}
       </v-chip>
     </v-btn>
     <v-btn
@@ -47,7 +47,7 @@
       prepend-icon="mdi-github"
       @click="socialLogin('github')"
     >
-      {{ $t('login.github') }}
+      {{ t('login.github') }}
 
       <v-chip
         v-if="lastUsedMethod === 'github'"
@@ -56,7 +56,7 @@
         prepend-icon="mdi-history"
         pill
       >
-        {{ $t('login.last-used') }}
+        {{ t('login.last-used') }}
       </v-chip>
     </v-btn>
 
@@ -77,7 +77,7 @@
           value="username"
           class="login-toggle-btn text-none"
         >
-          {{ $t('login.username') }}
+          {{ t('login.username') }}
 
           <v-chip
             v-if="lastUsedMethod === 'username'"
@@ -86,7 +86,7 @@
             prepend-icon="mdi-history"
             pill
           >
-            {{ $t('login.last-used') }}
+            {{ t('login.last-used') }}
           </v-chip>
         </v-btn>
         <v-btn
@@ -95,7 +95,7 @@
           value="email"
           class="login-toggle-btn text-none"
         >
-          {{ $t('login.email') }}
+          {{ t('login.email') }}
 
           <v-chip
             v-if="lastUsedMethod === 'email'"
@@ -104,7 +104,7 @@
             prepend-icon="mdi-history"
             pill
           >
-            {{ $t('login.last-used') }}
+            {{ t('login.last-used') }}
           </v-chip>
         </v-btn>
         <v-btn
@@ -114,7 +114,7 @@
           value="magic-link"
           class="login-toggle-btn text-none"
         >
-          {{ $t('login.magic-link') }}
+          {{ t('login.magic-link') }}
 
           <v-chip
             v-if="lastUsedMethod === 'magic-link'"
@@ -123,7 +123,7 @@
             prepend-icon="mdi-history"
             pill
           >
-            {{ $t('login.last-used') }}
+            {{ t('login.last-used') }}
           </v-chip>
         </v-btn>
       </v-btn-toggle>
@@ -140,7 +140,7 @@
           variant="outlined"
           color="primary"
           rounded="lg"
-          :label="$t('login.username')"
+          :label="t('login.username')"
           :rules="usernameRules"
           prepend-inner-icon="mdi-account-circle-outline"
           hide-details="auto"
@@ -151,7 +151,7 @@
           variant="outlined"
           color="primary"
           rounded="lg"
-          :label="$t('login.email')"
+          :label="t('login.email')"
           :rules="emailRules"
           prepend-inner-icon="mdi-email-outline"
           hide-details="auto"
@@ -168,7 +168,7 @@
           variant="outlined"
           color="primary"
           rounded="lg"
-          :label="$t('login.password')"
+          :label="t('login.password')"
           :rules="passwordRules"
           prepend-inner-icon="mdi-key-outline"
           hide-details="auto"
@@ -212,7 +212,7 @@
         :prepend-icon="loginMethod === 'magic-link' ? 'mdi-mailbox-open-up-outline' : 'mdi-login'"
         class="text-none font-weight-bold glow-button"
       >
-        {{ $t('login.login') }}
+        {{ t('login.login') }}
       </v-btn>
     </v-form>
 
@@ -227,7 +227,7 @@
         prepend-icon="mdi-login-variant"
         class="text-none font-weight-bold mt-4"
       >
-        {{ $t('signup.signup') }}
+        {{ t('signup.signup') }}
       </v-btn>
     </NuxtLink>
   </div>

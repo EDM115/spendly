@@ -21,7 +21,7 @@
               <NuxtImg
                 :src="logoSrc"
                 sizes="300px md:450px"
-                :alt="$t('main.title')"
+                :alt="t('main.title')"
                 :draggable="false"
                 preload
               />
@@ -38,15 +38,15 @@
             <h1
               class="text-h2 text-md-h1 font-weight-black pb-6 mt-n12 mt-md-4 lh-tight"
             >
-              {{ $t('landing.hero.tagline.0') }}<span class="gradient-text">{{ $t('landing.hero.tagline.1') }}</span><br>
-              {{ $t('landing.hero.tagline.2') }}<span class="text-stroke">{{ $t('landing.hero.tagline.3') }}</span>{{ $t('landing.hero.tagline.4') }}
+              {{ t('landing.hero.tagline.0') }}<span class="gradient-text">{{ t('landing.hero.tagline.1') }}</span><br>
+              {{ t('landing.hero.tagline.2') }}<span class="text-stroke">{{ t('landing.hero.tagline.3') }}</span>{{ t('landing.hero.tagline.4') }}
             </h1>
 
             <p
               class="text-h6 text-medium-emphasis mb-10 font-weight-light"
               style="max-width: 600px"
             >
-              {{ $t('landing.hero.subtitle') }}
+              {{ t('landing.hero.subtitle') }}
             </p>
 
             <div class="d-flex justify-center justify-md-start ga-4 flex-wrap mobile-btn-group">
@@ -59,7 +59,7 @@
                 rounded="xl"
                 class="px-8 font-weight-bold glow-button"
               >
-                {{ $t('landing.get-started') }}
+                {{ t('landing.get-started') }}
               </v-btn>
               <v-btn
                 variant="tonal"
@@ -70,7 +70,7 @@
                 rounded="xl"
                 class="px-8 glass-button"
               >
-                {{ $t('landing.demo') }}
+                {{ t('landing.demo') }}
               </v-btn>
               <div class="scroll-mouse-indicator flex-column ml-md-4">
                 <div class="mouse-wheel" />
@@ -90,7 +90,7 @@
             class="text-center mb-16"
           >
             <h2 class="text-h3 font-weight-bold mb-4">
-              <span class="gradient-text">{{ $t('landing.features.title') }}</span>
+              <span class="gradient-text">{{ t('landing.features.title') }}</span>
             </h2>
             <div class="divider-glow mx-auto" />
           </v-col>

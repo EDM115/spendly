@@ -7,7 +7,7 @@
           class="mr-2"
           color="primary"
         />
-        <span class="font-weight-bold">{{ $t("app.category.title") }}</span>
+        <span class="font-weight-bold">{{ t("app.category.title") }}</span>
       </div>
       <v-btn
         :disabled="!canEdit"
@@ -17,7 +17,7 @@
         :block="false"
         @click="showAddDialog = true"
       >
-        {{ $t("app.category.add") }}
+        {{ t("app.category.add") }}
       </v-btn>
     </v-card-title>
     <v-card-text class="pt-4">
@@ -62,7 +62,7 @@
               <div class="d-flex align-center ga-1">
                 <v-tooltip
                   location="top"
-                  :text="$t('app.category.edit')"
+                  :text="t('app.category.edit')"
                 >
                   <template #activator="{ props: tooltipProps }">
                     <v-btn
@@ -79,7 +79,7 @@
 
                 <v-tooltip
                   location="top"
-                  :text="$t('app.category.delete')"
+                  :text="t('app.category.delete')"
                 >
                   <template #activator="{ props: tooltipProps }">
                     <v-btn
@@ -105,7 +105,7 @@
         variant="tonal"
         class="glass-panel border-thin"
       >
-        {{ $t("app.category.empty") }}
+        {{ t("app.category.empty") }}
       </v-alert>
     </v-card-text>
   </v-card>
@@ -117,12 +117,12 @@
   >
     <v-card class="glass-card pa-1 border-thin">
       <v-card-title class="text-h6 font-weight-bold">
-        {{ editingCategory ? $t("app.category.edit-title") : $t("app.category.add-title") }}
+        {{ editingCategory ? t("app.category.edit-title") : t("app.category.add-title") }}
       </v-card-title>
       <v-card-text>
         <v-text-field
           v-model="categoryForm.name"
-          :label="$t('app.category.name')"
+          :label="t('app.category.name')"
           variant="outlined"
           rounded="lg"
           autocomplete="suppress"
@@ -151,10 +151,10 @@
               :items="filteredIconItems"
               item-title="name"
               item-value="name"
-              :label="$t('app.category.icon')"
+              :label="t('app.category.icon')"
               variant="outlined"
               hide-details
-              :no-data-text="$t('app.category.search')"
+              :no-data-text="t('app.category.search')"
               :error="!isValidIcon"
               bg-color="transparent"
               rounded="lg"
@@ -200,7 +200,7 @@
           variant="text"
           @click="closeDialog"
         >
-          {{ $t("app.category.cancel") }}
+          {{ t("app.category.cancel") }}
         </v-btn>
         <v-btn
           color="primary"
@@ -209,7 +209,7 @@
           :disabled="!categoryForm.name.trim() || !isValidIcon"
           @click="saveCategory"
         >
-          {{ editingCategory ? $t("app.category.edit") : $t("app.category.add") }}
+          {{ editingCategory ? t("app.category.edit") : t("app.category.add") }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -222,10 +222,10 @@
   >
     <v-card class="glass-card pa-1 border-thin">
       <v-card-title class="text-h5 text-error font-weight-bold">
-        {{ $t("app.category.delete-title") }}
+        {{ t("app.category.delete-title") }}
       </v-card-title>
       <v-card-text>
-        {{ $t("app.category.delete-description") }}
+        {{ t("app.category.delete-description") }}
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -234,14 +234,14 @@
           variant="text"
           @click="showDeleteDialog = false"
         >
-          {{ $t("app.category.cancel") }}
+          {{ t("app.category.cancel") }}
         </v-btn>
         <v-btn
           color="error"
           variant="elevated"
           @click="deleteCategory"
         >
-          {{ $t("app.category.delete") }}
+          {{ t("app.category.delete") }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -264,6 +264,7 @@ const emit = defineEmits<{
 
 const store = useMainStore()
 const theme = useVTheme()
+const { t } = useI18n()
 
 const canEdit = computed(() => store.canEditData && !store.getIsDemo)
 const showAddDialog = ref(false)

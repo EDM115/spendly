@@ -7,7 +7,7 @@
           class="mr-2"
           color="primary"
         />
-        <span class="font-weight-bold">{{ $t("app.spending.title") }}</span>
+        <span class="font-weight-bold">{{ t("app.spending.title") }}</span>
       </div>
 
       <div :class="['spending-header-actions', !smAndUp && 'spending-header-actions--mobile', !smAndUp && 'pt-2']">
@@ -25,7 +25,7 @@
             :block="false"
             @click="showAddDialog = true"
           >
-            {{ $t("app.spending.add") }}
+            {{ t("app.spending.add") }}
           </v-btn>
           <v-menu content-class="glass-menu-content">
             <template #activator="{ props: balanceMenuProps }">
@@ -37,7 +37,7 @@
                 rounded="lg"
                 :block="false"
               >
-                {{ $t("app.spending.balance-options") }}
+                {{ t("app.spending.balance-options") }}
               </v-btn>
             </template>
             <v-list
@@ -45,7 +45,7 @@
               :disabled="timeRangeModel === 'all'"
             >
               <v-list-item>
-                <v-list-item-title>{{ $t("app.spending.use-total-balance") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.spending.use-total-balance") }}</v-list-item-title>
                 <template #append>
                   <v-switch
                     v-model="useTotalBalance"
@@ -58,7 +58,7 @@
                 </template>
               </v-list-item>
               <v-list-item>
-                <v-list-item-title>{{ $t("app.spending.include-future") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.spending.include-future") }}</v-list-item-title>
                 <template #append>
                   <v-switch
                     v-model="includeFutureEntries"
@@ -83,7 +83,7 @@
                 :disabled="filteredSpendings.length === 0"
                 :block="false"
               >
-                {{ $t("app.spending.export") }}
+                {{ t("app.spending.export") }}
               </v-btn>
             </template>
             <v-list class="glass-panel">
@@ -106,7 +106,7 @@
                     color="secondary"
                   />
                 </template>
-                <v-list-item-title>{{ $t("app.spending.export-json") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.spending.export-json") }}</v-list-item-title>
               </v-list-item>
               <v-list-item
                 :disabled="isExporting"
@@ -127,7 +127,7 @@
                     color="secondary"
                   />
                 </template>
-                <v-list-item-title>{{ $t("app.spending.export-csv") }}</v-list-item-title>
+                <v-list-item-title>{{ t("app.spending.export-csv") }}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -149,7 +149,7 @@
             <div class="summary-bg bg-success" />
             <v-card-text class="text-center position-relative z-10">
               <div class="text-caption font-weight-bold text-uppercase mb-1 opacity-70">
-                {{ $t("app.spending.total-income") }}
+                {{ t("app.spending.total-income") }}
               </div>
               <div :class="['font-weight-black', 'text-code', 'text-success', smAndUp ? 'text-h4' : 'text-h5']">
                 {{ formatCurrency(totalIncome) }}
@@ -170,7 +170,7 @@
             <div class="summary-bg bg-error" />
             <v-card-text class="text-center position-relative z-10">
               <div class="text-caption font-weight-bold text-uppercase mb-1 opacity-70">
-                {{ $t("app.spending.total-expense") }}
+                {{ t("app.spending.total-expense") }}
               </div>
               <div :class="['font-weight-black', 'text-code', 'text-error', smAndUp ? 'text-h4' : 'text-h5']">
                 {{ formatCurrency(totalExpense) }}
@@ -229,7 +229,7 @@
         :custom-filter="searchFilter"
         hover
         class="bg-transparent spending-table"
-        :no-data-text="$t('app.spending.no-spending')"
+        :no-data-text="t('app.spending.no-spending')"
       >
         <template #[`item.category`]="{ item }">
           <v-chip
@@ -254,7 +254,7 @@
         <template #[`item.actions`]="{ item }">
           <v-tooltip
             location="top"
-            :text="$t('app.spending.edit')"
+            :text="t('app.spending.edit')"
           >
             <template #activator="{ props: tooltipProps }">
               <v-btn
@@ -270,7 +270,7 @@
 
           <v-tooltip
             location="top"
-            :text="$t('app.spending.delete')"
+            :text="t('app.spending.delete')"
           >
             <template #activator="{ props: tooltipProps }">
               <v-btn
@@ -294,7 +294,7 @@
           v-if="mobileGroupedSpendings.length === 0"
           class="text-medium-emphasis text-center py-8"
         >
-          {{ $t("app.spending.no-spending") }}
+          {{ t("app.spending.no-spending") }}
         </div>
         <v-virtual-scroll
           v-else
@@ -368,7 +368,7 @@
   >
     <v-card class="glass-card pa-1">
       <v-card-title>
-        {{ editingSpending ? $t("app.spending.edit-title") : $t("app.spending.add-title") }}
+        {{ editingSpending ? t("app.spending.edit-title") : t("app.spending.add-title") }}
       </v-card-title>
       <v-card-text>
         <v-form ref="formRef">
@@ -376,7 +376,7 @@
             <v-col cols="12">
               <v-text-field
                 v-model="spendingForm.name"
-                :label="$t('app.spending.name')"
+                :label="t('app.spending.name')"
                 variant="outlined"
                 rounded="lg"
                 autocomplete="suppress"
@@ -389,7 +389,7 @@
             >
               <v-number-input
                 v-model="spendingForm.value"
-                :label="$t('app.spending.amount')"
+                :label="t('app.spending.amount')"
                 inset
                 variant="outlined"
                 autocomplete="suppress"
@@ -407,7 +407,7 @@
                 v-model="spendingForm.is_spending"
                 :items="typeItems"
                 rounded="lg"
-                :label="$t('app.spending.type')"
+                :label="t('app.spending.type')"
                 variant="outlined"
               />
             </v-col>
@@ -421,8 +421,8 @@
                 item-title="name"
                 item-value="id"
                 rounded="lg"
-                :label="$t('app.spending.category')"
-                :no-data-text="$t('app.spending.no-categories')"
+                :label="t('app.spending.category')"
+                :no-data-text="t('app.spending.no-categories')"
                 variant="outlined"
                 :rules="[v => !!v || 'Required']"
               >
@@ -459,7 +459,7 @@
                   <v-text-field
                     v-model="spendingForm.date"
                     v-bind="activatorProps"
-                    :label="$t('app.spending.date')"
+                    :label="t('app.spending.date')"
                     variant="outlined"
                     rounded="lg"
                     readonly
@@ -511,7 +511,7 @@
           rounded="lg"
           @click="closeDialog"
         >
-          {{ $t("app.spending.cancel") }}
+          {{ t("app.spending.cancel") }}
         </v-btn>
         <v-btn
           color="primary"
@@ -520,7 +520,7 @@
           :disabled="!isFormValid"
           @click="saveSpending"
         >
-          {{ editingSpending ? $t("app.spending.edit") : $t("app.spending.add") }}
+          {{ editingSpending ? t("app.spending.edit") : t("app.spending.add") }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -533,10 +533,10 @@
   >
     <v-card class="glass-card pa-1">
       <v-card-title class="text-h5">
-        {{ $t("app.spending.delete-title") }}
+        {{ t("app.spending.delete-title") }}
       </v-card-title>
       <v-card-text>
-        {{ $t("app.spending.delete-description") }}
+        {{ t("app.spending.delete-description") }}
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -545,7 +545,7 @@
           rounded="lg"
           @click="showDeleteDialog = false"
         >
-          {{ $t("app.spending.cancel") }}
+          {{ t("app.spending.cancel") }}
         </v-btn>
         <v-btn
           color="error"
@@ -553,7 +553,7 @@
           variant="elevated"
           @click="deleteSpending"
         >
-          {{ $t("app.spending.delete") }}
+          {{ t("app.spending.delete") }}
         </v-btn>
       </v-card-actions>
     </v-card>

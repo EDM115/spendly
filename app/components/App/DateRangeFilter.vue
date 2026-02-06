@@ -102,7 +102,7 @@
                   variant="text"
                   @click="menu = false"
                 >
-                  {{ $t("app.date-range-filter.cancel") }}
+                  {{ t("app.date-range-filter.cancel") }}
                 </v-btn>
 
                 <v-spacer />
@@ -114,7 +114,7 @@
                   :color="color"
                   @click="next"
                 >
-                  {{ $t("app.date-range-filter.next") }}
+                  {{ t("app.date-range-filter.next") }}
                 </v-btn>
 
                 <v-btn
@@ -124,7 +124,7 @@
                   variant="text"
                   @click="prev"
                 >
-                  {{ $t("app.date-range-filter.prev") }}
+                  {{ t("app.date-range-filter.prev") }}
                 </v-btn>
 
                 <v-btn
@@ -146,7 +146,7 @@
                     menu = false
                   }"
                 >
-                  {{ $t("app.date-range-filter.validate") }}
+                  {{ t("app.date-range-filter.validate") }}
                 </v-btn>
               </div>
             </template>

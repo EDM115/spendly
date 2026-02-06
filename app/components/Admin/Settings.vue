@@ -7,7 +7,7 @@
       class="mr-3"
     />
     <h1 class="text-h4 font-weight-bold gradient-text pb-0">
-      {{ $t("admin.title") }}
+      {{ t("admin.title") }}
     </h1>
   </div>
 
@@ -25,7 +25,7 @@
           class="mr-3"
           color="primary"
         />
-        {{ $t("admin.users.title") }}
+        {{ t("admin.users.title") }}
       </v-expansion-panel-title>
       <v-expansion-panel-text class="pt-4">
         <v-list class="bg-transparent">
@@ -59,7 +59,7 @@
                     variant="solo"
                     bg-color="surface-light"
                     flat
-                    :label="$t('admin.users.role')"
+                    :label="t('admin.users.role')"
                     class="rounded-lg"
                   />
                 </v-col>
@@ -111,7 +111,7 @@
               >
                 <v-text-field
                   v-model="newUser.username"
-                  :label="$t('admin.users.username')"
+                  :label="t('admin.users.username')"
                   required
                   variant="solo"
                   bg-color="surface"
@@ -128,7 +128,7 @@
               >
                 <v-text-field
                   v-model="newUser.password"
-                  :label="$t('admin.users.password')"
+                  :label="t('admin.users.password')"
                   type="password"
                   required
                   variant="solo"
@@ -147,7 +147,7 @@
                 <v-select
                   v-model="newUser.role"
                   :items="['user', 'admin']"
-                  :label="$t('admin.users.role')"
+                  :label="t('admin.users.role')"
                   required
                   variant="solo"
                   bg-color="surface"
@@ -184,7 +184,7 @@
           color="secondary"
           class="mr-3"
         />
-        {{ $t('admin.backup.title') }}
+        {{ t('admin.backup.title') }}
       </v-expansion-panel-title>
       <v-expansion-panel-text class="px-8 pt-4 pb-6">
         <v-row>
@@ -199,7 +199,7 @@
               class="h-auto py-4"
               @click="downloadBackup('csv')"
             >
-              {{ $t('admin.backup.export-csv') }}
+              {{ t('admin.backup.export-csv') }}
             </v-btn>
           </v-col>
           <v-col>
@@ -213,7 +213,7 @@
               class="h-auto py-4"
               @click="downloadBackup('json')"
             >
-              {{ $t('admin.backup.export-json') }}
+              {{ t('admin.backup.export-json') }}
             </v-btn>
           </v-col>
           <v-col>
@@ -227,7 +227,7 @@
               class="h-auto py-4"
               @click="downloadBackup('sql')"
             >
-              {{ $t('admin.backup.export-sql') }}
+              {{ t('admin.backup.export-sql') }}
             </v-btn>
           </v-col>
           <v-col>
@@ -241,7 +241,7 @@
               class="h-auto py-4"
               @click="downloadBackup('sqlite')"
             >
-              {{ $t('admin.backup.export-sqlite') }}
+              {{ t('admin.backup.export-sqlite') }}
             </v-btn>
           </v-col>
         </v-row>
@@ -256,23 +256,23 @@
   >
     <v-card class="glass-card pa-1 border-thin">
       <v-card-title class="text-h5 text-error font-weight-bold">
-        {{ $t('admin.users.delete-title') }}
+        {{ t('admin.users.delete-title') }}
       </v-card-title>
       <v-card-text>
-        {{ $t('admin.users.delete-description') }}
+        {{ t('admin.users.delete-description') }}
       </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn
           color="secondary"
           variant="text"
-          :text="$t('admin.users.delete-cancel')"
+          :text="t('admin.users.delete-cancel')"
           @click="showDeleteDialog = false"
         />
         <v-btn
           color="error"
           variant="elevated"
-          :text="$t('admin.users.delete-confirm')"
+          :text="t('admin.users.delete-confirm')"
           @click="deleteUser"
         />
       </v-card-actions>
@@ -290,6 +290,7 @@ type AdminUser = {
 }
 
 const store = useMainStore()
+const { t } = useI18n()
 
 const props = defineProps<{
   initialUsers?: AdminUser[];

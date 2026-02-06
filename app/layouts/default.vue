@@ -20,19 +20,19 @@
         />
       </div>
       <div class="text-body-2 text-medium-emphasis mb-2">
-        {{ new Date().getFullYear() }} - <strong class="gradient-text">{{ $t('main.title') }}</strong>
+        {{ new Date().getFullYear() }} - <strong class="gradient-text">{{ t('main.title') }}</strong>
       </div>
       <div class="text-body-2 text-medium-emphasis mb-2">
         <NuxtLink
           to="/privacy-policy"
           style="color: rgb(var(--v-theme-secondary))"
         >
-          {{ $t('privacy-policy.title').split('-')[0]?.trim() }}
+          {{ t('privacy-policy.title') }}
         </NuxtLink> - <NuxtLink
           to="/terms-of-use"
           style="color: rgb(var(--v-theme-secondary))"
         >
-          {{ $t('terms-of-use.title').split('-')[0]?.trim() }}
+          {{ t('terms-of-use.title') }}
         </NuxtLink>
       </div>
     </v-footer>

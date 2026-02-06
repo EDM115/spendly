@@ -45,21 +45,21 @@
               icon="mdi-format-list-bulleted"
               class="mr-2"
             />
-            {{ $t("app.spending.title") }}
+            {{ t("app.spending.title") }}
           </v-tab>
           <v-tab value="categories">
             <v-icon
               icon="mdi-shape-outline"
               class="mr-2"
             />
-            {{ $t("app.category.title") }}
+            {{ t("app.category.title") }}
           </v-tab>
           <v-tab value="charts">
             <v-icon
               icon="mdi-chart-box-multiple-outline"
               class="mr-2"
             />
-            {{ $t("app.charts.title") }}
+            {{ t("app.charts.title") }}
           </v-tab>
         </v-tabs>
 
@@ -103,15 +103,15 @@
         >
           <v-btn value="spendings">
             <v-icon icon="mdi-format-list-bulleted" />
-            <span class="nav-label">{{ $t("app.spending.title") }}</span>
+            <span class="nav-label">{{ t("app.spending.title") }}</span>
           </v-btn>
           <v-btn value="categories">
             <v-icon icon="mdi-shape-outline" />
-            <span class="nav-label">{{ $t("app.category.title") }}</span>
+            <span class="nav-label">{{ t("app.category.title") }}</span>
           </v-btn>
           <v-btn value="charts">
             <v-icon icon="mdi-chart-box-multiple-outline" />
-            <span class="nav-label">{{ $t("app.charts.title").split(" ")[2] }}</span>
+            <span class="nav-label">{{ t("app.charts.title").split(" ")[2] }}</span>
           </v-btn>
         </v-bottom-navigation>
       </template>
@@ -127,10 +127,10 @@
                 class="mb-4"
               />
               <h2 class="text-h5 mb-2">
-                {{ $t("app.budget-tracker.no-tracker") }}
+                {{ t("app.budget-tracker.no-tracker") }}
               </h2>
               <p class="text-body-1 text-medium-emphasis">
-                {{ $t("app.budget-tracker.select") }}
+                {{ t("app.budget-tracker.select") }}
               </p>
             </v-card-text>
           </v-card>
@@ -142,6 +142,7 @@
 
 <script lang="ts" setup>
 const store = useMainStore()
+const { t } = useI18n()
 const { smAndUp } = useVDisplay()
 const hasLoaded = ref(false)
 

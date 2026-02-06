@@ -14,7 +14,7 @@
       >
         <NuxtImg
           :src="logoSrc"
-          :alt="$t('main.title')"
+          :alt="t('main.title')"
           :draggable="false"
           height="40px"
           width="40px"
@@ -31,7 +31,7 @@
         :to="connected && !store.getIsDemo ? '/app' : '/'"
         class="text-h6 font-weight-bold"
       >
-        {{ $t('main.title') }}
+        {{ t('main.title') }}
       </NuxtLink>
     </v-app-bar-title>
     <v-spacer />
@@ -51,7 +51,7 @@
           variant="text"
           rounded="lg"
           prepend-icon="mdi-shield-account-outline"
-          :text="$t('navbar.admin')"
+          :text="t('navbar.admin')"
         />
         <v-btn
           v-if="connected && !store.getIsDemo"
@@ -60,7 +60,7 @@
           variant="text"
           rounded="lg"
           prepend-icon="mdi-account-circle-outline"
-          :text="$t('navbar.account')"
+          :text="t('navbar.account')"
         />
         <v-btn-toggle
           v-model="selectedTheme"

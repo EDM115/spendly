@@ -25,7 +25,7 @@
               <NuxtImg
                 :src="logoSrc"
                 sizes="200px md:300px"
-                :alt="$t('main.title')"
+                :alt="t('main.title')"
                 :draggable="false"
                 preload
                 style="filter: drop-shadow(0 0 20px rgba(var(--v-theme-primary), 0.4));"
@@ -47,13 +47,13 @@
           </div>
 
           <h1 class="text-h2 font-weight-black mb-4 gradient-text">
-            {{ $t('main.title') }}
+            {{ t('main.title') }}
           </h1>
           <p
             class="text-h5 font-weight-light"
             style="opacity: 0.9"
           >
-            {{ $t('landing.hero.subtitle') }}
+            {{ t('landing.hero.subtitle') }}
           </p>
         </div>
       </v-col>
@@ -77,20 +77,20 @@
               <NuxtImg
                 :src="logoSrc"
                 sizes="80px"
-                :alt="$t('main.title')"
+                :alt="t('main.title')"
                 class="mb-4"
               />
               <h2 class="text-h4 font-weight-bold gradient-text">
-                {{ $t('main.title') }}
+                {{ t('main.title') }}
               </h2>
             </div>
 
             <div class="mb-8">
               <h2 class="text-h4 font-weight-bold mb-2">
-                {{ $t('signup.title') }}
+                {{ t('signup.title') }}
               </h2>
               <p class="text-medium-emphasis">
-                {{ $t('signup.welcome') }}
+                {{ t('signup.welcome') }}
               </p>
             </div>
 
@@ -104,6 +104,7 @@
 
 <script lang="ts" setup>
 const store = useMainStore()
+const { t } = useI18n()
 
 const logoSrc = computed(() => (store.getTheme === "light"
   ? "/images/logo_alt.webp"

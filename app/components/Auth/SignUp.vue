@@ -16,7 +16,7 @@
       icon-size="default"
       variant="outlined"
       rounded="lg"
-      :text="$t('signup.oauth')"
+      :text="t('signup.oauth')"
     />
 
     <v-form
@@ -30,7 +30,7 @@
           variant="outlined"
           color="primary"
           rounded="lg"
-          :label="$t('signup.username')"
+          :label="t('signup.username')"
           :rules="usernameRules"
           prepend-inner-icon="mdi-account-circle-outline"
           hide-details="auto"
@@ -43,7 +43,7 @@
           variant="outlined"
           color="primary"
           rounded="lg"
-          :label="$t('signup.email')"
+          :label="t('signup.email')"
           :rules="emailRules"
           prepend-inner-icon="mdi-email-outline"
           hide-details="auto"
@@ -57,7 +57,7 @@
           variant="outlined"
           color="primary"
           rounded="lg"
-          :label="$t('signup.password')"
+          :label="t('signup.password')"
           :rules="passwordRules"
           prepend-inner-icon="mdi-key-outline"
           hide-details="auto"
@@ -84,7 +84,7 @@
           variant="outlined"
           color="primary"
           rounded="lg"
-          :label="$t('signup.passwordConfirm')"
+          :label="t('signup.passwordConfirm')"
           :rules="passwordConfirmRules"
           prepend-inner-icon="mdi-key-outline"
           hide-details="auto"
@@ -128,7 +128,7 @@
         prepend-icon="mdi-login-variant"
         class="text-none font-weight-bold glow-button"
       >
-        {{ $t('signup.signup') }}
+        {{ t('signup.signup') }}
       </v-btn>
     </v-form>
 
@@ -143,7 +143,7 @@
         prepend-icon="mdi-login"
         class="text-none font-weight-bold mt-4"
       >
-        {{ $t('login.login') }}
+        {{ t('login.login') }}
       </v-btn>
     </NuxtLink>
   </div>
