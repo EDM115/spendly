@@ -25,7 +25,7 @@
       "add-title": "Add a budget tracker",
       "cancel": "Cancel",
       "delete": "Delete",
-      "delete-description": "Are you sure you want to delete this budget tracker? All associated spendings will be deleted.",
+      "delete-description": "Are you sure you want to delete this budget tracker ? All associated spendings will be deleted.",
       "delete-title": "Delete confirmation",
       "edit": "Edit",
       "edit-title": "Edit budget tracker",
@@ -51,7 +51,7 @@
       "add-title": "Add a category",
       "cancel": "Cancel",
       "delete": "Delete",
-      "delete-description": "Are you sure you want to delete this category? Warning, all associated transactions will also be deleted.",
+      "delete-description": "Are you sure you want to delete this category ? Warning, all associated transactions will also be deleted.",
       "delete-title": "Delete confirmation",
       "edit": "Edit",
       "edit-title": "Edit category",
@@ -114,7 +114,7 @@
       "category": "Category",
       "date": "Date",
       "delete": "Delete",
-      "delete-description": "Are you sure you want to delete this transaction?",
+      "delete-description": "Are you sure you want to delete this transaction ?",
       "delete-title": "Delete confirmation",
       "edit": "Edit",
       "edit-title": "Edit transaction",
@@ -186,13 +186,22 @@
     "last-used": "Last used",
     "login": "Log in",
     "magic-link": "Magic link",
+    "magic-link-success": "If the email exists, a magic login link has been sent",
     "password": "Password",
     "title": "Login",
     "username": "Username",
     "welcome": "Welcome back ! Please enter your details."
   },
   "main": {
+    "account": "Account - Spendly",
+    "admin": "Admin - Spendly",
+    "demo": "Demo - Spendly",
     "description": "Simple, powerful, and free budget tracking for everyone with tables, stats and charts",
+    "login": "Login - Spendly",
+    "privacy-policy": "Privacy Policy - Spendly",
+    "reset-password": "Reset password - Spendly",
+    "signup": "Signup - Spendly",
+    "terms-of-use": "Terms of Use - Spendly",
     "title": "Spendly"
   },
   "navbar": {
@@ -203,6 +212,21 @@
   },
   "privacy-policy": {
     "title": "Privacy Policy"
+  },
+  "reset-password": {
+    "back-to-login": "Back to login",
+    "email": "Email",
+    "invalid-token": "This reset link is invalid or expired",
+    "new-password": "New password",
+    "password-confirm": "Confirm password",
+    "question": "Forgot your password ?",
+    "request-new-link": "Please request a new reset link",
+    "request-success": "If the email exists, a reset link has been sent",
+    "reset": "Reset password",
+    "reset-success": "Your password has been updated",
+    "send-link": "Send reset link",
+    "title": "Reset password",
+    "welcome": "Enter your email to receive a reset link"
   },
   "rules": {
     "email": {
@@ -229,7 +253,7 @@
   "signup": {
     "email": "Email",
     "last-used": "Last used",
-    "oauth": "You will be able to link a Google/GitHub account for easier login just after signing up!",
+    "oauth": "You will be able to link a Google/GitHub account for easier login just after signing up !",
     "password": "Password",
     "passwordConfirm": "Confirm password",
     "signup": "Sign up",

@@ -474,6 +474,7 @@ ChartJS.defaults.font.family = "\"Inter\", sans-serif"
 ChartJS.defaults.font.size = 14
 
 const props = defineProps<{
+  budgetTrackerName: string;
   spendings: Spending[];
   timeRange: string;
   anchorDate: string;
@@ -1945,7 +1946,7 @@ const exportPNG = async () => {
     return
   }
 
-  const filename = `chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.png`
+  const filename = `${props.budgetTrackerName}_-_chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.png`
   const dataUrl = await svgToPngDataUrl(svgResult.svg, svgResult.width, svgResult.height, 6)
 
   if (!dataUrl) {
@@ -1980,7 +1981,7 @@ const exportSVG = async () => {
   const url = URL.createObjectURL(blob)
   const link = document.createElement("a")
 
-  link.download = `chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.svg`
+  link.download = `${props.budgetTrackerName}_-_chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.svg`
   link.href = url
   link.click()
   URL.revokeObjectURL(url)
@@ -2021,7 +2022,7 @@ const exportPDF = async () => {
   })
 
   pdf.addImage(imgData, "PNG", 0, 0, Math.round(svgResult.width * 6), Math.round(svgResult.height * 6))
-  pdf.save(`chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.pdf`)
+  pdf.save(`${props.budgetTrackerName}_-_chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.pdf`)
   isExporting.value = false
 }
 </script>

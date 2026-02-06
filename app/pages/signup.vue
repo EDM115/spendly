@@ -106,6 +106,8 @@
 const store = useMainStore()
 const { t } = useI18n()
 
+useHead({ title: t("main.signup") })
+
 const logoSrc = computed(() => (store.getTheme === "light"
   ? "/images/logo_alt.webp"
   : "/images/logo.webp"))

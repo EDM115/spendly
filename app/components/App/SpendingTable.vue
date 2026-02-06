@@ -565,6 +565,7 @@ const props = defineProps<{
   spendings: Spending[];
   categories: Category[];
   budgetTrackerId: string;
+  budgetTrackerName: string;
   timeRange: string;
   anchorDate: string;
 }>()
@@ -1020,7 +1021,7 @@ const exportJSON = async () => {
   const a = document.createElement("a")
 
   a.href = url
-  a.download = `transactions-${props.timeRange}-${anchorDateModel.value}-${timeRangeModel.value}.json`
+  a.download = `${props.budgetTrackerName}_-_transactions-${props.timeRange}-${anchorDateModel.value}-${timeRangeModel.value}.json`
   a.click()
   URL.revokeObjectURL(url)
 
@@ -1051,7 +1052,7 @@ const exportCSV = async () => {
   const a = document.createElement("a")
 
   a.href = url
-  a.download = `transactions-${props.timeRange}-${anchorDateModel.value}-${timeRangeModel.value}.csv`
+  a.download = `${props.budgetTrackerName}_-_transactions-${props.timeRange}-${anchorDateModel.value}-${timeRangeModel.value}.csv`
   a.click()
   URL.revokeObjectURL(url)
 

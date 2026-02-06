@@ -73,6 +73,7 @@
               :spendings="spendings"
               :categories="categories"
               :budget-tracker-id="selectedBudgetTrackerId"
+              :budget-tracker-name="budgetTrackers.find(t => t.id === selectedBudgetTrackerId)!.name"
               @refresh="fetchSpendings"
             />
           </v-tabs-window-item>
@@ -87,6 +88,7 @@
             <AppCharts
               v-model:time-range="timeRange"
               v-model:anchor-date="anchorDate"
+              :budget-tracker-name="budgetTrackers.find(t => t.id === selectedBudgetTrackerId)!.name"
               :spendings="spendings"
             />
           </v-tabs-window-item>
@@ -144,8 +146,8 @@
 const store = useMainStore()
 const { t } = useI18n()
 const { smAndUp } = useVDisplay()
-const hasLoaded = ref(false)
 
+const hasLoaded = ref(false)
 const selectedBudgetTrackerId = ref<string | null>(null)
 const budgetTrackers = ref<BudgetTracker[]>([])
 const categories = ref<Category[]>([])

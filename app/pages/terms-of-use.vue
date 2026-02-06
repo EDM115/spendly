@@ -280,6 +280,8 @@ const {
   t,
 } = useI18n()
 
+useHead({ title: t("main.terms-of-use") })
+
 const effectiveDate = new Date("2026-02-01")
 
 const formattedDate = computed(() => {

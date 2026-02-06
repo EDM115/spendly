@@ -186,13 +186,22 @@
     "last-used": "Dernière méthode utilisée",
     "login": "Se connecter",
     "magic-link": "Lien magique",
+    "magic-link-success": "Si l'e-mail existe, un lien magique de connexion a été envoyé",
     "password": "Mot de passe",
     "title": "Connexion",
     "username": "Nom d'utilisateur",
     "welcome": "Bon retour ! Veuillez entrer vos identifiants."
   },
   "main": {
+    "account": "Compte - Spendly",
+    "admin": "Admin - Spendly",
+    "demo": "Démo - Spendly",
     "description": "Suivi budgétaire simple, puissant et gratuit pour tous, avec tableaux, statistiques et graphiques",
+    "login": "Connexion - Spendly",
+    "privacy-policy": "Politique de confidentialité - Spendly",
+    "reset-password": "Réinitialiser le mot de passe - Spendly",
+    "signup": "Inscription - Spendly",
+    "terms-of-use": "Conditions d'utilisation - Spendly",
     "title": "Spendly"
   },
   "navbar": {
@@ -203,6 +212,21 @@
   },
   "privacy-policy": {
     "title": "Politique de confidentialité"
+  },
+  "reset-password": {
+    "back-to-login": "Retour à la connexion",
+    "email": "E-mail",
+    "invalid-token": "Ce lien de réinitialisation est invalide ou expiré",
+    "new-password": "Nouveau mot de passe",
+    "password-confirm": "Confirmer le mot de passe",
+    "question": "Mot de passe oublié ?",
+    "request-new-link": "Veuillez demander un nouveau lien de réinitialisation",
+    "request-success": "Si l'e-mail existe, un lien de réinitialisation a été envoyé",
+    "reset": "Réinitialiser le mot de passe",
+    "reset-success": "Votre mot de passe a été mis à jour",
+    "send-link": "Envoyer le lien de réinitialisation",
+    "title": "Réinitialiser le mot de passe",
+    "welcome": "Saisissez votre e-mail pour recevoir un lien de réinitialisation"
   },
   "rules": {
     "email": {

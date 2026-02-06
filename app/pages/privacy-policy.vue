@@ -235,6 +235,8 @@ const {
   t,
 } = useI18n()
 
+useHead({ title: t("main.privacy-policy") })
+
 const effectiveDate = new Date("2026-02-01")
 
 const formattedDate = computed(() => {

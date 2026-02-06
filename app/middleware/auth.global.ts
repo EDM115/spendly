@@ -2,7 +2,7 @@ import { authClient } from "~/utils/authClient"
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const protectedPaths = [ "/app", "/admin", "/account" ]
-  const authPages = [ "/login", "/signup" ]
+  const authPages = [ "/login", "/reset-password", "/signup" ]
 
   const isProtectedRoute = protectedPaths.some((path) => to.path === path || to.path.startsWith(`${path}/`))
   const isAuthPage = authPages.includes(to.path)

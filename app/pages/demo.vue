@@ -72,6 +72,7 @@
               :spendings="spendings"
               :categories="categories"
               :budget-tracker-id="selectedBudgetTrackerId"
+              :budget-tracker-name="budgetTrackers.find(t => t.id === selectedBudgetTrackerId)!.name"
             />
           </v-tabs-window-item>
           <v-tabs-window-item value="categories">
@@ -85,6 +86,7 @@
               v-model:time-range="timeRange"
               v-model:anchor-date="anchorDate"
               :spendings="spendings"
+              :budget-tracker-name="budgetTrackers.find(t => t.id === selectedBudgetTrackerId)!.name"
             />
           </v-tabs-window-item>
         </v-tabs-window>
@@ -140,7 +142,11 @@
 <script lang="ts" setup>
 const store = useMainStore()
 const { smAndUp } = useVDisplay()
-const { locale, t } = useI18n()
+const {
+  locale, t,
+} = useI18n()
+
+useHead({ title: t("main.demo") })
 
 const hasLoaded = ref(false)
 const selectedBudgetTrackerId = ref<string | null>(null)
@@ -154,10 +160,6 @@ const anchorDate = ref(`${now0.getFullYear()}-${String(now0.getMonth() + 1)
   .padStart(2, "0")}`)
 const selectedTab = ref<string | null>(null)
 
-const demoCredentials = {
-  username: "demo",
-  password: "!Demo_User0§",
-}
 
 const demoBudgetTrackers = computed<BudgetTracker[]>(() => [
   {

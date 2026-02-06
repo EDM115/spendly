@@ -30,6 +30,10 @@ type AdminUser = {
   role: UserType;
 }
 
+const { t } = useI18n()
+
+useHead({ title: t("main.admin") })
+
 const { data } = await useAsyncData<{
   users: AdminUser[];
 }>("admin-page-data", async () => {

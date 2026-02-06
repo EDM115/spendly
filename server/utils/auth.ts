@@ -38,6 +38,8 @@ export const auth = betterAuth({
     sendResetPassword: async ({
       user, url, token,
     }, request) => {
+      console.log(`Password reset requested for user ${user.email}. Reset URL : ${url}, Token : ${token}`)
+
       /* void sendEmail(
         user.email,
         "Reset your password",
@@ -71,6 +73,18 @@ export const auth = betterAuth({
     }),
     lastLoginMethod({
       cookieName: "spendly.last_used_login_method",
+      customResolveMethod: (ctx) => {
+        if (ctx.path === "/sign-in/username") {
+          return "username"
+        }
+
+        if (ctx.path === "/magic-link/verify") {
+          return "magic-link"
+        }
+
+        // Return null to use default resolution
+        return null
+      },
       storeInDatabase: true,
     }),
     magicLink({
@@ -78,7 +92,7 @@ export const auth = betterAuth({
       sendMagicLink: async ({
         email, token, url,
       }, ctx) => {
-        // send email to user
+        console.log(`Magic link requested for user ${email}. URL : ${url}, Token : ${token}`)
       },
     }),
     username({

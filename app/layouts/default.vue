@@ -10,7 +10,7 @@
       v-if="!['/app', '/admin', '/account', '/demo'].includes(route.path)"
       class="bg-transparent py-8 text-center d-flex flex-column"
     >
-      <div class="d-flex ga-4 mb-2 align-center">
+      <div class="d-flex align-center">
         <v-btn
           icon="mdi-github"
           variant="text"

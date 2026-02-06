@@ -6,215 +6,218 @@
         :message="errorMessage"
         :issue="issueMessage"
         :color="messageColor"
+        class="mb-8"
       />
     </v-expand-transition>
 
-    <v-btn
-      block
-      color="primary"
-      size="large"
-      rounded="xl"
-      variant="tonal"
-      :loading="loading"
-      :disabled="btnDisabled"
-      class="login-btn text-none font-weight-bold mb-4"
-      elevation="4"
-      prepend-icon="mdi-google"
-      @click="socialLogin('google')"
-    >
-      {{ t('login.google') }}
-
-      <v-chip
-        v-if="lastUsedMethod === 'google'"
-        class="last-used-chip last-used-chip--single"
-        :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
-        prepend-icon="mdi-history"
-        pill
-      >
-        {{ t('login.last-used') }}
-      </v-chip>
-    </v-btn>
-    <v-btn
-      block
-      color="primary"
-      size="large"
-      rounded="xl"
-      variant="tonal"
-      :loading="loading"
-      :disabled="btnDisabled"
-      class="login-btn text-none font-weight-bold mb-4"
-      elevation="4"
-      prepend-icon="mdi-github"
-      @click="socialLogin('github')"
-    >
-      {{ t('login.github') }}
-
-      <v-chip
-        v-if="lastUsedMethod === 'github'"
-        class="last-used-chip last-used-chip--single"
-        :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
-        prepend-icon="mdi-history"
-        pill
-      >
-        {{ t('login.last-used') }}
-      </v-chip>
-    </v-btn>
-
-    <div class="d-flex flex-column align-center py-4">
-      <v-btn-toggle
-        v-model="loginMethod"
-        class="login-toggle"
-        color="primary"
-        rounded="xl"
-        mandatory
-        divided
-        border
-        variant="outlined"
-      >
-        <v-btn
-          size="small"
-          prepend-icon="mdi-account-circle-outline"
-          value="username"
-          class="login-toggle-btn text-none"
-        >
-          {{ t('login.username') }}
-
-          <v-chip
-            v-if="lastUsedMethod === 'username'"
-            class="last-used-chip last-used-chip--group"
-            :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
-            prepend-icon="mdi-history"
-            pill
-          >
-            {{ t('login.last-used') }}
-          </v-chip>
-        </v-btn>
-        <v-btn
-          size="small"
-          prepend-icon="mdi-email-outline"
-          value="email"
-          class="login-toggle-btn text-none"
-        >
-          {{ t('login.email') }}
-
-          <v-chip
-            v-if="lastUsedMethod === 'email'"
-            class="last-used-chip last-used-chip--group"
-            :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
-            prepend-icon="mdi-history"
-            pill
-          >
-            {{ t('login.last-used') }}
-          </v-chip>
-        </v-btn>
-        <v-btn
-          v-if="showMagicLink >= 5"
-          size="small"
-          prepend-icon="mdi-mailbox-open-up-outline"
-          value="magic-link"
-          class="login-toggle-btn text-none"
-        >
-          {{ t('login.magic-link') }}
-
-          <v-chip
-            v-if="lastUsedMethod === 'magic-link'"
-            class="last-used-chip last-used-chip--group"
-            :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
-            prepend-icon="mdi-history"
-            pill
-          >
-            {{ t('login.last-used') }}
-          </v-chip>
-        </v-btn>
-      </v-btn-toggle>
-    </div>
-
-    <v-form
-      ref="form"
-      @submit.prevent="submit"
-    >
-      <div class="mb-4">
-        <v-text-field
-          v-if="loginMethod === 'username'"
-          v-model="state.username"
-          variant="outlined"
-          color="primary"
-          rounded="lg"
-          :label="t('login.username')"
-          :rules="usernameRules"
-          prepend-inner-icon="mdi-account-circle-outline"
-          hide-details="auto"
-        />
-        <v-text-field
-          v-else
-          v-model="state.email"
-          variant="outlined"
-          color="primary"
-          rounded="lg"
-          :label="t('login.email')"
-          :rules="emailRules"
-          prepend-inner-icon="mdi-email-outline"
-          hide-details="auto"
-        />
-      </div>
-
-      <div
-        v-if="loginMethod !== 'magic-link'"
-        class="mb-6"
-      >
-        <v-text-field
-          v-model="state.password"
-          :type="showPassword ? 'text' : 'password'"
-          variant="outlined"
-          color="primary"
-          rounded="lg"
-          :label="t('login.password')"
-          :rules="passwordRules"
-          prepend-inner-icon="mdi-key-outline"
-          hide-details="auto"
-        >
-          <template #append-inner>
-            <v-btn
-              icon
-              variant="text"
-              density="compact"
-              @click="togglePasswordVisibility"
-            >
-              <v-icon size="small">
-                {{ showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline' }}
-              </v-icon>
-            </v-btn>
-          </template>
-        </v-text-field>
-      </div>
-
-      <VueTurnstile
-        ref="turnstileRef"
-        :site-key="turnstileKey"
-        :language="storeLang ?? 'auto'"
-        :theme="storeTheme ?? 'auto'"
-        appearance="execute"
-        @success="onTurnstileSuccess"
-        @error="onTurnstileError"
-        @expired="onTurnstileExpired"
-        @timeout="onTurnstileTimeout"
-      />
-
+    <div v-if="!magicLinkDone">
       <v-btn
         block
         color="primary"
         size="large"
         rounded="xl"
-        type="submit"
-        variant="flat"
+        variant="tonal"
         :loading="loading"
-        :disabled="btnDisabled || !form?.isValid"
-        :prepend-icon="loginMethod === 'magic-link' ? 'mdi-mailbox-open-up-outline' : 'mdi-login'"
-        class="text-none font-weight-bold glow-button"
+        :disabled="btnDisabled"
+        class="login-btn text-none font-weight-bold mb-4"
+        elevation="4"
+        prepend-icon="mdi-google"
+        @click="socialLogin('google')"
       >
-        {{ t('login.login') }}
+        {{ t('login.google') }}
+
+        <v-chip
+          v-if="lastUsedMethod === 'google'"
+          class="last-used-chip last-used-chip--single"
+          :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
+          prepend-icon="mdi-history"
+          pill
+        >
+          {{ t('login.last-used') }}
+        </v-chip>
       </v-btn>
-    </v-form>
+      <v-btn
+        block
+        color="primary"
+        size="large"
+        rounded="xl"
+        variant="tonal"
+        :loading="loading"
+        :disabled="btnDisabled"
+        class="login-btn text-none font-weight-bold mb-4"
+        elevation="4"
+        prepend-icon="mdi-github"
+        @click="socialLogin('github')"
+      >
+        {{ t('login.github') }}
+
+        <v-chip
+          v-if="lastUsedMethod === 'github'"
+          class="last-used-chip last-used-chip--single"
+          :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
+          prepend-icon="mdi-history"
+          pill
+        >
+          {{ t('login.last-used') }}
+        </v-chip>
+      </v-btn>
+
+      <div class="d-flex flex-column align-center py-4">
+        <v-btn-toggle
+          v-model="loginMethod"
+          class="login-toggle"
+          color="primary"
+          rounded="xl"
+          mandatory
+          divided
+          border
+          variant="outlined"
+        >
+          <v-btn
+            size="small"
+            prepend-icon="mdi-account-circle-outline"
+            value="username"
+            class="login-toggle-btn text-none"
+          >
+            {{ t('login.username') }}
+
+            <v-chip
+              v-if="lastUsedMethod === 'username'"
+              class="last-used-chip last-used-chip--group"
+              :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
+              prepend-icon="mdi-history"
+              pill
+            >
+              {{ t('login.last-used') }}
+            </v-chip>
+          </v-btn>
+          <v-btn
+            size="small"
+            prepend-icon="mdi-email-outline"
+            value="email"
+            class="login-toggle-btn text-none"
+          >
+            {{ t('login.email') }}
+
+            <v-chip
+              v-if="lastUsedMethod === 'email'"
+              class="last-used-chip last-used-chip--group"
+              :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
+              prepend-icon="mdi-history"
+              pill
+            >
+              {{ t('login.last-used') }}
+            </v-chip>
+          </v-btn>
+          <v-btn
+            v-if="showMagicLink >= 5"
+            size="small"
+            prepend-icon="mdi-mailbox-open-up-outline"
+            value="magic-link"
+            class="login-toggle-btn text-none"
+          >
+            {{ t('login.magic-link') }}
+
+            <v-chip
+              v-if="lastUsedMethod === 'magic-link'"
+              class="last-used-chip last-used-chip--group"
+              :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
+              prepend-icon="mdi-history"
+              pill
+            >
+              {{ t('login.last-used') }}
+            </v-chip>
+          </v-btn>
+        </v-btn-toggle>
+      </div>
+
+      <v-form
+        ref="form"
+        @submit.prevent="submit"
+      >
+        <div class="mb-4">
+          <v-text-field
+            v-if="loginMethod === 'username'"
+            v-model="state.username"
+            variant="outlined"
+            color="primary"
+            rounded="lg"
+            :label="t('login.username')"
+            :rules="usernameRules"
+            prepend-inner-icon="mdi-account-circle-outline"
+            hide-details="auto"
+          />
+          <v-text-field
+            v-else
+            v-model="state.email"
+            variant="outlined"
+            color="primary"
+            rounded="lg"
+            :label="t('login.email')"
+            :rules="emailRules"
+            prepend-inner-icon="mdi-email-outline"
+            hide-details="auto"
+          />
+        </div>
+
+        <div
+          v-if="loginMethod !== 'magic-link'"
+          class="mb-6"
+        >
+          <v-text-field
+            v-model="state.password"
+            :type="showPassword ? 'text' : 'password'"
+            variant="outlined"
+            color="primary"
+            rounded="lg"
+            :label="t('login.password')"
+            :rules="passwordRules"
+            prepend-inner-icon="mdi-key-outline"
+            hide-details="auto"
+          >
+            <template #append-inner>
+              <v-btn
+                icon
+                variant="text"
+                density="compact"
+                @click="togglePasswordVisibility"
+              >
+                <v-icon size="small">
+                  {{ showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline' }}
+                </v-icon>
+              </v-btn>
+            </template>
+          </v-text-field>
+        </div>
+
+        <VueTurnstile
+          ref="turnstileRef"
+          :site-key="turnstileKey"
+          :language="storeLang ?? 'auto'"
+          :theme="storeTheme ?? 'auto'"
+          appearance="execute"
+          @success="onTurnstileSuccess"
+          @error="onTurnstileError"
+          @expired="onTurnstileExpired"
+          @timeout="onTurnstileTimeout"
+        />
+
+        <v-btn
+          block
+          color="primary"
+          size="large"
+          rounded="xl"
+          type="submit"
+          variant="flat"
+          :loading="loading"
+          :disabled="btnDisabled || !form?.isValid"
+          :prepend-icon="loginMethod === 'magic-link' ? 'mdi-mailbox-open-up-outline' : 'mdi-login'"
+          class="text-none font-weight-bold glow-button"
+        >
+          {{ t('login.login') }}
+        </v-btn>
+      </v-form>
+    </div>
 
     <NuxtLink to="/signup">
       <v-btn
@@ -228,6 +231,21 @@
         class="text-none font-weight-bold mt-4"
       >
         {{ t('signup.signup') }}
+      </v-btn>
+    </NuxtLink>
+
+    <NuxtLink to="/reset-password">
+      <v-btn
+        block
+        color="primary"
+        size="large"
+        rounded="xl"
+        type="submit"
+        variant="tonal"
+        prepend-icon="mdi-lock-reset"
+        class="text-none font-weight-bold mt-4"
+      >
+        {{ t('reset-password.question') }}
       </v-btn>
     </NuxtLink>
   </div>
@@ -270,6 +288,7 @@ const form = ref<{
 const loginMethod = ref<"username" | "email" | "magic-link" | "google" | "github">("username")
 // to avoid blowing up the daily mail limit
 const showMagicLink = ref(0)
+const magicLinkDone = ref(false)
 
 const emailRules = ref([
   (v: unknown) => !!v || t("rules.email.required"),
@@ -458,7 +477,10 @@ async function magicLinkLogin() {
     lastErrorTurnstile.value = false
     handleError(error)
   } else {
-    // ! TODO : add the notice to check emails
+    messageColor.value = "success"
+    errorMessage.value = t("login.magic-link-success")
+    issueMessage.value = ""
+    magicLinkDone.value = true
   }
 
   loading.value = false

@@ -2,31 +2,31 @@
   <v-slide-y-transition>
     <v-alert
       v-if="!close"
-      :class="['mx-auto', color === 'warning' ? 'glass-warning' :'glass-error', 'my-4']"
-      :color="color ?? 'error'"
+      :class="['mx-auto', alertClass, 'my-4']"
+      :color="resolvedColor"
       closable
       rounded="xl"
       variant="tonal"
       width="100%"
       style="max-width: 600px;"
       border="start"
-      :border-color="color ?? 'error'"
+      :border-color="resolvedColor"
       @click:close="close = true"
     >
       <template #prepend>
         <div class="mr-4">
           <v-btn
             v-if="issue"
-            :color="color ?? 'error'"
-            icon="mdi-alert-circle-outline"
+            :color="resolvedColor"
+            :icon="statusIcon"
             variant="flat"
             size="small"
-            :class="color === 'warning' ? 'glow-warning-btn' : 'glow-error-btn'"
+            :class="buttonClass"
             @click="more = !more"
           />
           <v-icon
             v-else
-            icon="mdi-alert-circle-outline"
+            :icon="statusIcon"
             size="24"
             class="animate-pulse"
           />
@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-defineProps<{
+const props = defineProps<{
   color?: string;
   issue?: string;
   message: string;
@@ -58,6 +58,34 @@ defineProps<{
 
 const more = ref(false)
 const close = ref(false)
+
+const resolvedColor = computed(() => props.color ?? "error")
+
+const alertClass = computed(() => {
+  switch (resolvedColor.value) {
+    case "warning":
+      return "glass-warning"
+    case "success":
+      return "glass-success"
+    default:
+      return "glass-error"
+  }
+})
+
+const buttonClass = computed(() => {
+  switch (resolvedColor.value) {
+    case "warning":
+      return "glow-warning-btn"
+    case "success":
+      return "glow-success-btn"
+    default:
+      return "glow-error-btn"
+  }
+})
+
+const statusIcon = computed(() => (resolvedColor.value === "success"
+  ? "mdi-check-circle-outline"
+  : "mdi-alert-circle-outline"))
 </script>
 
 <style lang="scss" scoped>
@@ -75,12 +103,23 @@ const close = ref(false)
   box-shadow: 0 4px 20px rgba(var(--v-theme-warning), 0.15);
 }
 
+.glass-success {
+  backdrop-filter: blur(10px);
+  background: rgba(var(--v-theme-success), 0.1) !important;
+  border: 1px solid rgba(var(--v-theme-success), 0.2);
+  box-shadow: 0 4px 20px rgba(var(--v-theme-success), 0.15);
+}
+
 .glow-error-btn {
   box-shadow: 0 0 10px rgba(var(--v-theme-error), 0.4);
 }
 
 .glow-warning-btn {
   box-shadow: 0 0 10px rgba(var(--v-theme-warning), 0.4);
+}
+
+.glow-success-btn {
+  box-shadow: 0 0 10px rgba(var(--v-theme-success), 0.4);
 }
 
 .code-font {
