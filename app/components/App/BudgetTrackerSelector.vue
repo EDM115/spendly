@@ -1,120 +1,128 @@
 <template>
-  <v-card class="glass-card mb-4 pa-1 rounded-lg">
-    <v-card-title class="d-flex align-center">
-      <v-icon
-        icon="mdi-wallet-bifold-outline"
-        class="mr-2"
-        color="primary"
-      />
-      <span class="font-weight-bold">{{ t("app.budget-tracker.title") }}</span>
-    </v-card-title>
-    <v-card-text class="pt-4">
-      <v-row align="center">
-        <v-col
-          cols="12"
-          sm="6"
-        >
-          <v-select
-            v-model="selectedTracker"
-            :items="budgetTrackers"
-            item-title="name"
-            item-value="id"
-            :label="t('app.budget-tracker.select')"
-            variant="outlined"
-            hide-details
-            rounded="lg"
-            clearable
-            bg-color="transparent"
-            @update:model-value="onTrackerChange"
+  <v-expansion-panels
+    variant="accordion"
+    class="glass-accordion mb-6"
+  >
+    <v-expansion-panel
+      class="glass-panel rounded-xl overflow-hidden transparent-panel"
+      elevation="0"
+    >
+      <v-expansion-panel-title class="font-weight-bold text-h6 py-4">
+        <v-icon
+          icon="mdi-wallet-bifold-outline"
+          class="mr-2"
+          color="primary"
+        />
+        <span class="font-weight-bold">{{ t("app.budget-tracker.title") }}</span>
+      </v-expansion-panel-title>
+      <v-expansion-panel-text class="pa-4">
+        <v-row align="center">
+          <v-col
+            cols="12"
+            sm="6"
           >
-            <template #no-data>
-              <v-list-item>
-                <v-list-item-title>{{ t("app.budget-tracker.no-tracker") }}</v-list-item-title>
-              </v-list-item>
-            </template>
-            <template #item="{ item, props: itemProps }">
-              <v-list-item v-bind="itemProps">
-                <template #append>
-                  <v-chip
-                    size="x-small"
-                    :color="getRoleColor(item.raw.role)"
-                    variant="flat"
-                    class="elevation-2"
-                  >
-                    {{ t(`app.budget-tracker.roles.${item.raw.role}`) }}
-                  </v-chip>
-                </template>
-              </v-list-item>
-            </template>
-            <template #selection="{ item }">
-              <span class="text-high-emphasis font-weight-medium">{{ item.raw.name }}</span>
-              <v-chip
-                size="x-small"
-                :color="getRoleColor(item.raw.role)"
-                class="ml-2 elevation-1"
-                variant="flat"
-              >
-                {{ t(`app.budget-tracker.roles.${item.raw.role}`) }}
-              </v-chip>
-            </template>
-          </v-select>
-        </v-col>
-        <v-col
-          cols="12"
-          sm="6"
-          :class="['tracker-actions', smAndUp ? 'tracker-actions--inline' : 'tracker-actions--stack']"
-        >
-          <v-btn
-            color="primary"
-            :class="[smAndUp ? 'ma-2' : 'ma-1']"
-            rounded="lg"
-            prepend-icon="mdi-plus"
-            :block="!smAndUp"
-            :disabled="isDemo"
-            @click="showAddDialog = true"
+            <v-select
+              v-model="selectedTracker"
+              :items="budgetTrackers"
+              item-title="name"
+              item-value="id"
+              :label="t('app.budget-tracker.select')"
+              variant="outlined"
+              hide-details
+              rounded="lg"
+              clearable
+              bg-color="transparent"
+              @update:model-value="onTrackerChange"
+            >
+              <template #no-data>
+                <v-list-item>
+                  <v-list-item-title>{{ t("app.budget-tracker.no-tracker") }}</v-list-item-title>
+                </v-list-item>
+              </template>
+              <template #item="{ item, props: itemProps }">
+                <v-list-item v-bind="itemProps">
+                  <template #append>
+                    <v-chip
+                      size="x-small"
+                      :color="getRoleColor(item.raw.role)"
+                      variant="flat"
+                      class="elevation-2"
+                    >
+                      {{ t(`app.budget-tracker.roles.${item.raw.role}`) }}
+                    </v-chip>
+                  </template>
+                </v-list-item>
+              </template>
+              <template #selection="{ item }">
+                <span class="text-high-emphasis font-weight-medium">{{ item.raw.name }}</span>
+                <v-chip
+                  size="x-small"
+                  :color="getRoleColor(item.raw.role)"
+                  class="ml-2 elevation-1"
+                  variant="flat"
+                >
+                  {{ t(`app.budget-tracker.roles.${item.raw.role}`) }}
+                </v-chip>
+              </template>
+            </v-select>
+          </v-col>
+          <v-col
+            cols="12"
+            sm="6"
+            :class="['tracker-actions', smAndUp ? 'tracker-actions--inline' : 'tracker-actions--stack']"
           >
-            {{ t("app.budget-tracker.add") }}
-          </v-btn>
-          <v-btn
-            v-if="selectedTracker"
-            color="secondary"
-            :class="[smAndUp ? 'ma-2' : 'ma-1']"
-            rounded="lg"
-            prepend-icon="mdi-pencil-outline"
-            :block="!smAndUp"
-            :disabled="isDemo || !canEdit"
-            @click="openEditDialog"
-          >
-            {{ t("app.budget-tracker.edit") }}
-          </v-btn>
-          <v-btn
-            v-if="selectedTracker"
-            color="warning"
-            :class="[smAndUp ? 'ma-2' : 'ma-1']"
-            rounded="lg"
-            prepend-icon="mdi-account-multiple-outline"
-            :block="!smAndUp"
-            :disabled="isDemo || !canManageUsers"
-            @click="showShareDialog = true"
-          >
-            {{ t("app.budget-tracker.share") }}
-          </v-btn>
-          <v-btn
-            v-if="selectedTracker"
-            color="error"
-            :class="[smAndUp ? 'ma-2' : 'ma-1']"
-            rounded="lg"
-            prepend-icon="mdi-delete-outline"
-            :block="!smAndUp"
-            :disabled="isDemo || !canDelete"
-            @click="showDeleteDialog = true"
-          >
-            {{ t("app.budget-tracker.delete") }}
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-card-text>
-  </v-card>
+            <v-btn
+              color="primary"
+              :class="[smAndUp ? 'ma-2' : 'ma-1']"
+              rounded="lg"
+              prepend-icon="mdi-plus"
+              :block="!smAndUp"
+              :disabled="isDemo"
+              @click="showAddDialog = true"
+            >
+              {{ t("app.budget-tracker.add") }}
+            </v-btn>
+            <v-btn
+              v-if="selectedTracker"
+              color="secondary"
+              :class="[smAndUp ? 'ma-2' : 'ma-1']"
+              rounded="lg"
+              prepend-icon="mdi-pencil-outline"
+              :block="!smAndUp"
+              :disabled="isDemo || !canEdit"
+              @click="openEditDialog"
+            >
+              {{ t("app.budget-tracker.edit") }}
+            </v-btn>
+            <v-btn
+              v-if="selectedTracker"
+              color="warning"
+              :class="[smAndUp ? 'ma-2' : 'ma-1']"
+              rounded="lg"
+              prepend-icon="mdi-account-multiple-outline"
+              :block="!smAndUp"
+              :disabled="isDemo || !canManageUsers"
+              @click="showShareDialog = true"
+            >
+              {{ t("app.budget-tracker.share") }}
+            </v-btn>
+            <v-btn
+              v-if="selectedTracker"
+              color="error"
+              :class="[smAndUp ? 'ma-2' : 'ma-1']"
+              rounded="lg"
+              prepend-icon="mdi-delete-outline"
+              :block="!smAndUp"
+              :disabled="isDemo || !canDelete"
+              @click="showDeleteDialog = true"
+            >
+              {{ t("app.budget-tracker.delete") }}
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-expansion-panel-text>
+    </v-expansion-panel>
+  </v-expansion-panels>
 
   <v-dialog
     v-model="showAddDialog"
