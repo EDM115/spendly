@@ -14,12 +14,6 @@
   "editor.tabSize": 2,
   "eslint.format.enable": true,
   "eslint.ignoreUntitled": true,
-  "eslint.options": {
-    "flags": [
-      "unstable_ts_config"
-    ]
-  },
-  "eslint.useFlatConfig": true,
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
     "Dockerfile": ".dockerignore, .node-version",

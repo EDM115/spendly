@@ -1,11 +1,3 @@
-import {
-  computed,
-  useMainStore,
-  useVTheme,
-  watch,
-  type Theme,
-} from "#imports"
-
 export function useCustomTheme() {
   const vtheme = useVTheme()
   const store = useMainStore()

@@ -1,8 +1,8 @@
-import type { UserType } from "../shared/types/main"
+import type { UserType } from "#shared/types/main"
 
-import { auth } from "../server/utils/auth"
-import { db } from "../shared/db/drizzle"
-import { schema } from "../shared/db/schema"
+import { auth } from "#server/utils/auth"
+import { db } from "#shared/db/drizzle"
+import { schema } from "#shared/db/schema"
 import { eq } from "drizzle-orm"
 
 type SeedUser = {

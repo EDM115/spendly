@@ -49,6 +49,7 @@
           to="/admin"
           class="mb-2"
           variant="text"
+          :color="route.path === '/admin' ? 'secondary' : undefined"
           rounded="lg"
           prepend-icon="mdi-shield-account-outline"
           :text="t('navbar.admin')"
@@ -56,11 +57,22 @@
         <v-btn
           v-if="connected && !store.getIsDemo"
           to="/account"
-          class="mb-4"
+          class="mb-2"
           variant="text"
+          :color="route.path === '/account' ? 'secondary' : undefined"
           rounded="lg"
           prepend-icon="mdi-account-circle-outline"
           :text="t('navbar.account')"
+        />
+        <v-btn
+          v-if="connected && !store.getIsDemo"
+          to="/app"
+          class="mb-4"
+          variant="text"
+          :color="route.path === '/app' ? 'secondary' : undefined"
+          rounded="lg"
+          prepend-icon="mdi-wallet-bifold-outline"
+          :text="t('navbar.app')"
         />
         <v-btn-toggle
           v-model="selectedTheme"

@@ -186,6 +186,7 @@
         <v-color-picker
           v-model="categoryForm.color"
           mode="hex"
+          bg-color="transparent"
           rounded="lg"
           :modes="['hex']"
           class="mb-4 glass-panel border-thin w-100"
@@ -271,10 +272,11 @@ const showAddDialog = ref(false)
 const showDeleteDialog = ref(false)
 const editingCategory = ref<Category | null>(null)
 const deletingCategory = ref<Category | null>(null)
+const defaultColor = computed(() => theme.current.value.colors.primary)
 const categoryForm = ref({
   name: "",
   icon: "mdi-",
-  color: computed(() => theme.current.value.colors.primary).value,
+  color: computed(() => defaultColor.value),
 })
 const isValidIcon = ref(false)
 const testIcon = ref<InstanceType<typeof VIcon> | HTMLElement | null>(null)
@@ -473,7 +475,7 @@ const closeDialog = () => {
   categoryForm.value = {
     name: "",
     icon: "mdi-",
-    color: "#4ADE80",
+    color: defaultColor.value,
   }
   isValidIcon.value = false
   iconSearch.value = ""

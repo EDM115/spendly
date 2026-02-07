@@ -1,12 +1,3 @@
-import {
-  computed,
-  defineStore,
-  ref,
-  useRequestEvent,
-  type BudgetTrackerRole,
-  type Language,
-  type Theme,
-} from "#imports"
 import { authClient } from "~/utils/authClient"
 
 const ssrSafe = import.meta.client && typeof window !== "undefined" && typeof localStorage !== "undefined"
@@ -28,6 +19,9 @@ export const useMainStore = defineStore("main", () => {
         id: serverAuth.userId,
         role: serverAuth.role ?? null,
         name: serverAuth.username ?? null,
+        email: serverAuth.email ?? null,
+        username: serverAuth.username ?? null,
+        displayUsername: serverAuth.username ?? null,
       }
     : null))
   const getUser = computed(() => getSession.value?.user ?? getServerUser.value)

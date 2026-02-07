@@ -264,6 +264,10 @@ body {
   flex-basis: calc(var(--v-input-control-height) / 4 + 2px) !important;
 }
 
+.v-btn__content {
+  white-space: normal !important;
+}
+
 @media (max-width: 600px) {
   *::-webkit-scrollbar {
     width: 4px !important;

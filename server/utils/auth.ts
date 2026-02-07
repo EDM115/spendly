@@ -47,6 +47,19 @@ export const auth = betterAuth({
       ) */
     },
   },
+  emailVerification: {
+    sendVerificationEmail: async ({
+      user, url, token,
+    }, request) => {
+      console.log(`Email verification requested for user ${user.email}. Verification URL : ${url}, Token : ${token}`)
+
+      /* void sendEmail({
+        to: user.email,
+        subject: "Verify your email address",
+        text: `Click the link to verify your email: ${url}`,
+      }) */
+    },
+  },
   experimental: { joins: false },
   fetchOptions: {
     onError: async (context: ErrorContext) => {
@@ -121,6 +134,11 @@ export const auth = betterAuth({
     },
   },
   trustedOrigins: [ process.env.BETTER_AUTH_URL!, "https://spendly.edm115.dev" ],
+  user: {
+    changeEmail: {
+      enabled: true,
+    },
+  },
 })
 
 export default auth

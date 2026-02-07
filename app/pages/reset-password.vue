@@ -90,7 +90,7 @@
                 {{ t('reset-password.title') }}
               </h2>
               <p class="text-medium-emphasis">
-                {{ t('reset-password.welcome') }}
+                {{ hasToken && !invalidToken ? t('reset-password.welcome-reset') : t('reset-password.welcome') }}
               </p>
             </div>
 

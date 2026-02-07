@@ -9,7 +9,7 @@
     "@mdi/svg": "~7.4.47",
     "@nuxt/fonts": "~0.13.0",
     "@nuxt/image": "~2.0.0",
-    "@nuxtjs/i18n": "~10.2.1",
+    "@nuxtjs/i18n": "~10.2.3",
     "@pinia/nuxt": "~0.11.3",
     "@vueuse/core": "~14.2.0",
     "@vueuse/nuxt": "~14.2.0",
@@ -19,7 +19,7 @@
     "chart.js": "~4.5.1",
     "drizzle-orm": "~0.45.1",
     "jspdf": "4.1.0",
-    "nuxt": "~4.3.0",
+    "nuxt": "~4.3.1",
     "nuxt-svgo": "~4.2.6",
     "pinia": "~3.0.4",
     "resend": "~6.9.1",
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "~1.52.0",
-    "@nuxt/eslint": "~1.13.0",
+    "@nuxt/eslint": "~1.14.0",
     "@stylistic/eslint-plugin": "~5.7.1",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "latest",
@@ -38,7 +38,7 @@
     "country-flag-emoji-polyfill": "~0.1.8",
     "drizzle-kit": "~0.31.8",
     "edm115-lint": "~0.1.6",
-    "eslint": "~9.39.2",
+    "eslint": "~10.0.0",
     "eslint-plugin-drizzle": "~0.2.3",
     "eslint-plugin-vue": "~10.7.0",
     "globals": "~17.3.0",
@@ -47,7 +47,7 @@
     "oxlint": "~1.43.0",
     "oxlint-tsgolint": "~0.11.4",
     "sass-embedded": "~1.97.3",
-    "sass-loader": "~16.0.6",
+    "sass-loader": "~16.0.7",
     "tsx": "~4.21.0",
     "typescript": "~5.9.3",
     "vue-eslint-parser": "~10.2.0",
@@ -62,7 +62,7 @@
   },
   "license": "MIT",
   "name": "spendly",
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@10.29.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -92,5 +92,5 @@
     "typecheck": "nuxt typecheck"
   },
   "type": "module",
-  "version": "0.13.0"
+  "version": "0.14.0"
 }

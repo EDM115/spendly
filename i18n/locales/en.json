@@ -1,4 +1,70 @@
 {
+  "account": {
+    "data": {
+      "delete": "Request account deletion",
+      "delete-confirmed": "Your deletion request has been received. You will be notified by email once it is processed.",
+      "delete-dialog": {
+        "cancel": "Cancel",
+        "confirm": "Confirm deletion",
+        "description": "This action is irreversible. Please export your data first, as it will not be recoverable afterwards. Check your budget trackers and transfer ownership if needed. The deletion will be handled by a Spendly admin and is not instantaneous. You will be notified by email once complete, and you will no longer be able to sign in after requesting deletion.",
+        "title": "Request account deletion"
+      },
+      "description": "Export your data or ask for account deletion",
+      "export": "Request data export",
+      "export-confirmed": "Your export request has been received. We will email you when it is ready.",
+      "export-dialog": {
+        "cancel": "Cancel",
+        "confirm": "Confirm export",
+        "description": "We will send an email to {email} with all currently available data : your current budget trackers (including any shared with you) and broad account info (username, email, and linked OAuth providers when applicable). Any previously deleted data will not be included in the export. The export will be handled by a Spendly admin and is not instantaneous. You will be notified by email once it is ready.",
+        "title": "Request data export"
+      },
+      "fallback-email": "your email address",
+      "title": "Data & privacy"
+    },
+    "donation": {
+      "coffee": "Buy me a coffee",
+      "description": "Since Spendly is free, it would mean the world to me if you donate. Any amount matters ! 🫶",
+      "github": "Sponsor on GitHub",
+      "paypal": "Donate with PayPal",
+      "title": "Support Spendly"
+    },
+    "email": {
+      "description": "Request a change to your email address",
+      "new": "New email",
+      "request": "Send verification email",
+      "success": "Verification email sent to the new address",
+      "title": "Email"
+    },
+    "oauth": {
+      "description": "Link or unlink your social providers",
+      "github": "GitHub",
+      "google": "Google",
+      "link": "Link",
+      "linked": "Linked",
+      "not-linked": "Not linked",
+      "title": "Connected accounts",
+      "unlink": "Unlink",
+      "unlinked": "Account unlinked"
+    },
+    "profile": {
+      "description": "Update your username",
+      "success": "Username updated successfully",
+      "title": "Profile",
+      "update": "Update username",
+      "username": "Username"
+    },
+    "security": {
+      "confirm-password": "Confirm new password",
+      "current-password": "Current password",
+      "description": "Update your password",
+      "new-password": "New password",
+      "request": "Update password",
+      "success": "Your password has been updated",
+      "title": "Security"
+    },
+    "subtitle": "Manage your profile, security, and connected accounts",
+    "title": "Account"
+  },
   "admin": {
     "backup": {
       "export-csv": "CSV",
@@ -207,6 +273,7 @@
   "navbar": {
     "account": "Account",
     "admin": "Admin",
+    "app": "App",
     "connect": "Log in",
     "disconnect": "Log out"
   },
@@ -226,7 +293,8 @@
     "reset-success": "Your password has been updated",
     "send-link": "Send reset link",
     "title": "Reset password",
-    "welcome": "Enter your email to receive a reset link"
+    "welcome": "Enter your email to receive a reset link",
+    "welcome-reset": "Enter your new password to reset it"
   },
   "rules": {
     "email": {

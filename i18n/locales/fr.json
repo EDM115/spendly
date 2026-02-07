@@ -1,4 +1,70 @@
 {
+  "account": {
+    "data": {
+      "delete": "Demander la suppression du compte",
+      "delete-confirmed": "Votre demande de suppression a bien été reçue. Vous serez notifié par e-mail une fois le traitement terminé.",
+      "delete-dialog": {
+        "cancel": "Annuler",
+        "confirm": "Confirmer la suppression",
+        "description": "Cette action est irréversible. Veuillez d'abord exporter vos données, car elles ne seront pas récupérables par la suite. Vérifiez vos budgets et transférez la propriété si besoin. La suppression sera traitée par un admin Spendly et ne sera pas instantanée. Vous serez informé par e-mail une fois terminée et vous ne pourrez plus vous connecter après la demande.",
+        "title": "Demander la suppression du compte"
+      },
+      "description": "Exportez vos données ou demandez la suppression du compte",
+      "export": "Demander l'export des données",
+      "export-confirmed": "Votre demande d'export a bien été reçue. Nous vous enverrons un e-mail quand elle sera prête.",
+      "export-dialog": {
+        "cancel": "Annuler",
+        "confirm": "Confirmer l'export",
+        "description": "Nous enverrons un e-mail à {email} avec toutes les données disponibles : vos budgets actuels (y compris ceux partagés avec vous) et les informations principales du compte (nom d'utilisateur, e-mail et fournisseurs OAuth liés si applicable). Les données précédemment supprimées ne seront pas incluses dans l'export. L'export sera traité par un administrateur Spendly et n'est pas instantané. Vous serez informé par e-mail une fois prêt.",
+        "title": "Demander un export des données"
+      },
+      "fallback-email": "votre adresse e-mail",
+      "title": "Données & confidentialité"
+    },
+    "donation": {
+      "coffee": "M'offrir un café",
+      "description": "Puisque Spendly est gratuit, un don signifierait beaucoup pour moi. Chaque montant compte ! 🫶",
+      "github": "Sponsoriser sur GitHub",
+      "paypal": "Faire un don via PayPal",
+      "title": "Soutenir Spendly"
+    },
+    "email": {
+      "description": "Demandez un changement de votre adresse e-mail",
+      "new": "Nouvel e-mail",
+      "request": "Envoyer l'e-mail de vérification",
+      "success": "Un e-mail de vérification a été envoyé à la nouvelle adresse",
+      "title": "E-mail"
+    },
+    "oauth": {
+      "description": "Liez ou dissociez vos fournisseurs sociaux",
+      "github": "GitHub",
+      "google": "Google",
+      "link": "Lier",
+      "linked": "Lié",
+      "not-linked": "Non lié",
+      "title": "Comptes connectés",
+      "unlink": "Dissocier",
+      "unlinked": "Compte dissocié"
+    },
+    "profile": {
+      "description": "Mettez à jour votre nom d'utilisateur",
+      "success": "Nom d'utilisateur mis à jour",
+      "title": "Profil",
+      "update": "Mettre à jour le nom d'utilisateur",
+      "username": "Nom d'utilisateur"
+    },
+    "security": {
+      "confirm-password": "Confirmer le nouveau mot de passe",
+      "current-password": "Mot de passe actuel",
+      "description": "Mettez à jour votre mot de passe",
+      "new-password": "Nouveau mot de passe",
+      "request": "Mettre à jour le mot de passe",
+      "success": "Votre mot de passe a été mis à jour",
+      "title": "Sécurité"
+    },
+    "subtitle": "Gérez votre profil, la sécurité et vos comptes connectés",
+    "title": "Compte"
+  },
   "admin": {
     "backup": {
       "export-csv": "CSV",
@@ -207,6 +273,7 @@
   "navbar": {
     "account": "Compte",
     "admin": "Admin",
+    "app": "App",
     "connect": "Connexion",
     "disconnect": "Déconnexion"
   },
@@ -226,7 +293,8 @@
     "reset-success": "Votre mot de passe a été mis à jour",
     "send-link": "Envoyer le lien de réinitialisation",
     "title": "Réinitialiser le mot de passe",
-    "welcome": "Saisissez votre e-mail pour recevoir un lien de réinitialisation"
+    "welcome": "Saisissez votre e-mail pour recevoir un lien de réinitialisation",
+    "welcome-reset": "Saisissez votre nouveau mot de passe pour le réinitialiser"
   },
   "rules": {
     "email": {

@@ -7,7 +7,7 @@
       <slot />
     </v-main>
     <v-footer
-      v-if="!['/app', '/admin', '/account', '/demo'].includes(route.path)"
+      v-if="!['/app', '/admin', '/demo'].includes(route.path)"
       class="bg-transparent py-8 text-center d-flex flex-column"
     >
       <div class="d-flex align-center">

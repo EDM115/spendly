@@ -398,11 +398,10 @@ async function usernameLogin() {
   if (error) {
     lastErrorTurnstile.value = false
     handleError(error)
+    loading.value = false
   } else {
     await navigateTo("/app", { redirectCode: 302 })
   }
-
-  loading.value = false
 }
 
 async function emailLogin() {
@@ -424,11 +423,10 @@ async function emailLogin() {
   if (error) {
     lastErrorTurnstile.value = false
     handleError(error)
+    loading.value = false
   } else {
     await navigateTo("/app", { redirectCode: 302 })
   }
-
-  loading.value = false
 }
 
 async function socialLogin(provider: "google" | "github") {
@@ -449,9 +447,8 @@ async function socialLogin(provider: "google" | "github") {
   if (error) {
     lastErrorTurnstile.value = false
     handleError(error)
+    loading.value = false
   }
-
-  loading.value = false
 }
 
 async function magicLinkLogin() {
@@ -502,6 +499,7 @@ async function submit() {
       break
     } default: {
       // do nothing
+      void 0
     }
   }
 
