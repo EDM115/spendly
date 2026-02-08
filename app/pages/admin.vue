@@ -11,32 +11,20 @@
         lg="10"
         xl="8"
       >
-        <AdminSettings
-          v-if="data"
-          :initial-users="data.users"
-        />
+        <AdminSettings />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts" setup>
-import type { UserType } from "#shared/types/main"
 import { authClient } from "~/utils/authClient"
-
-type AdminUser = {
-  id: string;
-  username: string;
-  role: UserType;
-}
 
 const { t } = useI18n()
 
 useHead({ title: t("main.admin") })
 
-const { data } = await useAsyncData<{
-  users: AdminUser[];
-}>("admin-page-data", async () => {
+await useAsyncData("admin-page-guard", async () => {
   const event = useRequestEvent()
   const serverAuth = event?.context.auth ?? null
   const sessionState = serverAuth?.userId
@@ -69,12 +57,7 @@ const { data } = await useAsyncData<{
     })
   }
 
-  // ! TODO, redo the route
-  const usersData = await $fetch<{ body: { users?: AdminUser[] } }>("/api/admin/user")
-
-  return {
-    users: usersData.body?.users ?? [],
-  }
+  return true
 })
 
 </script>

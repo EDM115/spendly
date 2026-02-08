@@ -18,7 +18,8 @@
     "canvas-to-svg": "~1.0.3",
     "chart.js": "~4.5.1",
     "drizzle-orm": "~0.45.1",
-    "jspdf": "4.1.0",
+    "jspdf": "~4.1.0",
+    "jszip": "~3.10.1",
     "nuxt": "~4.3.1",
     "nuxt-svgo": "~4.2.6",
     "pinia": "~3.0.4",
@@ -92,5 +93,5 @@
     "typecheck": "nuxt typecheck"
   },
   "type": "module",
-  "version": "0.14.0"
+  "version": "0.15.0"
 }

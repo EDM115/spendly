@@ -55,6 +55,21 @@
           :text="t('navbar.admin')"
         />
         <v-btn
+          v-if="connected && !store.getIsDemo && isImpersonating"
+          class="mb-2 text-none"
+          variant="tonal"
+          rounded="lg"
+          prepend-icon="mdi-account-alert-outline"
+          :color="impersonationColor"
+          style="height: calc(var(--v-btn-height) + 12px);"
+          @mouseenter="impersonationHover = true"
+          @mouseleave="impersonationHover = false"
+          @click="stopImpersonating"
+        >
+          <!-- eslint-disable-next-line vue/no-v-html -->
+          <span v-html="impersonationText" />
+        </v-btn>
+        <v-btn
           v-if="connected && !store.getIsDemo"
           to="/account"
           class="mb-2"
@@ -153,6 +168,20 @@ const selectedLanguage = computed<Language>({
   },
 })
 const connected = computed(() => store.getIsAuthenticated)
+const impersonationHover = ref(false)
+const session = computed(() => store.getSession)
+const isImpersonating = computed(() => Boolean(session.value?.session?.impersonatedBy))
+const impersonationTarget = computed(() => store.getUser?.displayUsername
+  ?? store.getUser?.username
+  ?? store.getUser?.name
+  ?? "")
+const impersonationText = computed(() => (impersonationHover.value
+  ? t("navbar.stop-impersonating")
+  : t("navbar.impersonating", { username: impersonationTarget.value })
+      .replace("\n", "<br>")))
+const impersonationColor = computed(() => (impersonationHover.value
+  ? "error"
+  : "warning"))
 const accountIcon = computed(() => (connected.value
   ? "mdi-logout"
   : "mdi-login"))
@@ -185,6 +214,16 @@ async function handleConnect() {
     await navigateTo("/")
   } else {
     await navigateTo("/login")
+  }
+}
+
+async function stopImpersonating() {
+  try {
+    await authClient.admin.stopImpersonating()
+    await authClient.getSession({ query: { disableCookieCache: true } })
+  } finally {
+    impersonationHover.value = false
+    await navigateTo("/account", { external: true })
   }
 }
 </script>
