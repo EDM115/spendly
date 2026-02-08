@@ -9,7 +9,7 @@
         "description": "This action is irreversible. Please export your data first, as it will not be recoverable afterwards. Check your budget trackers and transfer ownership if needed. The deletion will be handled by a Spendly admin and is not instantaneous. You will be notified by email once complete, and you will no longer be able to sign in after requesting deletion.",
         "title": "Request account deletion"
       },
-      "description": "Export your data or ask for account deletion",
+      "description": "Export your data or delete your account",
       "export": "Request data export",
       "export-confirmed": "Your export request has been received. We will email you when it is ready.",
       "export-dialog": {

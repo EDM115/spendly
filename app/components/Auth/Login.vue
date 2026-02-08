@@ -1,7 +1,7 @@
 <template>
   <div class="w-100 login-root">
     <v-expand-transition>
-      <Error
+      <LayoutAlert
         v-if="errorMessage"
         :message="errorMessage"
         :issue="issueMessage"

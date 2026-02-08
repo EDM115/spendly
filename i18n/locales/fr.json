@@ -9,7 +9,7 @@
         "description": "Cette action est irréversible. Veuillez d'abord exporter vos données, car elles ne seront pas récupérables par la suite. Vérifiez vos budgets et transférez la propriété si besoin. La suppression sera traitée par un admin Spendly et ne sera pas instantanée. Vous serez informé par e-mail une fois terminée et vous ne pourrez plus vous connecter après la demande.",
         "title": "Demander la suppression du compte"
       },
-      "description": "Exportez vos données ou demandez la suppression du compte",
+      "description": "Exportez vos données ou supprimez votre compte",
       "export": "Demander l'export des données",
       "export-confirmed": "Votre demande d'export a bien été reçue. Nous vous enverrons un e-mail quand elle sera prête.",
       "export-dialog": {

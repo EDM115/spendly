@@ -88,7 +88,7 @@
           </v-form>
 
           <v-expand-transition>
-            <Error
+            <LayoutAlert
               v-if="usernameFeedback.message"
               :message="usernameFeedback.message"
               :issue="usernameFeedback.issue"
@@ -148,7 +148,7 @@
           </v-form>
 
           <v-expand-transition>
-            <Error
+            <LayoutAlert
               v-if="emailFeedback.message"
               :message="emailFeedback.message"
               :issue="emailFeedback.issue"
@@ -277,7 +277,7 @@
           </v-form>
 
           <v-expand-transition>
-            <Error
+            <LayoutAlert
               v-if="passwordFeedback.message"
               :message="passwordFeedback.message"
               :issue="passwordFeedback.issue"
@@ -374,7 +374,7 @@
           </v-list>
 
           <v-expand-transition>
-            <Error
+            <LayoutAlert
               v-if="oauthFeedback.message"
               :message="oauthFeedback.message"
               :issue="oauthFeedback.issue"
@@ -425,7 +425,7 @@
           </div>
 
           <v-expand-transition>
-            <Error
+            <LayoutAlert
               v-if="dataFeedback.message"
               :message="dataFeedback.message"
               :issue="dataFeedback.issue"
@@ -768,6 +768,7 @@ async function submitUsername() {
   usernameLoading.value = true
 
   const { error } = await authClient.updateUser({
+    name: usernameState.username,
     username: usernameState.username,
     displayUsername: usernameState.username,
   })

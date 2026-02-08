@@ -100,7 +100,7 @@
 
             <div v-else>
               <v-expand-transition>
-                <Error
+                <LayoutAlert
                   v-if="errorMessage"
                   :message="errorMessage"
                   :issue="issueMessage"
