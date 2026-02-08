@@ -22,8 +22,8 @@
             sm="6"
           >
             <v-select
-              v-model="selectedTracker"
-              :items="budgetTrackers"
+              v-model="selectedTrackerId"
+              :items="budgetTrackerItems"
               item-title="name"
               item-value="id"
               :label="t('app.budget-tracker.select')"
@@ -57,11 +57,11 @@
                 <span class="text-high-emphasis font-weight-medium">{{ item.raw.name }}</span>
                 <v-chip
                   size="x-small"
-                  :color="getRoleColor(item.raw.role)"
+                  :color="getRoleColor(selectedTrackerRole)"
                   class="ml-2 elevation-1"
                   variant="flat"
                 >
-                  {{ t(`app.budget-tracker.roles.${item.raw.role}`) }}
+                  {{ t(`app.budget-tracker.roles.${selectedTrackerRole}`) }}
                 </v-chip>
               </template>
             </v-select>
@@ -83,7 +83,7 @@
               {{ t("app.budget-tracker.add") }}
             </v-btn>
             <v-btn
-              v-if="selectedTracker"
+              v-if="selectedTrackerId"
               color="secondary"
               :class="[smAndUp ? 'ma-2' : 'ma-1']"
               rounded="lg"
@@ -95,7 +95,7 @@
               {{ t("app.budget-tracker.edit") }}
             </v-btn>
             <v-btn
-              v-if="selectedTracker"
+              v-if="selectedTrackerId"
               color="warning"
               :class="[smAndUp ? 'ma-2' : 'ma-1']"
               rounded="lg"
@@ -107,7 +107,7 @@
               {{ t("app.budget-tracker.share") }}
             </v-btn>
             <v-btn
-              v-if="selectedTracker"
+              v-if="selectedTrackerId"
               color="error"
               :class="[smAndUp ? 'ma-2' : 'ma-1']"
               rounded="lg"
@@ -257,11 +257,11 @@
       </v-card-title>
       <v-card-text>
         <v-list
-          v-if="sharedUsers.length > 0"
+          v-if="sortedSharedUsers.length > 0"
           bg-color="transparent"
         >
           <v-list-item
-            v-for="user in sharedUsers"
+            v-for="user in sortedSharedUsers"
             :key="user.user_id"
             class="mb-1"
             rounded="lg"
@@ -295,7 +295,7 @@
             </v-list-item-subtitle>
             <template #append>
               <v-select
-                v-if="user.role !== 'owner' && canChangeUserRole(user.role)"
+                v-if="canEditSharedRole(user)"
                 v-model="user.role"
                 :items="availableRoles"
                 item-title="title"
@@ -310,6 +310,23 @@
                 @update:model-value="updateUserRole(user.user_id, $event)"
               />
               <v-tooltip
+                v-if="canTransferOwnership && user.user_id !== store.getUserId && user.role !== 'owner'"
+                location="top"
+                :text="t('app.budget-tracker.transfer-action')"
+              >
+                <template #activator="{ props: tooltipProps }">
+                  <v-btn
+                    v-bind="tooltipProps"
+                    icon="mdi-account-arrow-right-outline"
+                    color="warning"
+                    variant="text"
+                    size="small"
+                    class="ml-1"
+                    @click="openTransferDialog(user)"
+                  />
+                </template>
+              </v-tooltip>
+              <v-tooltip
                 location="top"
                 :text="t('app.budget-tracker.remove-user')"
               >
@@ -322,7 +339,7 @@
                     variant="text"
                     size="small"
                     class="ml-1"
-                    @click="removeUser(user.user_id)"
+                    @click="openRemoveShareDialog(user)"
                   />
                 </template>
               </v-tooltip>
@@ -380,6 +397,74 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+
+  <v-dialog
+    v-model="showTransferDialog"
+    max-width="520"
+    persistent
+  >
+    <v-card class="glass-card pa-1 border-thin">
+      <v-card-title class="text-h5 text-warning font-weight-bold">
+        {{ t("app.budget-tracker.transfer-title") }}
+      </v-card-title>
+      <v-card-text>
+        {{ t("app.budget-tracker.transfer-description", { username: transferTarget?.username ?? "" }) }}
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          color="secondary"
+          rounded="lg"
+          variant="text"
+          @click="showTransferDialog = false"
+        >
+          {{ t("app.budget-tracker.transfer-cancel") }}
+        </v-btn>
+        <v-btn
+          color="warning"
+          rounded="lg"
+          variant="elevated"
+          @click="confirmTransferOwnership"
+        >
+          {{ t("app.budget-tracker.transfer-confirm") }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog
+    v-model="showRemoveShareDialog"
+    max-width="520"
+    persistent
+  >
+    <v-card class="glass-card pa-1 border-thin">
+      <v-card-title class="text-h5 text-error font-weight-bold">
+        {{ t("app.budget-tracker.remove-user-title") }}
+      </v-card-title>
+      <v-card-text>
+        {{ t("app.budget-tracker.remove-user-description", { username: removeShareTarget?.username ?? "" }) }}
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          color="secondary"
+          rounded="lg"
+          variant="text"
+          @click="showRemoveShareDialog = false"
+        >
+          {{ t("app.budget-tracker.remove-user-cancel") }}
+        </v-btn>
+        <v-btn
+          color="error"
+          rounded="lg"
+          variant="elevated"
+          @click="confirmRemoveSharedUser"
+        >
+          {{ t("app.budget-tracker.remove-user-confirm") }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -398,27 +483,62 @@ const store = useMainStore()
 const { smAndUp } = useVDisplay()
 const isDemo = computed(() => store.getIsDemo)
 
-const selectedTracker = ref<string | null>(props.modelValue)
+const selectedTrackerId = computed<string | null>({
+  get: () => props.modelValue,
+  set: (value) => emit("update:modelValue", value),
+})
 const showAddDialog = ref(false)
 const showEditDialog = ref(false)
 const showDeleteDialog = ref(false)
 const showShareDialog = ref(false)
+const showTransferDialog = ref(false)
+const showRemoveShareDialog = ref(false)
 
 const newTrackerName = ref("")
 const editTrackerName = ref("")
 const newUsername = ref("")
 const newUserRole = ref("viewer")
 const sharedUsers = ref<SharedUser[]>([])
+const transferTarget = ref<SharedUser | null>(null)
+const removeShareTarget = ref<SharedUser | null>(null)
+const trackerRoleOverrides = ref<Record<string, BudgetTrackerRole>>({})
 
-const currentTrackerRole = computed(() => {
-  const tracker = props.budgetTrackers.find((t) => t.id === selectedTracker.value)
+const trackerById = computed(() => new Map(props.budgetTrackers.map((tracker) => [ tracker.id, tracker ])))
 
-  return tracker?.role ?? "viewer"
-})
+const getEffectiveRole = (id: string | null): BudgetTrackerRole => {
+  if (!id) {
+    return "viewer"
+  }
 
-const canEdit = computed(() => store.canEditTracker)
-const canDelete = computed(() => store.canDeleteTracker)
-const canManageUsers = computed(() => store.canManageUsers)
+  const override = trackerRoleOverrides.value[id]
+
+  if (override) {
+    return override
+  }
+
+  return trackerById.value.get(id)?.role ?? "viewer"
+}
+
+const budgetTrackerItems = computed(() => props.budgetTrackers.map((tracker) => {
+  const override = trackerRoleOverrides.value[tracker.id]
+
+  if (!override || override === tracker.role) {
+    return tracker
+  }
+
+  return Object.assign({}, tracker, { role: override })
+}).toSorted((a, b) => a.name.localeCompare(b.name)))
+
+const selectedTrackerRole = computed<BudgetTrackerRole>(() => getEffectiveRole(selectedTrackerId.value))
+
+const canEdit = computed(() => !isDemo.value && Boolean(selectedTrackerId.value)
+  && [ "owner", "admin" ].includes(selectedTrackerRole.value))
+const canDelete = computed(() => !isDemo.value && Boolean(selectedTrackerId.value)
+  && selectedTrackerRole.value === "owner")
+const canManageUsers = computed(() => !isDemo.value && Boolean(selectedTrackerId.value)
+  && [ "owner", "admin" ].includes(selectedTrackerRole.value))
+const canTransferOwnership = computed(() => Boolean(selectedTrackerId.value)
+  && selectedTrackerRole.value === "owner")
 
 const availableRoles = computed(() => [
   {
@@ -431,6 +551,26 @@ const availableRoles = computed(() => [
     title: t("app.budget-tracker.roles.admin"), value: "admin",
   },
 ])
+
+const sortedSharedUsers = computed(() => {
+  const rolePriority: Record<string, number> = {
+    owner: 0,
+    admin: 1,
+    editor: 2,
+    viewer: 3,
+  }
+
+  return [...sharedUsers.value]
+    .toSorted((a, b) => {
+      const roleDiff = (rolePriority[a.role] ?? 99) - (rolePriority[b.role] ?? 99)
+
+      if (roleDiff !== 0) {
+        return roleDiff
+      }
+
+      return a.username.localeCompare(b.username)
+    })
+})
 
 const getRoleColor = (role: string) => {
   switch (role) {
@@ -446,27 +586,66 @@ const getRoleColor = (role: string) => {
 }
 
 const canChangeUserRole = (targetRole: string) => {
-  if (currentTrackerRole.value === "owner") {
+  if (selectedTrackerRole.value === "owner") {
     return true
   }
 
-  if (currentTrackerRole.value === "admin") {
+  if (selectedTrackerRole.value === "admin") {
     return targetRole !== "owner"
   }
 
   return false
 }
 
-watch(() => props.modelValue, (newVal) => {
-  selectedTracker.value = newVal
+const canEditSharedRole = (user: SharedUser) => user.user_id !== store.getUserId
+  && user.role !== "owner"
+  && canChangeUserRole(user.role)
+
+watchEffect(() => {
+  if (!selectedTrackerId.value) {
+    if (store.getSelectedBudgetTrackerId) {
+      store.setSelectedBudgetTracker(null, null)
+    }
+
+    return
+  }
+
+  const role = selectedTrackerRole.value
+
+  if (store.getSelectedBudgetTrackerId !== selectedTrackerId.value
+    || store.getCurrentBudgetTrackerRole !== role) {
+    store.setSelectedBudgetTracker(selectedTrackerId.value, role)
+  }
+})
+
+watch(() => props.budgetTrackers, (trackers) => {
+  const nextOverrides: Record<string, BudgetTrackerRole> = {}
+
+  trackers.forEach((tracker) => {
+    const override = trackerRoleOverrides.value[tracker.id]
+
+    if (override && override !== tracker.role) {
+      nextOverrides[tracker.id] = override
+    }
+  })
+
+  trackerRoleOverrides.value = nextOverrides
+})
+
+watch(() => props.budgetTrackers, (trackers) => {
+  if (!selectedTrackerId.value) {
+    return
+  }
+
+  const stillExists = trackers.some((tracker) => tracker.id === selectedTrackerId.value)
+
+  if (!stillExists) {
+    selectedTrackerId.value = null
+  }
 })
 
 const onTrackerChange = (value: string | null) => {
-  const tracker = props.budgetTrackers.find((t) => t.id === value)
-  const role = (tracker?.role ?? null) as "owner" | "admin" | "editor" | "viewer" | null
-
-  store.setSelectedBudgetTracker(value, role)
-  emit("update:modelValue", value)
+  selectedTrackerId.value = value
 }
 
 const openEditDialog = () => {
@@ -474,7 +653,7 @@ const openEditDialog = () => {
     return
   }
 
-  const tracker = props.budgetTrackers.find((t) => t.id === selectedTracker.value)
+  const tracker = props.budgetTrackers.find((t) => t.id === selectedTrackerId.value)
 
   if (tracker) {
     editTrackerName.value = tracker.name
@@ -504,8 +683,10 @@ const addTracker = async () => {
     if ("id" in response.body && response.body.id) {
       const newId = String(response.body.id)
 
-      store.setSelectedBudgetTracker(newId, "owner")
-      emit("update:modelValue", newId)
+      trackerRoleOverrides.value = Object.assign({}, trackerRoleOverrides.value, {
+        [newId]: "owner",
+      })
+      selectedTrackerId.value = newId
     }
   } catch (error) {
     console.error("Failed to add tracker :", error)
@@ -517,7 +698,7 @@ const updateTracker = async () => {
     return
   }
 
-  if (!editTrackerName.value.trim() || !selectedTracker.value) {
+  if (!editTrackerName.value.trim() || !selectedTrackerId.value) {
     return
   }
 
@@ -525,7 +706,7 @@ const updateTracker = async () => {
     await $fetch("/api/budgetTracker", {
       method: "PUT",
       body: {
-        id: selectedTracker.value,
+        id: selectedTrackerId.value,
         name: editTrackerName.value,
       },
     })
@@ -541,18 +722,17 @@ const deleteTracker = async () => {
     return
   }
 
-  if (!selectedTracker.value) {
+  if (!selectedTrackerId.value) {
     return
   }
 
   try {
     await $fetch("/api/budgetTracker", {
       method: "DELETE",
-      body: { id: selectedTracker.value },
+      body: { id: selectedTrackerId.value },
     })
     showDeleteDialog.value = false
-    store.setSelectedBudgetTracker(null, null)
-    emit("update:modelValue", null)
+    selectedTrackerId.value = null
     emit("refresh")
   } catch (error) {
     console.error("Failed to delete tracker :", error)
@@ -560,13 +740,13 @@ const deleteTracker = async () => {
 }
 
 const fetchSharedUsers = async () => {
-  if (!selectedTracker.value) {
+  if (!selectedTrackerId.value) {
     return
   }
 
   try {
     const response = await $fetch("/api/budgetTracker/users", {
-      params: { budget_tracker_id: selectedTracker.value },
+      params: { budget_tracker_id: selectedTrackerId.value },
     })
 
     if ("users" in response.body) {
@@ -582,7 +762,7 @@ const addUser = async () => {
     return
   }
 
-  if (!newUsername.value.trim() || !selectedTracker.value) {
+  if (!newUsername.value.trim() || !selectedTrackerId.value) {
     return
   }
 
@@ -590,7 +770,7 @@ const addUser = async () => {
     await $fetch("/api/budgetTracker/users", {
       method: "POST",
       body: {
-        budget_tracker_id: selectedTracker.value,
+        budget_tracker_id: selectedTrackerId.value,
         username: newUsername.value,
         role: newUserRole.value,
       },
@@ -608,7 +788,7 @@ const updateUserRole = async (userId: string, role: string) => {
     return
   }
 
-  if (!selectedTracker.value) {
+  if (!selectedTrackerId.value) {
     return
   }
 
@@ -616,7 +796,7 @@ const updateUserRole = async (userId: string, role: string) => {
     await $fetch("/api/budgetTracker/users", {
       method: "PUT",
       body: {
-        budget_tracker_id: selectedTracker.value,
+        budget_tracker_id: selectedTrackerId.value,
         target_user_id: userId,
         role,
       },
@@ -632,7 +812,7 @@ const removeUser = async (userId: string) => {
     return
   }
 
-  if (!selectedTracker.value) {
+  if (!selectedTrackerId.value) {
     return
   }
 
@@ -640,7 +820,7 @@ const removeUser = async (userId: string) => {
     await $fetch("/api/budgetTracker/users", {
       method: "DELETE",
       body: {
-        budget_tracker_id: selectedTracker.value,
+        budget_tracker_id: selectedTrackerId.value,
         target_user_id: userId,
       },
     })
@@ -650,9 +830,77 @@ const removeUser = async (userId: string) => {
   }
 }
 
+const openRemoveShareDialog = (user: SharedUser) => {
+  removeShareTarget.value = user
+  showRemoveShareDialog.value = true
+}
+
+const confirmRemoveSharedUser = async () => {
+  if (!removeShareTarget.value) {
+    return
+  }
+
+  await removeUser(removeShareTarget.value.user_id)
+  showRemoveShareDialog.value = false
+  removeShareTarget.value = null
+}
+
+const openTransferDialog = (user: SharedUser) => {
+  if (!canTransferOwnership.value) {
+    return
+  }
+
+  transferTarget.value = user
+  showTransferDialog.value = true
+}
+
+const confirmTransferOwnership = async () => {
+  if (!transferTarget.value || !selectedTrackerId.value) {
+    return
+  }
+
+  try {
+    showTransferDialog.value = false
+    await $fetch("/api/budgetTracker/transferOwnership", {
+      method: "POST",
+      body: {
+        budget_tracker_id: selectedTrackerId.value,
+        target_user_id: transferTarget.value.user_id,
+      },
+    })
+    trackerRoleOverrides.value = Object.assign({}, trackerRoleOverrides.value, {
+      [selectedTrackerId.value]: "admin",
+    })
+    sharedUsers.value = sharedUsers.value.map((entry) => {
+      if (entry.user_id === transferTarget.value?.user_id) {
+        return Object.assign({}, entry, { role: "owner" })
+      }
+
+      if (entry.user_id === store.getUserId) {
+        return Object.assign({}, entry, { role: "admin" })
+      }
+
+      return entry
+    })
+    emit("refresh")
+    await fetchSharedUsers()
+  } catch (error) {
+    console.error("Failed to transfer ownership :", error)
+  } finally {
+    showTransferDialog.value = false
+    transferTarget.value = null
+  }
+}
+
 watch(showShareDialog, async (val) => {
   if (val) {
     await fetchSharedUsers()
+  }
+})
+
+watch(showTransferDialog, (val) => {
+  if (!val && showShareDialog.value) {
+    void fetchSharedUsers()
   }
 })
 </script>

@@ -118,6 +118,10 @@
       "name": "Nom",
       "no-tracker": "Aucun budget pour le moment",
       "remove-user": "Retirer l'utilisateur",
+      "remove-user-cancel": "Annuler",
+      "remove-user-confirm": "Retirer l'utilisateur",
+      "remove-user-description": "Êtes-vous sûr de vouloir retirer {username} de ce budget ?",
+      "remove-user-title": "Retirer l'utilisateur partagé",
       "role": "Rôle",
       "roles": {
         "admin": "Admin",
@@ -128,6 +132,11 @@
       "select": "Sélectionner un budget",
       "share": "Partager",
       "share-close": "Fermer",
+      "transfer-action": "Transférer la propriété",
+      "transfer-cancel": "Annuler",
+      "transfer-confirm": "Transférer la propriété",
+      "transfer-description": "Cette action est définitive et ne peut pas être annulée. {username} deviendra propriétaire et vous deviendrez admin.",
+      "transfer-title": "Transférer la propriété du budget",
       "title": "Budgets",
       "username": "Nom d'utilisateur",
       "users": "Partager le budget"

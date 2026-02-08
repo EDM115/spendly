@@ -118,6 +118,10 @@
       "name": "Name",
       "no-tracker": "No budget tracker yet",
       "remove-user": "Remove user",
+      "remove-user-cancel": "Cancel",
+      "remove-user-confirm": "Remove user",
+      "remove-user-description": "Are you sure you want to remove {username} from this budget tracker?",
+      "remove-user-title": "Remove shared user",
       "role": "Role",
       "roles": {
         "admin": "Admin",
@@ -128,6 +132,11 @@
       "select": "Select a budget tracker",
       "share": "Share",
       "share-close": "Close",
+      "transfer-action": "Transfer ownership",
+      "transfer-cancel": "Cancel",
+      "transfer-confirm": "Transfer ownership",
+      "transfer-description": "This action is definitive and cannot be undone. {username} will become the new owner, and you will become an admin.",
+      "transfer-title": "Transfer budget ownership",
       "title": "Budget Trackers",
       "username": "Username",
       "users": "Share budget tracker"
