@@ -145,7 +145,7 @@ export default defineEventHandler(async (event) => {
       if (targetUser.length === 0) {
         throw createError({
           status: 404,
-          message: "user not found",
+          message: "User not found",
         })
       }
 
@@ -160,7 +160,7 @@ export default defineEventHandler(async (event) => {
       if (alreadyHasAccess.length > 0) {
         throw createError({
           status: 400,
-          message: "user already has access",
+          message: "User already has access",
         })
       }
 
@@ -174,7 +174,7 @@ export default defineEventHandler(async (event) => {
       return {
         status: 201,
         body: {
-          success: "user added to budget tracker",
+          success: "User added to budget tracker",
         },
       }
     }
@@ -263,7 +263,7 @@ export default defineEventHandler(async (event) => {
       return {
         status: 200,
         body: {
-          success: "user role updated",
+          success: "User role updated",
         },
       }
     }
@@ -349,7 +349,7 @@ export default defineEventHandler(async (event) => {
       return {
         status: 200,
         body: {
-          success: "user removed from budget tracker",
+          success: "User removed from budget tracker",
         },
       }
     }

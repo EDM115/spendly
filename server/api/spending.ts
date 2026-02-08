@@ -88,14 +88,14 @@ export default defineEventHandler(async (event) => {
         if (dbSpending.length === 0) {
           throw createError({
             status: 404,
-            message: "spending not found",
+            message: "Spending not found",
           })
         }
 
         return {
           status: 200,
           body: {
-            success: "spending retrieved",
+            success: "Spending retrieved",
             spending: dbSpending[0]!,
           },
         }
@@ -204,7 +204,7 @@ export default defineEventHandler(async (event) => {
       if (categoryExists.length === 0) {
         throw createError({
           status: 404,
-          message: "category not found",
+          message: "Category not found",
         })
       }
 
@@ -224,7 +224,7 @@ export default defineEventHandler(async (event) => {
       return {
         status: 201,
         body: {
-          success: "spending created",
+          success: "Spending created",
           id: spendingId,
         },
       }
@@ -302,7 +302,7 @@ export default defineEventHandler(async (event) => {
       if (spendingExists.length === 0) {
         throw createError({
           status: 404,
-          message: "spending not found",
+          message: "Spending not found",
         })
       }
 
@@ -317,7 +317,7 @@ export default defineEventHandler(async (event) => {
       if (categoryExists.length === 0) {
         throw createError({
           status: 404,
-          message: "category not found",
+          message: "Category not found",
         })
       }
 
@@ -337,7 +337,7 @@ export default defineEventHandler(async (event) => {
       return {
         status: 200,
         body: {
-          success: "spending updated",
+          success: "Spending updated",
         },
       }
     }
@@ -396,7 +396,7 @@ export default defineEventHandler(async (event) => {
       if (spendingExists.length === 0) {
         throw createError({
           status: 404,
-          message: "spending not found",
+          message: "Spending not found",
         })
       }
 
@@ -409,7 +409,7 @@ export default defineEventHandler(async (event) => {
       return {
         status: 200,
         body: {
-          success: "spending deleted",
+          success: "Spending deleted",
         },
       }
     }

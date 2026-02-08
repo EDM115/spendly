@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
         if (dbCategory.length === 0) {
           throw createError({
             status: 404,
-            message: "category not found",
+            message: "Category not found",
           })
         }
 
@@ -66,7 +66,7 @@ export default defineEventHandler(async (event) => {
         return {
           status: 200,
           body: {
-            success: "category retrieved",
+            success: "Category retrieved",
             category: dbCategory[0]!,
           },
         }
@@ -168,7 +168,7 @@ export default defineEventHandler(async (event) => {
       return {
         status: 201,
         body: {
-          success: "category created",
+          success: "Category created",
           id: categoryId,
         },
       }
@@ -208,7 +208,7 @@ export default defineEventHandler(async (event) => {
       if (dbCategory.length === 0) {
         throw createError({
           status: 404,
-          message: "category not found",
+          message: "Category not found",
         })
       }
 
@@ -244,7 +244,7 @@ export default defineEventHandler(async (event) => {
       return {
         status: 200,
         body: {
-          success: "category updated",
+          success: "Category updated",
         },
       }
     }
@@ -273,7 +273,7 @@ export default defineEventHandler(async (event) => {
       if (dbCategory.length === 0) {
         throw createError({
           status: 404,
-          message: "category not found",
+          message: "Category not found",
         })
       }
 
@@ -304,7 +304,7 @@ export default defineEventHandler(async (event) => {
       return {
         status: 200,
         body: {
-          success: "category deleted",
+          success: "Category deleted",
         },
       }
     }
