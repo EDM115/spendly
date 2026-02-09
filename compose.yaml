@@ -1,0 +1,16 @@
+services:
+  spendly:
+    build: .
+    image: edm115/spendly
+    ports:
+      - "60000:60000"
+    env_file:
+      - .env
+    environment:
+      SEED: "true"
+    volumes:
+      - spendly_db:/app/db
+    restart: unless-stopped
+
+volumes:
+  spendly_db:

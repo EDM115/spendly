@@ -695,9 +695,15 @@ const filteredSpendings = computed(() => {
 })
 
 const spendingsAggregates = computed(() => {
-  const daily = new Map<string, { income: number; expense: number }>()
-  const categories = new Map<string, { income: number; expense: number; color: string }>()
-  const monthly = new Map<string, { income: number; expense: number }>()
+  const daily = new Map<string, {
+    income: number; expense: number;
+  }>()
+  const categories = new Map<string, {
+    income: number; expense: number; color: string;
+  }>()
+  const monthly = new Map<string, {
+    income: number; expense: number;
+  }>()
   let incomeTotal = 0
   let expenseTotal = 0
 
@@ -760,8 +766,10 @@ const spendingsAggregates = computed(() => {
     daily,
     categories,
     monthly,
-    dailyLabels: Array.from(daily.keys()).toSorted(),
-    monthlyLabels: Array.from(monthly.keys()).toSorted(),
+    dailyLabels: Array.from(daily.keys())
+      .toSorted(),
+    monthlyLabels: Array.from(monthly.keys())
+      .toSorted(),
     incomeTotal,
     expenseTotal,
   }
@@ -781,6 +789,7 @@ const dailySeries = computed(() => {
       incomeData.push(0)
       expenseData.push(0)
       balanceData.push(runningBalance)
+
       continue
     }
 

@@ -291,7 +291,7 @@ const loadMdiMeta = async () => {
   isLoadingIcons.value = true
 
   try {
-    const { default: meta } = await import("@mdi/svg/meta.json") as { default: MdiMetaItem[] }
+    const { default: meta } = await import("@mdi/svg/meta.json") as { "default": MdiMetaItem[] }
 
     mdiMeta.value = meta
   } finally {

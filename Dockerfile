@@ -26,11 +26,6 @@ COPY .env /app/.env
 
 ENV NODE_ENV=production
 
-RUN mkdir -p db && \
-    pnpm db:migrate && \
-    pnpm db:seed && \
-    rm -fr init
-
 RUN pnpm build
 
 ###
@@ -65,8 +60,10 @@ RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(whic
     pnpm add -g dotenv-cli
 
 COPY --from=builder /app/.output /app/.output
-COPY --from=builder /app/db /app/db
+COPY --from=builder /app/drizzle /app/drizzle
 COPY --from=builder /app/.env /app/.env
+
+RUN mkdir -p /app/db
 
 VOLUME ["/app/db"]
 

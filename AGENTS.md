@@ -109,7 +109,7 @@ See `README.md` for the canonical list. Key variables used in this app:
 ## Contribution rules
 - No tests are needed in this app. Vitest is not set up and does not need to be; TDD is not required.
 - Do not create git worktrees; work directly on the current branch.
-- Numerous Skills are available to work better, faster and safer on this codebase. Use them as much as you need, but do not rely on them blindly. Always review their suggestions and ensure they align with the project conventions and best practices.
+- Numerous Skills are available to work better, faster and safer on this codebase. Use them as much as you need, but do not rely on them blindly. Always review their suggestions and ensure they align with the project conventions and best practices. A dedicated skill tool isn't available, so use `read_file` instead.
 - Do not stage files or create commits. Leave that to the user. If needed, suggest a commit name/description only.
 - Run commands as `pnpm <command>`. If adding/editing dependencies, update `package.json` with the tilde (`~`) version range and run `pnpm up -L` to update the lockfile (do not use `pnpm i` or `pnpm add`).
 - This is a Nuxt 4 app using Vue 3, Composition API, TypeScript, and Vite.
@@ -184,4 +184,6 @@ i18n/
 - Data + API: `shared/db/schema.ts`, `server/api/*.ts`.
 
 ## Extras
-> *Anything under this quote is a free space for any AI agent to write tips, gotchas, rules, ... that they might find interesting to memorize as they work on the project. Feel free to add anything useful here, as an unordered list. Do not remove exitsing entries unless they are no longer relevant. This file is a living documentation of the project, dedicated to AI agents, and is made to evolve along with the project, as many times as necessary.*
+> *Anything under this quote is a free space for any AI agent to write tips, gotchas, rules, ... that they might find interesting to memorize as they work on the project. Feel free to add anything useful here, as an unordered list. Do not remove exitsing entries unless they are no longer relevant. This file is a living documentation of the project, dedicated to AI agents, and is made to evolve along with the project, as many times as necessary. DOn't shy away from editing this file !*
+- The `create_file` creates garbled output, it is better to use it with no data and then use `apply_patch`/`edit_file` to add the data. As a last resort, use the terminal to create the file. Always check the output after creating a file.
+- ...

@@ -694,7 +694,8 @@ const searchFilter = (_value: string | number | boolean | null, _query: string, 
 
   const row = (item as { raw?: Spending }).raw ?? item as Spending
 
-  return buildSearchText(row).includes(needle)
+  return buildSearchText(row)
+    .includes(needle)
 }
 
 const searchedSpendings = computed(() => {
@@ -704,7 +705,8 @@ const searchedSpendings = computed(() => {
     return filteredSpendings.value
   }
 
-  return filteredSpendings.value.filter((s) => buildSearchText(s).includes(needle))
+  return filteredSpendings.value.filter((s) => buildSearchText(s)
+    .includes(needle))
 })
 
 const searchLabel = computed(() => {

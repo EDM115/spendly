@@ -45,7 +45,7 @@ TURNSTILE_SECRET_KEY=0x4AAAAAA00-XX
 ```
 - `JWT_SECRET` : generate with `node -e "import('crypto').then(crypto => console.log(crypto.randomBytes(64).toString('hex')))"`
 - `SEED_USERS` : if any value should contain a quote, write instead `\'` (or `\"`)
-- `SEED` : protection so Nuxt doesn't accidentally re-seed in dev mode as it runs the file for some reason
+- `SEED` : enables database seeding when the app boots. In Docker, leave this to `true` so the first run seeds an empty volume (seeding is skipped if data already exists)
 - `DEFAULT_UI_LANG` : the default language of the UI, either `en` or `fr`
 - `DB_FILE_NAME` : the path to the SQLite database file, please keep as-is
 - `BETTER_AUTH_SECRET` : same as `JWT_SECRET`
@@ -69,11 +69,37 @@ pnpm db:generate
 pnpm db:migrate
 ```
 
-### Build and run
+### Build and run (Docker Compose - recommended)
+```pwsh
+docker compose up -d --build
+```
+
+#### Redeploy (rebuild without data loss)
+```pwsh
+docker compose up -d --build --force-recreate
+```
+
+#### Remove container but keep data
+```pwsh
+docker compose down
+```
+
+### Build and run (Docker CLI)
 ```pwsh
 docker build -t edm115/spendly .
 docker run -d -p 60000:60000 --env-file .env -v spendly_db:/app/db --name spendly edm115/spendly
 ```
+
+#### Redeploy (rebuild without data loss)
+```pwsh
+docker stop spendly && docker rm spendly && docker rmi edm115/spendly
+docker build -t edm115/spendly .
+docker run -d -p 60000:60000 --env-file .env -v spendly_db:/app/db --name spendly edm115/spendly
+```
+
+#### Notes
+- Database migrations run automatically at container startup
+- Seeding runs only when `SEED=true` and the database is empty
 
 <details><summary><h3>DB Schema</h3></summary>
 
