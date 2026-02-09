@@ -81,13 +81,6 @@ export default defineEventHandler(async (event) => {
       }
     }
     case "POST": {
-      if (event.context.auth?.username === "demo") {
-        throw createError({
-          status: 403,
-          message: "Demo users cannot create budget trackers",
-        })
-      }
-
       const { name }: { name?: string } = await readBody(event)
 
       if (!name) {
@@ -121,13 +114,6 @@ export default defineEventHandler(async (event) => {
       }
     }
     case "PUT": {
-      if (event.context.auth?.username === "demo") {
-        throw createError({
-          status: 403,
-          message: "Demo users cannot edit budget trackers",
-        })
-      }
-
       const {
         id,
         name,
@@ -176,13 +162,6 @@ export default defineEventHandler(async (event) => {
       }
     }
     case "DELETE": {
-      if (event.context.auth?.username === "demo") {
-        throw createError({
-          status: 403,
-          message: "Demo users cannot delete budget trackers",
-        })
-      }
-
       const { id }: { id?: string } = await readBody(event)
 
       if (!id) {

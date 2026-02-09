@@ -527,7 +527,8 @@ const budgetTrackerItems = computed(() => props.budgetTrackers.map((tracker) => 
   }
 
   return Object.assign({}, tracker, { role: override })
-}).toSorted((a, b) => a.name.localeCompare(b.name)))
+})
+  .toSorted((a, b) => a.name.localeCompare(b.name)))
 
 const selectedTrackerRole = computed<BudgetTrackerRole>(() => getEffectiveRole(selectedTrackerId.value))
 

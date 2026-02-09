@@ -20,7 +20,7 @@
     "eslint.config.ts": ".oxlintrc.json, .eslintcache, eslint.*.config.ts",
     "nuxt.config.*": "app.config.*, error.vue, drizzle.config.ts, tsconfig.json, .env, .nuxtignore",
     "package.json": "package-lock.json, pnpm*",
-    "README.md": "LICENSE, .gitignore, renovate.json",
+    "README.md": "LICENSE, .gitignore, AGENTS.md, renovate.json",
     "tsconfig.json": "tsconfig.*.json, *.tsbuildinfo, *.d.ts, *.d.mts"
   },
   "files.eol": "\n",

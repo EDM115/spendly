@@ -85,13 +85,6 @@ export default defineEventHandler(async (event) => {
       }
     }
     case "POST": {
-      if (event.context.auth?.username === "demo") {
-        throw createError({
-          status: 403,
-          message: "Demo users cannot manage budget tracker users",
-        })
-      }
-
       const {
         budget_tracker_id,
         username,
@@ -179,13 +172,6 @@ export default defineEventHandler(async (event) => {
       }
     }
     case "PUT": {
-      if (event.context.auth?.username === "demo") {
-        throw createError({
-          status: 403,
-          message: "Demo users cannot manage budget tracker users",
-        })
-      }
-
       const {
         budget_tracker_id,
         target_user_id,
@@ -268,13 +254,6 @@ export default defineEventHandler(async (event) => {
       }
     }
     case "DELETE": {
-      if (event.context.auth?.username === "demo") {
-        throw createError({
-          status: 403,
-          message: "Demo users cannot manage budget tracker users",
-        })
-      }
-
       const {
         budget_tracker_id,
         target_user_id,

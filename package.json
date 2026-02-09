@@ -24,7 +24,7 @@
     "nuxt-svgo": "~4.2.6",
     "pinia": "~3.0.4",
     "resend": "~6.9.1",
-    "vue": "~3.5.27",
+    "vue": "~3.5.28",
     "vue-chartjs": "~5.3.3",
     "vue-cloudflare-turnstile": "~1.0.3",
     "vuetify-nuxt-module": "~0.19.5"
@@ -32,12 +32,12 @@
   "devDependencies": {
     "@dotenvx/dotenvx": "~1.52.0",
     "@nuxt/eslint": "~1.14.0",
-    "@stylistic/eslint-plugin": "~5.7.1",
+    "@stylistic/eslint-plugin": "~5.8.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "latest",
     "@typescript-eslint/parser": "~8.54.0",
     "country-flag-emoji-polyfill": "~0.1.8",
-    "drizzle-kit": "~0.31.8",
+    "drizzle-kit": "~0.31.9",
     "edm115-lint": "~0.1.6",
     "eslint": "~10.0.0",
     "eslint-plugin-drizzle": "~0.2.3",
@@ -63,7 +63,7 @@
   },
   "license": "MIT",
   "name": "spendly",
-  "packageManager": "pnpm@10.29.1",
+  "packageManager": "pnpm@10.29.2",
   "private": true,
   "repository": {
     "type": "git",

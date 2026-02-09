@@ -135,13 +135,6 @@ export default defineEventHandler(async (event) => {
       }
     }
     case "POST": {
-      if (event.context.auth?.username === "demo") {
-        throw createError({
-          status: 403,
-          message: "Demo users cannot manage transactions",
-        })
-      }
-
       const {
         name,
         budget_tracker_id,
@@ -230,13 +223,6 @@ export default defineEventHandler(async (event) => {
       }
     }
     case "PUT": {
-      if (event.context.auth?.username === "demo") {
-        throw createError({
-          status: 403,
-          message: "Demo users cannot manage transactions",
-        })
-      }
-
       const {
         id,
         name,
@@ -342,13 +328,6 @@ export default defineEventHandler(async (event) => {
       }
     }
     case "DELETE": {
-      if (event.context.auth?.username === "demo") {
-        throw createError({
-          status: 403,
-          message: "Demo users cannot manage transactions",
-        })
-      }
-
       const {
         id,
         budget_tracker_id,
