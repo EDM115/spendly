@@ -682,8 +682,10 @@ const pieAnimation = computed(() => ({
   animateScale: true,
 }))
 
+const dateWindow = computed(() => getDateWindow(timeRangeModel.value, anchorDateModel.value))
+
 const filteredSpendings = computed(() => {
-  const win = getDateWindow(timeRangeModel.value, anchorDateModel.value)
+  const win = dateWindow.value
 
   if (!win) {
     return props.spendings
@@ -692,42 +694,169 @@ const filteredSpendings = computed(() => {
   return props.spendings.filter((s) => s.date >= win.start && s.date < win.end)
 })
 
-// Area/Line Chart Data - Balance evolution over time
-const areaChartData = computed(() => {
-  const sortedSpendings = [...filteredSpendings.value].toSorted((a, b) => new Date(a.date)
-    .getTime() - new Date(b.date)
-    .getTime())
-  const dateMap = new Map<string, {
-    income: number; expense: number;
-  }>()
+const spendingsAggregates = computed(() => {
+  const daily = new Map<string, { income: number; expense: number }>()
+  const categories = new Map<string, { income: number; expense: number; color: string }>()
+  const monthly = new Map<string, { income: number; expense: number }>()
+  let incomeTotal = 0
+  let expenseTotal = 0
 
-  for (const spending of sortedSpendings) {
-    const dateKey = spending.date.split("T")[0] ?? ""
-    const existing = dateMap.get(dateKey) || {
-      income: 0, expense: 0,
-    }
-
-    if (spending.is_spending) {
-      existing.expense += spending.value
+  for (const entry of filteredSpendings.value) {
+    if (entry.is_spending) {
+      expenseTotal += entry.value
     } else {
-      existing.income += spending.value
+      incomeTotal += entry.value
     }
 
-    dateMap.set(dateKey, existing)
+    const dateKey = entry.date.includes("T")
+      ? entry.date.split("T")[0]
+      : entry.date
+
+    if (dateKey) {
+      const dailyItem = daily.get(dateKey) || {
+        income: 0,
+        expense: 0,
+      }
+
+      if (entry.is_spending) {
+        dailyItem.expense += entry.value
+      } else {
+        dailyItem.income += entry.value
+      }
+
+      daily.set(dateKey, dailyItem)
+
+      const monthKey = dateKey.slice(0, 7)
+      const monthItem = monthly.get(monthKey) || {
+        income: 0,
+        expense: 0,
+      }
+
+      if (entry.is_spending) {
+        monthItem.expense += entry.value
+      } else {
+        monthItem.income += entry.value
+      }
+
+      monthly.set(monthKey, monthItem)
+    }
+
+    const categoryItem = categories.get(entry.category_name) || {
+      income: 0,
+      expense: 0,
+      color: entry.icon_color,
+    }
+
+    if (entry.is_spending) {
+      categoryItem.expense += entry.value
+    } else {
+      categoryItem.income += entry.value
+    }
+
+    categories.set(entry.category_name, categoryItem)
   }
 
-  const labels = Array.from(dateMap.keys())
+  return {
+    daily,
+    categories,
+    monthly,
+    dailyLabels: Array.from(daily.keys()).toSorted(),
+    monthlyLabels: Array.from(monthly.keys()).toSorted(),
+    incomeTotal,
+    expenseTotal,
+  }
+})
+
+const dailySeries = computed(() => {
+  const labels = spendingsAggregates.value.dailyLabels
   let runningBalance = 0
   const balanceData: number[] = []
   const incomeData: number[] = []
   const expenseData: number[] = []
 
-  for (const [ , values ] of dateMap) {
+  for (const label of labels) {
+    const values = spendingsAggregates.value.daily.get(label)
+
+    if (!values) {
+      incomeData.push(0)
+      expenseData.push(0)
+      balanceData.push(runningBalance)
+      continue
+    }
+
     runningBalance += values.income - values.expense
     balanceData.push(runningBalance)
     incomeData.push(values.income)
     expenseData.push(values.expense)
   }
+
+  return {
+    labels,
+    incomeData,
+    expenseData,
+    balanceData,
+  }
+})
+
+const categorySeries = computed(() => {
+  const expense = {
+    labels: [] as string[],
+    data: [] as number[],
+    colors: [] as string[],
+  }
+  const income = {
+    labels: [] as string[],
+    data: [] as number[],
+    colors: [] as string[],
+  }
+
+  for (const [ label, values ] of spendingsAggregates.value.categories) {
+    if (values.expense > 0) {
+      expense.labels.push(label)
+      expense.data.push(values.expense)
+      expense.colors.push(values.color)
+    }
+
+    if (values.income > 0) {
+      income.labels.push(label)
+      income.data.push(values.income)
+      income.colors.push(values.color)
+    }
+  }
+
+  return {
+    expense,
+    income,
+  }
+})
+
+const monthlySeries = computed(() => {
+  const labels = spendingsAggregates.value.monthlyLabels
+  const incomeData: number[] = []
+  const expenseData: number[] = []
+
+  for (const label of labels) {
+    const values = spendingsAggregates.value.monthly.get(label)
+
+    incomeData.push(values?.income ?? 0)
+    expenseData.push(values?.expense ?? 0)
+  }
+
+  return {
+    labels,
+    incomeData,
+    expenseData,
+  }
+})
+
+// Area/Line Chart Data - Balance evolution over time
+const areaChartData = computed(() => {
+  const {
+    labels,
+    incomeData,
+    expenseData,
+    balanceData,
+  } = dailySeries.value
 
   const datasets = [] as {
     label: string;
@@ -851,34 +980,18 @@ const areaChartOptions = computed(() => ({
 
 // Pie Chart Data - Category distribution for expenses
 const expensesPieChartData = computed(() => {
-  const categoryTotals = new Map<string, {
-    total: number; color: string;
-  }>()
-
-  for (const spending of filteredSpendings.value) {
-    if (spending.is_spending) {
-      const existing = categoryTotals.get(spending.category_name) || {
-        total: 0,
-        color: spending.icon_color,
-      }
-
-      existing.total += spending.value
-      categoryTotals.set(spending.category_name, existing)
-    }
-  }
-
-  const labels = Array.from(categoryTotals.keys())
-  const data = Array.from(categoryTotals.values())
-    .map((v) => v.total)
-  const backgroundColors = Array.from(categoryTotals.values())
-    .map((v) => v.color)
+  const {
+    labels,
+    data,
+    colors,
+  } = categorySeries.value.expense
 
   return {
     labels,
     datasets: [
       {
         data,
-        backgroundColor: backgroundColors,
+        backgroundColor: colors,
         borderWidth: 2,
         borderColor: isDark.value
           ? "rgba(0,0,0,0.5)"
@@ -890,34 +1003,18 @@ const expensesPieChartData = computed(() => {
 
 // Pie Chart Data - Category distribution for income
 const incomePieChartData = computed(() => {
-  const categoryTotals = new Map<string, {
-    total: number; color: string;
-  }>()
-
-  for (const spending of filteredSpendings.value) {
-    if (!spending.is_spending) {
-      const existing = categoryTotals.get(spending.category_name) || {
-        total: 0,
-        color: spending.icon_color,
-      }
-
-      existing.total += spending.value
-      categoryTotals.set(spending.category_name, existing)
-    }
-  }
-
-  const labels = Array.from(categoryTotals.keys())
-  const data = Array.from(categoryTotals.values())
-    .map((v) => v.total)
-  const backgroundColors = Array.from(categoryTotals.values())
-    .map((v) => v.color)
+  const {
+    labels,
+    data,
+    colors,
+  } = categorySeries.value.income
 
   return {
     labels,
     datasets: [
       {
         data,
-        backgroundColor: backgroundColors,
+        backgroundColor: colors,
         borderWidth: 2,
         borderColor: isDark.value
           ? "rgba(0,0,0,0.5)"
@@ -1029,34 +1126,14 @@ const incomePieChartOptions = computed(() => ({
 
 // Bar Chart Data - Income vs Expense comparison by month
 const barChartData = computed(() => {
-  const monthlyData = new Map<string, {
-    income: number; expense: number;
-  }>()
-
-  for (const spending of filteredSpendings.value) {
-    const date = new Date(spending.date)
-    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1)
-      .padStart(2, "0")}`
-    const existing = monthlyData.get(monthKey) || {
-      income: 0, expense: 0,
-    }
-
-    if (spending.is_spending) {
-      existing.expense += spending.value
-    } else {
-      existing.income += spending.value
-    }
-
-    monthlyData.set(monthKey, existing)
-  }
-
-  const sortedKeys = Array.from(monthlyData.keys())
-    .toSorted()
-  const incomeData = sortedKeys.map((k) => monthlyData.get(k)?.income ?? 0)
-  const expenseData = sortedKeys.map((k) => monthlyData.get(k)?.expense ?? 0)
+  const {
+    labels,
+    incomeData,
+    expenseData,
+  } = monthlySeries.value
 
   return {
-    labels: sortedKeys,
+    labels,
     datasets: [
       {
         label: t("app.spending.income"),
@@ -1127,17 +1204,10 @@ const barChartOptions = computed(() => ({
 
 // Doughnut Chart Data - Cashflow overview
 const doughnutChartData = computed(() => {
-  let income = 0
-  let expense = 0
-
-  for (const s of filteredSpendings.value) {
-    if (s.is_spending) {
-      expense += s.value
-    } else {
-      income += s.value
-    }
-  }
-
+  const {
+    incomeTotal: income,
+    expenseTotal: expense,
+  } = spendingsAggregates.value
   const net = income - expense
   const isPositive = net >= 0
 

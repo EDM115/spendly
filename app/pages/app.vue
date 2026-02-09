@@ -73,7 +73,7 @@
               :spendings="spendings"
               :categories="categories"
               :budget-tracker-id="selectedBudgetTrackerId"
-              :budget-tracker-name="budgetTrackers.find(t => t.id === selectedBudgetTrackerId)!.name"
+              :budget-tracker-name="selectedBudgetTrackerName"
               @refresh="fetchSpendings"
             />
           </v-tabs-window-item>
@@ -88,7 +88,7 @@
             <AppCharts
               v-model:time-range="timeRange"
               v-model:anchor-date="anchorDate"
-              :budget-tracker-name="budgetTrackers.find(t => t.id === selectedBudgetTrackerId)!.name"
+              :budget-tracker-name="selectedBudgetTrackerName"
               :spendings="spendings"
             />
           </v-tabs-window-item>
@@ -149,15 +149,18 @@ const { smAndUp } = useVDisplay()
 
 const hasLoaded = ref(false)
 const selectedBudgetTrackerId = ref<string | null>(null)
-const budgetTrackers = ref<BudgetTracker[]>([])
-const categories = ref<Category[]>([])
-const spendings = ref<Spending[]>([])
+const budgetTrackers = shallowRef<BudgetTracker[]>([])
+const categories = shallowRef<Category[]>([])
+const spendings = shallowRef<Spending[]>([])
 const timeRange = ref("month")
 const now0 = new Date()
 const anchorDate = ref(`${now0.getFullYear()}-${String(now0.getMonth() + 1)
   .padStart(2, "0")}-${String(now0.getDate())
   .padStart(2, "0")}`)
 const selectedTab = ref<string | null>(null)
+const selectedBudgetTracker = computed(() => budgetTrackers.value
+  .find((tracker) => tracker.id === selectedBudgetTrackerId.value))
+const selectedBudgetTrackerName = computed(() => selectedBudgetTracker.value?.name ?? "")
 
 const fetchBudgetTrackers = async () => {
   try {

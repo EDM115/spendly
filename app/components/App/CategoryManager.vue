@@ -252,7 +252,8 @@
 <script lang="ts" setup>
 import type { VIcon } from "vuetify/components"
 
-const mdiMeta = (await import("@mdi/svg/meta.json")).default as MdiMetaItem[]
+const mdiMeta = shallowRef<MdiMetaItem[] | null>(null)
+const isLoadingIcons = ref(false)
 
 const props = defineProps<{
   categories: Category[];
@@ -281,6 +282,22 @@ const categoryForm = ref({
 const isValidIcon = ref(false)
 const testIcon = ref<InstanceType<typeof VIcon> | HTMLElement | null>(null)
 const iconSearch = ref("")
+
+const loadMdiMeta = async () => {
+  if (mdiMeta.value || isLoadingIcons.value) {
+    return
+  }
+
+  isLoadingIcons.value = true
+
+  try {
+    const { default: meta } = await import("@mdi/svg/meta.json") as { default: MdiMetaItem[] }
+
+    mdiMeta.value = meta
+  } finally {
+    isLoadingIcons.value = false
+  }
+}
 
 const iconInput = computed({
   get: () => categoryForm.value.icon.replace(/^mdi-/, ""),
@@ -382,9 +399,13 @@ const filteredIconItems = computed(() => {
     return [] as MdiMetaItem[]
   }
 
+  if (!mdiMeta.value) {
+    return [] as MdiMetaItem[]
+  }
+
   const queryTokens = splitTokens(query)
 
-  const scoredMatches = mdiMeta
+  const scoredMatches = mdiMeta.value
     .map((item) => {
       const nameScore = scoreTokens(item.name, query, queryTokens, /-/, 100, 80)
       const aliasScore = item.aliases?.reduce((best, alias) => Math.max(
@@ -483,7 +504,14 @@ const closeDialog = () => {
 
 watch(showAddDialog, (isOpen) => {
   if (isOpen) {
+    void loadMdiMeta()
     iconSearch.value = iconInput.value
+  }
+})
+
+watch(iconSearch, (value) => {
+  if (value.trim() && !mdiMeta.value) {
+    void loadMdiMeta()
   }
 })
 

@@ -225,7 +225,7 @@
         :sort-by="sortBy"
         :height="Math.min((filteredSpendings.length === 0 ? 2 : filteredSpendings.length + 1) * tableRowHeight, maxTableHeight)"
         :item-height="tableRowHeight"
-        :search
+        :search="searchNeedle"
         :custom-filter="searchFilter"
         hover
         class="bg-transparent spending-table"
@@ -594,6 +594,9 @@ const maxTableHeight = computed(() => (smAndUp.value
   : 8) * tableRowHeight.value)
 
 const search = ref("")
+const searchNeedle = computed(() => search.value
+  .trim()
+  .toLowerCase())
 const sortBy = ref<{
   key: string; order: "asc" | "desc";
 }[]>([
@@ -661,8 +664,10 @@ const headers = computed(() => [
   },
 ])
 
+const dateWindow = computed(() => getDateWindow(timeRangeModel.value, anchorDateModel.value))
+
 const filteredSpendings = computed(() => {
-  const win = getDateWindow(timeRangeModel.value, anchorDateModel.value)
+  const win = dateWindow.value
 
   if (!win) {
     return props.spendings
@@ -671,55 +676,42 @@ const filteredSpendings = computed(() => {
   return props.spendings.filter((s) => s.date >= win.start && s.date < win.end)
 })
 
-const searchFilter = (_value: string | number | boolean | null, query: string, item: unknown) => {
-  if (!query) {
+const buildSearchText = (row: Spending) => [
+  row.name,
+  row.category_name,
+  row.date,
+  String(row.value),
+]
+  .join(" ")
+  .toLowerCase()
+
+const searchFilter = (_value: string | number | boolean | null, _query: string, item: unknown) => {
+  const needle = searchNeedle.value
+
+  if (!needle) {
     return true
   }
 
   const row = (item as { raw?: Spending }).raw ?? item as Spending
-  const haystack = [
-    row.name,
-    row.category_name,
-    row.date,
-    String(row.value),
-  ]
-    .join(" ")
-    .toLowerCase()
 
-  return haystack.includes(query.toLowerCase())
+  return buildSearchText(row).includes(needle)
 }
 
-const searchLabel = computed(() => {
-  const totalCount = filteredSpendings.value.length
-  const term = search.value.trim()
-
-  if (!term) {
-    return `${t("app.spending.search")} (${totalCount}/${totalCount})`
-  }
-
-  const needle = term.toLowerCase()
-  const visibleCount = filteredSpendings.value.filter((s) => [
-    s.name,
-    s.category_name,
-    s.date,
-    String(s.value),
-  ]
-    .join(" ")
-    .toLowerCase()
-    .includes(needle)).length
-
-  return `${t("app.spending.search")} (${visibleCount}/${totalCount})`
-})
-
 const searchedSpendings = computed(() => {
-  const term = search.value.trim()
-    .toLowerCase()
+  const needle = searchNeedle.value
 
-  if (!term) {
+  if (!needle) {
     return filteredSpendings.value
   }
 
-  return filteredSpendings.value.filter((s) => searchFilter(null, term, s))
+  return filteredSpendings.value.filter((s) => buildSearchText(s).includes(needle))
+})
+
+const searchLabel = computed(() => {
+  const totalCount = filteredSpendings.value.length
+  const visibleCount = searchedSpendings.value.length
+
+  return `${t("app.spending.search")} (${visibleCount}/${totalCount})`
 })
 
 const compareText = (left: string, right: string) => left.localeCompare(right, locale.value === "fr"
@@ -829,22 +821,46 @@ const balanceSpendings = computed(() => {
   return filteredSpendings.value
 })
 
-const totalIncome = computed(() => filteredSpendings.value
-  .filter((s) => !s.is_spending)
-  .reduce((acc, s) => acc + s.value, 0))
+const filteredTotals = computed(() => {
+  let income = 0
+  let expense = 0
 
-const totalExpense = computed(() => filteredSpendings.value
-  .filter((s) => s.is_spending)
-  .reduce((acc, s) => acc + s.value, 0))
+  for (const entry of filteredSpendings.value) {
+    if (entry.is_spending) {
+      expense += entry.value
+    } else {
+      income += entry.value
+    }
+  }
 
-const balanceIncome = computed(() => balanceSpendings.value
-  .filter((s) => !s.is_spending)
-  .reduce((acc, s) => acc + s.value, 0))
+  return {
+    income,
+    expense,
+  }
+})
 
-const balanceExpense = computed(() => balanceSpendings.value
-  .filter((s) => s.is_spending)
-  .reduce((acc, s) => acc + s.value, 0))
+const balanceTotals = computed(() => {
+  let income = 0
+  let expense = 0
 
+  for (const entry of balanceSpendings.value) {
+    if (entry.is_spending) {
+      expense += entry.value
+    } else {
+      income += entry.value
+    }
+  }
+
+  return {
+    income,
+    expense,
+  }
+})
+
+const totalIncome = computed(() => filteredTotals.value.income)
+const totalExpense = computed(() => filteredTotals.value.expense)
+const balanceIncome = computed(() => balanceTotals.value.income)
+const balanceExpense = computed(() => balanceTotals.value.expense)
 const balance = computed(() => balanceIncome.value - balanceExpense.value)
 
 const balanceLabel = computed(() => {

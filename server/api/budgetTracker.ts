@@ -129,12 +129,13 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = await db.select()
+      const userAccess = await db.select({ role: user_budget_tracker.role })
         .from(user_budget_tracker)
         .where(and(
           eq(user_budget_tracker.user_id, userId),
           eq(user_budget_tracker.budget_tracker_id, id),
         ))
+        .limit(1)
 
       if (userAccess.length === 0) {
         throw createError({
@@ -171,12 +172,13 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const userAccess = await db.select()
+      const userAccess = await db.select({ role: user_budget_tracker.role })
         .from(user_budget_tracker)
         .where(and(
           eq(user_budget_tracker.user_id, userId),
           eq(user_budget_tracker.budget_tracker_id, id),
         ))
+        .limit(1)
 
       if (userAccess.length === 0) {
         throw createError({
