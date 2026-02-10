@@ -16,6 +16,7 @@ Spendly is a free, open-source personal finance tracker. Users create budget tra
 - DB: `pnpm db:generate`, `pnpm db:migrate`, `pnpm db:seed` (seed uses `init/seed_db.ts`).
 - Auth schema changes: `pnpm better-auth:generate` → diff `shared/db/auth.schema.ts` vs `shared/db/schema.ts` → `pnpm db:generate` + `pnpm db:migrate`.
 - Lint/format/typecheck: `pnpm lint`, `pnpm lint:fix`, `pnpm format`, `pnpm typecheck`.
+- Log analysis: `pnpm log:analyze --file spendly.log`, `pnpm log:tui --file spendly.log` (TUI requires a TTY; capture with `docker logs` or pipe `pnpm dev` to a file).
 
 ## Product flows
 ### Auth & session
@@ -144,14 +145,22 @@ app/
 		Layout/Alert.vue
 		Layout/NavBar.vue
 	composables/useCustomTheme.ts
+	composables/useUiEventLogger.ts
 	layouts/default.vue
 	middleware/auth.global.ts
 	pages/*.vue
+	pages/demo.vue # avoid to read when grasping context of the app as it will fill the context with demo-data
+	plugins/wide-events.client.ts
 	stores/main.ts
 	utils/authClient.ts
 	utils/dateWindow.ts
+scripts/
+	analyze-logs.ts
+	log-analyzer/core.ts
+	log-tui.tsx
 server/
 	api/
+		_log/ui.post.ts
 		admin/dbExport.ts
 		admin/userExport.ts
 		auth/[...all].ts
@@ -160,11 +169,14 @@ server/
 		budgetTracker/users.ts
 		category.ts
 		spending.ts
+	middleware/00.logging.ts
 	middleware/auth.ts
 	plugins/gracefulShutdown.ts
 	utils/auth.ts
 	utils/email.ts
+	utils/logger.ts
 	utils/session.ts
+	utils/wide.ts
 shared/
 	db/schema.ts
 	db/drizzle.ts
@@ -186,4 +198,5 @@ i18n/
 ## Extras
 > *Anything under this quote is a free space for any AI agent to write tips, gotchas, rules, ... that they might find interesting to memorize as they work on the project. Feel free to add anything useful here, as an unordered list. Do not remove exitsing entries unless they are no longer relevant. This file is a living documentation of the project, dedicated to AI agents, and is made to evolve along with the project, as many times as necessary. DOn't shy away from editing this file !*
 - The `create_file` creates garbled output, it is better to use it with no data and then use `apply_patch`/`edit_file` to add the data. As a last resort, use the terminal to create the file. Always check the output after creating a file.
+- When working on a rather complex task, write in `plans/feature-name/implementation.md` a detailed implementation plan, with goals, steps, files to edit/create, dependencies to add, and any gotchas or reminders. This will help you structure your work and keep track of the big picture as you go. Also create a `progress.md` file in the same folder, with sections for completed, in progress, and next steps. Update it as you go to keep track of your progress and next actions.
 - ...

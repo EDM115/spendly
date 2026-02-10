@@ -66,3 +66,16 @@ export type MdiMetaItem = {
   version: string;
   deprecated: boolean;
 }
+
+export type UiEventOutcome = "success" | "error" | "canceled"
+
+export type UiEventPayload = {
+  client_event_id: string;
+  ts: string;
+  action: string;
+  route: string;
+  store?: string;
+  duration_ms?: number;
+  outcome?: UiEventOutcome;
+  meta?: Record<string, unknown>;
+}

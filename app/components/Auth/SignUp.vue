@@ -67,6 +67,7 @@
               icon
               variant="text"
               density="compact"
+              tabindex="-1"
               @click="togglePasswordVisibility"
             >
               <v-icon size="small">
@@ -94,6 +95,7 @@
               icon
               variant="text"
               density="compact"
+              tabindex="-1"
               @click="togglePasswordVisibility"
             >
               <v-icon size="small">
@@ -110,6 +112,7 @@
         :language="storeLang ?? 'auto'"
         :theme="storeTheme ?? 'auto'"
         appearance="execute"
+        tabindex="-1"
         @success="onTurnstileSuccess"
         @error="onTurnstileError"
         @expired="onTurnstileExpired"
@@ -161,6 +164,7 @@ import { VueTurnstile } from "vue-cloudflare-turnstile"
 const config = useRuntimeConfig()
 const store = useMainStore()
 const { t } = useI18n()
+const { logUiEvent } = useUiEventLogger()
 
 const storeLang = computed(() => store.getI18n)
 const storeTheme = computed(() => store.getTheme)
@@ -308,6 +312,8 @@ async function signup() {
   issueMessage.value = ""
   loading.value = true
 
+  const start = performance.now()
+
   const { error } = await authClient.signUp.email({
     email: state.email,
     name: state.username,
@@ -325,7 +331,18 @@ async function signup() {
   if (error) {
     lastErrorTurnstile.value = false
     handleError(error)
+
+    void logUiEvent({
+      action: "auth.signup",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+    })
   } else {
+    void logUiEvent({
+      action: "auth.signup",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+    })
     await navigateTo("/app", { redirectCode: 302 })
   }
 

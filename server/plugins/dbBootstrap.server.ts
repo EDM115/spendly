@@ -1,7 +1,8 @@
 import type { UserType } from "#shared/types/main"
 
-import { auth } from "#server/utils/auth"
 import { db } from "#shared/db/drizzle"
+import { auth } from "#server/utils/auth"
+import { logger } from "#server/utils/logger"
 import { migrate } from "drizzle-orm/better-sqlite3/migrator"
 
 type SeedUser = {
@@ -20,7 +21,20 @@ function parseSeedUsers(): SeedUser[] {
     // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     return JSON.parse(raw) as SeedUser[]
   } catch (error) {
-    console.error("❌ failed to parse SEED_USERS :", error)
+    logger.error({
+      kind: "system",
+      op: {
+        name: "seed.parse",
+        entity: "user",
+      },
+      outcome: "error",
+      error: {
+        type: "seed_parse_error",
+        message: error instanceof Error
+          ? error.message
+          : "Failed to parse SEED_USERS",
+      },
+    })
 
     return []
   }
@@ -40,7 +54,17 @@ async function seedUsers(): Promise<void> {
   const users = parseSeedUsers()
 
   if (users.length === 0) {
-    console.log("ℹ️  No seed users provided, skipping")
+    logger.info({
+      kind: "system",
+      op: {
+        name: "seed.skip",
+        entity: "user",
+      },
+      outcome: "success",
+      meta: {
+        reason: "no_seed_users",
+      },
+    })
 
     return
   }
@@ -61,22 +85,62 @@ async function seedUsers(): Promise<void> {
       },
     })
 
-    console.log(`✅ Seeded user : ${user.username} (${user.email})`)
+    logger.info({
+      kind: "system",
+      op: {
+        name: "seed.user",
+        entity: "user",
+      },
+      outcome: "success",
+      meta: {
+        username: user.username,
+      },
+    })
   }
 }
 
 export default defineNitroPlugin(async () => {
   try {
     migrate(db, { migrationsFolder: "drizzle" })
-    console.log("✅ Database migrations applied")
+    logger.info({
+      kind: "system",
+      op: {
+        name: "db.migrate",
+        entity: "database",
+      },
+      outcome: "success",
+    })
   } catch (error) {
-    console.error("❌ Database migrations failed :", error)
+    logger.error({
+      kind: "system",
+      op: {
+        name: "db.migrate",
+        entity: "database",
+      },
+      outcome: "error",
+      error: {
+        type: "migration_error",
+        message: error instanceof Error
+          ? error.message
+          : "Database migrations failed",
+      },
+    })
 
     throw error
   }
 
   if (process.env.SEED !== "true") {
-    console.log("ℹ️  SEED is disabled, skipping database seeding")
+    logger.info({
+      kind: "system",
+      op: {
+        name: "seed.skip",
+        entity: "database",
+      },
+      outcome: "success",
+      meta: {
+        reason: "seed_disabled",
+      },
+    })
 
     return
   }
@@ -84,11 +148,28 @@ export default defineNitroPlugin(async () => {
   const hasUsers = await hasExistingUsers()
 
   if (hasUsers) {
-    console.log("↩️  Existing data detected, skipping database seeding")
+    logger.info({
+      kind: "system",
+      op: {
+        name: "seed.skip",
+        entity: "database",
+      },
+      outcome: "success",
+      meta: {
+        reason: "existing_data",
+      },
+    })
 
     return
   }
 
   await seedUsers()
-  console.log("✅ Database seeding completed")
+  logger.info({
+    kind: "system",
+    op: {
+      name: "seed.complete",
+      entity: "database",
+    },
+    outcome: "success",
+  })
 })

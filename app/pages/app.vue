@@ -193,8 +193,8 @@ const fetchBudgetTrackers = async () => {
       selectedBudgetTrackerId.value = null
       store.setSelectedBudgetTracker(null, null)
     }
-  } catch (error) {
-    console.error("Failed to fetch budget trackers :", error)
+  } catch (_error) {
+    void 0
   }
 }
 
@@ -213,8 +213,7 @@ const fetchCategories = async () => {
     if ("categories" in response.body) {
       categories.value = response.body.categories
     }
-  } catch (error) {
-    console.error("Failed to fetch categories :", error)
+  } catch (_error) {
     categories.value = []
   }
 }
@@ -234,8 +233,8 @@ const fetchSpendings = async () => {
     if ("spendings" in response.body) {
       spendings.value = response.body.spendings
     }
-  } catch (error) {
-    console.error("Failed to fetch spendings :", error)
+  } catch (_error) {
+
     spendings.value = []
   }
 }

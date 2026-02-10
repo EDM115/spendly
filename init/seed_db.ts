@@ -1,8 +1,9 @@
-import type { UserType } from "#shared/types/main"
+import type { UserType } from "../shared/types/main"
 
-import { auth } from "#server/utils/auth"
-import { db } from "#shared/db/drizzle"
-import { schema } from "#shared/db/schema"
+import { auth } from "../server/utils/auth"
+import { db } from "../shared/db/drizzle"
+import { schema } from "../shared/db/schema"
+import { logger } from "../server/utils/logger"
 import { eq } from "drizzle-orm"
 
 type SeedUser = {
@@ -20,7 +21,20 @@ function parseSeedUsers(): SeedUser[] {
   try {
     return JSON.parse(raw)
   } catch (e) {
-    console.error("❌ failed to parse SEED_USERS:", e)
+    logger.error({
+      kind: "system",
+      op: {
+        name: "seed.parse",
+        entity: "user",
+      },
+      outcome: "error",
+      error: {
+        type: "seed_parse_error",
+        message: e instanceof Error
+          ? e.message
+          : "Failed to parse SEED_USERS",
+      },
+    })
 
     return []
   }
@@ -39,7 +53,18 @@ async function seedUsers() {
     })
 
     if (existing) {
-      console.log(`↩️  User already exists : ${u.email}, skipping`)
+      logger.info({
+        kind: "system",
+        op: {
+          name: "seed.skip",
+          entity: "user",
+        },
+        outcome: "success",
+        meta: {
+          reason: "user_exists",
+          username: u.username,
+        },
+      })
 
       continue
     }
@@ -59,19 +84,46 @@ async function seedUsers() {
       },
     })
 
-    console.log(`✅ Seeded user : ${u.username} (${u.email})`)
+    logger.info({
+      kind: "system",
+      op: {
+        name: "seed.user",
+        entity: "user",
+      },
+      outcome: "success",
+      meta: {
+        username: u.username,
+      },
+    })
   }
 }
 
 async function main() {
   if (process.env.SEED !== "true") {
-    console.log("❌ Skipping database initialization")
+    logger.info({
+      kind: "system",
+      op: {
+        name: "seed.skip",
+        entity: "database",
+      },
+      outcome: "success",
+      meta: {
+        reason: "seed_disabled",
+      },
+    })
 
     return
   }
 
   await seedUsers()
-  console.log("✅ User seeding completed")
+  logger.info({
+    kind: "system",
+    op: {
+      name: "seed.complete",
+      entity: "database",
+    },
+    outcome: "success",
+  })
 }
 
 await main()

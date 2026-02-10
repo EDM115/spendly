@@ -199,6 +199,7 @@
                   icon
                   variant="text"
                   density="compact"
+                  tabindex="-1"
                   @click="togglePasswordVisibility"
                 >
                   <v-icon size="small">
@@ -225,6 +226,7 @@
                   icon
                   variant="text"
                   density="compact"
+                  tabindex="-1"
                   @click="togglePasswordVisibility"
                 >
                   <v-icon size="small">
@@ -251,6 +253,7 @@
                   icon
                   variant="text"
                   density="compact"
+                  tabindex="-1"
                   @click="togglePasswordVisibility"
                 >
                   <v-icon size="small">

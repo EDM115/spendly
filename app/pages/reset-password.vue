@@ -151,6 +151,7 @@
                   :language="storeLang ?? 'auto'"
                   :theme="storeTheme ?? 'auto'"
                   appearance="execute"
+                  tabindex="-1"
                   @success="onTurnstileSuccess"
                   @error="onTurnstileError"
                   @expired="onTurnstileExpired"

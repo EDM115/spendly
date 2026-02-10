@@ -30,14 +30,13 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
-    onPasswordReset: async ({ user }, request) => {
-      // your logic here
+    onPasswordReset: async ({ user }, _request) => {
       console.log(`Password for user ${user.email} has been reset.`)
     },
     maxPasswordLength: 16384,
     sendResetPassword: async ({
       user, url, token,
-    }, request) => {
+    }, _request) => {
       console.log(`Password reset requested for user ${user.email}. Reset URL : ${url}, Token : ${token}`)
 
       /* void sendEmail(
@@ -50,7 +49,7 @@ export const auth = betterAuth({
   emailVerification: {
     sendVerificationEmail: async ({
       user, url, token,
-    }, request) => {
+    }, _request) => {
       console.log(`Email verification requested for user ${user.email}. Verification URL : ${url}, Token : ${token}`)
 
       /* void sendEmail({
@@ -104,7 +103,7 @@ export const auth = betterAuth({
       expiresIn: 60 * 10,
       sendMagicLink: async ({
         email, token, url,
-      }, ctx) => {
+      }, _ctx) => {
         console.log(`Magic link requested for user ${email}. URL : ${url}, Token : ${token}`)
       },
     }),

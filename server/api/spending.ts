@@ -14,6 +14,7 @@ import {
 } from "drizzle-orm"
 import { randomUUID } from "node:crypto"
 import { requireUserId } from "#server/utils/session"
+import { addWide } from "#server/utils/wide"
 
 function canEditSpending(role: BudgetTrackerRole): boolean {
   return [ "owner", "admin", "editor" ].includes(role)
@@ -93,6 +94,14 @@ export default defineEventHandler(async (event) => {
           })
         }
 
+        addWide(event, {
+          op: {
+            name: "spending.read",
+            entity: "spending",
+            entity_id: spending_id,
+          },
+        })
+
         return {
           status: 200,
           body: {
@@ -125,6 +134,14 @@ export default defineEventHandler(async (event) => {
               : undefined,
           ))
           .orderBy(desc(spending.date))
+
+        addWide(event, {
+          op: {
+            name: "spending.list",
+            entity: "spending",
+            count: spendings.length,
+          },
+        })
 
         return {
           status: 200,
@@ -215,6 +232,14 @@ export default defineEventHandler(async (event) => {
           category_id,
           date,
         })
+
+      addWide(event, {
+        op: {
+          name: "spending.create",
+          entity: "spending",
+          entity_id: spendingId,
+        },
+      })
 
       return {
         status: 201,
@@ -323,6 +348,14 @@ export default defineEventHandler(async (event) => {
           eq(spending.budget_tracker_id, budget_tracker_id),
         ))
 
+      addWide(event, {
+        op: {
+          name: "spending.update",
+          entity: "spending",
+          entity_id: id,
+        },
+      })
+
       return {
         status: 200,
         body: {
@@ -388,6 +421,14 @@ export default defineEventHandler(async (event) => {
           eq(spending.id, id),
           eq(spending.budget_tracker_id, budget_tracker_id),
         ))
+
+      addWide(event, {
+        op: {
+          name: "spending.delete",
+          entity: "spending",
+          entity_id: id,
+        },
+      })
 
       return {
         status: 200,

@@ -50,28 +50,30 @@
             </p>
 
             <div class="d-flex justify-center justify-md-start ga-4 flex-wrap mobile-btn-group">
-              <v-btn
-                color="primary"
-                variant="flat"
-                size="x-large"
-                to="/login"
-                prepend-icon="mdi-rocket-launch"
-                rounded="xl"
-                class="px-8 font-weight-bold glow-button"
-              >
-                {{ t('landing.get-started') }}
-              </v-btn>
-              <v-btn
-                variant="tonal"
-                size="x-large"
-                color="secondary"
-                to="/demo"
-                prepend-icon="mdi-eye-outline"
-                rounded="xl"
-                class="px-8 glass-button"
-              >
-                {{ t('landing.demo') }}
-              </v-btn>
+              <NuxtLink to="/login">
+                <v-btn
+                  color="primary"
+                  variant="flat"
+                  size="x-large"
+                  prepend-icon="mdi-rocket-launch"
+                  rounded="xl"
+                  class="px-8 font-weight-bold glow-button"
+                >
+                  {{ t('landing.get-started') }}
+                </v-btn>
+              </NuxtLink>
+              <NuxtLink to="/demo">
+                <v-btn
+                  variant="tonal"
+                  size="x-large"
+                  color="secondary"
+                  prepend-icon="mdi-eye-outline"
+                  rounded="xl"
+                  class="px-8 glass-button"
+                >
+                  {{ t('landing.demo') }}
+                </v-btn>
+              </NuxtLink>
               <div class="scroll-mouse-indicator flex-column ml-md-4">
                 <div class="mouse-wheel" />
               </div>

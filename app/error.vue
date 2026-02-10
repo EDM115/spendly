@@ -31,16 +31,17 @@
           {{ error.message }}
         </v-alert>
 
-        <v-btn
-          :text="t('error.back')"
-          to="/"
-          color="primary"
-          prepend-icon="mdi-home-outline"
-          size="x-large"
-          rounded="xl"
-          variant="flat"
-          class="glow-button px-8 font-weight-bold"
-        />
+        <NuxtLink to="/">
+          <v-btn
+            :text="t('error.back')"
+            color="primary"
+            prepend-icon="mdi-home-outline"
+            size="x-large"
+            rounded="xl"
+            variant="flat"
+            class="glow-button px-8 font-weight-bold"
+          />
+        </NuxtLink>
       </v-card>
     </v-container>
   </NuxtLayout>

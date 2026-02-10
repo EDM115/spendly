@@ -1,14 +1,28 @@
+# Nuxt
 .output
-.data
 .nuxt
-.nitro
-.cache
 dist
+
+# PNPM
 node_modules
+
+# Logs
 logs
 *.log
+
+# Env vars
 .env
 .env.*
 !.env.example
+
+# ESLint
 .eslintcache
+
+# DB
 **/*.db*
+
+# Agents
+plans
+
+# Exports
+temp

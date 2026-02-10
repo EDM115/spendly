@@ -1,5 +1,6 @@
 import { db } from "#shared/db/drizzle"
 import { requireUserId } from "#server/utils/session"
+import { addWide } from "#server/utils/wide"
 
 import fs from "node:fs/promises"
 import path from "node:path"
@@ -49,7 +50,7 @@ export default defineEventHandler(async (event) => {
   const tempDir = path.join(process.cwd(), "temp")
 
   await fs.mkdir(tempDir, { recursive: true })
-  const tables = [ "User", "BudgetTracker", "UserBudgetTracker", "Category", "Spending" ]
+  const tables = [ "user", "session", "account", "verification", "budget_tracker", "user_budget_tracker", "category", "spending" ]
 
   if (exportFormat === "sql") {
     const dumpPath = path.join(tempDir, `backup_${timestamp}.sql`)
@@ -58,6 +59,16 @@ export default defineEventHandler(async (event) => {
       await execAsync(`sqlite3 "${db.$client.name}" .dump > "${dumpPath}"`)
 
       const fileContent = await fs.readFile(dumpPath)
+
+      addWide(event, {
+        op: {
+          name: "admin.dbExport",
+          entity: "database",
+        },
+        meta: {
+          format: exportFormat,
+        },
+      })
 
       return {
         body: fileContent.toString("base64"),
@@ -73,6 +84,16 @@ export default defineEventHandler(async (event) => {
       await fs.copyFile(db.$client.name, dbCopyPath)
 
       const fileContent = await fs.readFile(dbCopyPath)
+
+      addWide(event, {
+        op: {
+          name: "admin.dbExport",
+          entity: "database",
+        },
+        meta: {
+          format: exportFormat,
+        },
+      })
 
       return {
         body: fileContent.toString("base64"),
@@ -113,6 +134,16 @@ export default defineEventHandler(async (event) => {
 
       const jsonString = JSON.stringify(dataObj, null, 2)
 
+      addWide(event, {
+        op: {
+          name: "admin.dbExport",
+          entity: "database",
+        },
+        meta: {
+          format: exportFormat,
+        },
+      })
+
       return {
         body: Buffer.from(jsonString)
           .toString("base64"),
@@ -134,6 +165,16 @@ export default defineEventHandler(async (event) => {
 
         return `-- ${table} --\n${content}`
       }))
+
+      addWide(event, {
+        op: {
+          name: "admin.dbExport",
+          entity: "database",
+        },
+        meta: {
+          format: exportFormat,
+        },
+      })
 
       return {
         body: Buffer.from(csvData.join("\n"))

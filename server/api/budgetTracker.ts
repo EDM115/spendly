@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm"
 import { randomUUID } from "node:crypto"
 import { requireUserId } from "#server/utils/session"
+import { addWide } from "#server/utils/wide"
 
 function canEditTracker(role: BudgetTrackerRole): boolean {
   return [ "owner", "admin" ].includes(role)
@@ -54,6 +55,14 @@ export default defineEventHandler(async (event) => {
           })
         }
 
+        addWide(event, {
+          op: {
+            name: "budgetTracker.read",
+            entity: "budget_tracker",
+            entity_id: budget_tracker_id,
+          },
+        })
+
         return {
           status: 200,
           body: {
@@ -70,6 +79,14 @@ export default defineEventHandler(async (event) => {
           .from(budget_tracker)
           .innerJoin(user_budget_tracker, eq(budget_tracker.id, user_budget_tracker.budget_tracker_id))
           .where(eq(user_budget_tracker.user_id, userId))
+
+        addWide(event, {
+          op: {
+            name: "budgetTracker.list",
+            entity: "budget_tracker",
+            count: budgetTrackers.length,
+          },
+        })
 
         return {
           status: 200,
@@ -104,6 +121,14 @@ export default defineEventHandler(async (event) => {
           budget_tracker_id: budgetTrackerId,
           role: "owner",
         })
+
+      addWide(event, {
+        op: {
+          name: "budgetTracker.create",
+          entity: "budget_tracker",
+          entity_id: budgetTrackerId,
+        },
+      })
 
       return {
         status: 201,
@@ -155,6 +180,14 @@ export default defineEventHandler(async (event) => {
         .set({ name })
         .where(eq(budget_tracker.id, id))
 
+      addWide(event, {
+        op: {
+          name: "budgetTracker.update",
+          entity: "budget_tracker",
+          entity_id: id,
+        },
+      })
+
       return {
         status: 200,
         body: {
@@ -196,6 +229,14 @@ export default defineEventHandler(async (event) => {
 
       await db.delete(budget_tracker)
         .where(eq(budget_tracker.id, id))
+
+      addWide(event, {
+        op: {
+          name: "budgetTracker.delete",
+          entity: "budget_tracker",
+          entity_id: id,
+        },
+      })
 
       return {
         status: 200,

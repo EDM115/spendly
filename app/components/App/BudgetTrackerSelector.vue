@@ -481,6 +481,7 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const store = useMainStore()
 const { smAndUp } = useVDisplay()
+const { logUiEvent } = useUiEventLogger()
 const isDemo = computed(() => store.getIsDemo)
 
 const selectedTrackerId = computed<string | null>({
@@ -671,6 +672,8 @@ const addTracker = async () => {
     return
   }
 
+  const start = performance.now()
+
   try {
     const response = await $fetch("/api/budgetTracker", {
       method: "POST",
@@ -689,8 +692,18 @@ const addTracker = async () => {
       })
       selectedTrackerId.value = newId
     }
+
+    void logUiEvent({
+      action: "budgetTracker.create",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+    })
   } catch (error) {
-    console.error("Failed to add tracker :", error)
+    void logUiEvent({
+      action: "budgetTracker.create",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+    })
   }
 }
 
@@ -703,6 +716,8 @@ const updateTracker = async () => {
     return
   }
 
+  const start = performance.now()
+
   try {
     await $fetch("/api/budgetTracker", {
       method: "PUT",
@@ -713,8 +728,24 @@ const updateTracker = async () => {
     })
     showEditDialog.value = false
     emit("refresh")
+
+    void logUiEvent({
+      action: "budgetTracker.update",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+      meta: {
+        budget_tracker_id: selectedTrackerId.value,
+      },
+    })
   } catch (error) {
-    console.error("Failed to update tracker :", error)
+    void logUiEvent({
+      action: "budgetTracker.update",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+      meta: {
+        budget_tracker_id: selectedTrackerId.value,
+      },
+    })
   }
 }
 
@@ -727,6 +758,8 @@ const deleteTracker = async () => {
     return
   }
 
+  const start = performance.now()
+
   try {
     await $fetch("/api/budgetTracker", {
       method: "DELETE",
@@ -735,8 +768,18 @@ const deleteTracker = async () => {
     showDeleteDialog.value = false
     selectedTrackerId.value = null
     emit("refresh")
+
+    void logUiEvent({
+      action: "budgetTracker.delete",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+    })
   } catch (error) {
-    console.error("Failed to delete tracker :", error)
+    void logUiEvent({
+      action: "budgetTracker.delete",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+    })
   }
 }
 
@@ -754,7 +797,7 @@ const fetchSharedUsers = async () => {
       sharedUsers.value = response.body.users
     }
   } catch (error) {
-    console.error("Failed to fetch shared users :", error)
+    void 0
   }
 }
 
@@ -766,6 +809,8 @@ const addUser = async () => {
   if (!newUsername.value.trim() || !selectedTrackerId.value) {
     return
   }
+
+  const start = performance.now()
 
   try {
     await $fetch("/api/budgetTracker/users", {
@@ -779,8 +824,24 @@ const addUser = async () => {
     newUsername.value = ""
     newUserRole.value = "viewer"
     await fetchSharedUsers()
+
+    void logUiEvent({
+      action: "budgetTracker.users.add",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+      meta: {
+        budget_tracker_id: selectedTrackerId.value,
+      },
+    })
   } catch (error) {
-    console.error("Failed to add user :", error)
+    void logUiEvent({
+      action: "budgetTracker.users.add",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+      meta: {
+        budget_tracker_id: selectedTrackerId.value,
+      },
+    })
   }
 }
 
@@ -793,6 +854,8 @@ const updateUserRole = async (userId: string, role: string) => {
     return
   }
 
+  const start = performance.now()
+
   try {
     await $fetch("/api/budgetTracker/users", {
       method: "PUT",
@@ -803,8 +866,26 @@ const updateUserRole = async (userId: string, role: string) => {
       },
     })
     await fetchSharedUsers()
+
+    void logUiEvent({
+      action: "budgetTracker.users.update",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+      meta: {
+        budget_tracker_id: selectedTrackerId.value,
+        target_user_id: userId,
+      },
+    })
   } catch (error) {
-    console.error("Failed to update user role :", error)
+    void logUiEvent({
+      action: "budgetTracker.users.update",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+      meta: {
+        budget_tracker_id: selectedTrackerId.value,
+        target_user_id: userId,
+      },
+    })
   }
 }
 
@@ -817,6 +898,8 @@ const removeUser = async (userId: string) => {
     return
   }
 
+  const start = performance.now()
+
   try {
     await $fetch("/api/budgetTracker/users", {
       method: "DELETE",
@@ -826,8 +909,26 @@ const removeUser = async (userId: string) => {
       },
     })
     await fetchSharedUsers()
+
+    void logUiEvent({
+      action: "budgetTracker.users.remove",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+      meta: {
+        budget_tracker_id: selectedTrackerId.value,
+        target_user_id: userId,
+      },
+    })
   } catch (error) {
-    console.error("Failed to remove user :", error)
+    void logUiEvent({
+      action: "budgetTracker.users.remove",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+      meta: {
+        budget_tracker_id: selectedTrackerId.value,
+        target_user_id: userId,
+      },
+    })
   }
 }
 
@@ -860,6 +961,8 @@ const confirmTransferOwnership = async () => {
     return
   }
 
+  const start = performance.now()
+
   try {
     showTransferDialog.value = false
     await $fetch("/api/budgetTracker/transferOwnership", {
@@ -885,8 +988,26 @@ const confirmTransferOwnership = async () => {
     })
     emit("refresh")
     await fetchSharedUsers()
-  } catch (error) {
-    console.error("Failed to transfer ownership :", error)
+
+    void logUiEvent({
+      action: "budgetTracker.transferOwnership",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+      meta: {
+        budget_tracker_id: selectedTrackerId.value,
+        target_user_id: transferTarget.value.user_id,
+      },
+    })
+  } catch (_error) {
+    void logUiEvent({
+      action: "budgetTracker.transferOwnership",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+      meta: {
+        budget_tracker_id: selectedTrackerId.value,
+        target_user_id: transferTarget.value?.user_id,
+      },
+    })
   } finally {
     showTransferDialog.value = false
     transferTarget.value = null

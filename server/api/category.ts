@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm"
 import { randomUUID } from "node:crypto"
 import { requireUserId } from "#server/utils/session"
+import { addWide } from "#server/utils/wide"
 
 function canEditCategory(role: BudgetTrackerRole): boolean {
   return [ "owner", "admin", "editor" ].includes(role)
@@ -47,6 +48,14 @@ export default defineEventHandler(async (event) => {
             message: "Category not found",
           })
         }
+
+        addWide(event, {
+          op: {
+            name: "category.read",
+            entity: "category",
+            entity_id: category_id,
+          },
+        })
 
         const hasAccess = await db.select({ role: user_budget_tracker.role })
           .from(user_budget_tracker)
@@ -96,6 +105,14 @@ export default defineEventHandler(async (event) => {
         const categories = await db.select()
           .from(category)
           .where(eq(category.budget_tracker_id, budget_tracker_id))
+
+        addWide(event, {
+          op: {
+            name: "category.list",
+            entity: "category",
+            count: categories.length,
+          },
+        })
 
         return {
           status: 200,
@@ -158,6 +175,14 @@ export default defineEventHandler(async (event) => {
           color,
           budget_tracker_id,
         })
+
+      addWide(event, {
+        op: {
+          name: "category.create",
+          entity: "category",
+          entity_id: categoryId,
+        },
+      })
 
       return {
         status: 201,
@@ -229,6 +254,14 @@ export default defineEventHandler(async (event) => {
         })
         .where(eq(category.id, id))
 
+      addWide(event, {
+        op: {
+          name: "category.update",
+          entity: "category",
+          entity_id: id,
+        },
+      })
+
       return {
         status: 200,
         body: {
@@ -282,6 +315,14 @@ export default defineEventHandler(async (event) => {
 
       await db.delete(category)
         .where(eq(category.id, id))
+
+      addWide(event, {
+        op: {
+          name: "category.delete",
+          entity: "category",
+          entity_id: id,
+        },
+      })
 
       return {
         status: 200,

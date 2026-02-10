@@ -42,7 +42,14 @@ GOOGLE_CLIENT_ID=0000-xxxx.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=xxxx-0000-xxxx-
 TURNSTILE_SITE_KEY=0x4AAAAAA00
 TURNSTILE_SECRET_KEY=0x4AAAAAA00-XX
+SERVICE_NAME=spendly
+SERVICE_VERSION=0.16.0
+LOG_LEVEL=info
+LOG_INCLUDE_UA=true
+LOG_INCLUDE_IP=true
+STAGE=development
 ```
+**Required** :
 - `JWT_SECRET` : generate with `node -e "import('crypto').then(crypto => console.log(crypto.randomBytes(64).toString('hex')))"`
 - `SEED_USERS` : if any value should contain a quote, write instead `\'` (or `\"`)
 - `SEED` : enables database seeding when the app boots. In Docker, leave this to `true` so the first run seeds an empty volume (seeding is skipped if data already exists)
@@ -54,12 +61,64 @@ TURNSTILE_SECRET_KEY=0x4AAAAAA00-XX
 - `GITHUB_CLIENT_ID` & `GITHUB_CLIENT_SECRET` : for GitHub OAuth
 - `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET` : for Google OAuth
 - `TURNSTILE_SITE_KEY` & `TURNSTILE_SECRET_KEY` : for Cloudflare Turnstile CAPTCHA
+**Optional** :
+- `SERVICE_NAME` : service identifier in logs (defaults to `spendly`)
+- `SERVICE_VERSION` : release/version tag to include in logs
+- `LOG_LEVEL` : pino log level (ex `debug`, `info`, `warn`, `error`)
+- `LOG_INCLUDE_UA` : set to `true` to include user-agent in request logs (default `false`)
+- `LOG_INCLUDE_IP` : set to `true` to include client IP in request logs (default `false`)
+- `STAGE` : override log environment (`production`, `staging`, `development`), defaults to `NODE_ENV`
 ```pwsh
 pnpm i --frozen-lockfile
 pnpm db:migrate
 pnpm db:seed
 pnpm dev
 ```
+
+### Log analysis (CLI + TUI)
+Capture logs to a file (Docker example) :
+```pwsh
+docker logs spendly > logs/spendly.log
+```
+
+Follow logs and save them while you reproduce an issue :
+```pwsh
+docker logs -f spendly | Tee-Object -FilePath logs/spendly.log
+```
+```bash
+docker logs -f spendly | tee logs/spendly.log
+```
+
+Capture dev server logs (when you pipe, JSON is emitted because the logger disables pretty output in non-TTY mode) :
+```pwsh
+pnpm dev | Tee-Object -FilePath logs/spendly.log
+```
+
+Analyze logs (CLI summary + JSON report) :
+```pwsh
+pnpm log:analyze --file logs/spendly.log
+```
+
+Analyze directly from stdin :
+```pwsh
+cat logs/spendly.log | pnpm log:analyze
+```
+
+Useful flags :
+- `--duration-kind request|ui|system` : choose which kind feeds duration stats/slowest
+- `--no-output` : skip writing the JSON report to disk
+- `--json logs/log-report.json` : write the JSON report to a custom path
+
+Interactive TUI (requires a file path and a TTY) :
+```pwsh
+pnpm log:tui --file logs/spendly.log
+```
+
+TUI controls :
+- Tabs: `1` Overview, `2` Filters, `3` Drilldown
+- Drilldown: `↑/↓` move, `/` search, `Esc` clear search
+- Filters: `f/t/e/s/k/o/h/a/d/x` to edit/clear filters
+- `r` refresh, `q` quit
 
 ### On Drizzle DB schema/Better Auth config changes
 ```pwsh
@@ -99,7 +158,7 @@ docker run -d -p 60000:60000 --env-file .env -v spendly_db:/app/db --name spendl
 
 #### Notes
 - Database migrations run automatically at container startup
-- Seeding runs only when `SEED=true` and the database is empty
+- Seeding runs only when `SEED=true` **and** the database is empty
 
 <details><summary><h3>DB Schema</h3></summary>
 

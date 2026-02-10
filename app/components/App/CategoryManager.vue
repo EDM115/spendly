@@ -267,6 +267,7 @@ const emit = defineEmits<{
 const store = useMainStore()
 const theme = useVTheme()
 const { t } = useI18n()
+const { logUiEvent } = useUiEventLogger()
 
 const canEdit = computed(() => store.canEditData && !store.getIsDemo)
 const showAddDialog = ref(false)
@@ -524,6 +525,11 @@ const saveCategory = async () => {
     return
   }
 
+  const start = performance.now()
+  const action = editingCategory.value
+    ? "category.update"
+    : "category.create"
+
   try {
     if (editingCategory.value) {
       await $fetch("/api/category", {
@@ -545,8 +551,32 @@ const saveCategory = async () => {
 
     closeDialog()
     emit("refresh")
+
+    void logUiEvent({
+      action,
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+      meta: editingCategory.value
+        ? {
+            category_id: editingCategory.value.id,
+          }
+        : {
+            budget_tracker_id: props.budgetTrackerId,
+          },
+    })
   } catch (error) {
-    console.error("Failed to save category :", error)
+    void logUiEvent({
+      action,
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+      meta: editingCategory.value
+        ? {
+            category_id: editingCategory.value.id,
+          }
+        : {
+            budget_tracker_id: props.budgetTrackerId,
+          },
+    })
   }
 }
 
@@ -559,6 +589,9 @@ const deleteCategory = async () => {
     return
   }
 
+  const start = performance.now()
+  const targetId = deletingCategory.value.id
+
   try {
     await $fetch("/api/category", {
       method: "DELETE",
@@ -567,8 +600,24 @@ const deleteCategory = async () => {
     showDeleteDialog.value = false
     deletingCategory.value = null
     emit("refresh")
+
+    void logUiEvent({
+      action: "category.delete",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+      meta: {
+        category_id: targetId,
+      },
+    })
   } catch (error) {
-    console.error("Failed to delete category :", error)
+    void logUiEvent({
+      action: "category.delete",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+      meta: {
+        category_id: targetId,
+      },
+    })
   }
 }
 </script>

@@ -585,6 +585,7 @@ const {
   lgAndUp,
   smAndUp,
 } = useVDisplay()
+const { logUiEvent } = useUiEventLogger()
 
 const tableRowHeight = computed(() => (smAndUp.value
   ? 56
@@ -964,6 +965,11 @@ const saveSpending = async () => {
     return
   }
 
+  const start = performance.now()
+  const action = editingSpending.value
+    ? "spending.update"
+    : "spending.create"
+
   try {
     if (editingSpending.value) {
       await $fetch("/api/spending", {
@@ -986,8 +992,32 @@ const saveSpending = async () => {
 
     closeDialog()
     emit("refresh")
+
+    void logUiEvent({
+      action,
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+      meta: editingSpending.value
+        ? {
+            spending_id: editingSpending.value.id,
+          }
+        : {
+            budget_tracker_id: props.budgetTrackerId,
+          },
+    })
   } catch (error) {
-    console.error("Failed to save spending :", error)
+    void logUiEvent({
+      action,
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+      meta: editingSpending.value
+        ? {
+            spending_id: editingSpending.value.id,
+          }
+        : {
+            budget_tracker_id: props.budgetTrackerId,
+          },
+    })
   }
 }
 
@@ -1000,6 +1030,9 @@ const deleteSpending = async () => {
     return
   }
 
+  const start = performance.now()
+  const targetId = deletingSpending.value.id
+
   try {
     await $fetch("/api/spending", {
       method: "DELETE",
@@ -1011,8 +1044,24 @@ const deleteSpending = async () => {
     showDeleteDialog.value = false
     deletingSpending.value = null
     emit("refresh")
+
+    void logUiEvent({
+      action: "spending.delete",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+      meta: {
+        spending_id: targetId,
+      },
+    })
   } catch (error) {
-    console.error("Failed to delete spending :", error)
+    void logUiEvent({
+      action: "spending.delete",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+      meta: {
+        spending_id: targetId,
+      },
+    })
   }
 }
 

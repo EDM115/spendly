@@ -50,6 +50,7 @@
               icon
               variant="text"
               density="compact"
+              tabindex="-1"
               @click="togglePasswordVisibility"
             >
               <v-icon size="small">
@@ -77,6 +78,7 @@
               icon
               variant="text"
               density="compact"
+              tabindex="-1"
               @click="togglePasswordVisibility"
             >
               <v-icon size="small">
@@ -116,6 +118,7 @@ import { authClient } from "~/utils/authClient"
 const props = defineProps<{ token: string }>()
 
 const { t } = useI18n()
+const { logUiEvent } = useUiEventLogger()
 
 const errorMessage = ref("")
 const issueMessage = ref("")
@@ -181,6 +184,8 @@ async function resetPassword() {
   issueMessage.value = ""
   loading.value = true
 
+  const start = performance.now()
+
   const { error } = await authClient.resetPassword({
     newPassword: state.password,
     token: props.token,
@@ -188,11 +193,23 @@ async function resetPassword() {
 
   if (error) {
     handleError(error)
+
+    void logUiEvent({
+      action: "auth.password_reset.complete",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+    })
   } else {
     messageColor.value = "success"
     errorMessage.value = t("reset-password.reset-success")
     issueMessage.value = ""
     resetDone.value = true
+
+    void logUiEvent({
+      action: "auth.password_reset.complete",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+    })
   }
 
   loading.value = false

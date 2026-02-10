@@ -11,6 +11,7 @@ import {
 } from "#shared/db/schema"
 import { auth } from "#server/utils/auth"
 import { requireUserId } from "#server/utils/session"
+import { addWide } from "#server/utils/wide"
 
 import type { H3Event } from "h3"
 
@@ -287,6 +288,14 @@ export default defineEventHandler(async (event) => {
     userRecord.id,
   )
   const archive = await zip.generateAsync({ type: "nodebuffer" })
+
+  addWide(event, {
+    op: {
+      name: "admin.userExport",
+      entity: "user",
+      entity_id: targetUserId,
+    },
+  })
 
   return {
     body: archive.toString("base64"),

@@ -9,6 +9,7 @@ import {
   eq,
 } from "drizzle-orm"
 import { requireUserId } from "#server/utils/session"
+import { addWide } from "#server/utils/wide"
 
 const VALID_ROLES = new Set([ "viewer", "editor", "admin" ])
 
@@ -75,6 +76,14 @@ export default defineEventHandler(async (event) => {
         .from(user)
         .innerJoin(user_budget_tracker, eq(user.id, user_budget_tracker.user_id))
         .where(eq(user_budget_tracker.budget_tracker_id, budget_tracker_id))
+
+      addWide(event, {
+        op: {
+          name: "budgetTracker.users.list",
+          entity: "user_budget_tracker",
+          count: users.length,
+        },
+      })
 
       return {
         status: 200,
@@ -164,6 +173,14 @@ export default defineEventHandler(async (event) => {
           role,
         })
 
+      addWide(event, {
+        op: {
+          name: "budgetTracker.users.add",
+          entity: "user_budget_tracker",
+          entity_id: targetUser[0]!.id,
+        },
+      })
+
       return {
         status: 201,
         body: {
@@ -246,6 +263,14 @@ export default defineEventHandler(async (event) => {
           eq(user_budget_tracker.budget_tracker_id, budget_tracker_id),
         ))
 
+      addWide(event, {
+        op: {
+          name: "budgetTracker.users.update",
+          entity: "user_budget_tracker",
+          entity_id: target_user_id,
+        },
+      })
+
       return {
         status: 200,
         body: {
@@ -324,6 +349,14 @@ export default defineEventHandler(async (event) => {
           eq(user_budget_tracker.user_id, target_user_id),
           eq(user_budget_tracker.budget_tracker_id, budget_tracker_id),
         ))
+
+      addWide(event, {
+        op: {
+          name: "budgetTracker.users.remove",
+          entity: "user_budget_tracker",
+          entity_id: target_user_id,
+        },
+      })
 
       return {
         status: 200,

@@ -433,6 +433,7 @@ type AdminUser = UserWithRole & {
 
 const store = useMainStore()
 const { t } = useI18n()
+const { logUiEvent } = useUiEventLogger()
 
 const users = ref<AdminUser[]>([])
 const exporting = ref(false)
@@ -823,6 +824,8 @@ const downloadUserExport = async (userItem: AdminUser) => {
     id: userItem.id, action: "export",
   }
 
+  const start = performance.now()
+
   try {
     const response = await $fetch<{
       body: string; filename: string;
@@ -849,9 +852,27 @@ const downloadUserExport = async (userItem: AdminUser) => {
     a.click()
     window.URL.revokeObjectURL(url)
     applySuccess(t("admin.users.export-success", { username: formatUserLabel(userItem) }))
+
+    void logUiEvent({
+      action: "admin.userExport",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+      meta: {
+        user_id: userItem.id,
+      },
+    })
   } catch (error) {
     applyError(error as {
       message?: string; statusText?: string;
+    })
+
+    void logUiEvent({
+      action: "admin.userExport",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+      meta: {
+        user_id: userItem.id,
+      },
     })
   } finally {
     busyAction.value = null
@@ -859,6 +880,8 @@ const downloadUserExport = async (userItem: AdminUser) => {
 }
 
 const downloadBackup = async (format: ExportFormat) => {
+  const start = performance.now()
+
   try {
     exporting.value = true
     const response = await $fetch("/api/admin/dbExport", {
@@ -882,8 +905,24 @@ const downloadBackup = async (format: ExportFormat) => {
     a.download = response.filename
     a.click()
     window.URL.revokeObjectURL(url)
+
+    void logUiEvent({
+      action: "admin.dbExport",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+      meta: {
+        format,
+      },
+    })
   } catch (error) {
-    console.error("Export failed :", error)
+    void logUiEvent({
+      action: "admin.dbExport",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+      meta: {
+        format,
+      },
+    })
   } finally {
     exporting.value = false
   }

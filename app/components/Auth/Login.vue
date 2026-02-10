@@ -180,6 +180,7 @@
                 icon
                 variant="text"
                 density="compact"
+                tabindex="-1"
                 @click="togglePasswordVisibility"
               >
                 <v-icon size="small">
@@ -196,6 +197,7 @@
           :language="storeLang ?? 'auto'"
           :theme="storeTheme ?? 'auto'"
           appearance="execute"
+          tabindex="-1"
           @success="onTurnstileSuccess"
           @error="onTurnstileError"
           @expired="onTurnstileExpired"
@@ -263,6 +265,7 @@ import { VueTurnstile } from "vue-cloudflare-turnstile"
 const config = useRuntimeConfig()
 const store = useMainStore()
 const { t } = useI18n()
+const { logUiEvent } = useUiEventLogger()
 
 const storeLang = computed(() => store.getI18n)
 const storeTheme = computed(() => store.getTheme)
@@ -384,6 +387,8 @@ async function usernameLogin() {
   issueMessage.value = ""
   loading.value = true
 
+  const start = performance.now()
+
   const { error } = await authClient.signIn.username({
     username: state.username,
     password: state.password,
@@ -399,7 +404,18 @@ async function usernameLogin() {
     lastErrorTurnstile.value = false
     handleError(error)
     loading.value = false
+
+    void logUiEvent({
+      action: "auth.login.username",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+    })
   } else {
+    void logUiEvent({
+      action: "auth.login.username",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+    })
     await navigateTo("/app", { redirectCode: 302 })
   }
 }
@@ -408,6 +424,8 @@ async function emailLogin() {
   errorMessage.value = ""
   issueMessage.value = ""
   loading.value = true
+
+  const start = performance.now()
 
   const { error } = await authClient.signIn.email({
     email: state.email,
@@ -424,7 +442,18 @@ async function emailLogin() {
     lastErrorTurnstile.value = false
     handleError(error)
     loading.value = false
+
+    void logUiEvent({
+      action: "auth.login.email",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+    })
   } else {
+    void logUiEvent({
+      action: "auth.login.email",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+    })
     await navigateTo("/app", { redirectCode: 302 })
   }
 }
@@ -433,6 +462,8 @@ async function socialLogin(provider: "google" | "github") {
   errorMessage.value = ""
   issueMessage.value = ""
   loading.value = true
+
+  const start = performance.now()
 
   const { error } = await authClient.signIn.social({
     provider,
@@ -448,6 +479,24 @@ async function socialLogin(provider: "google" | "github") {
     lastErrorTurnstile.value = false
     handleError(error)
     loading.value = false
+
+    void logUiEvent({
+      action: "auth.login.oauth",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+      meta: {
+        provider,
+      },
+    })
+  } else {
+    void logUiEvent({
+      action: "auth.login.oauth",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+      meta: {
+        provider,
+      },
+    })
   }
 }
 
@@ -455,6 +504,8 @@ async function magicLinkLogin() {
   errorMessage.value = ""
   issueMessage.value = ""
   loading.value = true
+
+  const start = performance.now()
 
   const {
     data, error,
@@ -473,11 +524,23 @@ async function magicLinkLogin() {
   if (error) {
     lastErrorTurnstile.value = false
     handleError(error)
+
+    void logUiEvent({
+      action: "auth.magic_link.request",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+    })
   } else {
     messageColor.value = "success"
     errorMessage.value = t("login.magic-link-success")
     issueMessage.value = ""
     magicLinkDone.value = true
+
+    void logUiEvent({
+      action: "auth.magic_link.request",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+    })
   }
 
   loading.value = false
