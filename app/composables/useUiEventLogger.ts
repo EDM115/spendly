@@ -100,7 +100,7 @@ function sanitizeRouteHash(hash: string): string {
 
   const params = new URLSearchParams(trimmed)
 
-  if ([ ...params.keys() ].length === 0) {
+  if ([...params.keys()].length === 0) {
     return hash
   }
 
@@ -132,7 +132,9 @@ function sanitizeUiRoute(route: string): string {
 
     const query = url.searchParams.toString()
 
-    return `${url.pathname}${query ? `?${query}` : ""}${sanitizeRouteHash(url.hash)}`
+    return `${url.pathname}${query
+      ? `?${query}`
+      : ""}${sanitizeRouteHash(url.hash)}`
   } catch (_error) {
     return route
   }

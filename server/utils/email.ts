@@ -44,6 +44,7 @@ export async function sendEmail(
     console.log({ data })
   }
   */
+  void 0
 }
 
 export default sendEmail

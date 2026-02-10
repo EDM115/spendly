@@ -234,7 +234,6 @@ const fetchSpendings = async () => {
       spendings.value = response.body.spendings
     }
   } catch (_error) {
-
     spendings.value = []
   }
 }

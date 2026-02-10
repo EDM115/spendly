@@ -2,15 +2,18 @@ export default defineNuxtPlugin(() => {
   const pinia = usePinia()
   const { logUiEvent } = useUiEventLogger()
   const actionMap = new Map<string, string>([
-    ["main.logout", "auth.logout"],
-    ["main.setTheme", "ui.theme.change"],
-    ["main.setI18n", "ui.lang.change"],
+    [ "main.logout", "auth.logout" ],
+    [ "main.setTheme", "ui.theme.change" ],
+    [ "main.setI18n", "ui.lang.change" ],
   ])
 
   pinia.use(({ store }) => {
-    store.$onAction(({ name, after, onError }) => {
+    store.$onAction(({
+      name, after, onError,
+    }) => {
       const key = `${store.$id}.${name}`
       const action = actionMap.get(key)
+
       if (!action) {
         return
       }

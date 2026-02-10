@@ -212,7 +212,9 @@ export default defineEventHandler((event) => {
   addWide(event, {
     op: {
       name: op.name,
-      entity: path.includes("admin") ? "admin" : "user",
+      entity: path.includes("admin")
+        ? "admin"
+        : "user",
     },
     auth: op.method
       ? {

@@ -356,7 +356,24 @@
                           variant="tonal"
                           size="small"
                           :loading="isBusy(request.id, request.type === 'export' ? 'resolve-export' : 'resolve-delete')"
-                          @click="resolveUserRequest(request)"
+                          @click="openResolveDialog(request)"
+                        />
+                      </template>
+                    </v-tooltip>
+                    <v-tooltip
+                      location="top"
+                      :text="t('admin.user-requests.dismiss-action')"
+                    >
+                      <template #activator="{ props: tooltipProps }">
+                        <v-btn
+                          v-bind="tooltipProps"
+                          color="secondary"
+                          class="ml-2"
+                          icon="mdi-close-circle-outline"
+                          variant="tonal"
+                          size="small"
+                          :loading="isBusy(request.id, 'dismiss')"
+                          @click="openDismissDialog(request)"
                         />
                       </template>
                     </v-tooltip>
@@ -369,6 +386,76 @@
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
+
+  <v-dialog
+    v-model="showResolveDialog"
+    max-width="560"
+    persistent
+  >
+    <v-card class="glass-card pa-1 border-thin">
+      <v-card-title class="text-h6 font-weight-bold">
+        {{ t("admin.user-requests.resolve-title") }}
+      </v-card-title>
+      <v-card-text>
+        {{ t("admin.user-requests.resolve-description") }}
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          color="secondary"
+          rounded="lg"
+          variant="text"
+          @click="showResolveDialog = false"
+        >
+          {{ t("admin.user-requests.resolve-cancel") }}
+        </v-btn>
+        <v-btn
+          color="primary"
+          rounded="lg"
+          variant="elevated"
+          :loading="resolveDialogLoading"
+          @click="confirmResolveRequest"
+        >
+          {{ t("admin.user-requests.resolve-confirm") }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog
+    v-model="showDismissDialog"
+    max-width="560"
+    persistent
+  >
+    <v-card class="glass-card pa-1 border-thin">
+      <v-card-title class="text-h6 font-weight-bold">
+        {{ t("admin.user-requests.dismiss-title") }}
+      </v-card-title>
+      <v-card-text>
+        {{ t("admin.user-requests.dismiss-description") }}
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          color="secondary"
+          rounded="lg"
+          variant="text"
+          @click="showDismissDialog = false"
+        >
+          {{ t("admin.user-requests.dismiss-cancel") }}
+        </v-btn>
+        <v-btn
+          color="error"
+          rounded="lg"
+          variant="elevated"
+          :loading="dismissDialogLoading"
+          @click="confirmDismissRequest"
+        >
+          {{ t("admin.user-requests.dismiss-confirm") }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 
   <v-dialog
     v-model="showUserDialog"
@@ -558,6 +645,12 @@ const busyAction = ref<{
 } | null>(null)
 
 const resolvedRequests = ref<Record<string, { message: string }>>({})
+
+const showResolveDialog = ref(false)
+const showDismissDialog = ref(false)
+const resolveDialogLoading = ref(false)
+const dismissDialogLoading = ref(false)
+const selectedRequest = ref<AdminUserRequest | null>(null)
 
 const feedback = reactive({
   message: "",
@@ -784,7 +877,9 @@ const fetchUserRequests = async () => {
 
 const removeResolvedRequest = (requestId: string) => {
   userRequests.value = userRequests.value.filter((request) => request.id !== requestId)
-  const { [requestId]: _removed, ...rest } = resolvedRequests.value
+  const {
+    [requestId]: _removed, ...rest
+  } = resolvedRequests.value
 
   resolvedRequests.value = rest
 }
@@ -793,7 +888,9 @@ const resolveUserRequest = async (request: AdminUserRequest) => {
   resetFeedback()
   busyAction.value = {
     id: request.id,
-    action: request.type === "export" ? "resolve-export" : "resolve-delete",
+    action: request.type === "export"
+      ? "resolve-export"
+      : "resolve-delete",
   }
 
   const start = performance.now()
@@ -848,6 +945,101 @@ const resolveUserRequest = async (request: AdminUserRequest) => {
       },
     })
   } finally {
+    busyAction.value = null
+  }
+}
+
+const openResolveDialog = (request: AdminUserRequest) => {
+  selectedRequest.value = request
+  showResolveDialog.value = true
+}
+
+const confirmResolveRequest = async () => {
+  if (!selectedRequest.value) {
+    return
+  }
+
+  resolveDialogLoading.value = true
+  const request = selectedRequest.value
+
+  try {
+    await resolveUserRequest(request)
+    showResolveDialog.value = false
+    selectedRequest.value = null
+  } finally {
+    resolveDialogLoading.value = false
+  }
+}
+
+const openDismissDialog = (request: AdminUserRequest) => {
+  selectedRequest.value = request
+  showDismissDialog.value = true
+}
+
+const confirmDismissRequest = async () => {
+  if (!selectedRequest.value) {
+    return
+  }
+
+  resetFeedback()
+  dismissDialogLoading.value = true
+  busyAction.value = {
+    id: selectedRequest.value.id,
+    action: "dismiss",
+  }
+
+  const start = performance.now()
+  const request = selectedRequest.value
+
+  try {
+    await $fetch("/api/admin/userRequests/delete", {
+      method: "POST",
+      body: {
+        requestId: request.id,
+      },
+    })
+
+    resolvedRequests.value = {
+      ...resolvedRequests.value,
+      [request.id]: {
+        message: t("admin.user-requests.dismissed"),
+      },
+    }
+
+    void logUiEvent({
+      action: "admin.userRequest.dismiss",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+      meta: {
+        request_id: request.id,
+        request_type: request.type,
+        user_id: request.user_id,
+      },
+    })
+
+    showDismissDialog.value = false
+    selectedRequest.value = null
+
+    setTimeout(() => {
+      removeResolvedRequest(request.id)
+    }, 5000)
+  } catch (error) {
+    applyError(error as {
+      message?: string; statusText?: string; code?: string;
+    })
+
+    void logUiEvent({
+      action: "admin.userRequest.dismiss",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+      meta: {
+        request_id: request.id,
+        request_type: request.type,
+        user_id: request.user_id,
+      },
+    })
+  } finally {
+    dismissDialogLoading.value = false
     busyAction.value = null
   }
 }

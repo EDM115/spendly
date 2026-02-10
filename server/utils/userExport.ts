@@ -297,6 +297,6 @@ export async function buildUserExport(event: H3Event, targetUserId: string): Pro
     body: archive.toString("base64"),
     filename: `spendly-user-export-${userLabel}-${dateYMD}.zip`,
     userRecord,
-    oauthEmails: [ ...oauthEmailSet ],
+    oauthEmails: [...oauthEmailSet],
   }
 }
