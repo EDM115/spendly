@@ -1,6 +1,7 @@
 services:
   spendly:
     build: .
+    container_name: spendly
     image: edm115/spendly
     ports:
       - "60000:60000"
