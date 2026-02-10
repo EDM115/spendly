@@ -199,7 +199,7 @@
                   icon
                   variant="text"
                   density="compact"
-                  tabindex="-1"
+                  :tabindex="-1"
                   @click="togglePasswordVisibility"
                 >
                   <v-icon size="small">
@@ -226,7 +226,7 @@
                   icon
                   variant="text"
                   density="compact"
-                  tabindex="-1"
+                  :tabindex="-1"
                   @click="togglePasswordVisibility"
                 >
                   <v-icon size="small">
@@ -253,7 +253,7 @@
                   icon
                   variant="text"
                   density="compact"
-                  tabindex="-1"
+                  :tabindex="-1"
                   @click="togglePasswordVisibility"
                 >
                   <v-icon size="small">
@@ -411,6 +411,8 @@
               rounded="xl"
               prepend-icon="mdi-download-outline"
               class="text-none font-weight-bold mr-0 mr-md-4"
+              :loading="requestLoading === 'export'"
+              :disabled="hasPendingExport || requestLoading === 'export'"
               @click="requestExport"
             >
               {{ t("account.data.export") }}
@@ -421,6 +423,8 @@
               rounded="xl"
               prepend-icon="mdi-account-remove-outline"
               class="text-none font-weight-bold mt-4 mt-md-0"
+              :loading="requestLoading === 'delete'"
+              :disabled="hasPendingDelete || requestLoading === 'delete'"
               @click="requestDeletion"
             >
               {{ t("account.data.delete") }}
@@ -433,6 +437,13 @@
               :message="dataFeedback.message"
               :issue="dataFeedback.issue"
               :color="dataFeedback.color"
+            />
+          </v-expand-transition>
+          <v-expand-transition>
+            <LayoutAlert
+              v-if="hasPendingExport || hasPendingDelete"
+              :message="t('account.data.request-pending-tooltip')"
+              color="info"
             />
           </v-expand-transition>
         </v-card>
@@ -585,6 +596,7 @@ import { authClient } from "~/utils/authClient"
 
 const store = useMainStore()
 const { t } = useI18n()
+const { logUiEvent } = useUiEventLogger()
 
 useHead({ title: t("main.account") })
 
@@ -671,6 +683,71 @@ const dataFeedback = reactive({
   issue: "",
   color: "warning",
 })
+
+type UserRequestType = "export" | "delete"
+
+type UserRequestEntry = {
+  id: string;
+  type: UserRequestType;
+  request_date: string | Date;
+}
+
+type UserRequestListResponse = {
+  body: {
+    success: string;
+    requests: UserRequestEntry[];
+  };
+}
+
+const isRecord = (value: unknown): value is Record<string, unknown> => !!value
+  && typeof value === "object"
+  && Object.getPrototypeOf(value) === Object.prototype
+
+const isUserRequestEntry = (value: unknown): value is UserRequestEntry => {
+  if (!isRecord(value)) {
+    return false
+  }
+
+  const type = value.type
+
+  return typeof value.id === "string"
+    && (type === "export" || type === "delete")
+    && "request_date" in value
+}
+
+const isUserRequestListResponse = (value: unknown): value is UserRequestListResponse => {
+  if (!isRecord(value) || !isRecord(value.body)) {
+    return false
+  }
+
+  const requests = value.body.requests
+
+  return Array.isArray(requests)
+}
+
+const getDuplicateFlag = (value: unknown): boolean => {
+  if (!isRecord(value) || !isRecord(value.body)) {
+    return false
+  }
+
+  return typeof value.body.duplicate === "boolean"
+    ? value.body.duplicate
+    : false
+}
+
+const extractUserRequests = (value: unknown): UserRequestEntry[] => {
+  if (!isUserRequestListResponse(value)) {
+    return []
+  }
+
+  return value.body.requests.filter(isUserRequestEntry)
+}
+
+const requestLoading = ref<UserRequestType | null>(null)
+const userRequests = ref<UserRequestEntry[]>([])
+
+const hasPendingExport = computed(() => userRequests.value.some((entry) => entry.type === "export"))
+const hasPendingDelete = computed(() => userRequests.value.some((entry) => entry.type === "delete"))
 
 const showExportDialog = ref(false)
 const showDeletionDialog = ref(false)
@@ -764,6 +841,18 @@ const applySuccess = (target: typeof usernameFeedback, message: string) => {
   target.color = "success"
   target.message = message
   target.issue = ""
+}
+
+const resetDataFeedback = () => {
+  dataFeedback.message = ""
+  dataFeedback.issue = ""
+  dataFeedback.color = "warning"
+}
+
+const applyDataSuccess = (message: string) => {
+  dataFeedback.color = "success"
+  dataFeedback.message = message
+  dataFeedback.issue = ""
 }
 
 async function submitUsername() {
@@ -925,25 +1014,90 @@ async function unlinkProvider(provider: "google" | "github") {
 }
 
 function requestExport() {
+  if (hasPendingExport.value) {
+    return
+  }
+
   showExportDialog.value = true
 }
 
 function requestDeletion() {
+  if (hasPendingDelete.value) {
+    return
+  }
+
   showDeletionDialog.value = true
 }
 
-function confirmExport() {
+async function confirmExport() {
   showExportDialog.value = false
-  dataFeedback.color = "success"
-  dataFeedback.message = t("account.data.export-confirmed")
-  dataFeedback.issue = ""
+  await submitUserRequest("export")
 }
 
-function confirmDeletion() {
+async function confirmDeletion() {
   showDeletionDialog.value = false
-  dataFeedback.color = "success"
-  dataFeedback.message = t("account.data.delete-confirmed")
-  dataFeedback.issue = ""
+  await submitUserRequest("delete")
+}
+
+async function fetchUserRequests() {
+  resetDataFeedback()
+
+  try {
+    const response = await $fetch("/api/userRequest")
+    const requests = extractUserRequests(response)
+
+    userRequests.value = requests
+  } catch (error) {
+    applyError(dataFeedback, error as {
+      message?: string; statusText?: string; code?: string;
+    }, "warning")
+  }
+}
+
+async function submitUserRequest(type: UserRequestType) {
+  resetDataFeedback()
+  requestLoading.value = type
+  const start = performance.now()
+
+  try {
+    const response = await $fetch("/api/userRequest", {
+      method: "POST",
+      body: { type },
+    })
+
+    const duplicate = getDuplicateFlag(response)
+
+    applyDataSuccess(type === "export"
+      ? t("account.data.export-confirmed")
+      : t("account.data.delete-confirmed"))
+
+    await fetchUserRequests()
+
+    void logUiEvent({
+      action: "ui.account.userRequest",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+      meta: {
+        request_type: type,
+        duplicate,
+      },
+    })
+  } catch (error) {
+    applyError(dataFeedback, error as {
+      message?: string; statusText?: string; code?: string;
+    }, "warning")
+
+    void logUiEvent({
+      action: "ui.account.userRequest",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+      meta: {
+        request_type: type,
+      },
+    })
+  } finally {
+    requestLoading.value = null
+  }
 }
 
 watch(currentUser, (value) => {
@@ -952,6 +1106,7 @@ watch(currentUser, (value) => {
 
 onMounted(async () => {
   await refreshLinkedAccounts()
+  await fetchUserRequests()
 })
 </script>
 

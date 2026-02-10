@@ -19,6 +19,7 @@
         "title": "Demander un export des données"
       },
       "fallback-email": "votre adresse e-mail",
+      "request-pending-tooltip": "Cette action a déjà été demandée et sera traitée dès que possible",
       "title": "Données & confidentialité"
     },
     "donation": {
@@ -74,28 +75,37 @@
       "title": "Export de la base de données"
     },
     "title": "Paramètres",
-    "users": {
+    "user-requests": {
       "delete-action": "Supprimer l'utilisateur",
-      "edit-action": "Modifier l'utilisateur",
-      "export-action": "Exporter les données",
-      "impersonate-action": "Se faire passer pour l'utilisateur",
+      "empty": "Aucune demande pour le moment",
+      "export-action": "Envoyer l'export par e-mail",
+      "resolved": "Traitée",
+      "title": "Demandes utilisateurs",
+      "type-delete": "Suppression",
+      "type-export": "Export"
+    },
+    "users": {
       "confirm-password": "Confirmer le nouveau mot de passe",
       "create": "Créer un utilisateur",
       "create-cancel": "Annuler",
       "create-confirm": "Créer",
       "create-success": "Utilisateur créé avec succès",
       "create-title": "Créer un nouvel utilisateur",
+      "delete-action": "Supprimer l'utilisateur",
       "delete-cancel": "Annuler",
       "delete-confirm": "Supprimer",
       "delete-description": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
       "delete-success": "Utilisateur supprimé avec succès",
       "delete-title": "Confirmation de suppression",
+      "edit-action": "Modifier l'utilisateur",
       "edit-cancel": "Annuler",
       "edit-confirm": "Enregistrer",
       "edit-success": "Utilisateur mis à jour",
       "edit-title": "Modifier l'utilisateur",
       "email": "E-mail",
+      "export-action": "Exporter les données",
       "export-success": "Export généré pour {username}",
+      "impersonate-action": "Se faire passer pour l'utilisateur",
       "impersonate-success": "Vous vous faites passer pour {username}. Vous serez redirigé vers la page de compte dans 5 secondes.",
       "new-password": "Nouveau mot de passe",
       "no-email": "Aucun e-mail",
@@ -132,12 +142,12 @@
       "select": "Sélectionner un budget",
       "share": "Partager",
       "share-close": "Fermer",
+      "title": "Budgets",
       "transfer-action": "Transférer la propriété",
       "transfer-cancel": "Annuler",
       "transfer-confirm": "Transférer la propriété",
       "transfer-description": "Cette action est définitive et ne peut pas être annulée. {username} deviendra propriétaire et vous deviendrez admin.",
       "transfer-title": "Transférer la propriété du budget",
-      "title": "Budgets",
       "username": "Nom d'utilisateur",
       "users": "Partager le budget"
     },

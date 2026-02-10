@@ -1,4 +1,4 @@
-import { fs } from "node:fs/promises"
+import { writeFile } from "node:fs/promises"
 import { stdin } from "node:process"
 
 import type {
@@ -321,7 +321,7 @@ async function main(): Promise<void> {
   printSummary(report)
 
   if (!options.noOutput) {
-    await fs.writeFile(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, "utf-8")
+    await writeFile(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, "utf-8")
     console.log("")
     console.log(`JSON report written to ${options.jsonPath}`)
   }

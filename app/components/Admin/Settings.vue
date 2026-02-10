@@ -255,6 +255,119 @@
         </v-row>
       </v-expansion-panel-text>
     </v-expansion-panel>
+
+    <v-expansion-panel
+      class="glass-panel rounded-xl overflow-hidden transparent-panel"
+      elevation="0"
+    >
+      <v-expansion-panel-title class="font-weight-bold text-h6 py-4">
+        <v-icon
+          icon="mdi-inbox-arrow-down-outline"
+          :color="userRequestsIconColor"
+          class="mr-3"
+        />
+        {{ t("admin.user-requests.title") }}
+      </v-expansion-panel-title>
+      <v-expansion-panel-text class="pt-4">
+        <v-alert
+          v-if="!hasUserRequests"
+          class="mb-4 mx-4"
+          variant="tonal"
+          type="info"
+          border
+        >
+          {{ t("admin.user-requests.empty") }}
+        </v-alert>
+
+        <v-list
+          v-else
+          class="bg-transparent"
+        >
+          <v-list-item
+            v-for="request in userRequests"
+            :key="request.id"
+            class="mb-2 glass-list-item rounded-lg px-2 mx-4"
+          >
+            <v-container class="pa-0">
+              <v-row
+                align="center"
+                no-gutters
+              >
+                <v-col
+                  cols="12"
+                  md="4"
+                  class="pa-2"
+                >
+                  <v-list-item-title class="font-weight-medium mb-1">
+                    <v-icon
+                      icon="mdi-account-circle-outline"
+                      size="small"
+                      class="mr-1 opacity-70"
+                    />
+                    {{ formatRequestUser(request) }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle class="text-body-2">
+                    {{ request.user_email || t("admin.users.no-email") }}
+                  </v-list-item-subtitle>
+                  <div class="text-caption text-medium-emphasis mt-1">
+                    {{ formatRequestDate(request.request_date) }}
+                  </div>
+                </v-col>
+                <v-col
+                  cols="12"
+                  md="3"
+                  class="pa-2"
+                >
+                  <v-chip
+                    :color="request.type === 'export' ? 'info' : 'error'"
+                    variant="tonal"
+                    class="text-uppercase"
+                  >
+                    {{ formatRequestType(request.type) }}
+                  </v-chip>
+                </v-col>
+                <v-col
+                  cols="12"
+                  md="5"
+                  class="pa-2 d-flex flex-wrap justify-end gap-2"
+                >
+                  <v-chip
+                    v-if="resolvedRequests[request.id]"
+                    color="success"
+                    variant="tonal"
+                    class="text-uppercase"
+                  >
+                    {{ resolvedRequests[request.id]?.message }}
+                  </v-chip>
+                  <template v-else>
+                    <v-tooltip
+                      location="top"
+                      :text="request.type === 'export'
+                        ? t('admin.user-requests.export-action')
+                        : t('admin.user-requests.delete-action')"
+                    >
+                      <template #activator="{ props: tooltipProps }">
+                        <v-btn
+                          v-bind="tooltipProps"
+                          :color="request.type === 'export' ? 'info' : 'error'"
+                          :icon="request.type === 'export'
+                            ? 'mdi-email-fast-outline'
+                            : 'mdi-account-remove-outline'"
+                          variant="tonal"
+                          size="small"
+                          :loading="isBusy(request.id, request.type === 'export' ? 'resolve-export' : 'resolve-delete')"
+                          @click="resolveUserRequest(request)"
+                        />
+                      </template>
+                    </v-tooltip>
+                  </template>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-list-item>
+        </v-list>
+      </v-expansion-panel-text>
+    </v-expansion-panel>
   </v-expansion-panels>
 
   <v-dialog
@@ -436,12 +549,15 @@ const { t } = useI18n()
 const { logUiEvent } = useUiEventLogger()
 
 const users = ref<AdminUser[]>([])
+const userRequests = ref<AdminUserRequest[]>([])
 const exporting = ref(false)
 const dialogLoading = ref(false)
 const deleteLoading = ref(false)
 const busyAction = ref<{
   id: string; action: string;
 } | null>(null)
+
+const resolvedRequests = ref<Record<string, { message: string }>>({})
 
 const feedback = reactive({
   message: "",
@@ -476,6 +592,30 @@ const userForm = reactive({
 const roleItems: UserType[] = [ "user", "admin" ]
 
 const isCreating = computed(() => dialogMode.value === "create")
+const hasUserRequests = computed(() => userRequests.value.length > 0)
+
+const isRequestStale = (requestDate: string | Date): boolean => {
+  const date = typeof requestDate === "string"
+    ? new Date(requestDate)
+    : requestDate
+  const now = Date.now()
+  const diffMs = now - date.getTime()
+  const weekMs = 7 * 24 * 60 * 60 * 1000
+
+  return diffMs >= weekMs
+}
+
+const userRequestsIconColor = computed(() => {
+  if (!hasUserRequests.value) {
+    return "primary"
+  }
+
+  const hasStale = userRequests.value.some((request) => isRequestStale(request.request_date))
+
+  return hasStale
+    ? "error"
+    : "warning"
+})
 
 const emailRules = [
   (v: unknown) => !!v || t("rules.email.required"),
@@ -558,6 +698,23 @@ const formatRole = (role: AdminUser["role"]) => {
   return role
 }
 
+const formatRequestUser = (request: AdminUserRequest) => request.user_display_username
+  || request.user_username
+  || request.user_name
+  || request.user_id
+
+const formatRequestType = (type: AdminUserRequest["type"]) => (type === "export"
+  ? t("admin.user-requests.type-export")
+  : t("admin.user-requests.type-delete"))
+
+const formatRequestDate = (value: string | Date) => {
+  const date = typeof value === "string"
+    ? new Date(value)
+    : value
+
+  return date.toLocaleString()
+}
+
 const coerceRole = (role: AdminUser["role"]): UserType => {
   if (Array.isArray(role)) {
     return role.includes("admin")
@@ -608,6 +765,91 @@ const fetchUsers = async () => {
   }))
 
   users.value = mutatedUsers
+}
+
+const fetchUserRequests = async () => {
+  resetFeedback()
+
+  try {
+    const response = await $fetch("/api/admin/userRequests")
+
+    userRequests.value = response.body.requests ?? []
+  } catch (error) {
+    applyError(error as {
+      message?: string; statusText?: string; code?: string;
+    })
+    userRequests.value = []
+  }
+}
+
+const removeResolvedRequest = (requestId: string) => {
+  userRequests.value = userRequests.value.filter((request) => request.id !== requestId)
+  const { [requestId]: _removed, ...rest } = resolvedRequests.value
+
+  resolvedRequests.value = rest
+}
+
+const resolveUserRequest = async (request: AdminUserRequest) => {
+  resetFeedback()
+  busyAction.value = {
+    id: request.id,
+    action: request.type === "export" ? "resolve-export" : "resolve-delete",
+  }
+
+  const start = performance.now()
+
+  try {
+    await $fetch("/api/admin/userRequests/resolve", {
+      method: "POST",
+      body: {
+        requestId: request.id,
+        action: request.type,
+      },
+    })
+
+    resolvedRequests.value = {
+      ...resolvedRequests.value,
+      [request.id]: {
+        message: t("admin.user-requests.resolved"),
+      },
+    }
+
+    if (request.type === "delete") {
+      users.value = users.value.filter((userItem) => userItem.id !== request.user_id)
+    }
+
+    void logUiEvent({
+      action: "admin.userRequest.resolve",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "success",
+      meta: {
+        request_id: request.id,
+        request_type: request.type,
+        user_id: request.user_id,
+      },
+    })
+
+    setTimeout(() => {
+      removeResolvedRequest(request.id)
+    }, 5000)
+  } catch (error) {
+    applyError(error as {
+      message?: string; statusText?: string; code?: string;
+    })
+
+    void logUiEvent({
+      action: "admin.userRequest.resolve",
+      duration_ms: Math.round(performance.now() - start),
+      outcome: "error",
+      meta: {
+        request_id: request.id,
+        request_type: request.type,
+        user_id: request.user_id,
+      },
+    })
+  } finally {
+    busyAction.value = null
+  }
 }
 
 const openCreateDialog = () => {
@@ -827,9 +1069,7 @@ const downloadUserExport = async (userItem: AdminUser) => {
   const start = performance.now()
 
   try {
-    const response = await $fetch<{
-      body: string; filename: string;
-    }>("/api/admin/userExport", {
+    const response = await $fetch("/api/admin/userExport", {
       params: {
         userId: userItem.id,
       },
@@ -929,7 +1169,10 @@ const downloadBackup = async (format: ExportFormat) => {
 }
 
 onMounted(async () => {
-  await fetchUsers()
+  await Promise.all([
+    fetchUsers(),
+    fetchUserRequests(),
+  ])
 })
 </script>
 

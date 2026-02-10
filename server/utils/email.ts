@@ -22,6 +22,15 @@ export async function sendEmail(
   */
 
   /*
+  Implementation notes for user export / deletion requests:
+  - Export emails should include the generated ZIP as attachment.
+  - Primary recipient is the account email (user.email).
+  - Use Better Auth accountInfo to collect OAuth provider emails.
+  - Add provider emails as CCI if different from primary email.
+  - Never log the email addresses, only counts (cci_count) in wide events.
+  */
+
+  /*
   const { data, error } = await resend.emails.send({
     from: 'Spendly <spendly@edm115.dev>',
     to: [to],

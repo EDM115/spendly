@@ -19,6 +19,7 @@
         "title": "Request data export"
       },
       "fallback-email": "your email address",
+      "request-pending-tooltip": "This action has already been requested and will be handled as soon as possible",
       "title": "Data & privacy"
     },
     "donation": {
@@ -74,28 +75,37 @@
       "title": "Database backup"
     },
     "title": "Settings",
-    "users": {
+    "user-requests": {
       "delete-action": "Delete user",
-      "edit-action": "Edit user",
-      "export-action": "Export data",
-      "impersonate-action": "Impersonate user",
+      "empty": "No requests right now",
+      "export-action": "Send export email",
+      "resolved": "Resolved",
+      "title": "User requests",
+      "type-delete": "Delete",
+      "type-export": "Export"
+    },
+    "users": {
       "confirm-password": "Confirm new password",
       "create": "Create user",
       "create-cancel": "Cancel",
       "create-confirm": "Create",
       "create-success": "User created successfully",
       "create-title": "Create new user",
+      "delete-action": "Delete user",
       "delete-cancel": "Cancel",
       "delete-confirm": "Delete",
       "delete-description": "Are you sure you want to delete this user ?",
       "delete-success": "User deleted successfully",
       "delete-title": "Delete confirmation",
+      "edit-action": "Edit user",
       "edit-cancel": "Cancel",
       "edit-confirm": "Save changes",
       "edit-success": "User updated successfully",
       "edit-title": "Edit user",
       "email": "Email",
+      "export-action": "Export data",
       "export-success": "Export generated for {username}",
+      "impersonate-action": "Impersonate user",
       "impersonate-success": "Now impersonating {username}. You will be redirected to the account page in 5 seconds.",
       "new-password": "New password",
       "no-email": "No email",
@@ -132,12 +142,12 @@
       "select": "Select a budget tracker",
       "share": "Share",
       "share-close": "Close",
+      "title": "Budget Trackers",
       "transfer-action": "Transfer ownership",
       "transfer-cancel": "Cancel",
       "transfer-confirm": "Transfer ownership",
       "transfer-description": "This action is definitive and cannot be undone. {username} will become the new owner, and you will become an admin.",
       "transfer-title": "Transfer budget ownership",
-      "title": "Budget Trackers",
       "username": "Username",
       "users": "Share budget tracker"
     },

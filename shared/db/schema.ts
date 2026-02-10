@@ -134,6 +134,22 @@ export const verification = sqliteTable(
 // #endregion
 
 // #region Spendly
+export const user_requests = sqliteTable(
+  "user_requests",
+  {
+    id: text("id")
+      .primaryKey(),
+    user_id: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    type: text("type", { "enum": [ "export", "delete" ] })
+      .notNull(),
+    request_date: integer("request_date", { mode: "timestamp_ms" })
+      .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+      .notNull(),
+  },
+)
+
 export const budget_tracker = sqliteTable(
   "budget_tracker",
   {
@@ -220,6 +236,7 @@ export const schema = {
   session,
   account,
   verification,
+  user_requests,
   budget_tracker,
   user_budget_tracker,
   category,
@@ -230,6 +247,7 @@ export const schema = {
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  userRequests: many(user_requests),
 }))
 
 export const sessionRelations = relations(session, ({ one }) => ({

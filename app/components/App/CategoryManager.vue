@@ -278,7 +278,7 @@ const defaultColor = computed(() => theme.current.value.colors.primary)
 const categoryForm = ref({
   name: "",
   icon: "mdi-",
-  color: computed(() => defaultColor.value),
+  color: defaultColor.value,
 })
 const isValidIcon = ref(false)
 const testIcon = ref<InstanceType<typeof VIcon> | HTMLElement | null>(null)
@@ -513,6 +513,16 @@ watch(showAddDialog, (isOpen) => {
 watch(iconSearch, (value) => {
   if (value.trim() && !mdiMeta.value) {
     void loadMdiMeta()
+  }
+})
+
+watch(defaultColor, (nextColor, previousColor) => {
+  if (editingCategory.value) {
+    return
+  }
+
+  if (categoryForm.value.color === previousColor) {
+    categoryForm.value.color = nextColor
   }
 })
 

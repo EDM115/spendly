@@ -79,3 +79,14 @@ export type UiEventPayload = {
   outcome?: UiEventOutcome;
   meta?: Record<string, unknown>;
 }
+
+export type AdminUserRequest = {
+  id: string;
+  type: "export" | "delete";
+  request_date: string | Date;
+  user_id: string;
+  user_name: string;
+  user_email: string;
+  user_username: string | null;
+  user_display_username: string | null;
+}
