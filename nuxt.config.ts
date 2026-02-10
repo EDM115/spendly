@@ -40,6 +40,7 @@ export default defineNuxtConfig({
     asyncContext: true,
     browserDevtoolsTiming: true,
     buildCache: true,
+    checkOutdatedBuildInterval: 1000 * 60 * 60,
     clientFallback: true,
     clientNodeCompat: true,
     crossOriginPrefetch: true,

@@ -317,7 +317,9 @@
     "reset-password": "Reset password - Spendly",
     "signup": "Signup - Spendly",
     "terms-of-use": "Terms of Use - Spendly",
-    "title": "Spendly"
+    "title": "Spendly",
+    "update": "Update now",
+    "update-available": "A new version of Spendly is available !"
   },
   "navbar": {
     "account": "Account",
