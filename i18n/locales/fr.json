@@ -2,7 +2,7 @@
   "account": {
     "data": {
       "delete": "Demander la suppression du compte",
-      "delete-confirmed": "Votre demande de suppression a bien été reçue. Vous serez notifié par e-mail une fois le traitement terminé.",
+      "delete-confirmed": "Votre demande de suppression a bien été reçue. Vous serez notifié par e-mail une fois le traitement terminé. Vous serez déconnecté dans 10 secondes.",
       "delete-dialog": {
         "cancel": "Annuler",
         "confirm": "Confirmer la suppression",
@@ -19,7 +19,6 @@
         "title": "Demander un export des données"
       },
       "fallback-email": "votre adresse e-mail",
-      "request-pending-tooltip": "Cette action a déjà été demandée et sera traitée dès que possible",
       "title": "Données & confidentialité"
     },
     "donation": {
@@ -365,6 +364,7 @@
       "uppercase": "Le mot de passe doit contenir au moins une lettre majuscule"
     },
     "username": {
+      "alphanumeric": "Le nom d'utilisateur ne peut contenir que des lettres, des chiffres et des tirets bas",
       "already-taken": "Le nom d'utilisateur est déjà pris",
       "max": "Le nom d'utilisateur doit contenir au plus {max} caractères",
       "min": "Le nom d'utilisateur doit contenir au moins {min} caractères",

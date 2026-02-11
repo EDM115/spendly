@@ -1,6 +1,7 @@
 import { db } from "#shared/db/drizzle"
 import { schema } from "#shared/db/schema"
-// import { sendEmail } from "#server/utils/email"
+import { sendEmail } from "#server/utils/email"
+import { logger } from "#server/utils/logger"
 
 import type { ErrorContext } from "@better-fetch/fetch"
 
@@ -31,32 +32,74 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     onPasswordReset: async ({ user }, _request) => {
-      console.log(`Password for user ${user.email} has been reset.`)
+      logger.info({
+        kind: "system",
+        op: {
+          name: "auth.password.reset",
+          entity: "user",
+          entity_id: user.id,
+        },
+        outcome: "success",
+      })
     },
     maxPasswordLength: 16384,
     sendResetPassword: async ({
-      user, url, token,
+      user, url, token: _token,
     }, _request) => {
-      console.log(`Password reset requested for user ${user.email}. Reset URL : ${url}, Token : ${token}`)
+      logger.info({
+        kind: "system",
+        op: {
+          name: "auth.password.reset.send",
+          entity: "user",
+          entity_id: user.id,
+        },
+        outcome: "success",
+        meta: {
+          template: "password-reset",
+        },
+      })
 
-      /* void sendEmail(
+      void sendEmail(
         user.email,
-        "Reset your password",
-        `Click the link to reset your password: ${url}`,
-      ) */
+        {
+          template: "password-reset",
+          variables: {
+            account_name: user.name,
+            reset_link: url,
+            spendly_home: process.env.BETTER_AUTH_URL!,
+          },
+        }
+      )
     },
   },
   emailVerification: {
     sendVerificationEmail: async ({
-      user, url, token,
+      user, url, token: _token,
     }, _request) => {
-      console.log(`Email verification requested for user ${user.email}. Verification URL : ${url}, Token : ${token}`)
+      logger.info({
+        kind: "system",
+        op: {
+          name: "auth.email.verify.send",
+          entity: "user",
+          entity_id: user.id,
+        },
+        outcome: "success",
+        meta: {
+          template: "verify-email",
+        },
+      })
 
-      /* void sendEmail({
-        to: user.email,
-        subject: "Verify your email address",
-        text: `Click the link to verify your email: ${url}`,
-      }) */
+      void sendEmail(
+        user.email,
+        {
+          template: "verify-email",
+          variables: {
+            account_name: user.name,
+            verify_link: url,
+            spendly_home: process.env.BETTER_AUTH_URL!,
+          },
+        }
+      )
     },
   },
   experimental: { joins: false },
@@ -67,7 +110,17 @@ export const auth = betterAuth({
       if (response.status === 429) {
         const retryAfter = response.headers.get("X-Retry-After")
 
-        console.log(`Rate limit exceeded. Retry after ${retryAfter} seconds`)
+        logger.warn({
+          kind: "system",
+          op: {
+            name: "auth.rate_limit",
+            entity: "auth",
+          },
+          outcome: "error",
+          meta: {
+            retry_after: retryAfter ?? undefined,
+          },
+        })
       }
     },
   },
@@ -102,9 +155,31 @@ export const auth = betterAuth({
     magicLink({
       expiresIn: 60 * 10,
       sendMagicLink: async ({
-        email, token, url,
+        email, url, token: _token,
       }, _ctx) => {
-        console.log(`Magic link requested for user ${email}. URL : ${url}, Token : ${token}`)
+        logger.info({
+          kind: "system",
+          op: {
+            name: "auth.magic_link.send",
+            entity: "user",
+          },
+          outcome: "success",
+          meta: {
+            template: "magic-link",
+          },
+        })
+
+        void sendEmail(
+          email,
+          {
+            template: "magic-link",
+            variables: {
+              account_email: email,
+              connect_link: url,
+              spendly_home: process.env.BETTER_AUTH_URL!,
+            },
+          },
+        )
       },
     }),
     username({

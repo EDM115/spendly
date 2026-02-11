@@ -524,6 +524,7 @@
                     icon
                     variant="text"
                     density="compact"
+                    :tabindex="-1"
                     @click="togglePasswordVisibility"
                   >
                     <v-icon size="small">
@@ -550,6 +551,7 @@
                     icon
                     variant="text"
                     density="compact"
+                    :tabindex="-1"
                     @click="togglePasswordVisibility"
                   >
                     <v-icon size="small">
@@ -710,6 +712,18 @@ const userRequestsIconColor = computed(() => {
     : "warning"
 })
 
+async function usernameAvailable(name: string) {
+  const {
+    data, error,
+  } = await authClient.isUsernameAvailable({
+    username: name,
+  })
+
+  return error
+    ? false
+    : data?.available ?? false
+}
+
 const emailRules = [
   (v: unknown) => !!v || t("rules.email.required"),
   (v: string) => (v && (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/).test(v)) || t("rules.email.valid"),
@@ -719,6 +733,8 @@ const usernameRules = [
   (v: unknown) => !!v || t("rules.username.required"),
   (v: string) => (v && v.length >= 3) || t("rules.username.min", { min: 3 }),
   (v: string) => (v && v.length <= 128) || t("rules.username.max", { max: 128 }),
+  (v: string) => (v && (/^[a-zA-Z0-9_]+$/).test(v)) || t("rules.username.alphanumeric"),
+  async (v: string) => (v && await usernameAvailable(v)) || t("rules.username.already-taken"),
 ]
 
 const passwordRules = [

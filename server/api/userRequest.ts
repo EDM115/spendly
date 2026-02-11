@@ -1,5 +1,9 @@
 import { db } from "#shared/db/drizzle"
-import { user_requests } from "#shared/db/schema"
+import {
+  user,
+  user_requests,
+} from "#shared/db/schema"
+// import { auth } from "#server/utils/auth"
 import { requireUserId } from "#server/utils/session"
 import { addWide } from "#server/utils/wide"
 
@@ -111,6 +115,25 @@ export default defineEventHandler(async (event) => {
       duplicate: false,
     },
   })
+
+  if (type === "delete") {
+    // Since the user requests this, we can't use admin methods there
+    // However we can forcefully insert the data in db
+    /* await auth.api.banUser({
+      body: {
+        userId,
+        banReason: "User requested account deletion",
+      },
+      headers: event.headers,
+    }) */
+
+    await db.update(user)
+      .set({
+        banned: true,
+        banReason: "User requested account deletion",
+      })
+      .where(eq(user.id, userId))
+  }
 
   return {
     status: 201,

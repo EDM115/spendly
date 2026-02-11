@@ -208,6 +208,7 @@ const usernameRules = ref([
   (v: unknown) => !!v || t("rules.username.required"),
   (v: string) => (v && v.length >= 3) || t("rules.username.min", { min: 3 }),
   (v: string) => (v && v.length <= 128) || t("rules.username.max", { max: 128 }),
+  (v: string) => (v && (/^[a-zA-Z0-9_]+$/).test(v)) || t("rules.username.alphanumeric"),
   async (v: string) => (v && await usernameAvailable(v)) || t("rules.username.already-taken"),
 ])
 

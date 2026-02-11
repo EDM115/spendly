@@ -301,6 +301,7 @@ const emailRules = ref([
 const usernameRules = ref([
   (v: unknown) => !!v || t("rules.username.required"),
   (v: string) => (v && v.length >= 3) || t("rules.username.min", { min: 3 }),
+  (v: string) => (v && (/^[a-zA-Z0-9_]+$/).test(v)) || t("rules.username.alphanumeric"),
 ])
 
 const passwordRules = ref([
@@ -462,6 +463,7 @@ async function socialLogin(provider: "google" | "github") {
   errorMessage.value = ""
   issueMessage.value = ""
   loading.value = true
+  loginMethod.value = provider
 
   const start = performance.now()
 

@@ -1,4 +1,5 @@
 import { db } from "#shared/db/drizzle"
+import { sendEmail } from "#server/utils/email"
 import {
   user,
   user_requests,
@@ -117,12 +118,27 @@ export default defineEventHandler(async (event) => {
       },
     })
 
-    // TODO(email): Send exportResult.body + exportResult.filename to request.user_email
-    // TODO(email): Include oauth emails in CCI (cciEmails). Avoid logging PII.
+    void sendEmail(
+      request.user_email,
+      {
+        template: "export-request",
+        variables: {
+          account_name: request.user_name,
+          spendly_home: process.env.BETTER_AUTH_URL!,
+        },
+        attachments: [
+          {
+            filename: exportResult.filename,
+            content: exportResult.body,
+          },
+        ],
+      },
+      cciEmails.length > 0 ? cciEmails : undefined,
+      event,
+    )
   } else {
     const headers = buildHeaders(event)
 
-    // Best-effort: call Better Auth admin removal to ensure full cleanup.
     await auth.api.removeUser({
       body: {
         userId: request.user_id,
@@ -141,6 +157,19 @@ export default defineEventHandler(async (event) => {
         user_id: request.user_id,
       },
     })
+
+    void sendEmail(
+      request.user_email,
+      {
+        template: "account-deletion",
+        variables: {
+          account_name: request.user_name,
+          spendly_home: process.env.BETTER_AUTH_URL!,
+        },
+      },
+      undefined,
+      event,
+    )
   }
 
   event.waitUntil((async () => {

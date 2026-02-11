@@ -2,7 +2,7 @@
   "account": {
     "data": {
       "delete": "Request account deletion",
-      "delete-confirmed": "Your deletion request has been received. You will be notified by email once it is processed.",
+      "delete-confirmed": "Your deletion request has been received. You will be notified by email once it is processed. You will be logged out in 10 seconds.",
       "delete-dialog": {
         "cancel": "Cancel",
         "confirm": "Confirm deletion",
@@ -19,7 +19,6 @@
         "title": "Request data export"
       },
       "fallback-email": "your email address",
-      "request-pending-tooltip": "This action has already been requested and will be handled as soon as possible",
       "title": "Data & privacy"
     },
     "donation": {
@@ -365,6 +364,7 @@
       "uppercase": "Password must contain at least one uppercase letter"
     },
     "username": {
+      "alphanumeric": "Username can only contain letters, numbers and underscores",
       "already-taken": "Username is already taken",
       "max": "Username must be at most {max} characters",
       "min": "Username must be at least {min} characters",

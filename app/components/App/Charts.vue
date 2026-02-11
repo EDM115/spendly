@@ -452,11 +452,6 @@ type ChartInstanceRef = {
 
 type C2SCtor = new (w: number, h: number) => CanvasRenderingContext2D
 
-type ExportCanvasResult = {
-  canvas: HTMLCanvasElement;
-  cleanup: () => void;
-}
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -2098,6 +2093,8 @@ const exportPDF = async () => {
       : "portrait",
     unit: "px",
     format: [ Math.round(svgResult.width * 6), Math.round(svgResult.height * 6) ],
+    putOnlyUsedFonts: true,
+    compress: true,
   })
 
   pdf.addImage(imgData, "PNG", 0, 0, Math.round(svgResult.width * 6), Math.round(svgResult.height * 6))

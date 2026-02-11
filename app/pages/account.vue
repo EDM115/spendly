@@ -439,13 +439,6 @@
               :color="dataFeedback.color"
             />
           </v-expand-transition>
-          <v-expand-transition>
-            <LayoutAlert
-              v-if="hasPendingExport || hasPendingDelete"
-              :message="t('account.data.request-pending-tooltip')"
-              color="info"
-            />
-          </v-expand-transition>
         </v-card>
       </v-col>
     </v-row>
@@ -793,6 +786,7 @@ const usernameRules = ref([
   (v: unknown) => !!v || t("rules.username.required"),
   (v: string) => (v && v.length >= 3) || t("rules.username.min", { min: 3 }),
   (v: string) => (v && v.length <= 128) || t("rules.username.max", { max: 128 }),
+  (v: string) => (v && (/^[a-zA-Z0-9_]+$/).test(v)) || t("rules.username.alphanumeric"),
   async (v: string) => (v && await usernameAvailable(v)) || t("rules.username.already-taken"),
 ])
 
@@ -1071,7 +1065,12 @@ async function submitUserRequest(type: UserRequestType) {
       ? t("account.data.export-confirmed")
       : t("account.data.delete-confirmed"))
 
-    await fetchUserRequests()
+    userRequests.value.push({
+      // @ts-expect-error At this point the data doesn't already exist
+      id: response.body.id ?? `new-${Date.now()}`,
+      type,
+      request_date: new Date(),
+    })
 
     void logUiEvent({
       action: "ui.account.userRequest",
@@ -1082,6 +1081,14 @@ async function submitUserRequest(type: UserRequestType) {
         duplicate,
       },
     })
+
+    if (type === "delete") {
+      setTimeout(async () => {
+        store.logout()
+        await authClient.signOut()
+        await navigateTo("/", { external: true })
+      }, 10000)
+    }
   } catch (error) {
     applyError(dataFeedback, error as {
       message?: string; statusText?: string; code?: string;

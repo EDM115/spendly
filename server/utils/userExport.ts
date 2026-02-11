@@ -57,10 +57,6 @@ const safeFolderName = (value: string, fallback: string): string => {
   const normalized = value
     .trim()
     .replace(/[<>:"/\\|?*]/g, "_")
-    .replace(/\s+/g, "-")
-    .replace(/_+/g, "_")
-    .replace(/-+/g, "-")
-    .slice(0, 80)
 
   return normalized.length > 0
     ? normalized
