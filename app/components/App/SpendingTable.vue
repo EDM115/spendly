@@ -209,7 +209,7 @@
         hide-details
         clearable
         max-width="600"
-        :min-width="smAndUp ? 400 : 350"
+        :min-width="smAndUp ? 400 : undefined"
         class="mb-6 search-field"
         rounded="lg"
         autocomplete="suppress"
@@ -1224,5 +1224,12 @@ const exportCSV = async () => {
 
 .spending-mobile-info {
   max-width: 70%;
+}
+
+@media (max-width: 600px) {
+  .search-field {
+    max-width: 100%;
+    width: max(90%, 85svw);
+  }
 }
 </style>

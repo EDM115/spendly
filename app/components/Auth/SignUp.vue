@@ -112,6 +112,7 @@
         :language="storeLang ?? 'auto'"
         :theme="storeTheme ?? 'auto'"
         appearance="execute"
+        size="flexible"
         :tabindex="-1"
         @success="onTurnstileSuccess"
         @error="onTurnstileError"
