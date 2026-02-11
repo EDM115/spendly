@@ -72,7 +72,11 @@
               </v-list-item>
             </v-list>
           </v-menu>
-          <v-menu content-class="glass-menu-content">
+          <v-menu
+            v-model="downloadMenu"
+            content-class="glass-menu-content"
+            :close-on-content-click="false"
+          >
             <template #activator="{ props: menuProps }">
               <v-btn
                 v-bind="menuProps"
@@ -609,6 +613,7 @@ const canEdit = computed(() => store.canEditData && !store.getIsDemo)
 const showAddDialog = ref(false)
 const showDeleteDialog = ref(false)
 const dateMenu = ref(false)
+const downloadMenu = ref(false)
 const tempDate = ref<string | null>(null)
 const isExporting = ref(false)
 const editingSpending = ref<Spending | null>(null)
@@ -1093,6 +1098,7 @@ const exportJSON = async () => {
   URL.revokeObjectURL(url)
 
   isExporting.value = false
+  downloadMenu.value = false
 }
 
 const exportCSV = async () => {
@@ -1124,6 +1130,7 @@ const exportCSV = async () => {
   URL.revokeObjectURL(url)
 
   isExporting.value = false
+  downloadMenu.value = false
 }
 </script>
 

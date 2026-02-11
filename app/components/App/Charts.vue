@@ -197,7 +197,11 @@
             </v-list>
           </v-menu>
 
-          <v-menu content-class="glass-menu-content">
+          <v-menu
+            v-model="downloadMenu"
+            content-class="glass-menu-content"
+            :close-on-content-click="false"
+          >
             <template #activator="{ props: menuProps }">
               <v-btn
                 v-bind="menuProps"
@@ -499,6 +503,7 @@ const showExpense = ref(true)
 const showExpensePie = ref(true)
 const showIncomePie = ref(true)
 const isExporting = ref(false)
+const downloadMenu = ref(false)
 const timeRangeModel = computed({
   get: () => props.timeRange,
   set: (v: string) => emit("update:time-range", v),
@@ -2032,6 +2037,7 @@ const exportPNG = async () => {
   downloadDataUrl(dataUrl, filename)
 
   isExporting.value = false
+  downloadMenu.value = false
 }
 
 const exportSVG = async () => {
@@ -2060,6 +2066,7 @@ const exportSVG = async () => {
   link.click()
   URL.revokeObjectURL(url)
   isExporting.value = false
+  downloadMenu.value = false
 }
 
 const exportPDF = async () => {
@@ -2100,6 +2107,7 @@ const exportPDF = async () => {
   pdf.addImage(imgData, "PNG", 0, 0, Math.round(svgResult.width * 6), Math.round(svgResult.height * 6))
   pdf.save(`${props.budgetTrackerName}_-_chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.pdf`)
   isExporting.value = false
+  downloadMenu.value = false
 }
 </script>
 
