@@ -174,6 +174,20 @@
                   {{ t('reset-password.send-link') }}
                 </v-btn>
               </v-form>
+              <NuxtLink to="/login">
+                <v-btn
+                  block
+                  color="primary"
+                  size="large"
+                  rounded="xl"
+                  type="submit"
+                  variant="tonal"
+                  prepend-icon="mdi-login"
+                  class="text-none font-weight-bold mt-4"
+                >
+                  {{ t('login.login') }}
+                </v-btn>
+              </NuxtLink>
             </div>
           </v-card>
         </v-container>

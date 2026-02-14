@@ -68,7 +68,7 @@ export const auth = betterAuth({
             reset_link: url,
             spendly_home: process.env.BETTER_AUTH_URL!,
           },
-        }
+        },
       )
     },
   },
@@ -98,7 +98,7 @@ export const auth = betterAuth({
             verify_link: url,
             spendly_home: process.env.BETTER_AUTH_URL!,
           },
-        }
+        },
       )
     },
   },

@@ -48,6 +48,7 @@ LOG_LEVEL=info
 LOG_INCLUDE_UA=true
 LOG_INCLUDE_IP=true
 STAGE=development
+ALERT_API=https://alert.service/send?token=xxxx&message=
 ```
 **Required** :
 - `JWT_SECRET` : generate with `node -e "import('crypto').then(crypto => console.log(crypto.randomBytes(64).toString('hex')))"`
@@ -68,6 +69,7 @@ STAGE=development
 - `LOG_INCLUDE_UA` : set to `true` to include user-agent in request logs (default `false`)
 - `LOG_INCLUDE_IP` : set to `true` to include client IP in request logs (default `false`)
 - `STAGE` : override log environment (`production`, `staging`, `development`), defaults to `NODE_ENV`
+- `ALERT_API` : an API endpoint to send alerts to when an email have been sent (to monitor its usage as it ain't free), the error message will be appended to the URL (ex: `https://alert.service/send?token=xxxx&message=`)
 ```pwsh
 pnpm i --frozen-lockfile
 pnpm db:migrate

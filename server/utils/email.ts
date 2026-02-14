@@ -10,13 +10,13 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 export async function sendEmail(
   to: string,
   content: {
-    template: string,
-    variables: Record<string, string | number>,
+    template: string;
+    variables: Record<string, string | number>;
     attachments?: {
-      filename: string,
+      filename: string;
       // Base64-encoded content of the attachment
-      content: string,
-    }[],
+      content: string;
+    }[];
   },
   bcc?: string | string[],
   event?: H3Event,
@@ -29,7 +29,9 @@ export async function sendEmail(
   const attachmentCount = content.attachments?.length ?? 0
 
   try {
-    const { data, error } = await resend.emails.send({
+    const {
+      data, error,
+    } = await resend.emails.send({
       from: "Spendly <spendly@edm115.dev>",
       to: [to],
       bcc,
@@ -39,6 +41,10 @@ export async function sendEmail(
       },
       attachments: content.attachments,
     })
+
+    if (process.env.ALERT_API) {
+      await $fetch(`${process.env.ALERT_API}${encodeURIComponent(`[SPENDLY] Email sent to ${to} with template ${content.template}`)}`)
+    }
 
     const emailWide = {
       provider: "resend",

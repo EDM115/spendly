@@ -133,7 +133,9 @@ export default defineEventHandler(async (event) => {
           },
         ],
       },
-      cciEmails.length > 0 ? cciEmails : undefined,
+      cciEmails.length > 0
+        ? cciEmails
+        : undefined,
       event,
     )
   } else {

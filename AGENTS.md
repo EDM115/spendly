@@ -149,7 +149,7 @@ app/
 	layouts/default.vue
 	middleware/auth.global.ts
 	pages/*.vue
-	pages/demo.vue # avoid to read when grasping context of the app as it will fill the context with demo-data
+	pages/demo.vue  # avoid to read when grasping context of the app as it will fill the context with demo-data
 	plugins/wide-events.client.ts
 	stores/main.ts
 	utils/authClient.ts
@@ -188,6 +188,8 @@ i18n/
 	locales/fr.json
 	locales/en.ts
 	locales/fr.ts
+nuxt.config.ts  # Vuetify app colors are defined here
+drizzle.config.ts
 ```
 
 ## Where to look first

@@ -29,7 +29,7 @@
       <NuxtLink
         v-if="smAndUp"
         :to="connected && !store.getIsDemo ? '/app' : '/'"
-        class="text-h6 font-weight-bold"
+        class="text-h6 font-weight-bold gradient-text"
       >
         {{ t('main.title') }}
       </NuxtLink>
