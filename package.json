@@ -11,6 +11,7 @@
     "@nuxt/image": "~2.0.0",
     "@nuxtjs/i18n": "~10.2.3",
     "@pinia/nuxt": "~0.11.3",
+    "@vite-pwa/nuxt": "~1.1.1",
     "@vueuse/core": "~14.2.1",
     "@vueuse/nuxt": "~14.2.1",
     "better-auth": "~1.4.18",
@@ -25,6 +26,7 @@
     "pinia": "~3.0.4",
     "pino": "~10.3.1",
     "resend": "~6.9.2",
+    "vite-plugin-pwa": "~1.2.0",
     "vue": "~3.5.28",
     "vue-chartjs": "~5.3.3",
     "vue-cloudflare-turnstile": "~1.0.3",
@@ -34,6 +36,7 @@
   "devDependencies": {
     "@dotenvx/dotenvx": "~1.52.0",
     "@nuxt/eslint": "~1.15.1",
+    "@vite-pwa/assets-generator": "~1.0.2",
     "@stylistic/eslint-plugin": "~5.8.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "latest",
@@ -97,10 +100,10 @@
     "lint:oxlint": "oxlint --type-aware .",
     "log:analyze": "tsx scripts/analyze-logs.ts",
     "log:tui": "tsx scripts/log-tui.tsx",
-    "preview": "dotenvx run -- nuxt preview --port 88",
-    "start": "dotenvx run -- node .output/server/index.mjs",
+    "preview": "dotenvx run -- nuxt preview --port 8888",
+    "start": "dotenvx run --env PORT=8888 --overload -- node .output/server/index.mjs",
     "typecheck": "nuxt typecheck"
   },
   "type": "module",
-  "version": "1.0.0"
+  "version": "1.1.0"
 }

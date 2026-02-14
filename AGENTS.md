@@ -5,6 +5,7 @@ Spendly is a free, open-source personal finance tracker. Users create budget tra
 
 ## Architecture overview
 - Nuxt 4 SSR app with Vuetify UI, Pinia store, and Vue 3 Composition API. Frontend in `app/`, server API in `server/api/`, shared types and DB schema in `shared/`.
+- PWA support is enabled via `@vite-pwa/nuxt` with a generated Web App Manifest and Workbox service worker (`registerType: "prompt"`).
 - Authentication via Better Auth with email/password, username, magic links, admin plugin, and social providers (GitHub/Google). Cloudflare Turnstile protects auth endpoints.
 - Data stored in SQLite via Drizzle ORM (`better-sqlite3`). DB runs in WAL mode. IDs are UUIDv4 (`randomUUID()`).
 - Charts built with Chart.js + `vue-chartjs`; exports to SVG/PNG/PDF using `canvas-to-svg` and `jspdf`.
@@ -12,7 +13,7 @@ Spendly is a free, open-source personal finance tracker. Users create budget tra
 
 ## Key workflows & commands
 - Dev server: `pnpm dev` (port 8888). Also `pnpm dev:expose:local` / `pnpm dev:expose:global`.
-- Build/preview/start: `pnpm build`, `pnpm preview` (port 88), `pnpm start` (dotenvx).
+- Build/preview/start: `pnpm build`, `pnpm preview` (port 8888), `pnpm start` (dotenvx with `PORT=8888`).
 - DB: `pnpm db:generate`, `pnpm db:migrate`, `pnpm db:seed` (seed uses `init/seed_db.ts`).
 - Auth schema changes: `pnpm better-auth:generate` → diff `shared/db/auth.schema.ts` vs `shared/db/schema.ts` → `pnpm db:generate` + `pnpm db:migrate`.
 - Lint/format/typecheck: `pnpm lint`, `pnpm lint:fix`, `pnpm format`, `pnpm typecheck`.
@@ -69,6 +70,7 @@ All API handlers return `{ status, body }` and use `requireUserId(event.context.
 - `App/DateRangeFilter.vue`: time range controls.
 - `Layout/NavBar.vue`: navigation, theme/language toggles, admin/account links, impersonation stop.
 - `Layout/Alert.vue`: UI notifications.
+- `layouts/default.vue`: mounts `NuxtPwaAssets` and wires update prompt UI via `$pwa.needRefresh` + `$pwa.updateServiceWorker()`.
 - `Admin/Settings.vue`: user CRUD, impersonation, exports.
 - `Auth/*`: login/signup/reset form logic.
 
@@ -87,7 +89,7 @@ All API handlers return `{ status, body }` and use `requireUserId(event.context.
 - `i18n/locales/en.ts`, `fr.ts`: merge Vuetify locales (`$vuetify`) with app strings.
 
 ## Config & tooling
-- `nuxt.config.ts`: SSR, i18n, Vuetify themes, fonts, dev server port (8888), runtime config for Turnstile site key.
+- `nuxt.config.ts`: SSR, i18n, Vuetify themes, fonts, dev server port (8888), runtime config for Turnstile site key, and PWA options (`pwa.manifest`, `pwa.pwaAssets`, `workbox`).
 - `drizzle.config.ts`: DB connection via `DB_FILE_NAME`.
 - `Dockerfile`: multi-stage build, seeds DB, runs Nuxt output with dotenv.
 
@@ -106,6 +108,8 @@ See `README.md` for the canonical list. Key variables used in this app:
 - Prefer `event.context.auth` from middleware and `requireUserId` for authorization.
 - API responses are shaped as `{ status, body }`.
 - Persist UI settings (`theme`, `i18n`, `selectedBudgetTrackerId`) in localStorage.
+- PWA icons are served from `/images/*` in built output; manifest icon `src` values must therefore use `images/...` paths.
+- Keep `workbox.additionalManifestEntries` with `{ url: "/", revision: null }` to avoid `non-precached-url` errors with navigation fallback.
 
 ## Contribution rules
 - No tests are needed in this app. Vitest is not set up and does not need to be; TDD is not required.

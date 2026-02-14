@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@nuxtjs/i18n",
     "@pinia/nuxt",
+    "@vite-pwa/nuxt",
     "@vueuse/nuxt",
     "nuxt-svgo",
     "vuetify-nuxt-module",
@@ -62,7 +63,7 @@ export default defineNuxtConfig({
     typedPages: true,
     typescriptPlugin: true,
     viewTransition: true,
-    viteEnvironmentApi: true,
+    viteEnvironmentApi: false,
   },
   compatibilityDate: "2025-10-15",
   nitro: {
@@ -177,6 +178,65 @@ export default defineNuxtConfig({
     strategy: "no_prefix",
   },
   image: { quality: 100 },
+  pwa: {
+    client: {
+      periodicSyncForUpdates: 3600,
+    },
+    devOptions: {
+      enabled: true,
+      type: "module",
+    },
+    includeAssets: ["images/logo.webp", "images/logo_alt.webp"],
+    injectRegister: "script-defer",
+    manifest: {
+      name: "Spendly",
+      short_name: "Spendly",
+      description: "Simple, powerful, and free budget tracking for everyone",
+      theme_color: "#051e11",
+      background_color: "#051e11",
+      display: "standalone",
+      start_url: "/",
+      scope: "/",
+      lang: "en",
+      icons: [
+        {
+          src: "images/pwa-64x64.png",
+          sizes: "64x64",
+          type: "image/png",
+        },
+        {
+          src: "images/pwa-192x192.png",
+          sizes: "192x192",
+          type: "image/png",
+        },
+        {
+          src: "images/pwa-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "any",
+        },
+        {
+          src: "images/maskable-icon-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "maskable",
+        },
+      ],
+    },
+    pwaAssets: {
+      image: "public/images/logo.webp",
+    },
+    registerType: "prompt",
+    workbox: {
+      additionalManifestEntries: [
+        {
+          url: "/",
+          revision: null,
+        },
+      ],
+      globPatterns: ["**/*.{js,mjs,css,html,ico,png,svg,webp,woff2,ttf,json}"],
+    },
+  },
   svgo: {
     autoImportPath: "./public/images",
     defaultImport: "component",

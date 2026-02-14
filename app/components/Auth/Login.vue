@@ -29,7 +29,7 @@
         <v-chip
           v-if="lastUsedMethod === 'google'"
           class="last-used-chip last-used-chip--single"
-          :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
+          color="secondary"
           prepend-icon="mdi-history"
           pill
         >
@@ -54,7 +54,7 @@
         <v-chip
           v-if="lastUsedMethod === 'github'"
           class="last-used-chip last-used-chip--single"
-          :color="loginMethod === lastUsedMethod ? 'primary' : 'secondary'"
+          color="secondary"
           prepend-icon="mdi-history"
           pill
         >
@@ -289,7 +289,7 @@ const form = ref<{
   isValid: boolean | null;
   errorMessages: string[];
 }>()
-const loginMethod = ref<"username" | "email" | "magic-link" | "google" | "github">("username")
+const loginMethod = ref<"username" | "email" | "magic-link">("username")
 // to avoid blowing up the daily mail limit
 const showMagicLink = ref(0)
 const magicLinkDone = ref(false)
@@ -464,7 +464,6 @@ async function socialLogin(provider: "google" | "github") {
   errorMessage.value = ""
   issueMessage.value = ""
   loading.value = true
-  loginMethod.value = provider
 
   const start = performance.now()
 

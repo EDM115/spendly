@@ -4,10 +4,12 @@
 
     <NuxtRouteAnnouncer />
 
+    <NuxtPwaAssets />
+
     <LayoutNavBar />
 
     <v-snackbar
-      v-model="showUpdateSnackbar"
+      :model-value="showUpdateSnackbar"
       :timeout="-1"
       :color="theme === 'dark' ? 'background-lighten-1' : 'background-darken-1'"
       location="top right"
@@ -77,6 +79,7 @@ import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill"
 
 const i18nHead = useLocaleHead()
 const route = useRoute()
+const { $pwa } = useNuxtApp()
 const {
   t,
   setLocale,
@@ -85,24 +88,14 @@ const store = useMainStore()
 const { changeTheme } = useCustomTheme()
 
 const theme = computed(() => store.getTheme)
-const showUpdateSnackbar = ref(false)
-
-function updateCheck() {
-  const isNewVersionAvailable = ref(false)
-  const nuxtApp = useNuxtApp()
-
-  nuxtApp.hook("app:manifest:update", () => {
-    isNewVersionAvailable.value = true
-  })
-
-  return {
-    isNewVersionAvailable: readonly(isNewVersionAvailable),
-  }
-}
+const showUpdateSnackbar = computed(() => $pwa?.needRefresh ?? false)
 
 async function refreshToUpdate() {
-  showUpdateSnackbar.value = false
-  await navigateTo(route.fullPath, { external: true })
+  if (!$pwa) {
+    return
+  }
+
+  await $pwa.updateServiceWorker()
 }
 
 useHead({
@@ -172,12 +165,6 @@ onMounted(() => {
     "Twemoji Country Flags",
     "/fonts/TwemojiCountryFlags.woff2",
   )
-
-  const { isNewVersionAvailable } = updateCheck()
-
-  setTimeout(() => {
-    showUpdateSnackbar.value = isNewVersionAvailable.value
-  }, 2000)
 })
 </script>
 

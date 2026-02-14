@@ -77,6 +77,12 @@ pnpm db:seed
 pnpm dev
 ```
 
+### PWA (Vite PWA / Nuxt)
+- Spendly uses `@vite-pwa/nuxt` with a generated Web App Manifest and service worker.
+- PWA head entries (`manifest`, icons, `theme-color`) are injected through `NuxtPwaAssets` in `app/layouts/default.vue`.
+- Icon assets are generated from `public/images/logo.webp` via the `pwaAssets` integration.
+- Service worker update mode is configured as `prompt` to avoid forced reload while users are editing data.
+
 ### Log analysis (CLI + TUI)
 Capture logs to a file (Docker example) :
 ```pwsh

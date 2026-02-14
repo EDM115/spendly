@@ -11,6 +11,11 @@ allowBuilds:
 
 lockfileIncludeTarballUrl: true
 
+overrides:
+  citty: "~0.2.1"
+  eslint: "~10.0.0"
+  magicast: "~0.5.2"
+
 publicHoistPattern:
   - '*vuetify*'
 
