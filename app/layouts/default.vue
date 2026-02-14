@@ -8,34 +8,75 @@
 
     <LayoutNavBar />
 
-    <v-snackbar
-      :model-value="showUpdateSnackbar"
-      :timeout="-1"
-      :color="theme === 'dark' ? 'background-lighten-1' : 'background-darken-1'"
-      location="top right"
-      class="update-snackbar mx-4 mx-md-8 mt-6"
-      rounded="lg"
-      transition="scroll-y-transition"
-    >
-      <v-icon
-        icon="mdi-update"
-        color="success"
-        class="mr-2"
-      />
-      <span class="font-weight-bold">
-        {{ t('main.update-available') }}
-      </span>
-      <template #actions>
-        <v-btn
+    <ClientOnly>
+      <v-snackbar
+        :model-value="showUpdateSnackbar"
+        :timeout="-1"
+        :color="theme === 'dark' ? 'background-lighten-1' : 'background-darken-1'"
+        location="top right"
+        class="update-snackbar mx-4 mx-md-8 mt-6"
+        rounded="lg"
+        transition="scroll-y-transition"
+      >
+        <v-icon
+          icon="mdi-update"
           color="success"
-          class="pr-2"
-          variant="elevated"
-          @click="refreshToUpdate"
-        >
-          {{ t("main.update") }}
-        </v-btn>
-      </template>
-    </v-snackbar>
+          class="mr-2"
+        />
+        <span class="font-weight-bold">
+          {{ t('main.update-available') }}
+        </span>
+        <template #actions>
+          <v-btn
+            color="success"
+            class="pr-2"
+            variant="elevated"
+            @click="refreshToUpdate"
+          >
+            {{ t("main.update") }}
+          </v-btn>
+        </template>
+      </v-snackbar>
+  
+      <v-snackbar
+        v-model="showInstallSnackbar"
+        :timeout="-1"
+        :color="theme === 'dark' ? 'background-lighten-1' : 'background-darken-1'"
+        location="top right"
+        class="update-snackbar mx-4 mx-md-8 mt-6"
+        rounded="lg"
+        transition="scroll-y-transition"
+      >
+        <v-icon
+          :icon="mdAndUp ? 'mdi-monitor-arrow-down-variant' : 'mdi-cellphone-arrow-down-variant'"
+          color="success"
+          class="mr-2"
+        />
+        <span class="font-weight-bold">
+          {{ t('main.install') }}
+        </span>
+        <template #actions>
+          <div class="d-flex flex-column my-2">
+            <v-btn
+              color="success"
+              class="pr-2"
+              variant="tonal"
+              @click="$pwa?.install()"
+            >
+              {{ t("main.install-confirm") }}
+            </v-btn>
+            <v-btn
+              color="error"
+              class="pr-2 mt-2"
+              variant="outlined"
+              @click="$pwa?.cancelInstall()"
+            >
+              {{ t("main.install-dismiss") }}
+            </v-btn>
+          </div>
+        </template>
+      </v-snackbar>
+    </ClientOnly>
 
     <v-main>
       <slot />
@@ -86,9 +127,13 @@ const {
 } = useI18n()
 const store = useMainStore()
 const { changeTheme } = useCustomTheme()
+const { mdAndUp } = useVDisplay()
 
 const theme = computed(() => store.getTheme)
 const showUpdateSnackbar = computed(() => $pwa?.needRefresh ?? false)
+const showInstallSnackbar = ref(false)
+const shouldShowInstallSnackbar = computed(() => (!$pwa?.isPWAInstalled && $pwa?.showInstallPrompt && !showUpdateSnackbar.value) ?? false)
+let installSnackbarTimeout: ReturnType<typeof setTimeout> | undefined
 
 async function refreshToUpdate() {
   if (!$pwa) {
@@ -166,6 +211,23 @@ onMounted(() => {
     "/fonts/TwemojiCountryFlags.woff2",
   )
 })
+
+watch(shouldShowInstallSnackbar, (newValue) => {
+  if (installSnackbarTimeout) {
+    clearTimeout(installSnackbarTimeout)
+    installSnackbarTimeout = undefined
+  }
+
+  if (newValue) {
+    installSnackbarTimeout = setTimeout(() => {
+      showInstallSnackbar.value = true
+      installSnackbarTimeout = undefined
+    }, 2000)
+    return
+  }
+
+  showInstallSnackbar.value = false
+}, { immediate: true })
 </script>
 
 <style lang="scss">

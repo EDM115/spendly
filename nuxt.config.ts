@@ -65,7 +65,7 @@ export default defineNuxtConfig({
     viewTransition: true,
     viteEnvironmentApi: false,
   },
-  compatibilityDate: "2025-10-15",
+  compatibilityDate: "2026-02-01",
   nitro: {
     compressPublicAssets: {
       brotli: true,
@@ -180,11 +180,8 @@ export default defineNuxtConfig({
   image: { quality: 100 },
   pwa: {
     client: {
+      installPrompt: true,
       periodicSyncForUpdates: 3600,
-    },
-    devOptions: {
-      enabled: true,
-      type: "module",
     },
     includeAssets: ["images/logo.webp", "images/logo_alt.webp"],
     injectRegister: "script-defer",
