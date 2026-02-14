@@ -73,6 +73,23 @@ export default defineNuxtConfig({
     },
     esbuild: { options: { target: "esnext" } },
     minify: true,
+    routeRules: {
+      "/": {
+        headers: {
+          "cache-control": "no-cache, no-store, must-revalidate",
+        },
+      },
+      "/manifest.webmanifest": {
+        headers: {
+          "cache-control": "no-cache, no-store, must-revalidate",
+        },
+      },
+      "/sw.js": {
+        headers: {
+          "cache-control": "no-cache, no-store, must-revalidate",
+        },
+      },
+    },
   },
   vite: {
     build: {
@@ -230,6 +247,9 @@ export default defineNuxtConfig({
           url: "/",
           revision: null,
         },
+      ],
+      navigateFallbackDenylist: [
+        /^\/api\//,
       ],
       globPatterns: ["**/*.{js,mjs,css,html,ico,png,svg,webp,woff2,ttf,json}"],
     },

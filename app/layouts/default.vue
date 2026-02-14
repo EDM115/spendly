@@ -135,12 +135,44 @@ const showInstallSnackbar = ref(false)
 const shouldShowInstallSnackbar = computed(() => (!$pwa?.isPWAInstalled && $pwa?.showInstallPrompt && !showUpdateSnackbar.value) ?? false)
 let installSnackbarTimeout: ReturnType<typeof setTimeout> | undefined
 
+async function clearBrowserCaches() {
+  if (!import.meta.client || !("caches" in window)) {
+    return
+  }
+
+  const cacheKeys = await window.caches.keys()
+  // eslint-disable-next-line drizzle/enforce-delete-with-where
+  await Promise.all(cacheKeys.map(cacheKey => window.caches.delete(cacheKey)))
+}
+
+async function unregisterServiceWorkers() {
+  if (!import.meta.client || !("serviceWorker" in navigator)) {
+    return
+  }
+
+  const registrations = await navigator.serviceWorker.getRegistrations()
+  await Promise.all(registrations.map(registration => registration.unregister()))
+}
+
+function reloadCurrentPageWithCacheBust() {
+  if (!import.meta.client) {
+    return
+  }
+
+  const url = new URL(window.location.href)
+  url.searchParams.set("pwa-update", Date.now().toString())
+  window.location.replace(url.toString())
+}
+
 async function refreshToUpdate() {
   if (!$pwa) {
     return
   }
 
-  await $pwa.updateServiceWorker()
+  await $pwa.updateServiceWorker(false)
+  await clearBrowserCaches()
+  await unregisterServiceWorkers()
+  reloadCurrentPageWithCacheBust()
 }
 
 useHead({
