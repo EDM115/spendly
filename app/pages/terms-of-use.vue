@@ -280,7 +280,7 @@ const {
   t,
 } = useI18n()
 
-useHead({ title: t("main.terms-of-use") })
+useHead({ title: t("terms-of-use.title") })
 
 const effectiveDate = new Date("2026-02-01")
 
