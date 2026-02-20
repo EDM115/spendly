@@ -497,7 +497,7 @@
           </v-col>
         </v-row>
 
-        <v-row class="mt-6 mt-md-10">
+        <v-row class="mt-2 mt-md-4">
           <v-col cols="12">
             <v-card
               class="glass-card px-6 py-6"

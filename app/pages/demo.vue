@@ -168,6 +168,9 @@ const demoBudgetTrackers = computed<BudgetTracker[]>(() => [
       ? "Démo de Spendly"
       : "Spendly Demo",
     role: "viewer",
+    owner_name: locale.value === "fr"
+      ? "Jean Dupont"
+      : "John Doe",
   },
 ])
 

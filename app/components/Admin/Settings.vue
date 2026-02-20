@@ -25,15 +25,16 @@
           class="mr-3"
           color="primary"
         />
-        {{ t("admin.users.title") }}
+        {{ t("admin.users.title") }} ({{ users.length }})
         <v-spacer />
         <v-btn
           color="primary"
           class="mr-4 text-none"
-          rounded="lg"
+          :rounded="smAndUp ? 'lg' : 'full'"
           variant="tonal"
-          prepend-icon="mdi-account-plus-outline"
-          :text="t('admin.users.create')"
+          :prepend-icon="smAndUp ? 'mdi-account-plus-outline' : undefined"
+          :text="smAndUp ? t('admin.users.create') : undefined"
+          :icon="smAndUp ? undefined : 'mdi-account-plus-outline'"
           @click.stop="openCreateDialog"
         />
       </v-expansion-panel-title>
@@ -43,6 +44,7 @@
             v-if="feedback.message"
             :type="feedback.color"
             variant="tonal"
+            rounded="lg"
             class="mb-4 mx-4"
             border
           >
@@ -273,6 +275,7 @@
           v-if="!hasUserRequests"
           class="mb-4 mx-4"
           variant="tonal"
+          rounded="lg"
           type="info"
           border
         >
@@ -634,8 +637,12 @@ type AdminUser = UserWithRole & {
 }
 
 const store = useMainStore()
-const { t } = useI18n()
+const {
+  locale,
+  t,
+} = useI18n()
 const { logUiEvent } = useUiEventLogger()
+const { smAndUp } = useVDisplay()
 
 const users = ref<AdminUser[]>([])
 const userRequests = ref<AdminUserRequest[]>([])
@@ -702,7 +709,7 @@ const isRequestStale = (requestDate: string | Date): boolean => {
 
 const userRequestsIconColor = computed(() => {
   if (!hasUserRequests.value) {
-    return "primary"
+    return "secondary"
   }
 
   const hasStale = userRequests.value.some((request) => isRequestStale(request.request_date))
@@ -836,6 +843,28 @@ const coerceRole = (role: AdminUser["role"]): UserType => {
     : "user"
 }
 
+const getUserSortName = (userItem: AdminUser) => (userItem.displayUsername
+  || userItem.username
+  || userItem.name
+  || userItem.id)
+
+const getUserRoleOrder = (userItem: AdminUser) => (coerceRole(userItem.role) === "admin"
+  ? 0
+  : 1)
+
+const sortUsers = (items: AdminUser[]) => items.toSorted((left, right) => {
+  const roleOrder = getUserRoleOrder(left) - getUserRoleOrder(right)
+
+  if (roleOrder !== 0) {
+    return roleOrder
+  }
+
+  return getUserSortName(left)
+    .localeCompare(getUserSortName(right), locale.value, {
+      sensitivity: "base",
+    })
+})
+
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
 }
@@ -873,7 +902,7 @@ const fetchUsers = async () => {
     displayUsername: user.name,
   }))
 
-  users.value = mutatedUsers
+  users.value = sortUsers(mutatedUsers)
 }
 
 const fetchUserRequests = async () => {
@@ -928,7 +957,7 @@ const resolveUserRequest = async (request: AdminUserRequest) => {
     }
 
     if (request.type === "delete") {
-      users.value = users.value.filter((userItem) => userItem.id !== request.user_id)
+      users.value = sortUsers(users.value.filter((userItem) => userItem.id !== request.user_id))
     }
 
     void logUiEvent({

@@ -103,6 +103,7 @@
         v-else
         type="info"
         variant="tonal"
+        rounded="lg"
         class="glass-panel border-thin"
       >
         {{ t("app.category.empty") }}
@@ -266,7 +267,10 @@ const emit = defineEmits<{
 
 const store = useMainStore()
 const theme = useVTheme()
-const { t } = useI18n()
+const {
+  locale,
+  t,
+} = useI18n()
 const { logUiEvent } = useUiEventLogger()
 
 const canEdit = computed(() => store.canEditData && !store.getIsDemo)
@@ -430,7 +434,9 @@ const filteredIconItems = computed(() => {
     } => Boolean(match))
 
   return scoredMatches
-    .toSorted((a, b) => b.score - a.score || a.item.name.localeCompare(b.item.name))
+    .toSorted((a, b) => b.score - a.score || a.item.name.localeCompare(b.item.name, locale.value, {
+      sensitivity: "base",
+    }))
     .map((match) => match.item)
     .slice(0, 100)
 })

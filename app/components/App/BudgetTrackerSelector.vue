@@ -30,7 +30,6 @@
               variant="outlined"
               hide-details
               rounded="lg"
-              clearable
               bg-color="transparent"
               @update:model-value="onTrackerChange"
             >
@@ -50,18 +49,39 @@
                     >
                       {{ t(`app.budget-tracker.roles.${item.raw.role}`) }}
                     </v-chip>
+                    <v-chip
+                      v-if="item.raw.owner_name"
+                      size="x-small"
+                      color="primary"
+                      class="ml-2 elevation-1"
+                      variant="tonal"
+                      prepend-icon="mdi-account-multiple-outline"
+                    >
+                      {{ item.raw.owner_name }}
+                    </v-chip>
                   </template>
                 </v-list-item>
               </template>
               <template #selection="{ item }">
                 <span class="text-high-emphasis font-weight-medium">{{ item.raw.name }}</span>
+                <v-spacer />
                 <v-chip
                   size="x-small"
                   :color="getRoleColor(selectedTrackerRole)"
-                  class="ml-2 elevation-1"
+                  class="elevation-1"
                   variant="flat"
                 >
                   {{ t(`app.budget-tracker.roles.${selectedTrackerRole}`) }}
+                </v-chip>
+                <v-chip
+                  v-if="selectedTrackerOwnerName"
+                  size="x-small"
+                  color="primary"
+                  class="ml-2 elevation-1"
+                  variant="tonal"
+                  prepend-icon="mdi-account-multiple-outline"
+                >
+                  {{ selectedTrackerOwnerName }}
                 </v-chip>
               </template>
             </v-select>
@@ -478,7 +498,10 @@ const emit = defineEmits<{
   "refresh": [];
 }>()
 
-const { t } = useI18n()
+const {
+  locale,
+  t,
+} = useI18n()
 const store = useMainStore()
 const { smAndUp } = useVDisplay()
 const { logUiEvent } = useUiEventLogger()
@@ -529,9 +552,20 @@ const budgetTrackerItems = computed(() => props.budgetTrackers.map((tracker) => 
 
   return Object.assign({}, tracker, { role: override })
 })
-  .toSorted((a, b) => a.name.localeCompare(b.name)))
+  .toSorted((a, b) => a.name.localeCompare(b.name, locale.value, {
+    sensitivity: "base",
+  })))
 
 const selectedTrackerRole = computed<BudgetTrackerRole>(() => getEffectiveRole(selectedTrackerId.value))
+const selectedTrackerOwnerName = computed<string>(() => {
+  if (!selectedTrackerId.value) {
+    return ""
+  }
+
+  const tracker = budgetTrackerItems.value.find((item) => item.id === selectedTrackerId.value)
+
+  return tracker?.owner_name ?? ""
+})
 
 const canEdit = computed(() => !isDemo.value && Boolean(selectedTrackerId.value)
   && [ "owner", "admin" ].includes(selectedTrackerRole.value))
@@ -570,20 +604,24 @@ const sortedSharedUsers = computed(() => {
         return roleDiff
       }
 
-      return a.username.localeCompare(b.username)
+      return a.username.localeCompare(b.username, locale.value, {
+        sensitivity: "base",
+      })
     })
 })
 
 const getRoleColor = (role: string) => {
   switch (role) {
     case "owner":
-      return "accent"
-    case "admin":
       return "primary"
-    case "editor":
+    case "admin":
       return "secondary"
-    default:
+    case "editor":
       return "info"
+    case "viewer":
+      return "accent"
+    default:
+      return "accent"
   }
 }
 
@@ -1042,5 +1080,9 @@ watch(showTransferDialog, (val) => {
   justify-content: center;
   align-items: center;
   justify-items: center;
+}
+
+:deep(.v-select__selection) {
+  width: 100%;
 }
 </style>

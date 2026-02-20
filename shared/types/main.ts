@@ -17,6 +17,7 @@ export type BudgetTracker = {
   id: string;
   name: string;
   role: BudgetTrackerRole;
+  owner_name: string | null;
 }
 
 export type Category = {

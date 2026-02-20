@@ -296,6 +296,7 @@
       <v-alert
         type="info"
         variant="tonal"
+        rounded="lg"
         class="glass-panel border-thin"
       >
         {{ t("app.charts.no-data") }}

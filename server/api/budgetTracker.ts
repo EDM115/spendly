@@ -1,12 +1,14 @@
 import { db } from "#shared/db/drizzle"
 import {
   budget_tracker,
+  user,
   user_budget_tracker,
 } from "#shared/db/schema"
 
 import {
   and,
   eq,
+  inArray,
 } from "drizzle-orm"
 import { randomUUID } from "node:crypto"
 import { requireUserId } from "#server/utils/session"
@@ -48,6 +50,17 @@ export default defineEventHandler(async (event) => {
           ))
           .limit(1)
 
+        const owner = await db.select({
+          owner_name: user.name,
+        })
+          .from(user_budget_tracker)
+          .innerJoin(user, eq(user_budget_tracker.user_id, user.id))
+          .where(and(
+            eq(user_budget_tracker.budget_tracker_id, budget_tracker_id),
+            eq(user_budget_tracker.role, "owner"),
+          ))
+          .limit(1)
+
         if (budgetTracker.length === 0) {
           throw createError({
             status: 404,
@@ -67,7 +80,10 @@ export default defineEventHandler(async (event) => {
           status: 200,
           body: {
             success: "Budget tracker retrieved",
-            budgetTracker: budgetTracker[0]!,
+            budgetTracker: {
+              ...budgetTracker[0]!,
+              owner_name: owner[0]?.owner_name ?? null,
+            },
           },
         }
       } else {
@@ -79,6 +95,31 @@ export default defineEventHandler(async (event) => {
           .from(budget_tracker)
           .innerJoin(user_budget_tracker, eq(budget_tracker.id, user_budget_tracker.budget_tracker_id))
           .where(eq(user_budget_tracker.user_id, userId))
+
+        const trackerIds = budgetTrackers.map((tracker) => tracker.id)
+
+        const owners = trackerIds.length > 0
+          ? await db.select({
+              budget_tracker_id: user_budget_tracker.budget_tracker_id,
+              owner_name: user.name,
+            })
+              .from(user_budget_tracker)
+              .innerJoin(user, eq(user_budget_tracker.user_id, user.id))
+              .where(and(
+                eq(user_budget_tracker.role, "owner"),
+                inArray(user_budget_tracker.budget_tracker_id, trackerIds),
+              ))
+          : []
+
+        const ownerByTrackerId = new Map(owners.map((entry) => [
+          entry.budget_tracker_id,
+          entry.owner_name,
+        ]))
+
+        const budgetTrackersWithOwner = budgetTrackers.map((tracker) => ({
+          ...tracker,
+          owner_name: ownerByTrackerId.get(tracker.id) ?? null,
+        }))
 
         addWide(event, {
           op: {
@@ -92,7 +133,7 @@ export default defineEventHandler(async (event) => {
           status: 200,
           body: {
             success: "Budget trackers retrieved",
-            budgetTrackers,
+            budgetTrackers: budgetTrackersWithOwner,
           },
         }
       }

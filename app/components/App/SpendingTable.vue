@@ -722,9 +722,7 @@ const searchLabel = computed(() => {
   return `${t("app.spending.search")} (${visibleCount}/${totalCount})`
 })
 
-const compareText = (left: string, right: string) => left.localeCompare(right, locale.value === "fr"
-  ? "fr"
-  : "en", {
+const compareText = (left: string, right: string) => left.localeCompare(right, locale.value, {
   sensitivity: "base",
   numeric: true,
 })
