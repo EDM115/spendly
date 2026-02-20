@@ -391,7 +391,7 @@
 
               <ul class="capability-list mb-0">
                 <li
-                  v-for="(point, i) in securityPoints"
+                  v-for="(point, i) in tm('landing.details.security.points')"
                   :key="i"
                   class="text-body-2"
                 >
@@ -426,7 +426,7 @@
 
               <ul class="capability-list mb-0">
                 <li
-                  v-for="(endpoint, i) in apiEndpoints"
+                  v-for="(endpoint, i) in tm('landing.details.api.endpoints')"
                   :key="i"
                   class="text-body-2"
                 >
@@ -571,7 +571,10 @@
 
 <script lang="ts" setup>
 const store = useMainStore()
-const { t } = useI18n()
+const {
+  t,
+  tm,
+} = useI18n()
 const hasRedirected = ref(false)
 
 const features = computed(() => [
@@ -692,59 +695,27 @@ const capabilities = computed(() => [
     icon: "mdi-cash-multiple",
     title: t("landing.details.capabilities.budgeting.title"),
     desc: t("landing.details.capabilities.budgeting.desc"),
-    items: [
-      t("landing.details.capabilities.budgeting.items.0"),
-      t("landing.details.capabilities.budgeting.items.1"),
-      t("landing.details.capabilities.budgeting.items.2"),
-    ],
+    // @ts-expect-error dunno why it's considered as infinite type instantiation
+    items: tm("landing.details.capabilities.budgeting.items"),
   },
   {
     icon: "mdi-account-multiple-outline",
     title: t("landing.details.capabilities.collaboration.title"),
     desc: t("landing.details.capabilities.collaboration.desc"),
-    items: [
-      t("landing.details.capabilities.collaboration.items.0"),
-      t("landing.details.capabilities.collaboration.items.1"),
-      t("landing.details.capabilities.collaboration.items.2"),
-    ],
+    items: tm("landing.details.capabilities.collaboration.items"),
   },
   {
     icon: "mdi-speedometer",
     title: t("landing.details.capabilities.experience.title"),
     desc: t("landing.details.capabilities.experience.desc"),
-    items: [
-      t("landing.details.capabilities.experience.items.0"),
-      t("landing.details.capabilities.experience.items.1"),
-      t("landing.details.capabilities.experience.items.2"),
-    ],
+    items: tm("landing.details.capabilities.experience.items"),
   },
   {
     icon: "mdi-export-variant",
     title: t("landing.details.capabilities.export.title"),
     desc: t("landing.details.capabilities.export.desc"),
-    items: [
-      t("landing.details.capabilities.export.items.0"),
-      t("landing.details.capabilities.export.items.1"),
-      t("landing.details.capabilities.export.items.2"),
-    ],
+    items: tm("landing.details.capabilities.export.items"),
   },
-])
-
-const securityPoints = computed(() => [
-  t("landing.details.security.points.0"),
-  t("landing.details.security.points.1"),
-  t("landing.details.security.points.2"),
-  t("landing.details.security.points.3"),
-  t("landing.details.security.points.4"),
-])
-
-const apiEndpoints = computed(() => [
-  t("landing.details.api.endpoints.0"),
-  t("landing.details.api.endpoints.1"),
-  t("landing.details.api.endpoints.2"),
-  t("landing.details.api.endpoints.3"),
-  t("landing.details.api.endpoints.4"),
-  t("landing.details.api.endpoints.5"),
 ])
 
 const stackPillars = computed(() => [
@@ -752,34 +723,19 @@ const stackPillars = computed(() => [
     icon: "mdi-monitor-dashboard",
     title: t("landing.details.stack.frontend.title"),
     desc: t("landing.details.stack.frontend.desc"),
-    chips: [
-      t("landing.details.stack.frontend.chips.0"),
-      t("landing.details.stack.frontend.chips.1"),
-      t("landing.details.stack.frontend.chips.2"),
-      t("landing.details.stack.frontend.chips.3"),
-    ],
+    chips: tm("landing.details.stack.frontend.chips"),
   },
   {
     icon: "mdi-server-network-outline",
     title: t("landing.details.stack.backend.title"),
     desc: t("landing.details.stack.backend.desc"),
-    chips: [
-      t("landing.details.stack.backend.chips.0"),
-      t("landing.details.stack.backend.chips.1"),
-      t("landing.details.stack.backend.chips.2"),
-      t("landing.details.stack.backend.chips.3"),
-    ],
+    chips: tm("landing.details.stack.backend.chips"),
   },
   {
     icon: "mdi-database-outline",
     title: t("landing.details.stack.data.title"),
     desc: t("landing.details.stack.data.desc"),
-    chips: [
-      t("landing.details.stack.data.chips.0"),
-      t("landing.details.stack.data.chips.1"),
-      t("landing.details.stack.data.chips.2"),
-      t("landing.details.stack.data.chips.3"),
-    ],
+    chips: tm("landing.details.stack.data.chips"),
   },
 ])
 

@@ -266,52 +266,52 @@
     "demo": "Try the demo",
     "details": {
       "api": {
-        "endpoints": {
-          "0": "Auth API (email/password, username login, GitHub/Google OAuth)",
-          "1": "Budget tracker API (create, rename, delete, and role-scoped access checks)",
-          "2": "Category API (per-tracker categories with icon/color metadata)",
-          "3": "Spending API (income/expense CRUD + optional date-range filtering)",
-          "4": "Admin APIs (database backup formats + per-user ZIP data export)",
-          "5": "User request APIs (export/delete requests, reviewed and resolved by admins)"
-        },
+        "endpoints": [
+          "Auth API (email/password, username login, GitHub/Google OAuth)",
+          "Budget tracker API (create, rename, delete, and role-scoped access checks)",
+          "Category API (per-tracker categories with icon/color metadata)",
+          "Spending API (income/expense CRUD + optional date-range filtering)",
+          "Admin APIs (database backup formats + per-user ZIP data export)",
+          "User request APIs (export/delete requests, reviewed and resolved by admins)"
+        ],
         "subtitle": "Spendly uses explicit server routes with authentication context, role checks, and well-defined payload contracts",
         "title": "API surface"
       },
       "capabilities": {
         "budgeting": {
           "desc": "Everything needed to log, categorize, and understand money flows in one place",
-          "items": {
-            "0": "Create unlimited budget trackers and switch instantly between them",
-            "1": "Organize entries with custom categories, icons, and colors",
-            "2": "Track income and expenses with date filtering and live balances"
-          },
+          "items": [
+            "Create unlimited budget trackers and switch instantly between them",
+            "Organize entries with custom categories, icons, and colors",
+            "Track income and expenses with date filtering and live balances"
+          ],
           "title": "Budget operations"
         },
         "collaboration": {
           "desc": "Built-in sharing supports couples, families, and teams without external tools",
-          "items": {
-            "0": "Invite users to trackers with role-based permissions",
-            "1": "Roles include viewer, editor, admin, and owner",
-            "2": "Transfer ownership safely : previous owner is automatically downgraded to admin"
-          },
+          "items": [
+            "Invite users to trackers with role-based permissions",
+            "Roles include viewer, editor, admin, and owner",
+            "Transfer ownership safely : previous owner is automatically downgraded to admin"
+          ],
           "title": "Collaboration model"
         },
         "experience": {
           "desc": "Spendly focuses on speed, clarity, and practical everyday usage",
-          "items": {
-            "0": "Responsive interface optimized for desktop and mobile",
-            "1": "Dark/light themes and bilingual UI (English/French)",
-            "2": "Demo mode, account page controls, and clear export/deletion request flows"
-          },
+          "items": [
+            "Responsive interface optimized for desktop and mobile",
+            "Dark/light themes and bilingual UI (English/French)",
+            "Demo mode, account page controls, and clear export/deletion request flows"
+          ],
           "title": "User experience"
         },
         "export": {
           "desc": "Users and admins both get practical, transparent data portability tools",
-          "items": {
-            "0": "Transaction export as CSV and JSON from the app",
-            "1": "Chart export to SVG, PNG, and PDF",
-            "2": "Admin backups in CSV, JSON, SQL, or SQLite + user ZIP exports"
-          },
+          "items": [
+            "Transaction export as CSV and JSON from the app",
+            "Chart export to SVG, PNG, and PDF",
+            "Admin backups in CSV, JSON, SQL, or SQLite + user ZIP exports"
+          ],
           "title": "Export & portability"
         },
         "subtitle": "From personal tracking to collaborative budgeting and exports, Spendly covers the complete budgeting lifecycle",
@@ -373,44 +373,44 @@
       },
       "security": {
         "category-title": "Security & privacy",
-        "points": {
-          "0": "Authentication uses Better Auth with email/password, username login, and optional social providers",
-          "1": "Cloudflare Turnstile protects key auth endpoints (sign-up, sign-in, and reset-password request)",
-          "2": "Write operations are permission-checked server-side against budget tracker role",
-          "3": "Data is stored in SQLite via typed Drizzle schemas with UUID identifiers and role-linked relations",
-          "4": "Privacy flows are explicit : users create export/delete requests, then admins resolve them"
-        },
+        "points": [
+          "Authentication uses Better Auth with email/password, username login, and optional social providers",
+          "Cloudflare Turnstile protects key auth endpoints (sign-up, sign-in, and reset-password request)",
+          "Write operations are permission-checked server-side against budget tracker role",
+          "Data is stored in SQLite via typed Drizzle schemas with UUID identifiers and role-linked relations",
+          "Privacy flows are explicit : users create export/delete requests, then admins resolve them"
+        ],
         "subtitle": "Spendly is designed with explicit auth boundaries and auditable data handling workflows.",
         "title": "Security and privacy architecture"
       },
       "stack": {
         "backend": {
-          "chips": {
-            "0": "Nuxt Server API",
-            "1": "Better Auth",
-            "2": "Turnstile",
-            "3": "Resend"
-          },
+          "chips": [
+            "Nuxt Server API",
+            "Better Auth",
+            "Turnstile",
+            "Resend"
+          ],
           "desc": "Server routes resolve auth context from middleware, enforce role checks, and validate request intent",
           "title": "Backend & auth"
         },
         "data": {
-          "chips": {
-            "0": "SQLite",
-            "1": "Drizzle ORM",
-            "2": "UUIDv4",
-            "3": "WAL mode"
-          },
+          "chips": [
+            "SQLite",
+            "Drizzle ORM",
+            "UUIDv4",
+            "WAL mode"
+          ],
           "desc": "Persistent SQLite storage with typed schema definitions, indexed relations, and controlled migrations",
           "title": "Data layer"
         },
         "frontend": {
-          "chips": {
-            "0": "Nuxt 4 SSR",
-            "1": "Vue 3",
-            "2": "Vuetify",
-            "3": "Pinia"
-          },
+          "chips": [
+            "Nuxt 4 SSR",
+            "Vue 3",
+            "Vuetify",
+            "Pinia"
+          ],
           "desc": "A modern SSR frontend with glassmorphism-inspired Material Design UI and reactive state management",
           "title": "Frontend"
         },
@@ -498,10 +498,8 @@
     "install-confirm": "Install",
     "install-dismiss": "Don't show again",
     "login": "Login - Spendly",
-    "privacy-policy": "Privacy Policy - Spendly",
     "reset-password": "Reset password - Spendly",
     "signup": "Signup - Spendly",
-    "terms-of-use": "Terms of Use - Spendly",
     "title": "Spendly",
     "update": "Update now",
     "update-available": "A new version of Spendly is available !"

@@ -266,52 +266,52 @@
     "demo": "Essayer la démo",
     "details": {
       "api": {
-        "endpoints": {
-          "0": "API d'authentification (e-mail/mot de passe, nom d'utilisateur, OAuth GitHub/Google)",
-          "1": "API des budgets (création, renommage, suppression, contrôles d'accès par rôle)",
-          "2": "API des catégories (catégories par budget avec métadonnées icône/couleur)",
-          "3": "API des transactions (CRUD revenus/dépenses + filtrage optionnel par période)",
-          "4": "APIs admin (formats de sauvegarde BDD + export ZIP par utilisateur)",
-          "5": "APIs de demandes utilisateur (demandes export/suppression relues et traitées par les admins)"
-        },
+        "endpoints": [
+          "API d'authentification (e-mail/mot de passe, nom d'utilisateur, OAuth GitHub/Google)",
+          "API des budgets (création, renommage, suppression, contrôles d'accès par rôle)",
+          "API des catégories (catégories par budget avec métadonnées icône/couleur)",
+          "API des transactions (CRUD revenus/dépenses + filtrage optionnel par période)",
+          "APIs admin (formats de sauvegarde BDD + export ZIP par utilisateur)",
+          "APIs de demandes utilisateur (demandes export/suppression relues et traitées par les admins)"
+        ],
         "subtitle": "Spendly s'appuie sur des routes serveur explicites, avec contexte d'authentification, contrôles de rôle et contrats de payload définis",
         "title": "Surface API"
       },
       "capabilities": {
         "budgeting": {
           "desc": "Tout le nécessaire pour enregistrer, classer et comprendre les flux d'argent au même endroit",
-          "items": {
-            "0": "Créez des budgets illimités et passez de l'un à l'autre instantanément",
-            "1": "Organisez vos entrées avec des catégories, icônes et couleurs personnalisées",
-            "2": "Suivez revenus et dépenses avec filtres par date et soldes en temps réel"
-          },
+          "items": [
+            "Créez des budgets illimités et passez de l'un à l'autre instantanément",
+            "Organisez vos entrées avec des catégories, icônes et couleurs personnalisées",
+            "Suivez revenus et dépenses avec filtres par date et soldes en temps réel"
+          ],
           "title": "Opérations budgétaires"
         },
         "collaboration": {
           "desc": "Le partage intégré couvre couples, familles et équipes sans outil externe",
-          "items": {
-            "0": "Invitez des utilisateurs sur un budget avec permissions par rôle",
-            "1": "Rôles disponibles : lecteur, éditeur, admin et propriétaire",
-            "2": "Transférez la propriété en toute sécurité : l'ancien propriétaire devient automatiquement admin"
-          },
+          "items": [
+            "Invitez des utilisateurs sur un budget avec permissions par rôle",
+            "Rôles disponibles : lecteur, éditeur, admin et propriétaire",
+            "Transférez la propriété en toute sécurité : l'ancien propriétaire devient automatiquement admin"
+          ],
           "title": "Modèle de collaboration"
         },
         "experience": {
           "desc": "Spendly privilégie la vitesse, la clarté et l'utilisation concrète au quotidien",
-          "items": {
-            "0": "Interface responsive optimisée desktop et mobile",
-            "1": "Thèmes sombre/clair et UI bilingue (français/anglais)",
-            "2": "Mode démo, contrôles du compte, et flux clairs de demandes export/suppression"
-          },
+          "items": [
+            "Interface responsive optimisée desktop et mobile",
+            "Thèmes sombre/clair et UI bilingue (français/anglais)",
+            "Mode démo, contrôles du compte, et flux clairs de demandes export/suppression"
+          ],
           "title": "Expérience utilisateur"
         },
         "export": {
           "desc": "Les utilisateurs comme les admins disposent d'outils de portabilité simples et transparents",
-          "items": {
-            "0": "Export des transactions en CSV et JSON depuis l'app",
-            "1": "Export des graphiques en SVG, PNG et PDF",
-            "2": "Sauvegardes admin en CSV, JSON, SQL ou SQLite + exports utilisateur en ZIP"
-          },
+          "items": [
+            "Export des transactions en CSV et JSON depuis l'app",
+            "Export des graphiques en SVG, PNG et PDF",
+            "Sauvegardes admin en CSV, JSON, SQL ou SQLite + exports utilisateur en ZIP"
+          ],
           "title": "Export & portabilité"
         },
         "subtitle": "Du suivi personnel à la gestion collaborative avec export, Spendly couvre tout le cycle budgétaire",
@@ -373,44 +373,44 @@
       },
       "security": {
         "category-title": "Sécurité & confidentialité",
-        "points": {
-          "0": "L'authentification utilise Better Auth avec e-mail/mot de passe, nom d'utilisateur et fournisseurs sociaux optionnels",
-          "1": "Cloudflare Turnstile protège les endpoints d'auth clés (inscription, connexion, demande de réinitialisation)",
-          "2": "Les opérations d'écriture sont vérifiées côté serveur selon le rôle du budget",
-          "3": "Les données sont stockées en SQLite via des schémas Drizzle typés, avec UUID et relations par rôles",
-          "4": "Les flux de confidentialité sont explicites : l'utilisateur crée une demande, puis un admin la traite"
-        },
+        "points": [
+          "L'authentification utilise Better Auth avec e-mail/mot de passe, nom d'utilisateur et fournisseurs sociaux optionnels",
+          "Cloudflare Turnstile protège les endpoints d'auth clés (inscription, connexion, demande de réinitialisation)",
+          "Les opérations d'écriture sont vérifiées côté serveur selon le rôle du budget",
+          "Les données sont stockées en SQLite via des schémas Drizzle typés, avec UUID et relations par rôles",
+          "Les flux de confidentialité sont explicites : l'utilisateur crée une demande, puis un admin la traite"
+        ],
         "subtitle": "Spendly est conçu avec des frontières d'authentification explicites et des flux de traitement de données auditables",
         "title": "Architecture sécurité et confidentialité"
       },
       "stack": {
         "backend": {
-          "chips": {
-            "0": "Nuxt Server API",
-            "1": "Better Auth",
-            "2": "Turnstile",
-            "3": "Resend"
-          },
+          "chips": [
+            "Nuxt Server API",
+            "Better Auth",
+            "Turnstile",
+            "Resend"
+          ],
           "desc": "Les routes serveur résolvent le contexte d'auth via middleware, appliquent les rôles et valident l'intention des requêtes",
           "title": "Backend & auth"
         },
         "data": {
-          "chips": {
-            "0": "SQLite",
-            "1": "Drizzle ORM",
-            "2": "UUIDv4",
-            "3": "Mode WAL"
-          },
+          "chips": [
+            "SQLite",
+            "Drizzle ORM",
+            "UUIDv4",
+            "Mode WAL"
+          ],
           "desc": "Stockage SQLite persistant avec schémas typés, relations indexées et migrations contrôlées",
           "title": "Couche données"
         },
         "frontend": {
-          "chips": {
-            "0": "Nuxt 4 SSR",
-            "1": "Vue 3",
-            "2": "Vuetify",
-            "3": "Pinia"
-          },
+          "chips": [
+            "Nuxt 4 SSR",
+            "Vue 3",
+            "Vuetify",
+            "Pinia"
+          ],
           "desc": "Frontend SSR moderne avec UI Material Design inspirée glassmorphism et état réactif",
           "title": "Frontend"
         },
@@ -498,10 +498,8 @@
     "install-confirm": "Installer",
     "install-dismiss": "Ne plus afficher",
     "login": "Connexion - Spendly",
-    "privacy-policy": "Politique de confidentialité - Spendly",
     "reset-password": "Réinitialiser le mot de passe - Spendly",
     "signup": "Inscription - Spendly",
-    "terms-of-use": "Conditions d'utilisation - Spendly",
     "title": "Spendly",
     "update": "Mettre à jour",
     "update-available": "Une nouvelle version de Spendly est disponible !"
