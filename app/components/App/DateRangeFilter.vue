@@ -363,6 +363,7 @@ watch(menu, (open) => {
 
     const dates: string[] = []
 
+    // oxlint-disable-next-line eslint/no-unmodified-loop-condition
     for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
       dates.push(dt.toISOString())
     }

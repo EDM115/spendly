@@ -1108,7 +1108,7 @@ const exportCSV = async () => {
 
   isExporting.value = true
 
-  const headers = [ "Name", "Amount", "Type", "Category", "Date" ]
+  const exportHeaders = [ "Name", "Amount", "Type", "Category", "Date" ]
   const rows = filteredSpendings.value.map((s) => [
     `"${s.name.replace(/"/g, "\"\"")}"`,
     s.value.toString(),
@@ -1119,7 +1119,7 @@ const exportCSV = async () => {
     s.date,
   ])
 
-  const csv = [ headers.join(","), ...rows.map((r) => r.join(",")) ].join("\n")
+  const csv = [ exportHeaders.join(","), ...rows.map((r) => r.join(",")) ].join("\n")
   const blob = new Blob([csv], { type: "text/csv" })
   const url = URL.createObjectURL(blob)
   const a = document.createElement("a")

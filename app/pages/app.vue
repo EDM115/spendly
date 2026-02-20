@@ -172,12 +172,12 @@ const fetchBudgetTrackers = async () => {
 
     // Restore from store or select first tracker
     const storedId = store.getSelectedBudgetTrackerId
-    const trackerExists = budgetTrackers.value.some((t) => t.id === storedId)
+    const trackerExists = budgetTrackers.value.some((track) => track.id === storedId)
 
     if (budgetTrackers.value.length > 0) {
       if (storedId && trackerExists) {
         selectedBudgetTrackerId.value = storedId
-        const tracker = budgetTrackers.value.find((t) => t.id === storedId)
+        const tracker = budgetTrackers.value.find((track) => track.id === storedId)
         const role = (tracker?.role ?? null) as "owner" | "admin" | "editor" | "viewer" | null
 
         store.setSelectedBudgetTracker(storedId, role)

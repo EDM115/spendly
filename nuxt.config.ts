@@ -169,6 +169,15 @@ export default defineNuxtConfig({
       },
     ],
     processCSSVariables: true,
+    providers: {
+      adobe: false,
+      bunny: false,
+      fontshare: false,
+      fontsource: false,
+      google: false,
+      googleicons: false,
+      npm: false,
+    },
   },
   i18n: {
     baseUrl: "/",
@@ -200,7 +209,7 @@ export default defineNuxtConfig({
       installPrompt: true,
       periodicSyncForUpdates: 3600,
     },
-    includeAssets: ["images/logo.webp", "images/logo_alt.webp"],
+    includeAssets: [ "images/logo.webp", "images/logo_alt.webp" ],
     injectRegister: "script-defer",
     manifest: {
       name: "Spendly",
@@ -248,9 +257,7 @@ export default defineNuxtConfig({
           revision: null,
         },
       ],
-      navigateFallbackDenylist: [
-        /^\/api\//,
-      ],
+      navigateFallbackDenylist: [/^\/api\//],
       globPatterns: ["**/*.{js,mjs,css,html,ico,png,svg,webp,woff2,ttf,json}"],
     },
   },

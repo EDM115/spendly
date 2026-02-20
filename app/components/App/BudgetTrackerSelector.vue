@@ -655,7 +655,7 @@ const openEditDialog = () => {
     return
   }
 
-  const tracker = props.budgetTrackers.find((t) => t.id === selectedTrackerId.value)
+  const tracker = props.budgetTrackers.find((track) => track.id === selectedTrackerId.value)
 
   if (tracker) {
     editTrackerName.value = tracker.name

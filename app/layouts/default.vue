@@ -37,7 +37,7 @@
           </v-btn>
         </template>
       </v-snackbar>
-  
+
       <v-snackbar
         v-model="showInstallSnackbar"
         :timeout="-1"
@@ -141,8 +141,8 @@ async function clearBrowserCaches() {
   }
 
   const cacheKeys = await window.caches.keys()
-  // eslint-disable-next-line drizzle/enforce-delete-with-where
-  await Promise.all(cacheKeys.map(cacheKey => window.caches.delete(cacheKey)))
+
+  await Promise.all(cacheKeys.map((cacheKey) => window.caches.delete(cacheKey)))
 }
 
 async function unregisterServiceWorkers() {
@@ -151,7 +151,8 @@ async function unregisterServiceWorkers() {
   }
 
   const registrations = await navigator.serviceWorker.getRegistrations()
-  await Promise.all(registrations.map(registration => registration.unregister()))
+
+  await Promise.all(registrations.map((registration) => registration.unregister()))
 }
 
 function reloadCurrentPageWithCacheBust() {
@@ -160,7 +161,9 @@ function reloadCurrentPageWithCacheBust() {
   }
 
   const url = new URL(window.location.href)
-  url.searchParams.set("pwa-update", Date.now().toString())
+
+  url.searchParams.set("pwa-update", Date.now()
+    .toString())
   window.location.replace(url.toString())
 }
 
@@ -255,6 +258,7 @@ watch(shouldShowInstallSnackbar, (newValue) => {
       showInstallSnackbar.value = true
       installSnackbarTimeout = undefined
     }, 2000)
+
     return
   }
 
