@@ -251,14 +251,9 @@ export default defineNuxtConfig({
     },
     registerType: "prompt",
     workbox: {
-      additionalManifestEntries: [
-        {
-          url: "/",
-          revision: null,
-        },
-      ],
+      globPatterns: ["**/*.{js,mjs,css,ico,png,svg,webp,woff2,ttf,json}"],
+      navigateFallback: undefined,
       navigateFallbackDenylist: [/^\/api\//],
-      globPatterns: ["**/*.{js,mjs,css,html,ico,png,svg,webp,woff2,ttf,json}"],
     },
   },
   svgo: {
