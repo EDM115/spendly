@@ -683,6 +683,7 @@ const userFormRef = ref<{
 }>()
 
 const selectedUser = ref<AdminUser | null>(null)
+const originalUsername = ref("")
 
 const userForm = reactive({
   username: "",
@@ -721,10 +722,20 @@ const userRequestsIconColor = computed(() => {
 })
 
 async function usernameAvailable(name: string) {
+  const normalized = name.trim()
+
+  if (!normalized) {
+    return false
+  }
+
+  if (!isCreating.value && normalized === originalUsername.value) {
+    return true
+  }
+
   const {
     data, error,
   } = await authClient.isUsernameAvailable({
-    username: name,
+    username: normalized,
   })
 
   return error
@@ -739,9 +750,9 @@ const emailRules = [
 
 const usernameRules = [
   (v: unknown) => !!v || t("rules.username.required"),
-  (v: string) => (v && v.length >= 3) || t("rules.username.min", { min: 3 }),
-  (v: string) => (v && v.length <= 128) || t("rules.username.max", { max: 128 }),
-  (v: string) => (v && (/^[a-zA-Z0-9_]+$/).test(v)) || t("rules.username.alphanumeric"),
+  (v: string) => (v && v.trim().length >= 3) || t("rules.username.min", { min: 3 }),
+  (v: string) => (v && v.trim().length <= 128) || t("rules.username.max", { max: 128 }),
+  (v: string) => (v && (/^[a-zA-Z0-9_]+$/).test(v.trim())) || t("rules.username.alphanumeric"),
   async (v: string) => (v && await usernameAvailable(v)) || t("rules.username.already-taken"),
 ]
 
@@ -1093,6 +1104,7 @@ const confirmDismissRequest = async () => {
 const openCreateDialog = () => {
   resetFeedback()
   selectedUser.value = null
+  originalUsername.value = ""
   dialogMode.value = "create"
   resetUserForm()
   showUserDialog.value = true
@@ -1101,6 +1113,7 @@ const openCreateDialog = () => {
 const openEditDialog = (userItem: AdminUser) => {
   resetFeedback()
   selectedUser.value = userItem
+  originalUsername.value = (userItem.displayUsername || userItem.username || userItem.name || "").trim()
   dialogMode.value = "edit"
   userForm.username = userItem.displayUsername || userItem.username || userItem.name || ""
   userForm.email = userItem.email ?? ""
@@ -1112,6 +1125,7 @@ const openEditDialog = (userItem: AdminUser) => {
 
 const closeUserDialog = async () => {
   showUserDialog.value = false
+  originalUsername.value = ""
   resetUserForm()
   await userFormRef.value?.reset()
   await userFormRef.value?.resetValidation()

@@ -784,7 +784,7 @@ const emailRules = ref([
 ])
 
 async function usernameAvailable(name: string) {
-  const normalized = name?.trim()
+  const normalized = name.trim()
 
   if (!normalized || normalized === currentUsername.value) {
     return true
@@ -803,9 +803,9 @@ async function usernameAvailable(name: string) {
 
 const usernameRules = ref([
   (v: unknown) => !!v || t("rules.username.required"),
-  (v: string) => (v && v.length >= 3) || t("rules.username.min", { min: 3 }),
-  (v: string) => (v && v.length <= 128) || t("rules.username.max", { max: 128 }),
-  (v: string) => (v && (/^[a-zA-Z0-9_]+$/).test(v)) || t("rules.username.alphanumeric"),
+  (v: string) => (v && v.trim().length >= 3) || t("rules.username.min", { min: 3 }),
+  (v: string) => (v && v.trim().length <= 128) || t("rules.username.max", { max: 128 }),
+  (v: string) => (v && (/^[a-zA-Z0-9_]+$/).test(v.trim())) || t("rules.username.alphanumeric"),
   async (v: string) => (v && await usernameAvailable(v)) || t("rules.username.already-taken"),
 ])
 
