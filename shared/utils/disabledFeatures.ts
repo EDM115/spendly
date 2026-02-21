@@ -42,8 +42,8 @@ export function disabledFeatures(): DisabledFeatures {
   }
 
   // oh yeah ? and how would this magic link be sent, huh ?
-  if (!features["email"] && features["magic-link"]) {
-    features["magic-link"] = false
+  if (features["email"] && !features["magic-link"]) {
+    features["magic-link"] = true
   }
 
   return features
