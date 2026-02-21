@@ -41,48 +41,52 @@
               <template #item="{ item, props: itemProps }">
                 <v-list-item v-bind="itemProps">
                   <template #append>
-                    <v-chip
-                      size="x-small"
-                      :color="getRoleColor(item.raw.role)"
-                      variant="flat"
-                      class="elevation-2"
-                    >
-                      {{ t(`app.budget-tracker.roles.${item.raw.role}`) }}
-                    </v-chip>
-                    <v-chip
-                      v-if="item.raw.owner_name"
-                      size="x-small"
-                      color="primary"
-                      class="ml-2 elevation-1"
-                      variant="tonal"
-                      prepend-icon="mdi-account-multiple-outline"
-                    >
-                      {{ item.raw.owner_name }}
-                    </v-chip>
+                    <div :class="smAndUp ? undefined : 'd-flex flex-column'">
+                      <v-chip
+                        size="x-small"
+                        :color="getRoleColor(item.raw.role)"
+                        class="elevation-1"
+                        variant="flat"
+                      >
+                        {{ t(`app.budget-tracker.roles.${item.raw.role}`) }}
+                      </v-chip>
+                      <v-chip
+                        v-if="item.raw.owner_name"
+                        size="x-small"
+                        color="primary"
+                        class="ml-2 elevation-1 mt-1 mt-sm-0"
+                        variant="tonal"
+                        prepend-icon="mdi-account-multiple-outline"
+                      >
+                        {{ item.raw.owner_name }}
+                      </v-chip>
+                    </div>
                   </template>
                 </v-list-item>
               </template>
               <template #selection="{ item }">
                 <span class="text-high-emphasis font-weight-medium">{{ item.raw.name }}</span>
                 <v-spacer />
-                <v-chip
-                  size="x-small"
-                  :color="getRoleColor(selectedTrackerRole)"
-                  class="elevation-1"
-                  variant="flat"
-                >
-                  {{ t(`app.budget-tracker.roles.${selectedTrackerRole}`) }}
-                </v-chip>
-                <v-chip
-                  v-if="selectedTrackerOwnerName"
-                  size="x-small"
-                  color="primary"
-                  class="ml-2 elevation-1"
-                  variant="tonal"
-                  prepend-icon="mdi-account-multiple-outline"
-                >
-                  {{ selectedTrackerOwnerName }}
-                </v-chip>
+                <div :class="smAndUp ? undefined : 'd-flex flex-column'">
+                  <v-chip
+                    size="x-small"
+                    :color="getRoleColor(selectedTrackerRole)"
+                    class="elevation-1"
+                    variant="flat"
+                  >
+                    {{ t(`app.budget-tracker.roles.${selectedTrackerRole}`) }}
+                  </v-chip>
+                  <v-chip
+                    v-if="selectedTrackerOwnerName"
+                    size="x-small"
+                    color="primary"
+                    class="ml-2 elevation-1 mt-1 mt-sm-0"
+                    variant="tonal"
+                    prepend-icon="mdi-account-multiple-outline"
+                  >
+                    {{ selectedTrackerOwnerName }}
+                  </v-chip>
+                </div>
               </template>
             </v-select>
           </v-col>

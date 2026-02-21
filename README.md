@@ -71,12 +71,12 @@ DISABLED_FEATURES=magic-link,turnstile
 - `STAGE` : override log environment (`production`, `staging`, `development`), defaults to `NODE_ENV`
 - `ALERT_API` : an API endpoint to send alerts to when an email have been sent (to monitor its usage as it ain't free), the message will be appended to the URL
 - `DISABLED_FEATURES` : a list of comma-separated values of stuff you wanna disable in Spendly. useful for self-hosting and not creating accounts everywhere. possible values : `email`, `logs`, `magic-link`, `oauth-github`, `oauth-google`, `turnstile`
-  > [!TIP]  
-  > to keep turnstile active but do no actual validation, use `1x00000000000000000000AA` as `TURNSTILE_SITE_KEY` & `1x0000000000000000000000000000000AA` as `TURNSTILE_SECRET_KEY`  
-  > to disable other features, fork the repo and edit the code yourself  
-  > **other notes for self-hosters** that requires forking the repo :
-  > - disableable login features will unfortunately stay backend-wise because it would be a db migrations pain, but also because I can't do it, see https://github.com/better-auth/better-auth/pull/6064#pullrequestreview-3612931730
-  > - there are some occurences that hard-code either the domain or the email, search for `edm115.dev` in any `.ts`/`.vue`/`.json` file and edit accordingly
+> [!TIP]  
+> to keep turnstile active but do no actual validation, use `1x00000000000000000000AA` as `TURNSTILE_SITE_KEY` & `1x0000000000000000000000000000000AA` as `TURNSTILE_SECRET_KEY`  
+> to disable other features, fork the repo and edit the code yourself  
+> **other notes for self-hosters** that requires forking the repo :
+> - disableable login features will unfortunately stay backend-wise because it would be a db migrations pain, but also because I can't do it, see https://github.com/better-auth/better-auth/pull/6064#pullrequestreview-3612931730
+> - there are some occurences that hard-code either the domain or the email, search for `edm115.dev` in any `.ts`/`.vue`/`.json` file and edit accordingly
 
 ```pwsh
 pnpm i --frozen-lockfile
