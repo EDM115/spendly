@@ -12,9 +12,10 @@ allowBuilds:
 lockfileIncludeTarballUrl: true
 
 overrides:
+  # @nuxt/cli need to update @bomb.sh/tab
   citty: "~0.2.1"
-  eslint: "~10.0.0"
-  magicast: "~0.5.2"
+  # blocked by peer dep in @eslint/config-inspector and dep in eslint-plugin-import-x (@nuxt/eslint-config)
+  eslint: "~10.0.1"
 
 publicHoistPattern:
   - '*vuetify*'

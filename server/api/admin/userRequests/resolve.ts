@@ -121,7 +121,7 @@ export default defineEventHandler(async (event) => {
     void sendEmail(
       request.user_email,
       {
-        template: "export-request",
+        template: "spendly-export-request",
         variables: {
           account_name: request.user_name,
           spendly_home: process.env.BETTER_AUTH_URL!,
@@ -163,7 +163,7 @@ export default defineEventHandler(async (event) => {
     void sendEmail(
       request.user_email,
       {
-        template: "account-deletion",
+        template: "spendly-account-deletion",
         variables: {
           account_name: request.user_name,
           spendly_home: process.env.BETTER_AUTH_URL!,

@@ -96,7 +96,7 @@ All API handlers return `{ status, body }` and use `requireUserId(event.context.
 ## Environment variables
 See `README.md` for the canonical list. Key variables used in this app:
 - `DB_FILE_NAME`, `DEFAULT_UI_LANG`
-- `BETTER_AUTH_URL`, `BETTER_AUTH_SECRET`, `JWT_SECRET`
+- `BETTER_AUTH_URL`, `BETTER_AUTH_SECRET`
 - `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`
 - `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`

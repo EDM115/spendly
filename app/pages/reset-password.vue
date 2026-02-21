@@ -94,7 +94,32 @@
               </p>
             </div>
 
-            <div v-if="hasToken && !invalidToken">
+            <div
+              v-if="disabledFeatures()['email']"
+              class="d-flex flex-column align-center"
+            >
+              <LayoutAlert
+                :message="t('account.disabled')"
+                color="warning"
+              />
+
+              <NuxtLink to="/login">
+                <v-btn
+                  block
+                  color="primary"
+                  size="large"
+                  rounded="xl"
+                  type="submit"
+                  variant="tonal"
+                  prepend-icon="mdi-login"
+                  class="text-none font-weight-bold mt-4"
+                >
+                  {{ t('login.login') }}
+                </v-btn>
+              </NuxtLink>
+            </div>
+
+            <div v-else-if="hasToken && !invalidToken">
               <AuthResetPassword :token="token" />
             </div>
 
@@ -146,6 +171,7 @@
                 </div>
 
                 <VueTurnstile
+                  v-if="!disabledFeatures()['turnstile']"
                   ref="turnstileRef"
                   :site-key="turnstileKey"
                   :language="storeLang ?? 'auto'"
@@ -263,7 +289,9 @@ const emailRules = ref([
   (v: string) => (v && (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/).test(v)) || t("rules.email.valid"),
 ])
 
-const turnstileKey = config.public.turnstileSiteKey
+const turnstileKey = disabledFeatures()["turnstile"]
+  ? "1x00000000000000000000AA"
+  : config.public.turnstileSiteKey
 
 const initialState = {
   email: "",

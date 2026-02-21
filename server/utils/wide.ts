@@ -85,7 +85,6 @@ export const getWide = (event: H3Event): WideEvent => {
 export const addWide = (event: H3Event, partial: Partial<WideEvent>): WideEvent => {
   const wide = getWide(event)
 
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   mergeDeep(wide as PlainRecord, partial as PlainRecord)
 
   return wide

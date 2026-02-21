@@ -12,6 +12,7 @@
 
     <div v-if="!magicLinkDone">
       <v-btn
+        v-if="!disabledFeaturesList['oauth-google']"
         block
         color="primary"
         size="large"
@@ -37,6 +38,7 @@
         </v-chip>
       </v-btn>
       <v-btn
+        v-if="!disabledFeaturesList['oauth-github']"
         block
         color="primary"
         size="large"
@@ -110,7 +112,7 @@
             </v-chip>
           </v-btn>
           <v-btn
-            v-if="showMagicLink >= 5"
+            v-if="!disabledFeaturesList['magic-link']"
             size="small"
             prepend-icon="mdi-mailbox-open-up-outline"
             value="magic-link"
@@ -192,6 +194,7 @@
         </div>
 
         <VueTurnstile
+          v-show="!disabledFeaturesList['turnstile']"
           ref="turnstileRef"
           :site-key="turnstileKey"
           :language="storeLang ?? 'auto'"
@@ -237,7 +240,10 @@
       </v-btn>
     </NuxtLink>
 
-    <NuxtLink to="/reset-password">
+    <NuxtLink
+      v-if="!disabledFeaturesList['email']"
+      to="/reset-password"
+    >
       <v-btn
         block
         color="primary"
@@ -271,6 +277,7 @@ const { logUiEvent } = useUiEventLogger()
 const storeLang = computed(() => store.getI18n)
 const storeTheme = computed(() => store.getTheme)
 const lastUsedMethod = computed(() => authClient.getLastUsedLoginMethod())
+const disabledFeaturesList = computed(() => disabledFeatures())
 const errorMessage = ref("")
 const issueMessage = ref("")
 const messageColor = ref("error")
@@ -290,8 +297,6 @@ const form = ref<{
   errorMessages: string[];
 }>()
 const loginMethod = ref<"username" | "email" | "magic-link">("username")
-// to avoid blowing up the daily mail limit
-const showMagicLink = ref(0)
 const magicLinkDone = ref(false)
 
 const emailRules = ref([
@@ -310,7 +315,9 @@ const passwordRules = ref([
   (v: string) => (v && v.length >= 8) || t("rules.password.min", { min: 8 }),
 ])
 
-const turnstileKey = config.public.turnstileSiteKey
+const turnstileKey = disabledFeaturesList.value["turnstile"]
+  ? "1x00000000000000000000AA"
+  : config.public.turnstileSiteKey
 
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
@@ -328,7 +335,11 @@ async function clear() {
   Object.assign(state, initialState)
   await form.value?.reset()
   turnstileRef.value?.reset()
-  btnDisabled.value = true
+
+  if (!disabledFeaturesList.value["turnstile"]) {
+    btnDisabled.value = true
+  }
+
   turnstileToken.value = ""
 }
 
@@ -571,9 +582,9 @@ async function submit() {
   await clear()
 }
 
-watch(loginMethod, (newValue, oldValue) => {
-  if (newValue !== oldValue) {
-    showMagicLink.value++
+onMounted(() => {
+  if (disabledFeaturesList.value["turnstile"]) {
+    btnDisabled.value = false
   }
 })
 </script>

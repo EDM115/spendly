@@ -1,4 +1,10 @@
+import { isFeatureDisabled } from "#shared/utils/disabledFeatures"
+
 export default defineNuxtPlugin(() => {
+  if (isFeatureDisabled("logs")) {
+    return
+  }
+
   const pinia = usePinia()
   const { logUiEvent } = useUiEventLogger()
   const actionMap = new Map<string, string>([

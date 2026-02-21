@@ -10,7 +10,17 @@
     </v-expand-transition>
 
     <div
-      v-if="resetDone"
+      v-if="disabledFeatures()['email']"
+      class="d-flex flex-column align-center"
+    >
+      <LayoutAlert
+        :message="t('account.disabled')"
+        color="warning"
+      />
+    </div>
+
+    <div
+      v-else-if="resetDone"
       class="d-flex flex-column align-center"
     >
       <NuxtLink to="/login">

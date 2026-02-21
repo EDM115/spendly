@@ -21,6 +21,7 @@
       "fallback-email": "votre adresse e-mail",
       "title": "Données & confidentialité"
     },
+    "disabled": "Cette fonctionnalité a été désactivée, contactez un admin ou envoyez un email à spendly{'@'}edm115.dev",
     "donation": {
       "coffee": "M'offrir un café",
       "description": "Puisque Spendly est gratuit, un don signifierait beaucoup pour moi. Chaque montant compte ! 🫶",

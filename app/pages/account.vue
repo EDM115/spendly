@@ -116,7 +116,14 @@
             </p>
           </div>
 
+          <LayoutAlert
+            v-if="disabledFeaturesList['email']"
+            :message="t('account.disabled')"
+            color="warning"
+          />
+
           <v-form
+            v-else
             ref="emailForm"
             @submit.prevent="submitEmail"
           >
@@ -308,8 +315,18 @@
             </p>
           </div>
 
-          <v-list class="bg-transparent pa-0">
+          <LayoutAlert
+            v-if="disabledFeaturesList['oauth-github'] && disabledFeaturesList['oauth-google']"
+            :message="t('account.disabled')"
+            color="warning"
+          />
+
+          <v-list
+            v-else
+            class="bg-transparent pa-0"
+          >
             <v-list-item
+              v-if="!disabledFeaturesList['oauth-google']"
               class="oauth-item rounded-lg mb-3 py-2"
               variant="outlined"
             >
@@ -343,6 +360,7 @@
             </v-list-item>
 
             <v-list-item
+              v-if="!disabledFeaturesList['oauth-github']"
               class="oauth-item rounded-lg py-2"
               variant="outlined"
             >
@@ -388,7 +406,7 @@
       </v-col>
     </v-row>
 
-    <v-row>
+    <v-row v-if="!disabledFeaturesList['email']">
       <v-col cols="12">
         <v-card
           class="glass-card pa-6"
@@ -596,6 +614,7 @@ useHead({ title: t("main.account") })
 const currentUser = computed(() => store.getUser)
 const currentUserEmail = computed(() => currentUser.value?.email ?? "")
 const currentUsername = computed(() => currentUser.value?.displayUsername ?? currentUser.value?.name ?? "")
+const disabledFeaturesList = computed(() => disabledFeatures())
 
 const usernameLoading = ref(false)
 const emailLoading = ref(false)

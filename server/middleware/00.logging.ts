@@ -6,6 +6,7 @@ import {
 } from "#server/utils/commons"
 import { logger } from "#server/utils/logger"
 import { getWide } from "#server/utils/wide"
+import { isFeatureDisabled } from "#shared/utils/disabledFeatures"
 
 const sensitivePathPrefixes = [
   "/api/auth/reset-password/",
@@ -42,6 +43,7 @@ const shouldSkip = (pathname: string): boolean => pathname.startsWith("/_nuxt/")
   || pathname === "/favicon.ico"
   || pathname === "/robots.txt"
   || pathname === "/api/_log/ui"
+  || isFeatureDisabled("logs")
 
 const buildAuthContext = (event: H3Event) => {
   const auth = event.context.auth

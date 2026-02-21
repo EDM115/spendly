@@ -3,6 +3,7 @@ import {
   resolveRequestId,
 } from "#server/utils/commons"
 import { logger } from "#server/utils/logger"
+import { isFeatureDisabled } from "#shared/utils/disabledFeatures"
 
 import { z } from "zod"
 
@@ -215,6 +216,10 @@ const isRateLimited = (key: string): boolean => {
 }
 
 export default defineEventHandler(async (event) => {
+  if (isFeatureDisabled("logs")) {
+    return sendNoContent(event)
+  }
+
   const rawBody = await readRawBody(event, "utf-8")
 
   if (!rawBody) {

@@ -259,6 +259,7 @@
     </v-expansion-panel>
 
     <v-expansion-panel
+      v-if="!disabledFeatures()['email']"
       class="glass-panel rounded-xl overflow-hidden transparent-panel"
       elevation="0"
     >

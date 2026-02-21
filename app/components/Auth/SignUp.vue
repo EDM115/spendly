@@ -10,6 +10,7 @@
     </v-expand-transition>
 
     <v-alert
+      v-if="!disabledFeaturesList['oauth-github'] && !disabledFeaturesList['oauth-google']"
       color="info"
       elevation="4"
       icon="mdi-lightbulb-outline"
@@ -107,6 +108,7 @@
       </div>
 
       <VueTurnstile
+        v-if="!disabledFeaturesList['turnstile']"
         ref="turnstileRef"
         :site-key="turnstileKey"
         :language="storeLang ?? 'auto'"
@@ -169,6 +171,7 @@ const { logUiEvent } = useUiEventLogger()
 
 const storeLang = computed(() => store.getI18n)
 const storeTheme = computed(() => store.getTheme)
+const disabledFeaturesList = computed(() => disabledFeatures())
 const errorMessage = ref("")
 const issueMessage = ref("")
 const messageColor = ref("error")
@@ -234,7 +237,9 @@ const passwordConfirmRules = ref([
   (v: string) => (v && v === state.password) || t("rules.password.match"),
 ])
 
-const turnstileKey = config.public.turnstileSiteKey
+const turnstileKey = disabledFeaturesList.value["turnstile"]
+  ? "1x00000000000000000000AA"
+  : config.public.turnstileSiteKey
 
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
@@ -253,7 +258,11 @@ async function clear() {
   Object.assign(state, initialState)
   await form.value?.reset()
   turnstileRef.value?.reset()
-  btnDisabled.value = true
+
+  if (!disabledFeaturesList.value["turnstile"]) {
+    btnDisabled.value = true
+  }
+
   turnstileToken.value = ""
 }
 
@@ -355,6 +364,12 @@ async function submit() {
   await signup()
   await clear()
 }
+
+onMounted(() => {
+  if (disabledFeaturesList.value["turnstile"]) {
+    btnDisabled.value = false
+  }
+})
 </script>
 
 <style lang="scss" scoped>

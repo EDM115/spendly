@@ -4,13 +4,14 @@ import { Resend } from "resend"
 
 import { logger } from "#server/utils/logger"
 import { addWide } from "#server/utils/wide"
+import { isFeatureDisabled } from "#shared/utils/disabledFeatures"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function sendEmail(
   to: string,
   content: {
-    template: string;
+    template: "spendly-password-reset" | "spendly-verify-email" | "spendly-magic-link" | "spendly-account-deletion" | "spendly-export-request";
     variables: Record<string, string | number>;
     attachments?: {
       filename: string;
@@ -21,6 +22,10 @@ export async function sendEmail(
   bcc?: string | string[],
   event?: H3Event,
 ) {
+  if (isFeatureDisabled("email")) {
+    return
+  }
+
   const bccCount = Array.isArray(bcc)
     ? bcc.length
     : bcc

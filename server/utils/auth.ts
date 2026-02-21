@@ -2,6 +2,7 @@ import { db } from "#shared/db/drizzle"
 import { schema } from "#shared/db/schema"
 import { sendEmail } from "#server/utils/email"
 import { logger } from "#server/utils/logger"
+import { isFeatureDisabled } from "#shared/utils/disabledFeatures"
 
 import type { ErrorContext } from "@better-fetch/fetch"
 
@@ -55,14 +56,14 @@ export const auth = betterAuth({
         },
         outcome: "success",
         meta: {
-          template: "password-reset",
+          template: "spendly-password-reset",
         },
       })
 
       void sendEmail(
         user.email,
         {
-          template: "password-reset",
+          template: "spendly-password-reset",
           variables: {
             account_name: user.name,
             reset_link: url,
@@ -85,14 +86,14 @@ export const auth = betterAuth({
         },
         outcome: "success",
         meta: {
-          template: "verify-email",
+          template: "spendly-verify-email",
         },
       })
 
       void sendEmail(
         user.email,
         {
-          template: "verify-email",
+          template: "spendly-verify-email",
           variables: {
             account_name: user.name,
             verify_link: url,
@@ -134,7 +135,9 @@ export const auth = betterAuth({
         "/request-password-reset",
       ],
       provider: "cloudflare-turnstile",
-      secretKey: process.env.TURNSTILE_SECRET_KEY!,
+      secretKey: isFeatureDisabled("turnstile")
+        ? "1x0000000000000000000000000000000AA"
+        : process.env.TURNSTILE_SECRET_KEY!,
     }),
     lastLoginMethod({
       cookieName: "spendly.last_used_login_method",
@@ -165,14 +168,14 @@ export const auth = betterAuth({
           },
           outcome: "success",
           meta: {
-            template: "magic-link",
+            template: "spendly-magic-link",
           },
         })
 
         void sendEmail(
           email,
           {
-            template: "magic-link",
+            template: "spendly-magic-link",
             variables: {
               account_email: email,
               connect_link: url,

@@ -27,6 +27,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     "public": {
       turnstileSiteKey: process.env.TURNSTILE_SITE_KEY,
+      disabledFeatures: process.env.DISABLED_FEATURES || "",
     },
   },
   sourcemap: {

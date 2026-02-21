@@ -1,6 +1,7 @@
 import pino from "pino"
 
 import { envConfig } from "#server/utils/commons"
+import { isFeatureDisabled } from "#shared/utils/disabledFeatures"
 
 const redactPaths = [
   "authorization",
@@ -34,6 +35,7 @@ const transport = envConfig.env === "development" && process.stdout.isTTY
   : {}
 
 export const logger = pino({
+  enabled: !isFeatureDisabled("logs"),
   level: envConfig.level,
   base: {
     service: envConfig.service,

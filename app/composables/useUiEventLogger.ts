@@ -1,3 +1,5 @@
+import { isFeatureDisabled } from "#shared/utils/disabledFeatures"
+
 const MAX_META_BYTES = 2 * 1024
 const sensitiveRouteKeys = new Set([
   "token",
@@ -180,6 +182,12 @@ const sendFetch = async (payload: UiEventPayload): Promise<void> => {
 }
 
 export const useUiEventLogger = () => {
+  if (isFeatureDisabled("logs")) {
+    return {
+      logUiEvent: async () => void 0,
+    }
+  }
+
   const route = useRoute()
 
   const logUiEvent = async (params: {
