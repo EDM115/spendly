@@ -7,17 +7,90 @@
 </picture>
 
 # spendly
-Simple, powerful, and free budget tracking for everyone with tables, stats and charts.  
+Simple, powerful, and free budget tracking for everyone with tables, stats and charts  
 Made for my gf
 
 </div>
 
 ## What is it ?
-...
+Spendly is a web application designed to help you track your budget and expenses in a simple and efficient way. It offers a user-friendly interface where you can easily manage your finances, categorize your spending, and visualize your financial data through charts and statistics. Whether you're looking to keep a close eye on your daily expenses or plan for long-term financial goals, Spendly provides the tools you need to stay on top of your budget.
 
 ## User documentation
 Hi :wave:  
-...
+You'll find here everything you need to know to use Spendly.
+
+The homepage lists all features of Spendly, with some technical details too.
+![Home](./docs/home.png)
+
+The best way to understand Spendly is to check the demo.
+![Demo](./docs/demo.png)
+
+The app also allows you to install it as a PWA on your device, and access it from anywhere. It is responsive and works on all screen sizes. It will also warn you when a new version is available, so you can always have the latest features and bug fixes.
+![PWA](./docs/pwa.png)
+![Update](./docs/update.png)
+
+The app is available in English and French, and have both light and dark modes. Use the Menu to switch between them, log in/out and access your account settings.
+![Light mode](./docs/light-mode.png)
+![French](./docs/french.png)
+![Menu](./docs/menu.png)
+
+Go to the login page once you're ready. You can create an account. Afterwards, simply login with your username/email and password, or use OAuth once linked in your account settings.
+![Login](./docs/login.png)
+
+Speaking of those accounts settings, they allow you to take multiple account-related actions.
+![Account 1](./docs/account-1.png)
+![Account 2](./docs/account-2.png)
+![Account 3](./docs/account-3.png)
+
+The first step is to create a budget tracker, which is a container for your financial data. You can create as many as you want, and share them with other users with different permissions (viewer/editor/admin).
+![No budget](./docs/no-budget.png)
+![Budget list](./docs/budget-list.png)
+![Budget share](./docs/budget-share.png)
+
+Once done, you can start adding categories. It have a built-in icon search.
+![No categories](./docs/no-categories.png)
+![Category icon 1](./docs/category-icon-1.png)
+![Category icon 2](./docs/category-icon-2.png)
+![Categories](./docs/categories.png)
+
+Then, it is time to add transactions. You can specify a name, amount, date, category, and whether it's an expense or an income. You can also edit or delete them anytime.
+![No transactions](./docs/no-transactions.png)
+![Add transaction](./docs/add-transaction.png)
+
+In the transactions table, you can search for any transaction and sort by any column. You can also export transactions as a CSV or JSON file.
+![Search](./docs/search.png)
+![Transaction export](./docs/transaction-export.png)
+
+The table is replaced by cards on mobile for better readability.
+![Mobile](./docs/mobile.png)
+
+You can filter the list of displayed transactions by any date range (this also affects the charts). Hovering over the icon will tell you exactly which time range it corresponds to.
+![No charts](./docs/no-charts.png)
+![Period day](./docs/period-day.png)
+![Period week](./docs/period-week.png)
+![Period month 1](./docs/period-month-1.png)
+![Period month 2](./docs/period-month-2.png)
+![Period year](./docs/period-year.png)
+![Period tooltip](./docs/period-tooltip.png)
+
+Depending on the date range, you'll see an according summary of your expanses/income and your balance. You have options to take also into account past, future, or all transactions.
+![Balance positive](./docs/balance-positive.png)
+![Balance negative](./docs/balance-negative.png)
+![Balance options](./docs/balance-options.png)
+
+Finally, you have 4 types of charts to visualize your financial data in a more digestible way. They all have options to toggle some details on/off, and you can hover over data points for more details.
+![Charts](./docs/charts.png)
+![Charts evolution](./docs/charts-evolution.png)
+![Charts repartition](./docs/charts-repartition.png)
+![Charts comparison](./docs/charts-comparison.png)
+![Charts distribution](./docs/charts-distribution.png)
+![Charts options](./docs/charts-options.png)
+
+All charts have a simplified mode that turns off all details, and can be downloaded as SVG (infinite resolution), PNG or PDF.
+![Charts simplified](./docs/charts-simplified.png)
+![Charts download](./docs/charts-download.png)
+
+---
 
 ## Developer documentation
 ### Get started
