@@ -1,5 +1,3 @@
-import { authClient } from "~/utils/authClient"
-
 export default defineNuxtRouteMiddleware(async (to) => {
   const protectedPaths = [ "/app", "/admin", "/account" ]
   const authPages = [ "/login", "/reset-password", "/signup" ]
@@ -15,7 +13,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const serverAuth = event?.context.auth ?? null
   const isAdminRoute = to.path === "/admin" || to.path.startsWith("/admin/")
 
-  const resolveSession = async () => {
+  async function resolveSession() {
     if (serverAuth?.userId) {
       return {
         isAuthenticated: true,

@@ -2,7 +2,8 @@ import { writeFile } from "node:fs/promises"
 import { stdin } from "node:process"
 
 import type {
-  Filters, Report,
+  Filters,
+  Report,
 } from "./log-analyzer/core"
 
 import {

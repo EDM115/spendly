@@ -1,4 +1,4 @@
-export const toAuthContext = (session: SessionSummary | null): AuthContext | null => {
+export function toAuthContext(session: SessionSummary | null): AuthContext | null {
   if (!session) {
     return null
   }
@@ -12,7 +12,7 @@ export const toAuthContext = (session: SessionSummary | null): AuthContext | nul
   }
 }
 
-export const requireUserId = (auth: AuthContext | null | undefined): string => {
+export function requireUserId(auth: AuthContext | null | undefined): string {
   const userId = auth?.userId
 
   if (!userId) {

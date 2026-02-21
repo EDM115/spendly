@@ -4,9 +4,9 @@ import {
   envConfig,
   resolveRequestId,
 } from "#server/utils/commons"
+import { isFeatureDisabled } from "#shared/utils/disabledFeatures"
 import { logger } from "#server/utils/logger"
 import { getWide } from "#server/utils/wide"
-import { isFeatureDisabled } from "#shared/utils/disabledFeatures"
 
 const sensitivePathPrefixes = [
   "/api/auth/reset-password/",
@@ -37,15 +37,17 @@ function sanitizeRequestPath(pathname: string): string {
   return pathname
 }
 
-const shouldSkip = (pathname: string): boolean => pathname.startsWith("/_nuxt/")
-  || pathname.startsWith("/_ipx")
-  || pathname === "/__nuxt_error"
-  || pathname === "/favicon.ico"
-  || pathname === "/robots.txt"
-  || pathname === "/api/_log/ui"
-  || isFeatureDisabled("logs")
+function shouldSkip(pathname: string): boolean {
+  return pathname.startsWith("/_nuxt/")
+    || pathname.startsWith("/_ipx")
+    || pathname === "/__nuxt_error"
+    || pathname === "/favicon.ico"
+    || pathname === "/robots.txt"
+    || pathname === "/api/_log/ui"
+    || isFeatureDisabled("logs")
+}
 
-const buildAuthContext = (event: H3Event) => {
+function buildAuthContext(event: H3Event) {
   const auth = event.context.auth
 
   if (!auth) {
@@ -88,7 +90,7 @@ export default defineEventHandler((event) => {
   const startTime = Date.now()
   let logged = false
 
-  const logOnce = (outcome: "success" | "error" | "canceled") => {
+  function logOnce(outcome: "success" | "error" | "canceled") {
     if (logged) {
       return
     }

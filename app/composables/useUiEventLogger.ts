@@ -9,7 +9,7 @@ const sensitiveRouteKeys = new Set([
   "code",
 ])
 
-const safeStringifyMeta = (meta?: Record<string, unknown>): Record<string, unknown> | undefined => {
+function safeStringifyMeta(meta?: Record<string, unknown>): Record<string, unknown> | undefined {
   if (!meta) {
     return undefined
   }
@@ -142,7 +142,7 @@ function sanitizeUiRoute(route: string): string {
   }
 }
 
-const buildClientEventId = (): string => {
+function buildClientEventId(): string {
   if (globalThis.crypto?.randomUUID) {
     return globalThis.crypto.randomUUID()
   }
@@ -152,7 +152,7 @@ const buildClientEventId = (): string => {
     .slice(2)}_${Date.now()}`
 }
 
-const sendBeacon = (payload: UiEventPayload): boolean => {
+function sendBeacon(payload: UiEventPayload): boolean {
   if (!globalThis.navigator?.sendBeacon) {
     return false
   }
@@ -166,7 +166,7 @@ const sendBeacon = (payload: UiEventPayload): boolean => {
   }
 }
 
-const sendFetch = async (payload: UiEventPayload): Promise<void> => {
+async function sendFetch(payload: UiEventPayload): Promise<void> {
   try {
     await fetch("/api/_log/ui", {
       method: "POST",
@@ -181,7 +181,7 @@ const sendFetch = async (payload: UiEventPayload): Promise<void> => {
   }
 }
 
-export const useUiEventLogger = () => {
+export function useUiEventLogger() {
   if (isFeatureDisabled("logs")) {
     return {
       logUiEvent: async () => void 0,
@@ -190,14 +190,14 @@ export const useUiEventLogger = () => {
 
   const route = useRoute()
 
-  const logUiEvent = async (params: {
+  async function logUiEvent(params: {
     action: string;
     store?: string;
     duration_ms?: number;
     outcome?: UiEventOutcome;
     meta?: Record<string, unknown>;
     route?: string;
-  }): Promise<void> => {
+  }): Promise<void> {
     if (!import.meta.client) {
       return
     }

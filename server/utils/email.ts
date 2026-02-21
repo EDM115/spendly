@@ -2,9 +2,9 @@ import type { H3Event } from "h3"
 
 import { Resend } from "resend"
 
+import { isFeatureDisabled } from "#shared/utils/disabledFeatures"
 import { logger } from "#server/utils/logger"
 import { addWide } from "#server/utils/wide"
-import { isFeatureDisabled } from "#shared/utils/disabledFeatures"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 

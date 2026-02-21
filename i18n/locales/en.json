@@ -535,9 +535,15 @@
     "welcome-reset": "Enter your new password to reset it"
   },
   "rules": {
+    "common": {
+      "required": "This field is required"
+    },
     "email": {
       "required": "E-mail is required",
       "valid": "E-mail must be valid"
+    },
+    "number": {
+      "positive": "Value must be greater than 0"
     },
     "password": {
       "lowercase": "Password must contain at least one lowercase letter",

@@ -384,7 +384,7 @@
                 variant="outlined"
                 rounded="lg"
                 autocomplete="suppress"
-                :rules="[v => !!v || 'Required']"
+                :rules="requiredFieldRules"
               />
             </v-col>
             <v-col
@@ -400,7 +400,7 @@
                 rounded="lg"
                 :min="0"
                 :precision="2"
-                :rules="[v => v > 0 || 'Must be positive']"
+                :rules="positiveAmountRules"
               />
             </v-col>
             <v-col
@@ -428,7 +428,7 @@
                 :label="t('app.spending.category')"
                 :no-data-text="t('app.spending.no-categories')"
                 variant="outlined"
-                :rules="[v => !!v || 'Required']"
+                :rules="requiredFieldRules"
               >
                 <template #item="{ item, props: itemProps }">
                   <v-list-item v-bind="itemProps">
@@ -469,7 +469,7 @@
                     readonly
                     autocomplete="suppress"
                     append-inner-icon="mdi-calendar-outline"
-                    :rules="[v => !!v || 'Required']"
+                    :rules="requiredFieldRules"
                   />
                 </template>
 
@@ -682,16 +682,18 @@ const filteredSpendings = computed(() => {
   return props.spendings.filter((s) => s.date >= win.start && s.date < win.end)
 })
 
-const buildSearchText = (row: Spending) => [
-  row.name,
-  row.category_name,
-  row.date,
-  String(row.value),
-]
-  .join(" ")
-  .toLowerCase()
+function buildSearchText(row: Spending) {
+  return [
+    row.name,
+    row.category_name,
+    row.date,
+    String(row.value),
+  ]
+    .join(" ")
+    .toLowerCase()
+}
 
-const searchFilter = (_value: string | number | boolean | null, _query: string, item: unknown) => {
+function searchFilter(_value: string | number | boolean | null, _query: string, item: unknown) {
   const needle = searchNeedle.value
 
   if (!needle) {
@@ -722,10 +724,12 @@ const searchLabel = computed(() => {
   return `${t("app.spending.search")} (${visibleCount}/${totalCount})`
 })
 
-const compareText = (left: string, right: string) => left.localeCompare(right, locale.value, {
-  sensitivity: "base",
-  numeric: true,
-})
+function compareText(left: string, right: string) {
+  return left.localeCompare(right, locale.value, {
+    sensitivity: "base",
+    numeric: true,
+  })
+}
 
 const mobileSortedSpendings = computed(() => [...searchedSpendings.value]
   .toSorted((a, b) => {
@@ -780,7 +784,7 @@ const mobileGroupedSpendings = computed(() => {
   return groups
 })
 
-const parseSpendingDate = (dateValue: string) => {
+function parseSpendingDate(dateValue: string) {
   if (!dateValue) {
     return null
   }
@@ -900,18 +904,24 @@ const isFormValid = computed(() => Boolean(spendingForm.value.name.trim()
   && spendingForm.value.category_id
   && spendingForm.value.date))
 
-const formatCurrency = (value: number) => new Intl.NumberFormat(locale.value === "fr"
-  ? "fr-FR"
-  : "en-US", {
-  style: "currency",
-  currency: locale.value === "fr"
-    ? "EUR"
-    : "USD",
-  currencyDisplay: "narrowSymbol",
-})
-  .format(value)
+const requiredFieldRules = [(v: unknown) => !!v || t("rules.common.required")]
 
-const formatDate = (dateStr: string) => {
+const positiveAmountRules = [(v: unknown) => Number(v) > 0 || t("rules.number.positive")]
+
+function formatCurrency(value: number) {
+  return new Intl.NumberFormat(locale.value === "fr"
+    ? "fr-FR"
+    : "en-US", {
+    style: "currency",
+    currency: locale.value === "fr"
+      ? "EUR"
+      : "USD",
+    currencyDisplay: "narrowSymbol",
+  })
+    .format(value)
+}
+
+function formatDate(dateStr: string) {
   if (!dateStr) {
     return ""
   }
@@ -928,7 +938,7 @@ const formatDate = (dateStr: string) => {
   })
 }
 
-const openEditDialog = (spending: Spending) => {
+function openEditDialog(spending: Spending) {
   if (!canEdit.value) {
     return
   }
@@ -945,7 +955,7 @@ const openEditDialog = (spending: Spending) => {
   showAddDialog.value = true
 }
 
-const openDeleteDialog = (spending: Spending) => {
+function openDeleteDialog(spending: Spending) {
   if (!canEdit.value) {
     return
   }
@@ -954,7 +964,7 @@ const openDeleteDialog = (spending: Spending) => {
   showDeleteDialog.value = true
 }
 
-const closeDialog = () => {
+function closeDialog() {
   showAddDialog.value = false
   dateMenu.value = false
   editingSpending.value = null
@@ -969,7 +979,7 @@ const closeDialog = () => {
   }
 }
 
-const saveSpending = async () => {
+async function saveSpending() {
   if (!canEdit.value) {
     return
   }
@@ -1034,7 +1044,7 @@ const saveSpending = async () => {
   }
 }
 
-const deleteSpending = async () => {
+async function deleteSpending() {
   if (!canEdit.value) {
     return
   }
@@ -1078,7 +1088,7 @@ const deleteSpending = async () => {
   }
 }
 
-const exportJSON = async () => {
+async function exportJSON() {
   if (isExporting.value) {
     return
   }
@@ -1109,7 +1119,7 @@ const exportJSON = async () => {
   downloadMenu.value = false
 }
 
-const exportCSV = async () => {
+async function exportCSV() {
   if (isExporting.value) {
     return
   }
@@ -1173,6 +1183,10 @@ const exportCSV = async () => {
 
 :deep(.v-data-table-footer__items-per-page > .v-select) {
   width: auto;
+}
+
+:deep(.v-data-table__th--sortable > .v-data-table-header__content .v-icon) {
+  margin-left: 8px;
 }
 
 .text-code {

@@ -541,7 +541,7 @@ const trackerRoleOverrides = ref<Record<string, BudgetTrackerRole>>({})
 
 const trackerById = computed(() => new Map(props.budgetTrackers.map((tracker) => [ tracker.id, tracker ])))
 
-const getEffectiveRole = (id: string | null): BudgetTrackerRole => {
+function getEffectiveRole(id: string | null): BudgetTrackerRole {
   if (!id) {
     return "viewer"
   }
@@ -622,7 +622,7 @@ const sortedSharedUsers = computed(() => {
     })
 })
 
-const getRoleColor = (role: string) => {
+function getRoleColor(role: string) {
   switch (role) {
     case "owner":
       return "primary"
@@ -637,7 +637,7 @@ const getRoleColor = (role: string) => {
   }
 }
 
-const canChangeUserRole = (targetRole: string) => {
+function canChangeUserRole(targetRole: string) {
   if (selectedTrackerRole.value === "owner") {
     return true
   }
@@ -649,9 +649,11 @@ const canChangeUserRole = (targetRole: string) => {
   return false
 }
 
-const canEditSharedRole = (user: SharedUser) => user.user_id !== store.getUserId
-  && user.role !== "owner"
-  && canChangeUserRole(user.role)
+function canEditSharedRole(user: SharedUser) {
+  return user.user_id !== store.getUserId
+    && user.role !== "owner"
+    && canChangeUserRole(user.role)
+}
 
 watchEffect(() => {
   if (!selectedTrackerId.value) {
@@ -696,11 +698,11 @@ watch(() => props.budgetTrackers, (trackers) => {
   }
 })
 
-const onTrackerChange = (value: string | null) => {
+function onTrackerChange(value: string | null) {
   selectedTrackerId.value = value
 }
 
-const openEditDialog = () => {
+function openEditDialog() {
   if (isDemo.value) {
     return
   }
@@ -713,7 +715,7 @@ const openEditDialog = () => {
   }
 }
 
-const addTracker = async () => {
+async function addTracker() {
   if (isDemo.value) {
     return
   }
@@ -757,7 +759,7 @@ const addTracker = async () => {
   }
 }
 
-const updateTracker = async () => {
+async function updateTracker() {
   if (isDemo.value) {
     return
   }
@@ -799,7 +801,7 @@ const updateTracker = async () => {
   }
 }
 
-const deleteTracker = async () => {
+async function deleteTracker() {
   if (isDemo.value) {
     return
   }
@@ -833,7 +835,7 @@ const deleteTracker = async () => {
   }
 }
 
-const fetchSharedUsers = async () => {
+async function fetchSharedUsers() {
   if (!selectedTrackerId.value) {
     return
   }
@@ -851,7 +853,7 @@ const fetchSharedUsers = async () => {
   }
 }
 
-const addUser = async () => {
+async function addUser() {
   if (isDemo.value) {
     return
   }
@@ -895,7 +897,7 @@ const addUser = async () => {
   }
 }
 
-const updateUserRole = async (userId: string, role: string) => {
+async function updateUserRole(userId: string, role: string) {
   if (isDemo.value) {
     return
   }
@@ -939,7 +941,7 @@ const updateUserRole = async (userId: string, role: string) => {
   }
 }
 
-const removeUser = async (userId: string) => {
+async function removeUser(userId: string) {
   if (isDemo.value) {
     return
   }
@@ -982,12 +984,12 @@ const removeUser = async (userId: string) => {
   }
 }
 
-const openRemoveShareDialog = (user: SharedUser) => {
+function openRemoveShareDialog(user: SharedUser) {
   removeShareTarget.value = user
   showRemoveShareDialog.value = true
 }
 
-const confirmRemoveSharedUser = async () => {
+async function confirmRemoveSharedUser() {
   if (!removeShareTarget.value) {
     return
   }
@@ -997,7 +999,7 @@ const confirmRemoveSharedUser = async () => {
   removeShareTarget.value = null
 }
 
-const openTransferDialog = (user: SharedUser) => {
+function openTransferDialog(user: SharedUser) {
   if (!canTransferOwnership.value) {
     return
   }
@@ -1006,7 +1008,7 @@ const openTransferDialog = (user: SharedUser) => {
   showTransferDialog.value = true
 }
 
-const confirmTransferOwnership = async () => {
+async function confirmTransferOwnership() {
   if (!transferTarget.value || !selectedTrackerId.value) {
     return
   }

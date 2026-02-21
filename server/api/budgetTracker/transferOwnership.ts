@@ -1,12 +1,12 @@
 import { db } from "#shared/db/drizzle"
 import { user_budget_tracker } from "#shared/db/schema"
+import { requireUserId } from "#server/utils/session"
+import { addWide } from "#server/utils/wide"
 
 import {
   and,
   eq,
 } from "drizzle-orm"
-import { requireUserId } from "#server/utils/session"
-import { addWide } from "#server/utils/wide"
 
 export default defineEventHandler(async (event) => {
   if (event.method !== "POST") {

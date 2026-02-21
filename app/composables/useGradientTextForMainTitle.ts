@@ -53,7 +53,7 @@ export function useGradientTextForMainTitle(options: Options = {}) {
   let observer: MutationObserver | null = null
   let scheduled = false
 
-  const apply = () => {
+  function apply() {
     const root = rootGetter()
 
     if (!root) {
@@ -188,7 +188,7 @@ export function useGradientTextForMainTitle(options: Options = {}) {
     }
   }
 
-  const scheduleApply = () => {
+  function scheduleApply() {
     if (scheduled) {
       return
     }

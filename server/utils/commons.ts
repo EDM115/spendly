@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto"
 
 export type LogEnv = "production" | "staging" | "development"
 
-export const resolveEnv = (): LogEnv => {
+export function resolveEnv(): LogEnv {
   const stage = process.env.STAGE?.toLowerCase()
 
   if (stage === "production" || stage === "staging" || stage === "development") {
@@ -16,7 +16,7 @@ export const resolveEnv = (): LogEnv => {
     : "development"
 }
 
-export const resolveRequestId = (event: H3Event): string => {
+export function resolveRequestId(event: H3Event): string {
   const existing = getRequestHeader(event, "x-request-id")
 
   return existing ?? randomUUID()

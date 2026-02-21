@@ -162,7 +162,7 @@ const selectedBudgetTracker = computed(() => budgetTrackers.value
   .find((tracker) => tracker.id === selectedBudgetTrackerId.value))
 const selectedBudgetTrackerName = computed(() => selectedBudgetTracker.value?.name ?? "")
 
-const fetchBudgetTrackers = async () => {
+async function fetchBudgetTrackers() {
   try {
     const response = await $fetch("/api/budgetTracker")
 
@@ -198,7 +198,7 @@ const fetchBudgetTrackers = async () => {
   }
 }
 
-const fetchCategories = async () => {
+async function fetchCategories() {
   if (!selectedBudgetTrackerId.value) {
     categories.value = []
 
@@ -218,7 +218,7 @@ const fetchCategories = async () => {
   }
 }
 
-const fetchSpendings = async () => {
+async function fetchSpendings() {
   if (!selectedBudgetTrackerId.value) {
     spendings.value = []
 
@@ -238,7 +238,7 @@ const fetchSpendings = async () => {
   }
 }
 
-const refreshCategoriesAndSpendings = async () => {
+async function refreshCategoriesAndSpendings() {
   await Promise.all([
     fetchCategories(),
     fetchSpendings(),

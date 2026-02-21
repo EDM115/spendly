@@ -266,7 +266,6 @@ import type {
   Raw,
 } from "vue"
 
-import { authClient } from "~/utils/authClient"
 import { VueTurnstile } from "vue-cloudflare-turnstile"
 
 const config = useRuntimeConfig()
@@ -319,7 +318,7 @@ const turnstileKey = disabledFeaturesList.value["turnstile"]
   ? "1x00000000000000000000AA"
   : config.public.turnstileSiteKey
 
-const togglePasswordVisibility = () => {
+function togglePasswordVisibility() {
   showPassword.value = !showPassword.value
 }
 

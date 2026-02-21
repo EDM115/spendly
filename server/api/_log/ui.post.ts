@@ -60,9 +60,13 @@ const uiEventSchema = z.object({
     .optional(),
 })
 
-const isAllowedAction = (action: string): boolean => allowedPrefixes.some((prefix) => action.startsWith(prefix))
+function isAllowedAction(action: string): boolean {
+  return allowedPrefixes.some((prefix) => action.startsWith(prefix))
+}
 
-const canAcceptPayload = (body: string): boolean => Buffer.byteLength(body, "utf-8") <= MAX_BODY_BYTES
+function canAcceptPayload(body: string): boolean {
+  return Buffer.byteLength(body, "utf-8") <= MAX_BODY_BYTES
+}
 
 function sanitizeUiPath(pathname: string): string {
   const prefixes = [
@@ -142,7 +146,7 @@ function sanitizeUiRoute(route: string): string {
   }
 }
 
-const sanitizeMeta = (meta?: Record<string, unknown>): Record<string, unknown> | undefined => {
+function sanitizeMeta(meta?: Record<string, unknown>): Record<string, unknown> | undefined {
   if (!meta) {
     return undefined
   }
@@ -192,7 +196,7 @@ const sanitizeMeta = (meta?: Record<string, unknown>): Record<string, unknown> |
   return cleaned
 }
 
-const isRateLimited = (key: string): boolean => {
+function isRateLimited(key: string): boolean {
   const now = Date.now()
   const existing = rateLimitStore.get(key)
 

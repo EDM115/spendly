@@ -18,8 +18,6 @@
 </template>
 
 <script lang="ts" setup>
-import { authClient } from "~/utils/authClient"
-
 const { t } = useI18n()
 
 useHead({ title: t("main.admin") })

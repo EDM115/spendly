@@ -40,9 +40,11 @@ export function getDateWindow(timeRange: string, anchorDate: string) {
       return null
   }
 
-  const toStr = (dt: Date) => `${dt.getFullYear()}-${String(dt.getMonth() + 1)
-    .padStart(2, "0")}-${String(dt.getDate())
-    .padStart(2, "0")}`
+  function toStr(dt: Date) {
+    return `${dt.getFullYear()}-${String(dt.getMonth() + 1)
+      .padStart(2, "0")}-${String(dt.getDate())
+      .padStart(2, "0")}`
+  }
 
   return {
     start: toStr(start),

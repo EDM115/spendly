@@ -630,8 +630,6 @@ import type {
 } from "vue"
 import type { UserWithRole } from "better-auth/plugins"
 
-import { authClient } from "~/utils/authClient"
-
 type AdminUser = UserWithRole & {
   username: string;
   displayUsername: string;
@@ -698,7 +696,7 @@ const roleItems: UserType[] = [ "user", "admin" ]
 const isCreating = computed(() => dialogMode.value === "create")
 const hasUserRequests = computed(() => userRequests.value.length > 0)
 
-const isRequestStale = (requestDate: string | Date): boolean => {
+function isRequestStale(requestDate: string | Date): boolean {
   const date = typeof requestDate === "string"
     ? new Date(requestDate)
     : requestDate
@@ -786,35 +784,39 @@ const confirmPasswordRules = computed(() => (isCreating.value
     ]
   : [(v: string) => (!userForm.password || v === userForm.password) || t("rules.password.match")]))
 
-const resetFeedback = () => {
+function resetFeedback() {
   feedback.message = ""
   feedback.issue = ""
   feedback.color = "info"
 }
 
-const applyError = (error: {
+function applyError(error: {
   message?: string; statusText?: string; code?: string;
-}) => {
+}) {
   feedback.color = "error"
   feedback.message = error.message ?? error.code ?? t("error.unknown")
   feedback.issue = error.statusText ?? ""
 }
 
-const applySuccess = (message: string) => {
+function applySuccess(message: string) {
   feedback.color = "success"
   feedback.message = message
   feedback.issue = ""
 }
 
-const isBusy = (id: string, action: string) => busyAction.value?.id === id
-  && busyAction.value?.action === action
+function isBusy(id: string, action: string) {
+  return busyAction.value?.id === id
+    && busyAction.value?.action === action
+}
 
-const formatUserLabel = (userItem: AdminUser) => userItem.displayUsername
-  || userItem.username
-  || userItem.name
-  || userItem.id
+function formatUserLabel(userItem: AdminUser) {
+  return userItem.displayUsername
+    || userItem.username
+    || userItem.name
+    || userItem.id
+}
 
-const formatRole = (role: AdminUser["role"]) => {
+function formatRole(role: AdminUser["role"]) {
   if (!role) {
     return "user"
   }
@@ -826,16 +828,20 @@ const formatRole = (role: AdminUser["role"]) => {
   return role
 }
 
-const formatRequestUser = (request: AdminUserRequest) => request.user_display_username
-  || request.user_username
-  || request.user_name
-  || request.user_id
+function formatRequestUser(request: AdminUserRequest) {
+  return request.user_display_username
+    || request.user_username
+    || request.user_name
+    || request.user_id
+}
 
-const formatRequestType = (type: AdminUserRequest["type"]) => (type === "export"
-  ? t("admin.user-requests.type-export")
-  : t("admin.user-requests.type-delete"))
+function formatRequestType(type: AdminUserRequest["type"]) {
+  return type === "export"
+    ? t("admin.user-requests.type-export")
+    : t("admin.user-requests.type-delete")
+}
 
-const formatRequestDate = (value: string | Date) => {
+function formatRequestDate(value: string | Date) {
   const date = typeof value === "string"
     ? new Date(value)
     : value
@@ -843,7 +849,7 @@ const formatRequestDate = (value: string | Date) => {
   return date.toLocaleString()
 }
 
-const coerceRole = (role: AdminUser["role"]): UserType => {
+function coerceRole(role: AdminUser["role"]): UserType {
   if (Array.isArray(role)) {
     return role.includes("admin")
       ? "admin"
@@ -855,33 +861,39 @@ const coerceRole = (role: AdminUser["role"]): UserType => {
     : "user"
 }
 
-const getUserSortName = (userItem: AdminUser) => (userItem.displayUsername
-  || userItem.username
-  || userItem.name
-  || userItem.id)
+function getUserSortName(userItem: AdminUser) {
+  return userItem.displayUsername
+    || userItem.username
+    || userItem.name
+    || userItem.id
+}
 
-const getUserRoleOrder = (userItem: AdminUser) => (coerceRole(userItem.role) === "admin"
-  ? 0
-  : 1)
+function getUserRoleOrder(userItem: AdminUser) {
+  return coerceRole(userItem.role) === "admin"
+    ? 0
+    : 1
+}
 
-const sortUsers = (items: AdminUser[]) => items.toSorted((left, right) => {
-  const roleOrder = getUserRoleOrder(left) - getUserRoleOrder(right)
+function sortUsers(items: AdminUser[]) {
+  return items.toSorted((left, right) => {
+    const roleOrder = getUserRoleOrder(left) - getUserRoleOrder(right)
 
-  if (roleOrder !== 0) {
-    return roleOrder
-  }
+    if (roleOrder !== 0) {
+      return roleOrder
+    }
 
-  return getUserSortName(left)
-    .localeCompare(getUserSortName(right), locale.value, {
-      sensitivity: "base",
-    })
-})
+    return getUserSortName(left)
+      .localeCompare(getUserSortName(right), locale.value, {
+        sensitivity: "base",
+      })
+  })
+}
 
-const togglePasswordVisibility = () => {
+function togglePasswordVisibility() {
   showPassword.value = !showPassword.value
 }
 
-const resetUserForm = () => {
+function resetUserForm() {
   userForm.username = ""
   userForm.email = ""
   userForm.role = "user"
@@ -889,7 +901,7 @@ const resetUserForm = () => {
   userForm.confirmPassword = ""
 }
 
-const fetchUsers = async () => {
+async function fetchUsers() {
   resetFeedback()
 
   const {
@@ -917,7 +929,7 @@ const fetchUsers = async () => {
   users.value = sortUsers(mutatedUsers)
 }
 
-const fetchUserRequests = async () => {
+async function fetchUserRequests() {
   resetFeedback()
 
   try {
@@ -932,7 +944,7 @@ const fetchUserRequests = async () => {
   }
 }
 
-const removeResolvedRequest = (requestId: string) => {
+function removeResolvedRequest(requestId: string) {
   userRequests.value = userRequests.value.filter((request) => request.id !== requestId)
   const {
     [requestId]: _removed, ...rest
@@ -941,7 +953,7 @@ const removeResolvedRequest = (requestId: string) => {
   resolvedRequests.value = rest
 }
 
-const resolveUserRequest = async (request: AdminUserRequest) => {
+async function resolveUserRequest(request: AdminUserRequest) {
   resetFeedback()
   busyAction.value = {
     id: request.id,
@@ -1006,12 +1018,12 @@ const resolveUserRequest = async (request: AdminUserRequest) => {
   }
 }
 
-const openResolveDialog = (request: AdminUserRequest) => {
+function openResolveDialog(request: AdminUserRequest) {
   selectedRequest.value = request
   showResolveDialog.value = true
 }
 
-const confirmResolveRequest = async () => {
+async function confirmResolveRequest() {
   if (!selectedRequest.value) {
     return
   }
@@ -1028,12 +1040,12 @@ const confirmResolveRequest = async () => {
   }
 }
 
-const openDismissDialog = (request: AdminUserRequest) => {
+function openDismissDialog(request: AdminUserRequest) {
   selectedRequest.value = request
   showDismissDialog.value = true
 }
 
-const confirmDismissRequest = async () => {
+async function confirmDismissRequest() {
   if (!selectedRequest.value) {
     return
   }
@@ -1101,7 +1113,7 @@ const confirmDismissRequest = async () => {
   }
 }
 
-const openCreateDialog = () => {
+function openCreateDialog() {
   resetFeedback()
   selectedUser.value = null
   originalUsername.value = ""
@@ -1110,7 +1122,7 @@ const openCreateDialog = () => {
   showUserDialog.value = true
 }
 
-const openEditDialog = (userItem: AdminUser) => {
+function openEditDialog(userItem: AdminUser) {
   resetFeedback()
   selectedUser.value = userItem
   originalUsername.value = (userItem.displayUsername || userItem.username || userItem.name || "").trim()
@@ -1123,7 +1135,7 @@ const openEditDialog = (userItem: AdminUser) => {
   showUserDialog.value = true
 }
 
-const closeUserDialog = async () => {
+async function closeUserDialog() {
   showUserDialog.value = false
   originalUsername.value = ""
   resetUserForm()
@@ -1131,7 +1143,7 @@ const closeUserDialog = async () => {
   await userFormRef.value?.resetValidation()
 }
 
-const submitUser = async () => {
+async function submitUser() {
   resetFeedback()
   dialogLoading.value = true
 
@@ -1242,12 +1254,12 @@ const submitUser = async () => {
   }
 }
 
-const showUserDeleteDialog = (userItem: AdminUser) => {
+function showUserDeleteDialog(userItem: AdminUser) {
   selectedUser.value = userItem
   showDeleteDialog.value = true
 }
 
-const deleteUser = async () => {
+async function deleteUser() {
   if (!selectedUser.value) {
     return
   }
@@ -1279,7 +1291,7 @@ const deleteUser = async () => {
   }
 }
 
-const impersonateUser = async (userItem: AdminUser) => {
+async function impersonateUser(userItem: AdminUser) {
   resetFeedback()
   busyAction.value = {
     id: userItem.id, action: "impersonate",
@@ -1312,7 +1324,7 @@ const impersonateUser = async (userItem: AdminUser) => {
   }
 }
 
-const downloadUserExport = async (userItem: AdminUser) => {
+async function downloadUserExport(userItem: AdminUser) {
   resetFeedback()
   busyAction.value = {
     id: userItem.id, action: "export",
@@ -1371,7 +1383,7 @@ const downloadUserExport = async (userItem: AdminUser) => {
   }
 }
 
-const downloadBackup = async (format: ExportFormat) => {
+async function downloadBackup(format: ExportFormat) {
   const start = performance.now()
 
   try {

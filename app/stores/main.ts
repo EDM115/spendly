@@ -1,5 +1,3 @@
-import { authClient } from "~/utils/authClient"
-
 const ssrSafe = import.meta.client && typeof window !== "undefined" && typeof localStorage !== "undefined"
 
 export const useMainStore = defineStore("main", () => {

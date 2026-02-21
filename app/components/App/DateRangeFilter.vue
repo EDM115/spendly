@@ -309,8 +309,10 @@ const tooltipText = computed(() => {
 
   const base = new Date(y, m - 1, d)
 
-  const fmt = (date: Date, options: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(locale.value, options)
-    .format(date)
+  function fmt(date: Date, options: Intl.DateTimeFormatOptions) {
+    return new Intl.DateTimeFormat(locale.value, options)
+      .format(date)
+  }
 
   const baseOpts: Intl.DateTimeFormatOptions = {
     weekday: "long", day: "2-digit", month: "long", year: "numeric",

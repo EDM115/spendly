@@ -603,8 +603,6 @@ import type {
   Raw,
 } from "vue"
 
-import { authClient } from "~/utils/authClient"
-
 const store = useMainStore()
 const { t } = useI18n()
 const { logUiEvent } = useUiEventLogger()
@@ -711,11 +709,13 @@ type UserRequestListResponse = {
   };
 }
 
-const isRecord = (value: unknown): value is Record<string, unknown> => !!value
-  && typeof value === "object"
-  && Object.getPrototypeOf(value) === Object.prototype
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return !!value
+    && typeof value === "object"
+    && Object.getPrototypeOf(value) === Object.prototype
+}
 
-const isUserRequestEntry = (value: unknown): value is UserRequestEntry => {
+function isUserRequestEntry(value: unknown): value is UserRequestEntry {
   if (!isRecord(value)) {
     return false
   }
@@ -727,7 +727,7 @@ const isUserRequestEntry = (value: unknown): value is UserRequestEntry => {
     && "request_date" in value
 }
 
-const isUserRequestListResponse = (value: unknown): value is UserRequestListResponse => {
+function isUserRequestListResponse(value: unknown): value is UserRequestListResponse {
   if (!isRecord(value) || !isRecord(value.body)) {
     return false
   }
@@ -737,7 +737,7 @@ const isUserRequestListResponse = (value: unknown): value is UserRequestListResp
   return Array.isArray(requests)
 }
 
-const getDuplicateFlag = (value: unknown): boolean => {
+function getDuplicateFlag(value: unknown): boolean {
   if (!isRecord(value) || !isRecord(value.body)) {
     return false
   }
@@ -747,7 +747,7 @@ const getDuplicateFlag = (value: unknown): boolean => {
     : false
 }
 
-const extractUserRequests = (value: unknown): UserRequestEntry[] => {
+function extractUserRequests(value: unknown): UserRequestEntry[] {
   if (!isUserRequestListResponse(value)) {
     return []
   }
@@ -830,39 +830,39 @@ const passwordConfirmRules = ref([
   (v: string) => (v && v === passwordState.newPassword) || t("rules.password.match"),
 ])
 
-const togglePasswordVisibility = () => {
+function togglePasswordVisibility() {
   showPassword.value = !showPassword.value
 }
 
-const resetFeedback = (target: typeof usernameFeedback) => {
+function resetFeedback(target: typeof usernameFeedback) {
   target.message = ""
   target.issue = ""
   target.color = "error"
 }
 
-const applyError = (target: typeof usernameFeedback, error: {
+function applyError(target: typeof usernameFeedback, error: {
   message?: string;
   statusText?: string;
   code?: string;
-}, color = "error") => {
+}, color = "error") {
   target.color = color
   target.message = error.message ?? error.code ?? t("error.unknown")
   target.issue = error.statusText ?? ""
 }
 
-const applySuccess = (target: typeof usernameFeedback, message: string) => {
+function applySuccess(target: typeof usernameFeedback, message: string) {
   target.color = "success"
   target.message = message
   target.issue = ""
 }
 
-const resetDataFeedback = () => {
+function resetDataFeedback() {
   dataFeedback.message = ""
   dataFeedback.issue = ""
   dataFeedback.color = "warning"
 }
 
-const applyDataSuccess = (message: string) => {
+function applyDataSuccess(message: string) {
   dataFeedback.color = "success"
   dataFeedback.message = message
   dataFeedback.issue = ""
@@ -980,7 +980,7 @@ async function refreshLinkedAccounts() {
   })
 }
 
-const formatProviderLabel = (provider: "google" | "github") => {
+function formatProviderLabel(provider: "google" | "github") {
   const baseLabel = provider === "google"
     ? t("account.oauth.google")
     : t("account.oauth.github")

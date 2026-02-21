@@ -2,10 +2,14 @@ import { db } from "#shared/db/drizzle"
 import { requireUserId } from "#server/utils/session"
 import { addWide } from "#server/utils/wide"
 
-import fs from "node:fs/promises"
-import path from "node:path"
-
 import { exec } from "node:child_process"
+import {
+  copyFile,
+  mkdir,
+  readFile,
+  rm,
+} from "node:fs/promises"
+import { join } from "node:path"
 import { promisify } from "node:util"
 
 const execAsync = promisify(exec)
@@ -47,18 +51,18 @@ export default defineEventHandler(async (event) => {
   const dateYMD = new Date()
     .toISOString()
     .split("T")[0]
-  const tempDir = path.join(process.cwd(), "temp")
+  const tempDir = join(process.cwd(), "temp")
 
-  await fs.mkdir(tempDir, { recursive: true })
+  await mkdir(tempDir, { recursive: true })
   const tables = [ "user", "session", "account", "verification", "user_requests", "budget_tracker", "user_budget_tracker", "category", "spending" ]
 
   if (exportFormat === "sql") {
-    const dumpPath = path.join(tempDir, `backup_${timestamp}.sql`)
+    const dumpPath = join(tempDir, `backup_${timestamp}.sql`)
 
     try {
       await execAsync(`sqlite3 "${db.$client.name}" .dump > "${dumpPath}"`)
 
-      const fileContent = await fs.readFile(dumpPath)
+      const fileContent = await readFile(dumpPath)
 
       addWide(event, {
         op: {
@@ -75,15 +79,15 @@ export default defineEventHandler(async (event) => {
         filename: `spendly-backup-${dateYMD}.sql`,
       }
     } finally {
-      await fs.rm(dumpPath, { force: true })
+      await rm(dumpPath, { force: true })
     }
   } else if (exportFormat === "sqlite") {
-    const dbCopyPath = path.join(tempDir, `backup_${timestamp}.db`)
+    const dbCopyPath = join(tempDir, `backup_${timestamp}.db`)
 
     try {
-      await fs.copyFile(db.$client.name, dbCopyPath)
+      await copyFile(db.$client.name, dbCopyPath)
 
-      const fileContent = await fs.readFile(dbCopyPath)
+      const fileContent = await readFile(dbCopyPath)
 
       addWide(event, {
         op: {
@@ -100,19 +104,19 @@ export default defineEventHandler(async (event) => {
         filename: `spendly-backup-${dateYMD}.db`,
       }
     } finally {
-      await fs.rm(dbCopyPath, { force: true })
+      await rm(dbCopyPath, { force: true })
     }
   } else if (exportFormat === "json") {
     const outputPaths: string[] = []
 
     try {
       const jsonResults = await Promise.all(tables.map(async (table) => {
-        const outputPath = path.join(tempDir, `${table}_${timestamp}.json`)
+        const outputPath = join(tempDir, `${table}_${timestamp}.json`)
 
         outputPaths.push(outputPath)
         await execAsync(`sqlite3 -json "${db.$client.name}" "SELECT * FROM ${table};" > "${outputPath}"`)
 
-        const content = await fs.readFile(outputPath, "utf-8")
+        const content = await readFile(outputPath, "utf-8")
         const safeContent = content.trim() === ""
           ? "[]"
           : content
@@ -150,18 +154,18 @@ export default defineEventHandler(async (event) => {
         filename: `spendly-backup-${dateYMD}.json`,
       }
     } finally {
-      await Promise.all(outputPaths.map((outputPath) => fs.rm(outputPath, { force: true })))
+      await Promise.all(outputPaths.map((outputPath) => rm(outputPath, { force: true })))
     }
   } else {
     const outputPaths: string[] = []
 
     try {
       const csvData = await Promise.all(tables.map(async (table) => {
-        const outputPath = path.join(tempDir, `${table}_${timestamp}.csv`)
+        const outputPath = join(tempDir, `${table}_${timestamp}.csv`)
 
         outputPaths.push(outputPath)
         await execAsync(`sqlite3 -header -csv "${db.$client.name}" "SELECT * FROM ${table};" > "${outputPath}"`)
-        const content = await fs.readFile(outputPath, "utf-8")
+        const content = await readFile(outputPath, "utf-8")
 
         return `-- ${table} --\n${content}`
       }))
@@ -182,7 +186,7 @@ export default defineEventHandler(async (event) => {
         filename: `spendly-backup-${dateYMD}.csv`,
       }
     } finally {
-      await Promise.all(outputPaths.map((outputPath) => fs.rm(outputPath, { force: true })))
+      await Promise.all(outputPaths.map((outputPath) => rm(outputPath, { force: true })))
     }
   }
 })

@@ -1,3 +1,5 @@
+import type { H3Event } from "h3"
+
 import JSZip from "jszip"
 
 import { db } from "#shared/db/drizzle"
@@ -10,8 +12,6 @@ import {
   user_budget_tracker,
 } from "#shared/db/schema"
 import { auth } from "#server/utils/auth"
-
-import type { H3Event } from "h3"
 
 import {
   and,
@@ -40,7 +40,7 @@ type UserExportResult = {
   oauthEmails: string[];
 }
 
-const buildHeaders = (event: H3Event): Headers => {
+function buildHeaders(event: H3Event): Headers {
   const headers = new Headers()
   const requestHeaders = getRequestHeaders(event)
 
@@ -53,7 +53,7 @@ const buildHeaders = (event: H3Event): Headers => {
   return headers
 }
 
-const safeFolderName = (value: string, fallback: string): string => {
+function safeFolderName(value: string, fallback: string): string {
   const normalized = value
     .trim()
     .replace(/[<>:"/\\|?*]/g, "_")
@@ -63,7 +63,7 @@ const safeFolderName = (value: string, fallback: string): string => {
     : fallback
 }
 
-const ensureUniqueFolder = (name: string, existing: Set<string>): string => {
+function ensureUniqueFolder(name: string, existing: Set<string>): string {
   if (!existing.has(name)) {
     existing.add(name)
 
@@ -83,7 +83,7 @@ const ensureUniqueFolder = (name: string, existing: Set<string>): string => {
   return candidate
 }
 
-const escapeCsvValue = (value: string | number | null | undefined): string => {
+function escapeCsvValue(value: string | number | null | undefined): string {
   if (value === null || value === undefined) {
     return ""
   }
@@ -189,7 +189,19 @@ export async function buildUserExport(event: H3Event, targetUserId: string): Pro
   const usedFolders = new Set<string>()
 
   const exportsByTracker = await Promise.all(trackers.map(async (tracker) => {
-    const [ categories, spendings ] = await Promise.all([
+    const [ ownerRecord, categories, spendings ] = await Promise.all([
+      db
+        .select({
+          name: user.name,
+        })
+        .from(user_budget_tracker)
+        .innerJoin(user, eq(user_budget_tracker.user_id, user.id))
+        .where(and(
+          eq(user_budget_tracker.budget_tracker_id, tracker.id),
+          eq(user_budget_tracker.role, "owner"),
+        ))
+        .limit(1),
+
       db
         .select({
           id: category.id,
@@ -256,14 +268,15 @@ export async function buildUserExport(event: H3Event, targetUserId: string): Pro
     ].join(","))
 
     const csvContent = [ csvHeaders.join(","), ...csvRows ].join("\n")
+    const ownerName = ownerRecord[0]?.name ?? null
 
     return {
-      tracker, categories, spendingsExport, csvContent,
+      tracker, ownerName, categories, spendingsExport, csvContent,
     }
   }))
 
   for (const {
-    tracker, categories, spendingsExport, csvContent,
+    tracker, ownerName, categories, spendingsExport, csvContent,
   } of exportsByTracker) {
     const baseFolderName = safeFolderName(tracker.name, tracker.id)
     const folderName = ensureUniqueFolder(baseFolderName, usedFolders)
@@ -272,7 +285,10 @@ export async function buildUserExport(event: H3Event, targetUserId: string): Pro
     trackerFolder?.file(
       "tracker.json",
       JSON.stringify({
-        id: tracker.id, name: tracker.name, role: tracker.role,
+        id: tracker.id,
+        name: tracker.name,
+        role: tracker.role,
+        owner: ownerName,
       }, null, 2),
     )
     trackerFolder?.file("categories.json", JSON.stringify(categories, null, 2))

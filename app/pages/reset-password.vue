@@ -229,7 +229,6 @@ import type {
 } from "vue"
 
 import { VueTurnstile } from "vue-cloudflare-turnstile"
-import { authClient } from "~/utils/authClient"
 
 const store = useMainStore()
 const route = useRoute()

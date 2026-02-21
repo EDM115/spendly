@@ -123,8 +123,6 @@ import type {
   Raw,
 } from "vue"
 
-import { authClient } from "~/utils/authClient"
-
 const props = defineProps<{ token: string }>()
 
 const { t } = useI18n()
@@ -174,7 +172,7 @@ const passwordConfirmRules = ref([
   (v: string) => (v && v === state.password) || t("rules.password.match"),
 ])
 
-const togglePasswordVisibility = () => {
+function togglePasswordVisibility() {
   showPassword.value = !showPassword.value
 }
 

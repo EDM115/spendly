@@ -1,3 +1,5 @@
+import type { H3Event } from "h3"
+
 import { db } from "#shared/db/drizzle"
 import { sendEmail } from "#server/utils/email"
 import {
@@ -9,8 +11,6 @@ import { requireUserId } from "#server/utils/session"
 import { addWide } from "#server/utils/wide"
 import { buildUserExport } from "#server/utils/userExport"
 
-import type { H3Event } from "h3"
-
 import { eq } from "drizzle-orm"
 
 type UserRequestType = "export" | "delete"
@@ -18,7 +18,7 @@ type UserRequestType = "export" | "delete"
 const supportedActions = new Set<UserRequestType>([ "export", "delete" ])
 const RESOLVE_DELAY_MS = 5000
 
-const buildHeaders = (event: H3Event): Headers => {
+function buildHeaders(event: H3Event): Headers {
   const headers = new Headers()
   const requestHeaders = getRequestHeaders(event)
 
@@ -31,9 +31,11 @@ const buildHeaders = (event: H3Event): Headers => {
   return headers
 }
 
-const wait = async (ms: number): Promise<void> => new Promise((resolve) => {
-  setTimeout(resolve, ms)
-})
+async function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
 
 export default defineEventHandler(async (event) => {
   if (event.method !== "POST") {

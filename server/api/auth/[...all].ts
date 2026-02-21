@@ -1,10 +1,10 @@
 import { auth } from "#server/utils/auth"
 import { addWide } from "#server/utils/wide"
 
-const resolveAuthOp = (path: string): {
+function resolveAuthOp(path: string): {
   name: string;
   method?: string;
-} => {
+} {
   if (path.includes("/auth/admin/")) {
     if (path.includes("/list-users")) {
       return {

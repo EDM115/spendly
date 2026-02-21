@@ -3,13 +3,15 @@ import type { H3Event } from "h3"
 import { auth } from "#server/utils/auth"
 import { toAuthContext } from "#server/utils/session"
 
-const shouldSkipAuth = (pathname: string): boolean => pathname === "/api/auth"
-  || pathname.startsWith("/api/auth/")
+function shouldSkipAuth(pathname: string): boolean {
+  return pathname === "/api/auth"
+    || pathname.startsWith("/api/auth/")
+}
 
-export const applyAuthContext = async (
+async function applyAuthContext(
   event: H3Event,
   getSessionFn: typeof auth.api.getSession = auth.api.getSession,
-): Promise<void> => {
+): Promise<void> {
   const headers = new Headers()
   const requestHeaders = getRequestHeaders(event)
 

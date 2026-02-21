@@ -1,10 +1,10 @@
+import type { ErrorContext } from "@better-fetch/fetch"
+
 import { db } from "#shared/db/drizzle"
 import { schema } from "#shared/db/schema"
+import { isFeatureDisabled } from "#shared/utils/disabledFeatures"
 import { sendEmail } from "#server/utils/email"
 import { logger } from "#server/utils/logger"
-import { isFeatureDisabled } from "#shared/utils/disabledFeatures"
-
-import type { ErrorContext } from "@better-fetch/fetch"
 
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { betterAuth } from "better-auth/minimal"

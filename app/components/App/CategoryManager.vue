@@ -288,7 +288,7 @@ const isValidIcon = ref(false)
 const testIcon = ref<InstanceType<typeof VIcon> | HTMLElement | null>(null)
 const iconSearch = ref("")
 
-const loadMdiMeta = async () => {
+async function loadMdiMeta() {
   if (mdiMeta.value || isLoadingIcons.value) {
     return
   }
@@ -317,16 +317,20 @@ const iconInput = computed({
   },
 })
 
-const normalizeQuery = (value: string) => value
-  .toLowerCase()
-  .replace(/\//g, " ")
-  .trim()
+function normalizeQuery(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/\//g, " ")
+    .trim()
+}
 
-const splitTokens = (value: string) => normalizeQuery(value)
-  .split(/[\s-]+/)
-  .filter(Boolean)
+function splitTokens(value: string) {
+  return normalizeQuery(value)
+    .split(/[\s-]+/)
+    .filter(Boolean)
+}
 
-const tokenMatchScore = (fieldToken: string, queryToken: string) => {
+function tokenMatchScore(fieldToken: string, queryToken: string) {
   if (fieldToken === queryToken) {
     return 30
   }
@@ -342,7 +346,7 @@ const tokenMatchScore = (fieldToken: string, queryToken: string) => {
   return 0
 }
 
-const tokensMatchScore = (fieldTokens: string[], queryTokens: string[]) => {
+function tokensMatchScore(fieldTokens: string[], queryTokens: string[]) {
   if (queryTokens.length === 0) {
     return 0
   }
@@ -367,14 +371,14 @@ const tokensMatchScore = (fieldTokens: string[], queryTokens: string[]) => {
   return total - (extraTokens * 2)
 }
 
-const scoreTokens = (
+function scoreTokens(
   fieldValue: string,
   query: string,
   queryTokens: string[],
   splitPattern: RegExp,
   exactScore: number,
   tokenScore: number,
-) => {
+) {
   if (!fieldValue) {
     return 0
   }
@@ -441,7 +445,7 @@ const filteredIconItems = computed(() => {
     .slice(0, 100)
 })
 
-const validateIcon = async (iconName: string) => {
+async function validateIcon(iconName: string) {
   const okBasic = iconName.startsWith("mdi-") && iconName.length >= 5
 
   if (!okBasic) {
@@ -472,7 +476,7 @@ const validateIcon = async (iconName: string) => {
   isValidIcon.value = Boolean(content) && content !== "none" && content !== "normal"
 }
 
-const openEditDialog = (category: Category) => {
+function openEditDialog(category: Category) {
   if (!canEdit.value) {
     return
   }
@@ -488,7 +492,7 @@ const openEditDialog = (category: Category) => {
   showAddDialog.value = true
 }
 
-const openDeleteDialog = (category: Category) => {
+function openDeleteDialog(category: Category) {
   if (!canEdit.value) {
     return
   }
@@ -497,7 +501,7 @@ const openDeleteDialog = (category: Category) => {
   showDeleteDialog.value = true
 }
 
-const closeDialog = () => {
+function closeDialog() {
   showAddDialog.value = false
   editingCategory.value = null
   categoryForm.value = {
@@ -532,7 +536,7 @@ watch(defaultColor, (nextColor, previousColor) => {
   }
 })
 
-const saveCategory = async () => {
+async function saveCategory() {
   if (!canEdit.value) {
     return
   }
@@ -596,7 +600,7 @@ const saveCategory = async () => {
   }
 }
 
-const deleteCategory = async () => {
+async function deleteCategory() {
   if (!canEdit.value) {
     return
   }

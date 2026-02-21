@@ -4,6 +4,8 @@ import {
   spending,
   user_budget_tracker,
 } from "#shared/db/schema"
+import { requireUserId } from "#server/utils/session"
+import { addWide } from "#server/utils/wide"
 
 import {
   and,
@@ -13,8 +15,6 @@ import {
   lte,
 } from "drizzle-orm"
 import { randomUUID } from "node:crypto"
-import { requireUserId } from "#server/utils/session"
-import { addWide } from "#server/utils/wide"
 
 function canEditSpending(role: BudgetTrackerRole): boolean {
   return [ "owner", "admin", "editor" ].includes(role)

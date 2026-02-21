@@ -3,6 +3,7 @@ import type { UserType } from "#shared/types/main"
 import { db } from "#shared/db/drizzle"
 import { auth } from "#server/utils/auth"
 import { logger } from "#server/utils/logger"
+
 import { migrate } from "drizzle-orm/better-sqlite3/migrator"
 
 type SeedUser = {

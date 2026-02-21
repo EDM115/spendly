@@ -1,6 +1,6 @@
 import { createReadStream } from "node:fs"
-import { createInterface } from "node:readline"
 import { stdin } from "node:process"
+import { createInterface } from "node:readline"
 
 import { z } from "zod"
 

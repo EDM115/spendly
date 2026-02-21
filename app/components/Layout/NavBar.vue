@@ -152,8 +152,6 @@
 </template>
 
 <script lang="ts" setup>
-import { authClient } from "~/utils/authClient"
-
 const store = useMainStore()
 const route = useRoute()
 const { changeTheme } = useCustomTheme()
@@ -205,7 +203,7 @@ const logoSrc = computed(() => (selectedTheme.value === "light"
   ? "/images/logo_alt.webp"
   : "/images/logo.webp"))
 
-const getFlagEmoji = (l: string): string => {
+function getFlagEmoji(l: string): string {
   switch (l) {
     case "en":
       return "🇺🇸"

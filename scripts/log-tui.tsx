@@ -1,3 +1,7 @@
+import TextInput from "ink-text-input"
+
+import { stdin } from "node:process"
+
 import React, {
   useCallback,
   useEffect,
@@ -12,17 +16,12 @@ import {
   useInput,
   useStdout,
 } from "ink"
-import TextInput from "ink-text-input"
-import { stdin } from "node:process"
-
-import type {
-  EventRecord,
-  Filters,
-  ParseResult,
-  Report,
-} from "./log-analyzer/core"
 
 import {
+  type EventRecord,
+  type Filters,
+  type ParseResult,
+  type Report,
   buildReport,
   filterRecords,
   normalizeDurationKind,

@@ -19,7 +19,7 @@ const protectedPaths = new Set([
 ])
 
 
-const isPlainRecord = (value: unknown): value is PlainRecord => {
+function isPlainRecord(value: unknown): value is PlainRecord {
   if (!value || typeof value !== "object") {
     return false
   }
@@ -27,9 +27,11 @@ const isPlainRecord = (value: unknown): value is PlainRecord => {
   return Object.getPrototypeOf(value) === Object.prototype
 }
 
-const isProtectedPath = (path: string[]): boolean => protectedPaths.has(path.join("."))
+function isProtectedPath(path: string[]): boolean {
+  return protectedPaths.has(path.join("."))
+}
 
-const mergeDeep = (target: PlainRecord, source: PlainRecord, path: string[] = []): PlainRecord => {
+function mergeDeep(target: PlainRecord, source: PlainRecord, path: string[] = []): PlainRecord {
   for (const [ key, value ] of Object.entries(source)) {
     const nextPath = [ ...path, key ]
 
@@ -55,7 +57,7 @@ const mergeDeep = (target: PlainRecord, source: PlainRecord, path: string[] = []
   return target
 }
 
-const buildBaseWide = (event: H3Event): WideEvent => {
+function buildBaseWide(event: H3Event): WideEvent {
   const url = getRequestURL(event)
   const requestId = resolveRequestId(event)
 
@@ -74,7 +76,7 @@ const buildBaseWide = (event: H3Event): WideEvent => {
   }
 }
 
-export const getWide = (event: H3Event): WideEvent => {
+export function getWide(event: H3Event): WideEvent {
   if (!event.context.wide) {
     event.context.wide = buildBaseWide(event)
   }
@@ -82,7 +84,7 @@ export const getWide = (event: H3Event): WideEvent => {
   return event.context.wide
 }
 
-export const addWide = (event: H3Event, partial: Partial<WideEvent>): WideEvent => {
+export function addWide(event: H3Event, partial: Partial<WideEvent>): WideEvent {
   const wide = getWide(event)
 
   mergeDeep(wide as PlainRecord, partial as PlainRecord)

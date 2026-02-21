@@ -486,7 +486,8 @@ const emit = defineEmits<{
 }>()
 
 const {
-  t, locale,
+  locale,
+  t,
 } = useI18n()
 const store = useMainStore()
 const { smAndUp } = useVDisplay()
@@ -514,7 +515,7 @@ const anchorDateModel = computed({
   set: (v: string) => emit("update:anchor-date", v),
 })
 
-const toggleSimplified = () => {
+function toggleSimplified() {
   simplifiedMode.value = !simplifiedMode.value
 }
 
@@ -561,7 +562,7 @@ const effectiveShowPoints = computed(() => (simplifiedMode.value
   ? false
   : showPoints.value))
 
-const formatAreaLabel = (rawLabel: unknown) => {
+function formatAreaLabel(rawLabel: unknown) {
   const label = typeof rawLabel === "string"
     ? rawLabel
     : String(rawLabel ?? "")
@@ -596,9 +597,9 @@ const formatAreaLabel = (rawLabel: unknown) => {
     .format(date)
 }
 
-const getWeekStartAndEnd = (date: Date): {
+function getWeekStartAndEnd(date: Date): {
   start: Date; end: Date;
-} => {
+} {
   const day = date.getDay()
   const diffToMonday = (day + 6) % 7
 
@@ -615,7 +616,7 @@ const getWeekStartAndEnd = (date: Date): {
   }
 }
 
-const formatBarLabel = (rawLabel: unknown) => {
+function formatBarLabel(rawLabel: unknown) {
   const label = typeof rawLabel === "string"
     ? rawLabel
     : String(rawLabel ?? "")
@@ -633,8 +634,11 @@ const formatBarLabel = (rawLabel: unknown) => {
 
   const date = new Date(y, m - 1, d || 1)
   const range = timeRangeModel.value
-  const fmt = (dt: Date, options: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(locale.value, options)
-    .format(dt)
+
+  function fmt(dt: Date, options: Intl.DateTimeFormatOptions) {
+    return new Intl.DateTimeFormat(locale.value, options)
+      .format(dt)
+  }
 
   if (range === "day") {
     const [ ay, am, ad ] = (anchorDateModel.value || "").split("-")
@@ -1408,7 +1412,7 @@ const doughnutChartOptions = computed(() => ({
   },
 }))
 
-const getCurrentChartInstance = (): ChartComponentRef => {
+function getCurrentChartInstance(): ChartComponentRef {
   switch (activeTab.value) {
     case "area":
       return areaChartInstance.value as ChartComponentRef
@@ -1423,19 +1427,19 @@ const getCurrentChartInstance = (): ChartComponentRef => {
   }
 }
 
-const getChartInstanceFromRef = (refValue: unknown): ChartJS | null => {
+function getChartInstanceFromRef(refValue: unknown): ChartJS | null {
   const maybe = refValue as ChartInstanceRef
 
   return maybe?.chart ?? null
 }
 
-const getCurrentChartInstanceRef = (): ChartJS | null => {
+function getCurrentChartInstanceRef(): ChartJS | null {
   const refValue = getCurrentChartInstance() as ChartInstanceRef
 
   return refValue?.chart ?? null
 }
 
-const clonePreserveFunctions = <T>(value: T, seen = new WeakMap<object, unknown>()): T => {
+function clonePreserveFunctions<T>(value: T, seen = new WeakMap<object, unknown>()): T {
   if (value === null || value === undefined) {
     return value
   }
@@ -1479,17 +1483,19 @@ const clonePreserveFunctions = <T>(value: T, seen = new WeakMap<object, unknown>
   return out as T
 }
 
-const normalizeChartOptions = (options: ChartJS["options"]) => {
+function normalizeChartOptions(options: ChartJS["options"]) {
   const raw = toRaw(options) as ChartJS["options"]
 
   return clonePreserveFunctions(raw)
 }
 
-const scaleNumber = (value: unknown, scale: number) => (typeof value === "number"
-  ? value * scale
-  : value)
+function scaleNumber(value: unknown, scale: number) {
+  return typeof value === "number"
+    ? value * scale
+    : value
+}
 
-const scaleFont = (value: unknown, scale: number) => {
+function scaleFont(value: unknown, scale: number) {
   if (!value || typeof value !== "object") {
     return value
   }
@@ -1504,7 +1510,7 @@ const scaleFont = (value: unknown, scale: number) => {
   }
 }
 
-const scalePadding = (value: unknown, scale: number) => {
+function scalePadding(value: unknown, scale: number) {
   if (typeof value === "number") {
     return Math.round(value * scale)
   }
@@ -1519,11 +1525,11 @@ const scalePadding = (value: unknown, scale: number) => {
     .map(([ key, entry ]) => [ key, scaleNumber(entry, scale) ]))
 }
 
-const getLightExportOptions = (
+function getLightExportOptions(
   options: ChartJS["options"],
   scale: number,
   chartType: string | undefined,
-) => {
+) {
   const baseOptions = normalizeChartOptions(options)
   const lightText = "rgba(0, 0, 0, 0.87)"
   const lightGrid = "rgba(0, 0, 0, 0.1)"
@@ -1639,7 +1645,7 @@ const getLightExportOptions = (
   }
 }
 
-const clampExportScaleToMaxSize = (width: number, height: number, scale: number) => {
+function clampExportScaleToMaxSize(width: number, height: number, scale: number) {
   const maxDimension = 12000
   const scaleX = maxDimension / Math.max(width, 1)
   const scaleY = maxDimension / Math.max(height, 1)
@@ -1648,11 +1654,13 @@ const clampExportScaleToMaxSize = (width: number, height: number, scale: number)
   return Math.max(1, Math.floor(Math.min(scale, maxScale)))
 }
 
-const nextFrame = () => new Promise<void>((resolve) => {
-  requestAnimationFrame(() => resolve())
-})
+async function nextFrame() {
+  return new Promise<void>((resolve) => {
+    requestAnimationFrame(() => resolve())
+  })
+}
 
-const hasRenderablePieData = (chart: ChartJS | null) => {
+function hasRenderablePieData(chart: ChartJS | null) {
   if (!chart) {
     return false
   }
@@ -1677,7 +1685,7 @@ const hasRenderablePieData = (chart: ChartJS | null) => {
   return total > 0
 }
 
-const normalizePieDataForExport = (data: unknown) => {
+function normalizePieDataForExport(data: unknown) {
   if (!data || typeof data !== "object") {
     return
   }
@@ -1729,9 +1737,11 @@ const normalizePieDataForExport = (data: unknown) => {
   typed.labels = [t("app.charts.no-data")]
 }
 
-const isValidPngDataUrl = (url: string) => url.startsWith("data:image/png")
+function isValidPngDataUrl(url: string) {
+  return url.startsWith("data:image/png")
+}
 
-const getPngDataUrlFromCanvas = (canvas: HTMLCanvasElement) => {
+function getPngDataUrlFromCanvas(canvas: HTMLCanvasElement) {
   try {
     const url = canvas.toDataURL("image/png")
 
@@ -1743,7 +1753,7 @@ const getPngDataUrlFromCanvas = (canvas: HTMLCanvasElement) => {
   }
 }
 
-const downloadDataUrl = (dataUrl: string, filename: string) => {
+function downloadDataUrl(dataUrl: string, filename: string) {
   const link = document.createElement("a")
 
   link.href = dataUrl
@@ -1753,9 +1763,9 @@ const downloadDataUrl = (dataUrl: string, filename: string) => {
   link.remove()
 }
 
-const renderChartToSvg = async (chart: ChartJS, scale: number): Promise<{
+async function renderChartToSvg(chart: ChartJS, scale: number): Promise<{
   svg: string; width: number; height: number; cleanup: () => void;
-} | null> => {
+} | null> {
   const rect = chart.canvas?.getBoundingClientRect?.()
   const width = chart.width || chart.canvas?.width || rect?.width || 0
   const height = chart.height || chart.canvas?.height || rect?.height || 0
@@ -1847,10 +1857,11 @@ const renderChartToSvg = async (chart: ChartJS, scale: number): Promise<{
   }
 }
 
-const injectSvgPosition = (svg: string, x: number, y: number) => svg
-  .replace("<svg", `<svg x="${x}" y="${y}"`)
+function injectSvgPosition(svg: string, x: number, y: number) {
+  return svg.replace("<svg", `<svg x="${x}" y="${y}"`)
+}
 
-const buildExportSvg = async (svgScale = 1) => {
+async function buildExportSvg(svgScale = 1) {
   const chart = getCurrentChartInstanceRef()
 
   if (activeTab.value === "pie") {
@@ -1951,7 +1962,7 @@ const buildExportSvg = async (svgScale = 1) => {
   }
 }
 
-const svgToPngDataUrl = async (svg: string, width: number, height: number, scale: number) => {
+async function svgToPngDataUrl(svg: string, width: number, height: number, scale: number) {
   const finalScale = clampExportScaleToMaxSize(width, height, scale)
   const canvas = document.createElement("canvas")
 
@@ -1974,17 +1985,17 @@ const svgToPngDataUrl = async (svg: string, width: number, height: number, scale
   img.decoding = "async"
 
   const loaded = new Promise<void>((resolve, reject) => {
-    const onLoad = () => {
+    function onLoad() {
       cleanup()
       resolve()
     }
 
-    const onError = () => {
+    function onError() {
       cleanup()
       reject(new Error("Failed to load SVG"))
     }
 
-    const cleanup = () => {
+    function cleanup() {
       img.removeEventListener("load", onLoad)
       img.removeEventListener("error", onError)
     }
@@ -2010,7 +2021,7 @@ const svgToPngDataUrl = async (svg: string, width: number, height: number, scale
   return getPngDataUrlFromCanvas(canvas)
 }
 
-const exportPNG = async () => {
+async function exportPNG() {
   if (isExporting.value) {
     return
   }
@@ -2041,7 +2052,7 @@ const exportPNG = async () => {
   downloadMenu.value = false
 }
 
-const exportSVG = async () => {
+async function exportSVG() {
   if (isExporting.value) {
     return
   }
@@ -2070,7 +2081,7 @@ const exportSVG = async () => {
   downloadMenu.value = false
 }
 
-const exportPDF = async () => {
+async function exportPDF() {
   if (isExporting.value) {
     return
   }
