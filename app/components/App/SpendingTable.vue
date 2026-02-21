@@ -419,7 +419,7 @@
               cols="12"
               sm="6"
             >
-              <v-select
+              <v-autocomplete
                 v-model="spendingForm.category_id"
                 :items="categories"
                 item-title="name"
@@ -448,7 +448,7 @@
                   />
                   {{ item.raw.name }}
                 </template>
-              </v-select>
+              </v-autocomplete>
             </v-col>
             <v-col
               cols="12"

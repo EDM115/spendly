@@ -21,11 +21,12 @@
             cols="12"
             sm="6"
           >
-            <v-select
+            <v-autocomplete
               v-model="selectedTrackerId"
               :items="budgetTrackerItems"
               item-title="name"
               item-value="id"
+              class="budget-tracker-ac"
               :label="t('app.budget-tracker.select')"
               variant="outlined"
               hide-details
@@ -66,8 +67,15 @@
               </template>
               <template #selection="{ item }">
                 <span class="text-high-emphasis font-weight-medium">{{ item.raw.name }}</span>
-                <v-spacer />
-                <div :class="smAndUp ? undefined : 'd-flex flex-column'">
+              </template>
+
+              <template #append-inner>
+                <div
+                  v-if="selectedTrackerId"
+                  class="budget-tracker-chips"
+                  :class="smAndUp ? 'budget-tracker-chips--row' : 'budget-tracker-chips--col'"
+                  aria-hidden="true"
+                >
                   <v-chip
                     size="x-small"
                     :color="getRoleColor(selectedTrackerRole)"
@@ -80,7 +88,7 @@
                     v-if="selectedTrackerOwnerName"
                     size="x-small"
                     color="primary"
-                    class="ml-2 elevation-1 mt-1 mt-sm-0"
+                    class="elevation-1"
                     variant="tonal"
                     prepend-icon="mdi-account-multiple-outline"
                   >
@@ -88,7 +96,7 @@
                   </v-chip>
                 </div>
               </template>
-            </v-select>
+            </v-autocomplete>
           </v-col>
           <v-col
             cols="12"
@@ -1086,7 +1094,23 @@ watch(showTransferDialog, (val) => {
   justify-items: center;
 }
 
-:deep(.v-select__selection) {
-  width: 100%;
+:deep(.budget-tracker-ac .v-field__append-inner) {
+  align-items: center;
+}
+
+.budget-tracker-chips {
+  display: flex;
+  gap: 8px;
+}
+
+.budget-tracker-chips--col {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.budget-tracker-chips--row {
+  flex-direction: row;
+  align-items: center;
 }
 </style>
