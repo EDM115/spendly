@@ -223,6 +223,7 @@
       "amount": "Montant",
       "balance": "Solde (de la période)",
       "balance-all-time": "Solde (tout temps)",
+      "balance-from-period-onward": "Solde (depuis la période sélectionnée)",
       "balance-options": "Options du solde",
       "balance-until-now": "Solde (jusqu'à aujourd'hui)",
       "cancel": "Annuler",

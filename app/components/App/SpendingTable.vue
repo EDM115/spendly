@@ -880,11 +880,15 @@ const balanceLabel = computed(() => {
     return t("app.spending.balance-all-time")
   }
 
-  if (includeFutureEntries.value) {
+  if (includeFutureEntries.value && !useTotalBalance.value) {
+    return t("app.spending.balance-from-period-onward")
+  }
+
+  if (includeFutureEntries.value && useTotalBalance.value) {
     return t("app.spending.balance-all-time")
   }
 
-  if (useTotalBalance.value) {
+  if (useTotalBalance.value && !includeFutureEntries.value) {
     return t("app.spending.balance-until-now")
   }
 

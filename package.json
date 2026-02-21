@@ -61,7 +61,7 @@
     "tsx": "~4.21.0",
     "typescript": "~5.9.3",
     "vue-eslint-parser": "~10.4.0",
-    "vue-tsc": "~3.2.4"
+    "vue-tsc": "~3.2.5"
   },
   "peerDependencies": {
     "@better-fetch/fetch": "*"

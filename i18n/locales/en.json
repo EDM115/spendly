@@ -223,6 +223,7 @@
       "amount": "Amount",
       "balance": "Balance (of the period)",
       "balance-all-time": "Balance (all time)",
+      "balance-from-period-onward": "Balance (from selected period onward)",
       "balance-options": "Balance options",
       "balance-until-now": "Balance (until now)",
       "cancel": "Cancel",
