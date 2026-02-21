@@ -152,7 +152,7 @@
       "select": "Select a budget tracker",
       "share": "Share",
       "share-close": "Close",
-      "title": "Budget Trackers",
+      "title": "Budget trackers",
       "transfer-action": "Transfer ownership",
       "transfer-cancel": "Cancel",
       "transfer-confirm": "Transfer ownership",
@@ -206,7 +206,7 @@
       "show-x-axis": "Show X axis",
       "show-y-axis": "Show Y axis",
       "simplified": "Simplified",
-      "title": "Charts & Analytics"
+      "title": "Charts & analytics"
     },
     "date-range-filter": {
       "cancel": "Cancel",

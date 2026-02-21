@@ -806,8 +806,14 @@ const todayBounds = computed(() => {
 })
 
 const balanceSpendings = computed(() => {
+  const win = dateWindow.value
+
   if (includeFutureEntries.value) {
-    return props.spendings
+    if (useTotalBalance.value || !win) {
+      return props.spendings
+    }
+
+    return props.spendings.filter((s) => s.date >= win.start)
   }
 
   if (useTotalBalance.value) {
