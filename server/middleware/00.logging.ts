@@ -39,7 +39,8 @@ function sanitizeRequestPath(pathname: string): string {
 
 function shouldSkip(pathname: string): boolean {
   return pathname.startsWith("/_nuxt/")
-    || pathname.startsWith("/_ipx")
+    || pathname.startsWith("/_ipx/")
+    || pathname.startsWith("/_i18n/")
     || pathname === "/__nuxt_error"
     || pathname === "/favicon.ico"
     || pathname === "/robots.txt"

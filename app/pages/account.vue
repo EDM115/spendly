@@ -1143,15 +1143,18 @@ onMounted(async () => {
 }
 
 @media (max-width: 600px) {
-  .oauth-item.v-list-item {
+  :deep(.oauth-item.v-list-item) {
     grid-template-areas:
       "prepend content"
-      "prepend append";
+      "append append";
     grid-template-columns: max-content 1fr;
+    row-gap: 8px;
   }
 
-  .oauth-item .v-list-item__append {
-    justify-self: start;
+  :deep(.oauth-item .v-list-item__append) {
+    grid-area: append;
+    justify-self: end;
+    margin-inline-start: 0;
   }
 }
 </style>

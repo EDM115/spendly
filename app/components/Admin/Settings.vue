@@ -198,7 +198,10 @@
       </v-expansion-panel-title>
       <v-expansion-panel-text class="px-8 pt-4 pb-6">
         <v-row>
-          <v-col>
+          <v-col
+            cols="6"
+            sm="3"
+          >
             <v-btn
               color="success"
               prepend-icon="mdi-file-delimited-outline"
@@ -212,7 +215,10 @@
               {{ t("admin.backup.export-csv") }}
             </v-btn>
           </v-col>
-          <v-col>
+          <v-col
+            cols="6"
+            sm="3"
+          >
             <v-btn
               color="success"
               prepend-icon="mdi-code-json"
@@ -226,7 +232,10 @@
               {{ t("admin.backup.export-json") }}
             </v-btn>
           </v-col>
-          <v-col>
+          <v-col
+            cols="6"
+            sm="3"
+          >
             <v-btn
               color="success"
               prepend-icon="mdi-database-export-outline"
@@ -240,7 +249,10 @@
               {{ t("admin.backup.export-sql") }}
             </v-btn>
           </v-col>
-          <v-col>
+          <v-col
+            cols="6"
+            sm="3"
+          >
             <v-btn
               color="success"
               prepend-icon="mdi-database-arrow-down-outline"
@@ -270,6 +282,9 @@
           class="mr-3"
         />
         {{ t("admin.user-requests.title") }}
+        <template v-if="hasUserRequests">
+          ({{ userRequests.length }})
+        </template>
       </v-expansion-panel-title>
       <v-expansion-panel-text class="pt-4">
         <v-alert

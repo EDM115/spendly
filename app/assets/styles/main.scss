@@ -270,6 +270,11 @@ body {
   white-space: normal !important;
 }
 
+.v-btn.v-btn--density-default:not(.v-btn--icon):not(.v-bottom-navigation__content .v-btn) {
+  min-height: calc(var(--v-btn-height)) !important;
+  height: revert !important;
+}
+
 @media (max-width: 600px) {
   *::-webkit-scrollbar {
     width: 4px !important;

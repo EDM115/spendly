@@ -299,23 +299,23 @@
             rounded="lg"
             style="background: rgba(var(--v-theme-surface), 0.3)"
           >
-            <template #prepend>
+            <template
+              v-if="smAndUp"
+              #prepend
+            >
               <v-icon
                 class="mr-2"
                 :color="getRoleColor(user.role)"
-                :icon="user.role === 'owner'
-                  ? 'mdi-account-check-outline'
-                  : user.role === 'admin'
-                    ? 'mdi-account-wrench-outline'
-                    : user.role === 'editor'
-                      ? 'mdi-account-edit-outline'
-                      : 'mdi-account-eye-outline'"
+                :icon="getRoleIcon(user.role)"
               />
             </template>
-            <v-list-item-title class="font-weight-medium">
+            <v-list-item-title
+              v-if="smAndUp"
+              class="font-weight-medium"
+            >
               {{ user.username }}
             </v-list-item-title>
-            <v-list-item-subtitle>
+            <v-list-item-subtitle v-if="smAndUp">
               <v-chip
                 size="x-small"
                 :color="getRoleColor(user.role)"
@@ -325,7 +325,10 @@
                 {{ t(`app.budget-tracker.roles.${user.role}`) }}
               </v-chip>
             </v-list-item-subtitle>
-            <template #append>
+            <template
+              v-if="smAndUp"
+              #append
+            >
               <v-select
                 v-if="canEditSharedRole(user)"
                 v-model="user.role"
@@ -376,10 +379,91 @@
                 </template>
               </v-tooltip>
             </template>
+
+            <div
+              v-if="!smAndUp"
+              class="shared-user-mobile"
+            >
+              <div class="shared-user-mobile__icon">
+                <v-icon
+                  :color="getRoleColor(user.role)"
+                  :icon="getRoleIcon(user.role)"
+                />
+              </div>
+
+              <div class="shared-user-mobile__content">
+                <div class="shared-user-mobile__identity">
+                  <span class="font-weight-medium shared-user-mobile__username">{{ user.username }}</span>
+                  <v-chip
+                    size="x-small"
+                    :color="getRoleColor(user.role)"
+                    variant="flat"
+                    class="elevation-1"
+                  >
+                    {{ t(`app.budget-tracker.roles.${user.role}`) }}
+                  </v-chip>
+                </div>
+
+                <div
+                  v-if="user.role !== 'owner' && (canEditSharedRole(user) || canTransferOwnership)"
+                  class="shared-user-mobile__actions"
+                >
+                  <v-select
+                    v-if="canEditSharedRole(user)"
+                    v-model="user.role"
+                    :items="availableRoles"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    rounded="lg"
+                    bg-color="transparent"
+                    class="shared-user-mobile__select"
+                    @update:model-value="updateUserRole(user.user_id, $event)"
+                  />
+                  <v-tooltip
+                    v-if="canTransferOwnership && user.user_id !== store.getUserId"
+                    location="top"
+                    :text="t('app.budget-tracker.transfer-action')"
+                  >
+                    <template #activator="{ props: tooltipProps }">
+                      <v-btn
+                        v-bind="tooltipProps"
+                        icon="mdi-account-arrow-right-outline"
+                        color="warning"
+                        variant="text"
+                        size="small"
+                        @click="openTransferDialog(user)"
+                      />
+                    </template>
+                  </v-tooltip>
+                  <v-tooltip
+                    v-if="user.user_id !== store.getUserId"
+                    location="top"
+                    :text="t('app.budget-tracker.remove-user')"
+                  >
+                    <template #activator="{ props: tooltipProps }">
+                      <v-btn
+                        v-bind="tooltipProps"
+                        icon="mdi-delete-outline"
+                        color="error"
+                        variant="text"
+                        size="small"
+                        @click="openRemoveShareDialog(user)"
+                      />
+                    </template>
+                  </v-tooltip>
+                </div>
+              </div>
+            </div>
           </v-list-item>
         </v-list>
         <v-divider class="my-4" />
-        <v-row align="center">
+        <v-row
+          v-if="smAndUp"
+          align="center"
+        >
           <v-col cols="6">
             <v-text-field
               v-model="newUsername"
@@ -415,6 +499,45 @@
             />
           </v-col>
         </v-row>
+
+        <div
+          v-else
+          class="shared-user-add-mobile"
+        >
+          <div class="shared-user-add-mobile__fields">
+            <v-text-field
+              v-model="newUsername"
+              :label="t('app.budget-tracker.username')"
+              variant="outlined"
+              density="compact"
+              rounded="lg"
+              hide-details
+              autocomplete="suppress"
+              bg-color="transparent"
+            />
+            <v-select
+              v-model="newUserRole"
+              :items="availableRoles"
+              item-title="title"
+              item-value="value"
+              :label="t('app.budget-tracker.role')"
+              variant="outlined"
+              density="compact"
+              class="mt-2"
+              rounded="lg"
+              hide-details
+              bg-color="transparent"
+            />
+          </div>
+          <div class="shared-user-add-mobile__button-wrap">
+            <v-btn
+              color="primary"
+              icon="mdi-account-plus-outline"
+              :disabled="!newUsername.trim()"
+              @click="addUser"
+            />
+          </div>
+        </div>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -634,6 +757,21 @@ function getRoleColor(role: string) {
       return "accent"
     default:
       return "accent"
+  }
+}
+
+function getRoleIcon(role: string) {
+  switch (role) {
+    case "owner":
+      return "mdi-account-check-outline"
+    case "admin":
+      return "mdi-account-wrench-outline"
+    case "editor":
+      return "mdi-account-edit-outline"
+    case "viewer":
+      return "mdi-account-eye-outline"
+    default:
+      return "mdi-account-eye-outline"
   }
 }
 
@@ -1114,5 +1252,71 @@ watch(showTransferDialog, (val) => {
 .budget-tracker-chips--row {
   flex-direction: row;
   align-items: center;
+}
+
+.shared-user-mobile {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.shared-user-mobile__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
+
+.shared-user-mobile__content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.shared-user-mobile__identity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.shared-user-mobile__username {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shared-user-mobile__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shared-user-mobile__select {
+  max-width: 140px;
+}
+
+.shared-user-add-mobile {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.shared-user-add-mobile__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shared-user-add-mobile__button-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 </style>
