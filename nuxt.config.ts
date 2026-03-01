@@ -14,8 +14,8 @@ export default defineNuxtConfig({
   ],
   ssr: true,
   devtools: {
-    enabled: false,
-    timeline: { enabled: false },
+    enabled: true,
+    timeline: { enabled: true },
   },
   app: {
     pageTransition: {
@@ -185,9 +185,10 @@ export default defineNuxtConfig({
     // oxlint-disable-next-line no-unsafe-type-assertion
     defaultLocale: process.env.DEFAULT_UI_LANG as Language | undefined,
     detectBrowserLanguage: {
+      cookieKey: "i18n",
       // oxlint-disable-next-line no-unsafe-type-assertion
       fallbackLocale: process.env.DEFAULT_UI_LANG as Language | undefined,
-      useCookie: false,
+      useCookie: true,
     },
     experimental: { typedOptionsAndMessages: "all" },
     locales: [

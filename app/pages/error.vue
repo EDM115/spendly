@@ -51,7 +51,6 @@ const route = useRoute()
 const { t } = useI18n()
 
 const error = route.query.error ?? "An unknown error occured"
-// ! TODO : INVALID_TOKEN => magic-link, to i18n
 const errorCode = route.query.code ?? 500
 </script>
 

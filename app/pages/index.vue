@@ -391,7 +391,7 @@
 
               <ul class="capability-list mb-0">
                 <li
-                  v-for="(point, i) in tm('landing.details.security.points')"
+                  v-for="(point, i) in tm('landing.details.security.points') as VueMessageType"
                   :key="i"
                   class="text-body-2"
                 >
@@ -426,7 +426,7 @@
 
               <ul class="capability-list mb-0">
                 <li
-                  v-for="(endpoint, i) in tm('landing.details.api.endpoints')"
+                  v-for="(endpoint, i) in tm('landing.details.api.endpoints') as VueMessageType"
                   :key="i"
                   class="text-body-2"
                 >
@@ -570,6 +570,8 @@
 </template>
 
 <script lang="ts" setup>
+import type { VueMessageType } from "vue-i18n"
+
 const store = useMainStore()
 const {
   t,
@@ -695,26 +697,25 @@ const capabilities = computed(() => [
     icon: "mdi-cash-multiple",
     title: t("landing.details.capabilities.budgeting.title"),
     desc: t("landing.details.capabilities.budgeting.desc"),
-    // @ts-expect-error dunno why it's considered as infinite type instantiation
-    items: tm("landing.details.capabilities.budgeting.items"),
+    items: tm("landing.details.capabilities.budgeting.items") as VueMessageType,
   },
   {
     icon: "mdi-account-multiple-outline",
     title: t("landing.details.capabilities.collaboration.title"),
     desc: t("landing.details.capabilities.collaboration.desc"),
-    items: tm("landing.details.capabilities.collaboration.items"),
+    items: tm("landing.details.capabilities.collaboration.items") as VueMessageType,
   },
   {
     icon: "mdi-speedometer",
     title: t("landing.details.capabilities.experience.title"),
     desc: t("landing.details.capabilities.experience.desc"),
-    items: tm("landing.details.capabilities.experience.items"),
+    items: tm("landing.details.capabilities.experience.items") as VueMessageType,
   },
   {
     icon: "mdi-export-variant",
     title: t("landing.details.capabilities.export.title"),
     desc: t("landing.details.capabilities.export.desc"),
-    items: tm("landing.details.capabilities.export.items"),
+    items: tm("landing.details.capabilities.export.items") as VueMessageType,
   },
 ])
 
@@ -723,19 +724,19 @@ const stackPillars = computed(() => [
     icon: "mdi-monitor-dashboard",
     title: t("landing.details.stack.frontend.title"),
     desc: t("landing.details.stack.frontend.desc"),
-    chips: tm("landing.details.stack.frontend.chips"),
+    chips: tm("landing.details.stack.frontend.chips") as VueMessageType,
   },
   {
     icon: "mdi-server-network-outline",
     title: t("landing.details.stack.backend.title"),
     desc: t("landing.details.stack.backend.desc"),
-    chips: tm("landing.details.stack.backend.chips"),
+    chips: tm("landing.details.stack.backend.chips") as VueMessageType,
   },
   {
     icon: "mdi-database-outline",
     title: t("landing.details.stack.data.title"),
     desc: t("landing.details.stack.data.desc"),
-    chips: tm("landing.details.stack.data.chips"),
+    chips: tm("landing.details.stack.data.chips") as VueMessageType,
   },
 ])
 

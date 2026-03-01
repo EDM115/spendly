@@ -1,11 +1,10 @@
 allowBuilds:
   '@parcel/watcher': true
-  '@prisma/client': true
-  '@prisma/engines': true
+  '@prisma/engines': false
   better-sqlite3: true
   core-js: true
   esbuild: true
-  prisma: true
+  prisma: false
   sharp: true
   unrs-resolver: true
 
@@ -13,9 +12,9 @@ lockfileIncludeTarballUrl: true
 
 overrides:
   # @nuxt/cli need to update @bomb.sh/tab
-  citty: "~0.2.1"
+  citty: ~0.2.1
   # blocked by peer dep in @eslint/config-inspector and dep in eslint-plugin-import-x (@nuxt/eslint-config)
-  eslint: "~10.0.1"
+  eslint: ~10.0.1
 
 publicHoistPattern:
   - '*vuetify*'
