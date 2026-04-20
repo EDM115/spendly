@@ -72,7 +72,6 @@ export default defineNuxtConfig({
       brotli: true,
       gzip: true,
     },
-    esbuild: { options: { target: "esnext" } },
     minify: true,
     routeRules: {
       "/": {
@@ -96,8 +95,7 @@ export default defineNuxtConfig({
     build: {
       chunkSizeWarningLimit: 2500,
       cssMinify: "lightningcss",
-
-      /* minify: "oxc",
+      minify: "oxc",
       rolldownOptions: {
         experimental: {
           lazyBarrel: true,
@@ -108,7 +106,7 @@ export default defineNuxtConfig({
           comments: false,
           minify: true,
         },
-      }, */
+      },
     },
     clearScreen: false,
     optimizeDeps: {
