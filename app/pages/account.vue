@@ -120,6 +120,7 @@
             v-if="disabledFeaturesList['email']"
             :message="t('account.disabled')"
             color="warning"
+            :closable="false"
           />
 
           <v-form
@@ -319,6 +320,7 @@
             v-if="disabledFeaturesList['oauth-github'] && disabledFeaturesList['oauth-google']"
             :message="t('account.disabled')"
             color="warning"
+            :closable="false"
           />
 
           <v-list

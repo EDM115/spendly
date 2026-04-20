@@ -638,6 +638,17 @@ const anchorDateModel = computed({
   set: (v: string) => emit("update:anchor-date", v),
 })
 
+function syncBalanceOptionsFromStore() {
+  if (!store.getHasInitialized) {
+    return
+  }
+
+  const options = store.getBalanceOptions
+
+  useTotalBalance.value = options.useTotalBalance
+  includeFutureEntries.value = options.includeFutureEntries
+}
+
 const typeItems = computed(() => [
   {
     title: t("app.spending.expense"), value: true,
@@ -1150,6 +1161,46 @@ async function exportCSV() {
   isExporting.value = false
   downloadMenu.value = false
 }
+
+watch(() => store.getHasInitialized, (initialized) => {
+  if (!initialized) {
+    return
+  }
+
+  syncBalanceOptionsFromStore()
+}, { immediate: true })
+
+watch(() => store.getBalanceOptions, (options) => {
+  if (!store.getHasInitialized) {
+    return
+  }
+
+  if (useTotalBalance.value !== options.useTotalBalance) {
+    useTotalBalance.value = options.useTotalBalance
+  }
+
+  if (includeFutureEntries.value !== options.includeFutureEntries) {
+    includeFutureEntries.value = options.includeFutureEntries
+  }
+})
+
+watch([ useTotalBalance, includeFutureEntries ], ([nextUseTotalBalance, nextIncludeFutureEntries]) => {
+  if (!store.getHasInitialized) {
+    return
+  }
+
+  const currentOptions = store.getBalanceOptions
+
+  if (nextUseTotalBalance === currentOptions.useTotalBalance
+    && nextIncludeFutureEntries === currentOptions.includeFutureEntries) {
+    return
+  }
+
+  store.setBalanceOptions({
+    useTotalBalance: nextUseTotalBalance,
+    includeFutureEntries: nextIncludeFutureEntries,
+  })
+})
 </script>
 
 <style lang="scss" scoped>

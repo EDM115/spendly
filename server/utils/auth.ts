@@ -30,7 +30,9 @@ export const auth = betterAuth({
   baseURL: {
     allowedHosts: [ "localhost:*", "spendly.edm115.dev" ],
     fallback: "https://spendly.edm115.dev",
-    protocol: process.env.NODE_ENV === "development" ? "http" : "https",
+    protocol: process.env.NODE_ENV === "development"
+      ? "http"
+      : "https",
   },
   database: drizzleAdapter(db, {
     provider: "sqlite",

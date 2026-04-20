@@ -94,6 +94,7 @@ export async function sendEmail(
       }
     }
 
+    // oxlint-disable-next-line typescript/consistent-return
     return {
       data,
       error,

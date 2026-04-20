@@ -153,14 +153,28 @@ const budgetTrackers = shallowRef<BudgetTracker[]>([])
 const categories = shallowRef<Category[]>([])
 const spendings = shallowRef<Spending[]>([])
 const timeRange = ref("month")
-const now0 = new Date()
-const anchorDate = ref(`${now0.getFullYear()}-${String(now0.getMonth() + 1)
-  .padStart(2, "0")}-${String(now0.getDate())
-  .padStart(2, "0")}`)
+const anchorDate = ref(getTodayAnchorDate())
 const selectedTab = ref<string | null>(null)
 const selectedBudgetTracker = computed(() => budgetTrackers.value
   .find((tracker) => tracker.id === selectedBudgetTrackerId.value))
 const selectedBudgetTrackerName = computed(() => selectedBudgetTracker.value?.name ?? "")
+
+function getTodayAnchorDate() {
+  const now = new Date()
+
+  return `${now.getFullYear()}-${String(now.getMonth() + 1)
+    .padStart(2, "0")}-${String(now.getDate())
+    .padStart(2, "0")}`
+}
+
+function syncDateRangeFromStore() {
+  if (!store.getHasInitialized) {
+    return
+  }
+
+  timeRange.value = store.getAppTimeRange
+  anchorDate.value = store.getAppAnchorDate
+}
 
 async function fetchBudgetTrackers() {
   try {
@@ -252,7 +266,42 @@ watch(selectedBudgetTrackerId, async () => {
   ])
 })
 
+watch(() => store.getHasInitialized, (initialized) => {
+  if (!initialized) {
+    return
+  }
+
+  syncDateRangeFromStore()
+}, { immediate: true })
+
+watch(() => store.getAppPreferences, (preferences) => {
+  if (!store.getHasInitialized) {
+    return
+  }
+
+  if (timeRange.value !== preferences.timeRange) {
+    timeRange.value = preferences.timeRange
+  }
+
+  if (anchorDate.value !== preferences.anchorDate) {
+    anchorDate.value = preferences.anchorDate
+  }
+})
+
+watch([ timeRange, anchorDate ], ([nextTimeRange, nextAnchorDate]) => {
+  if (!store.getHasInitialized) {
+    return
+  }
+
+  if (nextTimeRange === store.getAppTimeRange && nextAnchorDate === store.getAppAnchorDate) {
+    return
+  }
+
+  store.setAppDateRange(nextTimeRange, nextAnchorDate)
+})
+
 onMounted(async () => {
+  store.initStore()
   await fetchBudgetTrackers()
 
   hasLoaded.value = true

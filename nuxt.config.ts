@@ -31,8 +31,8 @@ export default defineNuxtConfig({
     },
   },
   sourcemap: {
-    client: true,
-    server: true,
+    client: false,
+    server: false,
   },
   devServer: {
     port: 8888,
@@ -40,7 +40,6 @@ export default defineNuxtConfig({
   future: { typescriptBundlerResolution: true },
   experimental: {
     asyncContext: true,
-    browserDevtoolsTiming: true,
     buildCache: true,
     checkOutdatedBuildInterval: 1000 * 60 * 60,
     clientFallback: true,
@@ -59,6 +58,7 @@ export default defineNuxtConfig({
     extractAsyncDataHandlers: true,
     inlineRouteRules: true,
     normalizeComponentNames: true,
+    normalizePageNames: true,
     parseErrorData: true,
     sharedPrerenderData: true,
     typedPages: true,
@@ -66,7 +66,7 @@ export default defineNuxtConfig({
     viewTransition: true,
     viteEnvironmentApi: false,
   },
-  compatibilityDate: "2026-02-01",
+  compatibilityDate: "2026-04-01",
   nitro: {
     compressPublicAssets: {
       brotli: true,
@@ -96,10 +96,31 @@ export default defineNuxtConfig({
     build: {
       chunkSizeWarningLimit: 2500,
       cssMinify: "lightningcss",
+      /* minify: "oxc",
+      rolldownOptions: {
+        experimental: {
+          lazyBarrel: true,
+          nativeMagicString: true,
+          resolveNewUrlToAsset: true,
+        },
+        output: {
+          comments: false,
+          minify: true,
+        },
+      }, */
     },
     clearScreen: false,
-    css: {
-      preprocessorMaxWorkers: true,
+    optimizeDeps: {
+      include: [
+        "better-auth/client/plugins",
+        "better-auth/vue",
+        "canvas-to-svg",
+        "chart.js",
+        "country-flag-emoji-polyfill",
+        "jspdf",
+        "vue-chartjs",
+        "vue-cloudflare-turnstile",
+      ]
     },
   },
   typescript: {
@@ -129,42 +150,47 @@ export default defineNuxtConfig({
       {
         name: "Inter",
         src: "/fonts/Inter/InterVariable.woff2",
-        weight: "100 900",
+        weights: ["100 900"],
         style: "normal",
         preload: true,
+        global: true,
       },
       {
         name: "Inter",
         src: "/fonts/Inter/InterVariable-Italic.woff2",
-        weight: "100 900",
+        weights: ["100 900"],
         style: "italic",
         preload: true,
+        global: true,
       },
       {
         name: "Fira Code",
-        src: "/fonts/Fira_Code/FiraCode-VF.woff2",
-        weight: "300 700",
+        src: "/fonts/FiraCode-VF.woff2",
+        weights: ["300 700"],
         style: "normal",
         preload: true,
+        global: true,
       },
       {
         name: "Nunito",
-        src: "/fonts/Nunito/Nunito-VariableFont_wght.ttf",
-        weight: "200 1000",
+        src: "/fonts/Nunito/Nunito-VariableFont_wght.woff2",
+        weights: ["200 1000"],
         style: "normal",
         preload: true,
+        global: true,
       },
       {
         name: "Nunito",
-        src: "/fonts/Nunito/Nunito-Italic-VariableFont_wght.ttf",
-        weight: "200 1000",
+        src: "/fonts/Nunito/Nunito-Italic-VariableFont_wght.woff2",
+        weights: ["200 1000"],
         style: "italic",
         preload: true,
+        global: true,
       },
       {
         name: "Twemoji Country Flags",
         src: "/fonts/TwemojiCountryFlags.woff2",
-        weight: "400",
+        weight: 400,
         style: "normal",
         preload: true,
       },

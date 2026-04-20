@@ -8,13 +8,12 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
 
+dedupePeers: true
+
 lockfileIncludeTarballUrl: true
 
 overrides:
-  # @nuxt/cli need to update @bomb.sh/tab
-  citty: ~0.2.1
-  # blocked by peer dep in @eslint/config-inspector and dep in eslint-plugin-import-x (@nuxt/eslint-config)
-  eslint: ~10.0.1
+  vite: ~7.3.2
 
 publicHoistPattern:
   - '*vuetify*'

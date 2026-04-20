@@ -101,6 +101,7 @@
               <LayoutAlert
                 :message="t('account.disabled')"
                 color="warning"
+                :closable="false"
               />
 
               <NuxtLink to="/login">

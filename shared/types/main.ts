@@ -91,3 +91,28 @@ export type AdminUserRequest = {
   user_username: string | null;
   user_display_username: string | null;
 }
+
+export type AppTimeRange = "day" | "week" | "month" | "year" | "all"
+
+export type AppChartTab = "area" | "pie" | "bar" | "doughnut"
+
+export type BalanceOptionsState = {
+  useTotalBalance: boolean;
+  includeFutureEntries: boolean;
+}
+
+export type ChartOptionsState = {
+  activeTab: AppChartTab;
+  simplifiedMode: boolean;
+  showTitle: boolean;
+  showLegend: boolean;
+  showXAxis: boolean;
+  showYAxis: boolean;
+  showGrid: boolean;
+  showPoints: boolean;
+  showBalance: boolean;
+  showIncome: boolean;
+  showExpense: boolean;
+  showExpensePie: boolean;
+  showIncomePie: boolean;
+}

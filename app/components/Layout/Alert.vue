@@ -4,7 +4,7 @@
       v-if="!close"
       :class="['mx-auto', alertClass, 'my-4']"
       :color="resolvedColor"
-      closable
+      :closable="props.closable ?? true"
       rounded="xl"
       variant="tonal"
       width="100%"
@@ -54,6 +54,7 @@ const props = defineProps<{
   color?: string;
   issue?: string;
   message: string;
+  closable?: boolean;
 }>()
 
 const more = ref(false)

@@ -37,136 +37,138 @@
 
       <v-card class="pa-1 border-thin bg-transparent">
         <v-card-text class="pa-0">
-          <v-date-picker
-            v-if="timeRangeModel === 'day' || timeRangeModel === 'week'"
-            v-model="tempDate"
-            show-adjacent-months
-            :multiple="timeRangeModel === 'week' ? 'range' : false"
-            weeks-in-month="dynamic"
-            weekday-format="short"
-            color="secondary"
-            rounded="lg"
-            bg-color="transparent"
-            @update:model-value="(val) => {
-              const v = Array.isArray(val)
-                ? val[0]
-                : val
+          <div ref="pickerContent">
+            <v-date-picker
+              v-if="timeRangeModel === 'day' || timeRangeModel === 'week'"
+              v-model="tempDate"
+              show-adjacent-months
+              :multiple="timeRangeModel === 'week' ? 'range' : false"
+              weeks-in-month="dynamic"
+              weekday-format="short"
+              color="secondary"
+              rounded="lg"
+              bg-color="transparent"
+              @update:model-value="(val) => {
+                const v = Array.isArray(val)
+                  ? val[0]
+                  : val
 
-              if (!v) {
-                return
-              }
+                if (!v) {
+                  return
+                }
 
-              if (typeof v === 'string') {
-                anchorDateModel = (v.split('T')[0] ?? '')
-              } else {
-                const d = v instanceof Date ? v : new Date(v)
+                if (typeof v === 'string') {
+                  anchorDateModel = (v.split('T')[0] ?? '')
+                } else {
+                  const d = v instanceof Date ? v : new Date(v)
 
-                anchorDateModel = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
-              }
+                  anchorDateModel = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+                }
 
-              menu = false
-            }"
-          />
+                menu = false
+              }"
+            />
 
-          <v-stepper-vertical
-            v-else-if="timeRangeModel === 'month'"
-            v-model="monthStep"
-            :items="monthStepperItems"
-            :color="color"
-            alt-labels
-            bg-color="transparent"
-            flat
-          >
-            <template #[`item.1`]>
-              <v-date-picker-years
-                v-model="monthYear"
-                color="secondary"
-                bg-color="transparent"
-              />
-            </template>
-
-            <template #[`item.2`]>
-              <v-date-picker-months
-                v-model="tempMonth"
-                v-model:year="monthYear"
-                color="secondary"
-                bg-color="transparent"
-              />
-            </template>
-
-            <template #actions="{ step, next, prev }">
-              <div class="d-flex align-center ga-2 pa-3">
-                <v-btn
-                  color="error"
-                  rounded="lg"
-                  variant="text"
-                  @click="menu = false"
-                >
-                  {{ t("app.date-range-filter.cancel") }}
-                </v-btn>
-
-                <v-spacer />
-
-                <v-btn
-                  v-if="step === 1"
-                  variant="tonal"
-                  rounded="lg"
-                  :color="color"
-                  @click="next"
-                >
-                  {{ t("app.date-range-filter.next") }}
-                </v-btn>
-
-                <v-btn
-                  v-else
+            <v-stepper-vertical
+              v-else-if="timeRangeModel === 'month'"
+              v-model="monthStep"
+              :items="monthStepperItems"
+              :color="color"
+              alt-labels
+              bg-color="transparent"
+              flat
+            >
+              <template #[`item.1`]>
+                <v-date-picker-years
+                  v-model="monthYear"
                   color="secondary"
-                  rounded="lg"
-                  variant="text"
-                  @click="prev"
-                >
-                  {{ t("app.date-range-filter.prev") }}
-                </v-btn>
+                  bg-color="transparent"
+                />
+              </template>
 
-                <v-btn
-                  v-if="step === 2"
-                  variant="flat"
-                  rounded="lg"
-                  :color="color"
-                  :disabled="tempMonth === undefined || tempMonth === null"
-                  @click="() => {
-                    const m = tempMonth
+              <template #[`item.2`]>
+                <v-date-picker-months
+                  v-model="tempMonth"
+                  v-model:year="monthYear"
+                  color="secondary"
+                  bg-color="transparent"
+                />
+              </template>
 
-                    if (m === undefined || m === null) {
-                      return
-                    }
+              <template #actions="{ step, next, prev }">
+                <div class="d-flex align-center ga-2 pa-3">
+                  <v-btn
+                    color="error"
+                    rounded="lg"
+                    variant="text"
+                    @click="menu = false"
+                  >
+                    {{ t("app.date-range-filter.cancel") }}
+                  </v-btn>
 
-                    const month1 = (m >= 0 && m <= 11) ? (m + 1) : m
+                  <v-spacer />
 
-                    anchorDateModel = `${monthYear}-${String(month1).padStart(2, '0')}-01`
-                    menu = false
-                  }"
-                >
-                  {{ t("app.date-range-filter.validate") }}
-                </v-btn>
-              </div>
-            </template>
-          </v-stepper-vertical>
+                  <v-btn
+                    v-if="step === 1"
+                    variant="tonal"
+                    rounded="lg"
+                    :color="color"
+                    @click="next"
+                  >
+                    {{ t("app.date-range-filter.next") }}
+                  </v-btn>
 
-          <v-date-picker-years
-            v-else-if="timeRangeModel === 'year'"
-            v-model="tempYear"
-            color="secondary"
-            bg-color="transparent"
-            @update:model-value="(y) => {
-              if (!y) {
-                return
-              }
+                  <v-btn
+                    v-else
+                    color="secondary"
+                    rounded="lg"
+                    variant="text"
+                    @click="prev"
+                  >
+                    {{ t("app.date-range-filter.prev") }}
+                  </v-btn>
 
-              anchorDateModel = `${y}-01-01`
-              monthYear = y
-              menu = false
-            }"
-          />
+                  <v-btn
+                    v-if="step === 2"
+                    variant="flat"
+                    rounded="lg"
+                    :color="color"
+                    :disabled="tempMonth === undefined || tempMonth === null"
+                    @click="() => {
+                      const m = tempMonth
+
+                      if (m === undefined || m === null) {
+                        return
+                      }
+
+                      const month1 = (m >= 0 && m <= 11) ? (m + 1) : m
+
+                      anchorDateModel = `${monthYear}-${String(month1).padStart(2, '0')}-01`
+                      menu = false
+                    }"
+                  >
+                    {{ t("app.date-range-filter.validate") }}
+                  </v-btn>
+                </div>
+              </template>
+            </v-stepper-vertical>
+
+            <v-date-picker-years
+              v-else-if="timeRangeModel === 'year'"
+              v-model="tempYear"
+              color="secondary"
+              bg-color="transparent"
+              @update:model-value="(y) => {
+                if (!y) {
+                  return
+                }
+
+                anchorDateModel = `${y}-01-01`
+                monthYear = y
+                menu = false
+              }"
+            />
+          </div>
         </v-card-text>
       </v-card>
     </v-menu>
@@ -230,6 +232,7 @@ const {
 const { smAndUp } = useVDisplay()
 
 const menu = ref(false)
+const pickerContent = useTemplateRef("pickerContent")
 
 const tempDate = ref<string | string[] | Date | null>(null)
 const tempMonth = ref<number | undefined>(undefined)
@@ -345,6 +348,31 @@ const tooltipText = computed(() => {
   return ""
 })
 
+function scrollCurrentYearIntoView() {
+  if (!pickerContent.value || !menu.value || timeRangeModel.value !== "month" || monthStep.value !== 1) {
+    return
+  }
+
+  const selectedYearButton = pickerContent.value.querySelector<HTMLElement>(".v-date-picker-years__content .v-btn.v-btn--active")
+
+  if (!selectedYearButton) {
+    return
+  }
+
+  selectedYearButton.scrollIntoView({
+    block: "center",
+    inline: "nearest",
+  })
+}
+
+async function syncYearScrollPosition() {
+  await nextTick()
+
+  requestAnimationFrame(() => {
+    scrollCurrentYearIntoView()
+  })
+}
+
 watch(menu, (open) => {
   if (!open) {
     return
@@ -382,6 +410,7 @@ watch(menu, (open) => {
 
   if (timeRangeModel.value === "month") {
     monthStep.value = 1
+    void syncYearScrollPosition()
   }
 })
 
@@ -389,6 +418,14 @@ watch(timeRangeModel, (val) => {
   if (val === "all") {
     menu.value = false
   }
+})
+
+watch([ menu, monthStep, monthYear ], ([open, step]) => {
+  if (!open || step !== 1 || timeRangeModel.value !== "month") {
+    return
+  }
+
+  void syncYearScrollPosition()
 })
 </script>
 

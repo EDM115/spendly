@@ -491,7 +491,7 @@ const {
 } = useI18n()
 const store = useMainStore()
 const { smAndUp } = useVDisplay()
-const activeTab = ref("area")
+const activeTab = ref<AppChartTab>("area")
 const simplifiedMode = ref(!smAndUp.value)
 const showTitle = ref(true)
 const showLegend = ref(true)
@@ -514,6 +514,28 @@ const anchorDateModel = computed({
   get: () => props.anchorDate,
   set: (v: string) => emit("update:anchor-date", v),
 })
+
+function syncChartOptionsFromStore() {
+  if (!store.getHasInitialized) {
+    return
+  }
+
+  const options = store.getChartOptions
+
+  activeTab.value = options.activeTab
+  simplifiedMode.value = options.simplifiedMode
+  showTitle.value = options.showTitle
+  showLegend.value = options.showLegend
+  showXAxis.value = options.showXAxis
+  showYAxis.value = options.showYAxis
+  showGrid.value = options.showGrid
+  showPoints.value = options.showPoints
+  showBalance.value = options.showBalance
+  showIncome.value = options.showIncome
+  showExpense.value = options.showExpense
+  showExpensePie.value = options.showExpensePie
+  showIncomePie.value = options.showIncomePie
+}
 
 function toggleSimplified() {
   simplifiedMode.value = !simplifiedMode.value
@@ -2020,6 +2042,140 @@ async function svgToPngDataUrl(svg: string, width: number, height: number, scale
 
   return getPngDataUrlFromCanvas(canvas)
 }
+
+watch(() => store.getHasInitialized, (initialized) => {
+  if (!initialized) {
+    return
+  }
+
+  syncChartOptionsFromStore()
+}, { immediate: true })
+
+watch(() => store.getChartOptions, (options) => {
+  if (!store.getHasInitialized) {
+    return
+  }
+
+  if (activeTab.value !== options.activeTab) {
+    activeTab.value = options.activeTab
+  }
+
+  if (simplifiedMode.value !== options.simplifiedMode) {
+    simplifiedMode.value = options.simplifiedMode
+  }
+
+  if (showTitle.value !== options.showTitle) {
+    showTitle.value = options.showTitle
+  }
+
+  if (showLegend.value !== options.showLegend) {
+    showLegend.value = options.showLegend
+  }
+
+  if (showXAxis.value !== options.showXAxis) {
+    showXAxis.value = options.showXAxis
+  }
+
+  if (showYAxis.value !== options.showYAxis) {
+    showYAxis.value = options.showYAxis
+  }
+
+  if (showGrid.value !== options.showGrid) {
+    showGrid.value = options.showGrid
+  }
+
+  if (showPoints.value !== options.showPoints) {
+    showPoints.value = options.showPoints
+  }
+
+  if (showBalance.value !== options.showBalance) {
+    showBalance.value = options.showBalance
+  }
+
+  if (showIncome.value !== options.showIncome) {
+    showIncome.value = options.showIncome
+  }
+
+  if (showExpense.value !== options.showExpense) {
+    showExpense.value = options.showExpense
+  }
+
+  if (showExpensePie.value !== options.showExpensePie) {
+    showExpensePie.value = options.showExpensePie
+  }
+
+  if (showIncomePie.value !== options.showIncomePie) {
+    showIncomePie.value = options.showIncomePie
+  }
+})
+
+watch([
+  activeTab,
+  simplifiedMode,
+  showTitle,
+  showLegend,
+  showXAxis,
+  showYAxis,
+  showGrid,
+  showPoints,
+  showBalance,
+  showIncome,
+  showExpense,
+  showExpensePie,
+  showIncomePie,
+], ([
+  nextActiveTab,
+  nextSimplifiedMode,
+  nextShowTitle,
+  nextShowLegend,
+  nextShowXAxis,
+  nextShowYAxis,
+  nextShowGrid,
+  nextShowPoints,
+  nextShowBalance,
+  nextShowIncome,
+  nextShowExpense,
+  nextShowExpensePie,
+  nextShowIncomePie,
+]) => {
+  if (!store.getHasInitialized) {
+    return
+  }
+
+  const currentOptions = store.getChartOptions
+
+  if (nextActiveTab === currentOptions.activeTab
+    && nextSimplifiedMode === currentOptions.simplifiedMode
+    && nextShowTitle === currentOptions.showTitle
+    && nextShowLegend === currentOptions.showLegend
+    && nextShowXAxis === currentOptions.showXAxis
+    && nextShowYAxis === currentOptions.showYAxis
+    && nextShowGrid === currentOptions.showGrid
+    && nextShowPoints === currentOptions.showPoints
+    && nextShowBalance === currentOptions.showBalance
+    && nextShowIncome === currentOptions.showIncome
+    && nextShowExpense === currentOptions.showExpense
+    && nextShowExpensePie === currentOptions.showExpensePie
+    && nextShowIncomePie === currentOptions.showIncomePie) {
+    return
+  }
+
+  store.setChartOptions({
+    activeTab: nextActiveTab,
+    simplifiedMode: nextSimplifiedMode,
+    showTitle: nextShowTitle,
+    showLegend: nextShowLegend,
+    showXAxis: nextShowXAxis,
+    showYAxis: nextShowYAxis,
+    showGrid: nextShowGrid,
+    showPoints: nextShowPoints,
+    showBalance: nextShowBalance,
+    showIncome: nextShowIncome,
+    showExpense: nextShowExpense,
+    showExpensePie: nextShowExpensePie,
+    showIncomePie: nextShowIncomePie,
+  })
+})
 
 async function exportPNG() {
   if (isExporting.value) {

@@ -410,7 +410,7 @@
           "chips": [
             "Nuxt 4 SSR",
             "Vue 3",
-            "Vuetify",
+            "Vuetify 3",
             "Pinia"
           ],
           "desc": "A modern SSR frontend with glassmorphism-inspired Material Design UI and reactive state management",
