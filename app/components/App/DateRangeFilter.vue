@@ -349,7 +349,14 @@ const tooltipText = computed(() => {
 })
 
 function scrollCurrentYearIntoView() {
-  if (!pickerContent.value || !menu.value || timeRangeModel.value !== "month" || monthStep.value !== 1) {
+  if (!pickerContent.value || !menu.value) {
+    return
+  }
+
+  const isMonthYearStepVisible = timeRangeModel.value === "month" && monthStep.value === 1
+  const isYearPickerVisible = timeRangeModel.value === "year"
+
+  if (!isMonthYearStepVisible && !isYearPickerVisible) {
     return
   }
 
@@ -411,6 +418,12 @@ watch(menu, (open) => {
   if (timeRangeModel.value === "month") {
     monthStep.value = 1
     void syncYearScrollPosition()
+
+    return
+  }
+
+  if (timeRangeModel.value === "year") {
+    void syncYearScrollPosition()
   }
 })
 
@@ -420,8 +433,16 @@ watch(timeRangeModel, (val) => {
   }
 })
 
-watch([ menu, monthStep, monthYear ], ([open, step]) => {
-  if (!open || step !== 1 || timeRangeModel.value !== "month") {
+watch([ menu, monthStep, monthYear, tempYear, timeRangeModel ], ([ open, step, , , timeRange ]) => {
+  if (!open) {
+    return
+  }
+
+  if (timeRange === "month" && step !== 1) {
+    return
+  }
+
+  if (timeRange !== "month" && timeRange !== "year") {
     return
   }
 

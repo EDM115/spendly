@@ -116,3 +116,10 @@ export type ChartOptionsState = {
   showExpensePie: boolean;
   showIncomePie: boolean;
 }
+
+export type AppPreferencesState = {
+  timeRange: AppTimeRange;
+  anchorDate: string;
+  balanceOptions: BalanceOptionsState;
+  chartOptions: ChartOptionsState;
+}

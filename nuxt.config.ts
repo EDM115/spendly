@@ -96,6 +96,7 @@ export default defineNuxtConfig({
     build: {
       chunkSizeWarningLimit: 2500,
       cssMinify: "lightningcss",
+
       /* minify: "oxc",
       rolldownOptions: {
         experimental: {
@@ -120,7 +121,7 @@ export default defineNuxtConfig({
         "jspdf",
         "vue-chartjs",
         "vue-cloudflare-turnstile",
-      ]
+      ],
     },
   },
   typescript: {

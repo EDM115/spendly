@@ -31,9 +31,6 @@ function getDefaultAppPreferences(): AppPreferencesState {
       showExpensePie: true,
       showIncomePie: true,
     },
-    pwa: {
-      installPromptDismissed: false,
-    },
   }
 }
 
@@ -60,7 +57,7 @@ function normalizeChartTab(value: unknown, fallback: AppChartTab): AppChartTab {
 }
 
 function normalizeAnchorDate(value: unknown, fallback: string) {
-  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)
+  return typeof value === "string" && (/^\d{4}-\d{2}-\d{2}$/).test(value)
     ? value
     : fallback
 }
@@ -85,9 +82,6 @@ function parseStoredAppPreferences(rawValue: string | null): AppPreferencesState
     const chartOptions = isRecord(parsed.chartOptions)
       ? parsed.chartOptions
       : {}
-    const pwa = isRecord(parsed.pwa)
-      ? parsed.pwa
-      : {}
 
     return {
       timeRange: normalizeTimeRange(parsed.timeRange, defaults.timeRange),
@@ -110,9 +104,6 @@ function parseStoredAppPreferences(rawValue: string | null): AppPreferencesState
         showExpense: normalizeBoolean(chartOptions.showExpense, defaults.chartOptions.showExpense),
         showExpensePie: normalizeBoolean(chartOptions.showExpensePie, defaults.chartOptions.showExpensePie),
         showIncomePie: normalizeBoolean(chartOptions.showIncomePie, defaults.chartOptions.showIncomePie),
-      },
-      pwa: {
-        installPromptDismissed: normalizeBoolean(pwa.installPromptDismissed, defaults.pwa.installPromptDismissed),
       },
     }
   } catch {
@@ -157,7 +148,6 @@ export const useMainStore = defineStore("main", () => {
   const getAppAnchorDate = computed(() => appPreferences.value.anchorDate)
   const getBalanceOptions = computed(() => appPreferences.value.balanceOptions)
   const getChartOptions = computed(() => appPreferences.value.chartOptions)
-  const getPwaInstallPromptDismissed = computed(() => appPreferences.value.pwa.installPromptDismissed)
   const getHasInitialized = computed(() => hasInitialized.value)
 
   const canEditTracker = computed(() => [ "owner", "admin" ].includes(currentBudgetTrackerRole.value ?? ""))
@@ -291,18 +281,6 @@ export const useMainStore = defineStore("main", () => {
     persistAppPreferences()
   }
 
-  function setPwaInstallPromptDismissed(dismissed: boolean) {
-    appPreferences.value = {
-      ...appPreferences.value,
-      pwa: {
-        ...appPreferences.value.pwa,
-        installPromptDismissed: dismissed,
-      },
-    }
-
-    persistAppPreferences()
-  }
-
   async function logout() {
     selectedBudgetTrackerId.value = null
     currentBudgetTrackerRole.value = null
@@ -345,7 +323,6 @@ export const useMainStore = defineStore("main", () => {
     getAppAnchorDate,
     getBalanceOptions,
     getChartOptions,
-    getPwaInstallPromptDismissed,
     getHasInitialized,
     canEditTracker,
     canDeleteTracker,
@@ -358,7 +335,6 @@ export const useMainStore = defineStore("main", () => {
     setAppDateRange,
     setBalanceOptions,
     setChartOptions,
-    setPwaInstallPromptDismissed,
     logout,
     initStore,
   }

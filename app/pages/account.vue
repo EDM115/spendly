@@ -408,6 +408,59 @@
       </v-col>
     </v-row>
 
+    <v-row>
+      <v-col
+        cols="12"
+        md="6"
+      >
+        <v-card
+          class="glass-card pa-6"
+          rounded="xl"
+          elevation="0"
+        >
+          <div class="mb-4">
+            <h2 class="text-h5 font-weight-bold">
+              {{ t("account.pwa.title") }}
+            </h2>
+            <p class="text-body-2 text-medium-emphasis">
+              {{ t("account.pwa.description") }}
+            </p>
+          </div>
+
+          <LayoutAlert
+            :message="pwaStatusMessage"
+            :color="pwaStatusColor"
+            :closable="false"
+          />
+
+          <div class="d-flex flex-column flex-md-row gap-4 mt-4">
+            <v-btn
+              v-if="canInstallPwa"
+              color="primary"
+              variant="tonal"
+              rounded="xl"
+              :prepend-icon="mdAndUp ? 'mdi-monitor-arrow-down-variant' : 'mdi-cellphone-arrow-down-variant'"
+              class="text-none font-weight-bold"
+              @click="installPwa"
+            >
+              {{ t("account.pwa.install") }}
+            </v-btn>
+            <v-btn
+              v-else-if="canResetInstallPrompt"
+              color="secondary"
+              variant="tonal"
+              rounded="xl"
+              prepend-icon="mdi-restore"
+              class="text-none font-weight-bold"
+              @click="resetPwaInstallPrompt"
+            >
+              {{ t("account.pwa.reset-install-prompt") }}
+            </v-btn>
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
+
     <v-row v-if="!disabledFeaturesList['email']">
       <v-col cols="12">
         <v-card
@@ -605,9 +658,14 @@ import type {
   Raw,
 } from "vue"
 
+const PWA_INSTALL_DISMISS_KEY = "vite-pwa:hide-install"
+const PWA_FORCE_INSTALL_SNACKBAR_SESSION_KEY = "spendly:pwa-force-install-snackbar"
+
 const store = useMainStore()
 const { t } = useI18n()
+const { $pwa } = useNuxtApp()
 const { logUiEvent } = useUiEventLogger()
+const { mdAndUp } = useVDisplay()
 
 useHead({ title: t("main.account") })
 
@@ -615,6 +673,40 @@ const currentUser = computed(() => store.getUser)
 const currentUserEmail = computed(() => currentUser.value?.email ?? "")
 const currentUsername = computed(() => currentUser.value?.displayUsername ?? currentUser.value?.name ?? "")
 const disabledFeaturesList = computed(() => disabledFeatures())
+
+const isPwaInstalled = ref(false)
+const hasInstallPrompt = ref(false)
+const installPromptDismissed = ref(false)
+let pwaStateSyncInterval: ReturnType<typeof setInterval> | undefined
+
+const canInstallPwa = computed(() => !isPwaInstalled.value && hasInstallPrompt.value)
+const canResetInstallPrompt = computed(() => !isPwaInstalled.value && installPromptDismissed.value && !hasInstallPrompt.value)
+
+const pwaStatusColor = computed(() => {
+  if (isPwaInstalled.value) {
+    return "success"
+  }
+
+  if (canInstallPwa.value) {
+    return "info"
+  }
+
+  return "warning"
+})
+
+const pwaStatusMessage = computed(() => {
+  if (isPwaInstalled.value) {
+    return t("account.pwa.installed")
+  }
+
+  if (canResetInstallPrompt.value) {
+    return t("account.pwa.available-dismissed")
+  }
+
+  return canInstallPwa.value
+    ? t("account.pwa.available")
+    : t("account.pwa.unavailable")
+})
 
 const usernameLoading = ref(false)
 const emailLoading = ref(false)
@@ -1044,6 +1136,64 @@ function requestDeletion() {
   showDeletionDialog.value = true
 }
 
+function stopPwaStateSync() {
+  if (pwaStateSyncInterval) {
+    clearInterval(pwaStateSyncInterval)
+    pwaStateSyncInterval = undefined
+  }
+}
+
+function startPwaStateSync() {
+  let attempts = 0
+
+  syncPwaState()
+  stopPwaStateSync()
+  pwaStateSyncInterval = setInterval(() => {
+    attempts += 1
+    syncPwaState()
+
+    if (hasInstallPrompt.value || attempts >= 24) {
+      stopPwaStateSync()
+    }
+  }, 250)
+}
+
+function syncPwaState() {
+  isPwaInstalled.value = $pwa?.isPWAInstalled ?? false
+  hasInstallPrompt.value = $pwa?.showInstallPrompt ?? false
+  installPromptDismissed.value = import.meta.client && localStorage.getItem(PWA_INSTALL_DISMISS_KEY) === "true"
+}
+
+async function installPwa() {
+  if (import.meta.client) {
+    localStorage.removeItem(PWA_INSTALL_DISMISS_KEY)
+  }
+
+  await $pwa?.install()
+  syncPwaState()
+}
+
+function resetPwaInstallPrompt() {
+  if (!import.meta.client) {
+    return
+  }
+
+  localStorage.removeItem(PWA_INSTALL_DISMISS_KEY)
+  sessionStorage.setItem(PWA_FORCE_INSTALL_SNACKBAR_SESSION_KEY, "true")
+  syncPwaState()
+
+  reloadNuxtApp({
+    path: "/account",
+    ttl: 0,
+  })
+}
+
+function syncPwaVisibilityState() {
+  if (document.visibilityState === "visible") {
+    syncPwaState()
+  }
+}
+
 async function confirmExport() {
   showExportDialog.value = false
   await submitUserRequest("export")
@@ -1135,6 +1285,16 @@ watch(currentUser, (value) => {
 onMounted(async () => {
   await refreshLinkedAccounts()
   await fetchUserRequests()
+  startPwaStateSync()
+
+  window.addEventListener("pageshow", syncPwaState)
+  document.addEventListener("visibilitychange", syncPwaVisibilityState)
+})
+
+onBeforeUnmount(() => {
+  stopPwaStateSync()
+  window.removeEventListener("pageshow", syncPwaState)
+  document.removeEventListener("visibilitychange", syncPwaVisibilityState)
 })
 </script>
 

@@ -1184,7 +1184,7 @@ watch(() => store.getBalanceOptions, (options) => {
   }
 })
 
-watch([ useTotalBalance, includeFutureEntries ], ([nextUseTotalBalance, nextIncludeFutureEntries]) => {
+watch([ useTotalBalance, includeFutureEntries ], ([ nextUseTotalBalance, nextIncludeFutureEntries ]) => {
   if (!store.getHasInitialized) {
     return
   }

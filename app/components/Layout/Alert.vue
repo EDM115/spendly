@@ -64,10 +64,18 @@ const resolvedColor = computed(() => props.color ?? "error")
 
 const alertClass = computed(() => {
   switch (resolvedColor.value) {
-    case "warning":
-      return "glass-warning"
+    case "accent":
+      return "glass-accent"
+    case "info":
+      return "glass-info"
+    case "primary":
+      return "glass-primary"
+    case "secondary":
+      return "glass-secondary"
     case "success":
       return "glass-success"
+    case "warning":
+      return "glass-warning"
     default:
       return "glass-error"
   }
@@ -75,10 +83,18 @@ const alertClass = computed(() => {
 
 const buttonClass = computed(() => {
   switch (resolvedColor.value) {
-    case "warning":
-      return "glow-warning-btn"
+    case "accent":
+      return "glow-accent-btn"
+    case "info":
+      return "glow-info-btn"
+    case "primary":
+      return "glow-primary-btn"
+    case "secondary":
+      return "glow-secondary-btn"
     case "success":
       return "glow-success-btn"
+    case "warning":
+      return "glow-warning-btn"
     default:
       return "glow-error-btn"
   }
@@ -90,6 +106,34 @@ const statusIcon = computed(() => (resolvedColor.value === "success"
 </script>
 
 <style lang="scss" scoped>
+.glass-accent {
+  backdrop-filter: blur(10px);
+  background: rgba(var(--v-theme-accent), 0.1) !important;
+  border: 1px solid rgba(var(--v-theme-accent), 0.2);
+  box-shadow: 0 4px 20px rgba(var(--v-theme-accent), 0.15);
+}
+
+.glass-info {
+  backdrop-filter: blur(10px);
+  background: rgba(var(--v-theme-info), 0.1) !important;
+  border: 1px solid rgba(var(--v-theme-info), 0.2);
+  box-shadow: 0 4px 20px rgba(var(--v-theme-info), 0.15);
+}
+
+.glass-primary {
+  backdrop-filter: blur(10px);
+  background: rgba(var(--v-theme-primary), 0.1) !important;
+  border: 1px solid rgba(var(--v-theme-primary), 0.2);
+  box-shadow: 0 4px 20px rgba(var(--v-theme-primary), 0.15);
+}
+
+.glass-secondary {
+  backdrop-filter: blur(10px);
+  background: rgba(var(--v-theme-secondary), 0.1) !important;
+  border: 1px solid rgba(var(--v-theme-secondary), 0.2);
+  box-shadow: 0 4px 20px rgba(var(--v-theme-secondary), 0.15);
+}
+
 .glass-error {
   backdrop-filter: blur(10px);
   background: rgba(var(--v-theme-error), 0.1) !important;
@@ -109,6 +153,22 @@ const statusIcon = computed(() => (resolvedColor.value === "success"
   background: rgba(var(--v-theme-success), 0.1) !important;
   border: 1px solid rgba(var(--v-theme-success), 0.2);
   box-shadow: 0 4px 20px rgba(var(--v-theme-success), 0.15);
+}
+
+.glow-accent-btn {
+  box-shadow: 0 0 10px rgba(var(--v-theme-accent), 0.4);
+}
+
+.glow-info-btn {
+  box-shadow: 0 0 10px rgba(var(--v-theme-info), 0.4);
+}
+
+.glow-primary-btn {
+  box-shadow: 0 0 10px rgba(var(--v-theme-primary), 0.4);
+}
+
+.glow-secondary-btn {
+  box-shadow: 0 0 10px rgba(var(--v-theme-secondary), 0.4);
 }
 
 .glow-error-btn {

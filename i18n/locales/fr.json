@@ -47,6 +47,16 @@
       "unlink": "Dissocier",
       "unlinked": "Compte dissocié"
     },
+    "pwa": {
+      "available": "Spendly peut être installé sur cet appareil",
+      "available-dismissed": "Vous aviez masqué la suggestion d'installation. Réactivez-la ici pour permettre à Spendly de proposer l'installation à nouveau.",
+      "description": "Vérifiez si Spendly est installé sur cet appareil et installez-le quand c'est possible",
+      "install": "Installer Spendly",
+      "installed": "Spendly est déjà installé sur cet appareil",
+      "reset-install-prompt": "Réafficher l'invite d'installation",
+      "title": "Installation de l'application",
+      "unavailable": "L'installation n'est pas disponible actuellement dans ce navigateur ou cette session"
+    },
     "profile": {
       "description": "Mettez à jour votre nom d'utilisateur",
       "success": "Nom d'utilisateur mis à jour",

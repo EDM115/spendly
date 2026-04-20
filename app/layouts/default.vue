@@ -61,7 +61,7 @@
               color="success"
               class="pr-2"
               variant="tonal"
-              @click="$pwa?.install()"
+              @click="installFromSnackbar"
             >
               {{ t("main.install-confirm") }}
             </v-btn>
@@ -69,7 +69,7 @@
               color="error"
               class="pr-2 mt-2"
               variant="outlined"
-              @click="$pwa?.cancelInstall()"
+              @click="dismissInstallSnackbar"
             >
               {{ t("main.install-dismiss") }}
             </v-btn>
@@ -118,6 +118,9 @@
 <script lang="ts" setup>
 import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill"
 
+const PWA_INSTALL_DISMISS_KEY = "vite-pwa:hide-install"
+const PWA_FORCE_INSTALL_SNACKBAR_SESSION_KEY = "spendly:pwa-force-install-snackbar"
+
 const i18nHead = useLocaleHead()
 const route = useRoute()
 const { $pwa } = useNuxtApp()
@@ -132,8 +135,8 @@ const { mdAndUp } = useVDisplay()
 const theme = computed(() => store.getTheme)
 const showUpdateSnackbar = computed(() => $pwa?.needRefresh ?? false)
 const showInstallSnackbar = ref(false)
-const shouldShowInstallSnackbar = computed(() => (!$pwa?.isPWAInstalled && $pwa?.showInstallPrompt && !showUpdateSnackbar.value) ?? false)
 let installSnackbarTimeout: ReturnType<typeof setTimeout> | undefined
+let installSnackbarSyncInterval: ReturnType<typeof setInterval> | undefined
 
 async function clearBrowserCaches() {
   if (!import.meta.client || !("caches" in window)) {
@@ -176,6 +179,75 @@ async function refreshToUpdate() {
   await clearBrowserCaches()
   await unregisterServiceWorkers()
   reloadCurrentPageWithCacheBust()
+}
+
+function scheduleInstallSnackbar(delay = 2000) {
+  if (installSnackbarTimeout) {
+    clearTimeout(installSnackbarTimeout)
+  }
+
+  installSnackbarTimeout = setTimeout(() => {
+    showInstallSnackbar.value = true
+    installSnackbarTimeout = undefined
+  }, delay)
+}
+
+function stopInstallSnackbarSync() {
+  if (installSnackbarSyncInterval) {
+    clearInterval(installSnackbarSyncInterval)
+    installSnackbarSyncInterval = undefined
+  }
+}
+
+function canShowInstallSnackbarNow() {
+  return (!$pwa?.isPWAInstalled && $pwa?.showInstallPrompt && !showUpdateSnackbar.value) ?? false
+}
+
+function syncInstallSnackbar(delay = 2000) {
+  if (canShowInstallSnackbarNow()) {
+    if (!showInstallSnackbar.value && !installSnackbarTimeout) {
+      scheduleInstallSnackbar(delay)
+    }
+
+    return true
+  }
+
+  return false
+}
+
+function startInstallSnackbarSync(initialDelay = 2000) {
+  let attempts = 0
+
+  if (syncInstallSnackbar(initialDelay)) {
+    return
+  }
+
+  stopInstallSnackbarSync()
+  installSnackbarSyncInterval = setInterval(() => {
+    attempts += 1
+
+    if (syncInstallSnackbar(0) || attempts >= 24) {
+      stopInstallSnackbarSync()
+    }
+  }, 250)
+}
+
+async function installFromSnackbar() {
+  if (import.meta.client) {
+    localStorage.removeItem(PWA_INSTALL_DISMISS_KEY)
+  }
+
+  await $pwa?.install()
+}
+
+function dismissInstallSnackbar() {
+  if (import.meta.client) {
+    localStorage.setItem(PWA_INSTALL_DISMISS_KEY, "true")
+    sessionStorage.removeItem(PWA_FORCE_INSTALL_SNACKBAR_SESSION_KEY)
+  }
+
+  // $pwa?.cancelInstall()
+  showInstallSnackbar.value = false
 }
 
 useHead({
@@ -245,25 +317,23 @@ onMounted(() => {
     "Twemoji Country Flags",
     "/fonts/TwemojiCountryFlags.woff2",
   )
+
+  const forceInstallSnackbar = sessionStorage.getItem(PWA_FORCE_INSTALL_SNACKBAR_SESSION_KEY) === "true"
+
+  sessionStorage.removeItem(PWA_FORCE_INSTALL_SNACKBAR_SESSION_KEY)
+
+  startInstallSnackbarSync(forceInstallSnackbar
+    ? 0
+    : 2000)
 })
 
-watch(shouldShowInstallSnackbar, (newValue) => {
+onBeforeUnmount(() => {
   if (installSnackbarTimeout) {
     clearTimeout(installSnackbarTimeout)
-    installSnackbarTimeout = undefined
   }
 
-  if (newValue) {
-    installSnackbarTimeout = setTimeout(() => {
-      showInstallSnackbar.value = true
-      installSnackbarTimeout = undefined
-    }, 2000)
-
-    return
-  }
-
-  showInstallSnackbar.value = false
-}, { immediate: true })
+  stopInstallSnackbarSync()
+})
 </script>
 
 <style lang="scss">

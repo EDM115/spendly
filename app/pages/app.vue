@@ -288,7 +288,7 @@ watch(() => store.getAppPreferences, (preferences) => {
   }
 })
 
-watch([ timeRange, anchorDate ], ([nextTimeRange, nextAnchorDate]) => {
+watch([ timeRange, anchorDate ], ([ nextTimeRange, nextAnchorDate ]) => {
   if (!store.getHasInitialized) {
     return
   }

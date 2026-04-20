@@ -47,6 +47,16 @@
       "unlink": "Unlink",
       "unlinked": "Account unlinked"
     },
+    "pwa": {
+      "available": "Spendly can be installed on this device",
+      "available-dismissed": "You previously hid the install suggestion. Re-enable it here to allow Spendly to offer installation again.",
+      "description": "Check whether Spendly is installed on this device and install it when available",
+      "install": "Install Spendly",
+      "installed": "Spendly is already installed on this device",
+      "reset-install-prompt": "Show install prompt again",
+      "title": "App installation",
+      "unavailable": "Installation is not currently available in this browser or session"
+    },
     "profile": {
       "description": "Update your username",
       "success": "Username updated successfully",
