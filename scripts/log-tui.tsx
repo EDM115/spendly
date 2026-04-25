@@ -220,20 +220,20 @@ function printHelp(): void {
   console.log("Spendly log TUI")
   console.log("")
   console.log("Usage :")
-  console.log("  pnpm log:tui --file spendly.log")
+  console.log("  pnpm log:tui --file logs/spendly.log")
   console.log("")
   console.log("Options :")
-  console.log("  --file, -f          Input file path")
-  console.log("  --from              ISO start time")
-  console.log("  --to                ISO end time")
-  console.log("  --env               Filter by env")
-  console.log("  --service           Filter by service")
-  console.log("  --kind              Filter by kind (request/ui/system)")
-  console.log("  --outcome           Filter by outcome")
-  console.log("  --status            Filter by HTTP status code")
-  console.log("  --action-prefix     Filter UI actions by prefix")
-  console.log("  --duration-kind     Kind to include in duration/slowest")
-  console.log("  --help, -h          Show help")
+  console.log("  --file, -f      Input file path")
+  console.log("  --from          ISO start time")
+  console.log("  --to            ISO end time")
+  console.log("  --env           Filter by env")
+  console.log("  --service       Filter by service")
+  console.log("  --kind          Filter by kind (request/ui/system)")
+  console.log("  --outcome       Filter by outcome")
+  console.log("  --status        Filter by HTTP status code")
+  console.log("  --action-prefix Filter UI actions by prefix")
+  console.log("  --duration-kind Kind to include in duration/slowest")
+  console.log("  --help, -h      Show help")
 }
 
 function formatNumber(value: number): string {
@@ -334,7 +334,7 @@ function wrapLine(value: string, width: number): string[] {
 
 function buildDetailLines(record: EventRecord | undefined, detailWidth: number): string[] {
   if (!record) {
-    return [padCell("No event selected.", Math.max(8, detailWidth - 4), "left")]
+    return [padCell("No event selected", Math.max(8, detailWidth - 4), "left")]
   }
 
   const width = Math.max(8, detailWidth - 4)
@@ -720,7 +720,7 @@ function HelpOverlay({ size }: { size: Size }) {
 
         <Text color={theme.text}>Filters : f from  t to  e env  s service  k kind  o outcome  h status  a action  d duration  x clear</Text>
 
-        <Text color={theme.text}>Tips : duration stats respect --duration-kind. Resize the terminal to adjust layout.</Text>
+        <Text color={theme.text}>Tips : duration stats respect --duration-kind, resize the terminal to adjust layout</Text>
       </Box>
     </Box>
   )
@@ -1805,7 +1805,7 @@ function main(): void {
   const normalizedDurationKind = normalizeDurationKind(options.filters.durationKind)
 
   if (normalizedDurationKind === "__invalid__") {
-    console.error("Invalid --duration-kind. Use : request, ui, system.")
+    console.error("Invalid --duration-kind, use : request, ui, system")
     process.exitCode = 1
 
     return
@@ -1814,7 +1814,7 @@ function main(): void {
   options.filters.durationKind = normalizedDurationKind ?? "request"
 
   if (!stdin.isTTY) {
-    console.error("The log TUI requires a TTY. Use pnpm log:analyze for non-interactive runs.")
+    console.error("The log TUI requires a TTY, use pnpm log:analyze for non-interactive runs")
     process.exitCode = 1
 
     return

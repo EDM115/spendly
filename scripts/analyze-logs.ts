@@ -129,24 +129,24 @@ function printHelp(): void {
   console.log("Wide events log analyzer")
   console.log("")
   console.log("Usage :")
-  console.log("  pnpm log:analyze --file spendly.log")
-  console.log("  cat spendly.log | pnpm log:analyze")
+  console.log("  pnpm log:analyze --file logs/spendly.log")
+  console.log("  cat logs/spendly.log | pnpm log:analyze")
   console.log("")
   console.log("Options :")
-  console.log("  --file, -f          Input file path (optional if stdin is piped)")
-  console.log("  --json              Output JSON report path (default : logs/log-report.json)")
-  console.log("  --from              ISO start time (e.g., 2026-02-09T00:00:00Z)")
-  console.log("  --to                ISO end time")
-  console.log("  --env               Filter by env")
-  console.log("  --service           Filter by service")
-  console.log("  --kind              Filter by kind (request/ui/system)")
-  console.log("  --outcome           Filter by outcome (success/error/canceled)")
-  console.log("  --status            Filter by HTTP status code")
-  console.log("  --action-prefix     Filter UI actions by prefix")
-  console.log("  --duration-kind     Kind to include in duration/slowest (default : request)")
-  console.log("  --no-skip-parse-errors  Keep parse_errors for non-JSON lines")
-  console.log("  --no-output         Skip writing JSON report to disk")
-  console.log("  --help, -h          Show help")
+  console.log("  --file, -f             Input file path (optional if stdin is piped)")
+  console.log("  --json                 Output JSON report path (default : logs/log-report.json)")
+  console.log("  --from                 ISO start time (ex 2026-02-09T00:00:00Z)")
+  console.log("  --to                   ISO end time")
+  console.log("  --env                  Filter by env")
+  console.log("  --service              Filter by service")
+  console.log("  --kind                 Filter by kind (request/ui/system)")
+  console.log("  --outcome              Filter by outcome (success/error/canceled)")
+  console.log("  --status               Filter by HTTP status code")
+  console.log("  --action-prefix        Filter UI actions by prefix")
+  console.log("  --duration-kind        Kind to include in duration/slowest (default : request)")
+  console.log("  --no-skip-parse-errors Keep parse_errors for non-JSON lines")
+  console.log("  --no-output            Skip writing JSON report to disk")
+  console.log("  --help, -h             Show help")
 }
 
 function sortEntries(map: Map<string, number>, limit = 10): Array<[string, number]> {
@@ -209,7 +209,7 @@ function printSummary(report: Report): void {
   console.log(`Filtered out : ${formatNumber(report.totals.filtered_out)}`)
 
   if (report.time_range?.from || report.time_range?.to) {
-    console.log(`Time range: ${report.time_range.from ?? "?"} → ${report.time_range.to ?? "?"}`)
+    console.log(`Time range : ${report.time_range.from ?? "?"} → ${report.time_range.to ?? "?"}`)
   }
 
   console.log(`Duration kind : ${report.filters.durationKind ?? "request"}`)
@@ -294,7 +294,7 @@ async function main(): Promise<void> {
   const normalizedDurationKind = normalizeDurationKind(options.filters.durationKind)
 
   if (normalizedDurationKind === "__invalid__") {
-    console.error("Invalid --duration-kind. Use : request, ui, system.")
+    console.error("Invalid --duration-kind, use : request, ui, system")
     printHelp()
     process.exitCode = 1
 
@@ -310,7 +310,7 @@ async function main(): Promise<void> {
   }
 
   if (!options.file && stdin.isTTY) {
-    console.error("No input provided. Use --file or pipe logs into stdin.")
+    console.error("No input provided, use --file or pipe logs into stdin")
     printHelp()
     process.exitCode = 1
 

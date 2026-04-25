@@ -13,7 +13,7 @@ dedupePeers: true
 lockfileIncludeTarballUrl: true
 
 overrides:
-  vite: ~8.0.9
+  vite: ~8.0.10
 
 publicHoistPattern:
   - '*vuetify*'

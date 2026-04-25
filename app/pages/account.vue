@@ -459,10 +459,12 @@
           </div>
         </v-card>
       </v-col>
-    </v-row>
 
-    <v-row v-if="!disabledFeaturesList['email']">
-      <v-col cols="12">
+      <v-col
+        v-if="!disabledFeaturesList['email']"
+        cols="12"
+        md="6"
+      >
         <v-card
           class="glass-card pa-6"
           rounded="xl"
