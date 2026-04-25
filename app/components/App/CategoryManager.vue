@@ -139,7 +139,6 @@
               class="elevation-2"
             >
               <v-icon
-                ref="testIcon"
                 :icon="categoryForm.icon"
                 :color="categoryForm.color"
               />
@@ -251,8 +250,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { VIcon } from "vuetify/components"
-
 const mdiMeta = shallowRef<MdiMetaItem[] | null>(null)
 const isLoadingIcons = ref(false)
 
@@ -285,8 +282,8 @@ const categoryForm = ref({
   color: defaultColor.value,
 })
 const isValidIcon = ref(false)
-const testIcon = ref<InstanceType<typeof VIcon> | HTMLElement | null>(null)
 const iconSearch = ref("")
+const debouncedIconSearch = refDebounced(iconSearch, 120)
 
 async function loadMdiMeta() {
   if (mdiMeta.value || isLoadingIcons.value) {
@@ -402,7 +399,7 @@ function scoreTokens(
 }
 
 const filteredIconItems = computed(() => {
-  const query = normalizeQuery(iconSearch.value)
+  const query = normalizeQuery(debouncedIconSearch.value)
 
   if (!query) {
     return [] as MdiMetaItem[]
@@ -454,26 +451,11 @@ async function validateIcon(iconName: string) {
     return
   }
 
-  const el = testIcon.value instanceof HTMLElement
-    ? testIcon.value
-    : testIcon.value?.$el
+  await loadMdiMeta()
 
-  await nextTick()
+  const icon = iconName.replace(/^mdi-/, "")
 
-  if (!el) {
-    isValidIcon.value = false
-
-    return
-  }
-
-  await nextTick()
-
-  const content = window
-    .getComputedStyle(el, "::before")
-    .getPropertyValue("content")
-    .replace(/"/g, "")
-
-  isValidIcon.value = Boolean(content) && content !== "none" && content !== "normal"
+  isValidIcon.value = mdiMeta.value?.some((item) => item.name === icon) ?? false
 }
 
 function openEditDialog(category: Category) {

@@ -78,14 +78,16 @@
             />
           </v-tabs-window-item>
           <v-tabs-window-item value="categories">
-            <AppCategoryManager
+            <LazyAppCategoryManager
+              v-if="hasOpenedCategories"
               :categories="categories"
               :budget-tracker-id="selectedBudgetTrackerId"
               @refresh="refreshCategoriesAndSpendings"
             />
           </v-tabs-window-item>
           <v-tabs-window-item value="charts">
-            <AppCharts
+            <LazyAppCharts
+              v-if="hasOpenedCharts"
               v-model:time-range="timeRange"
               v-model:anchor-date="anchorDate"
               :budget-tracker-name="selectedBudgetTrackerName"
@@ -143,6 +145,8 @@
 </template>
 
 <script lang="ts" setup>
+type AppMainTab = "spendings" | "categories" | "charts"
+
 const store = useMainStore()
 const { t } = useI18n()
 const { smAndUp } = useVDisplay()
@@ -154,7 +158,10 @@ const categories = shallowRef<Category[]>([])
 const spendings = shallowRef<Spending[]>([])
 const timeRange = ref("month")
 const anchorDate = ref(getTodayAnchorDate())
-const selectedTab = ref<string | null>(null)
+const selectedTab = ref<AppMainTab>("spendings")
+const hasOpenedCategories = ref(false)
+const hasOpenedCharts = ref(false)
+let spendingRequestId = 0
 const selectedBudgetTracker = computed(() => budgetTrackers.value
   .find((tracker) => tracker.id === selectedBudgetTrackerId.value))
 const selectedBudgetTrackerName = computed(() => selectedBudgetTracker.value?.name ?? "")
@@ -239,17 +246,70 @@ async function fetchSpendings() {
     return
   }
 
+  const requestId = ++spendingRequestId
+  const params = getSpendingFetchParams(selectedBudgetTrackerId.value)
+
   try {
     const response = await $fetch("/api/spending", {
-      params: { budget_tracker_id: selectedBudgetTrackerId.value },
+      params,
     })
+
+    if (requestId !== spendingRequestId) {
+      return
+    }
 
     if ("spendings" in response.body) {
       spendings.value = response.body.spendings
     }
   } catch (_error) {
+    if (requestId !== spendingRequestId) {
+      return
+    }
+
     spendings.value = []
   }
+}
+
+function getTomorrowDateString() {
+  const tomorrow = new Date()
+
+  tomorrow.setDate(tomorrow.getDate() + 1)
+
+  return `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1)
+    .padStart(2, "0")}-${String(tomorrow.getDate())
+    .padStart(2, "0")}`
+}
+
+function getSpendingFetchParams(budgetTrackerId: string) {
+  const params: Record<string, string> = { budget_tracker_id: budgetTrackerId }
+  const window = getDateWindow(timeRange.value, anchorDate.value)
+
+  if (!window) {
+    return params
+  }
+
+  const {
+    includeFutureEntries,
+    useTotalBalance,
+  } = store.getBalanceOptions
+
+  if (useTotalBalance && includeFutureEntries) {
+    return params
+  }
+
+  if (useTotalBalance) {
+    params.end_date = getTomorrowDateString()
+
+    return params
+  }
+
+  params.start_date = window.start
+
+  if (!includeFutureEntries) {
+    params.end_date = window.end
+  }
+
+  return params
 }
 
 async function refreshCategoriesAndSpendings() {
@@ -265,6 +325,20 @@ watch(selectedBudgetTrackerId, async () => {
     fetchCategories(),
   ])
 })
+
+watch([ timeRange, anchorDate, () => store.getBalanceOptions ], async () => {
+  await fetchSpendings()
+})
+
+watch(selectedTab, (tab) => {
+  if (tab === "categories") {
+    hasOpenedCategories.value = true
+  }
+
+  if (tab === "charts") {
+    hasOpenedCharts.value = true
+  }
+}, { immediate: true })
 
 watch(() => store.getHasInitialized, (initialized) => {
   if (!initialized) {
@@ -303,6 +377,7 @@ watch([ timeRange, anchorDate ], ([ nextTimeRange, nextAnchorDate ]) => {
 onMounted(async () => {
   store.initStore()
   await fetchBudgetTrackers()
+  await refreshCategoriesAndSpendings()
 
   hasLoaded.value = true
 })

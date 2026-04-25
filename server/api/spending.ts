@@ -12,7 +12,7 @@ import {
   desc,
   eq,
   gte,
-  lte,
+  lt,
 } from "drizzle-orm"
 import { randomUUID } from "node:crypto"
 
@@ -130,7 +130,7 @@ export default defineEventHandler(async (event) => {
               ? gte(spending.date, start_date)
               : undefined,
             end_date
-              ? lte(spending.date, end_date)
+              ? lt(spending.date, end_date)
               : undefined,
           ))
           .orderBy(desc(spending.date))

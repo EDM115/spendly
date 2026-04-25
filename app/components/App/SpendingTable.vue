@@ -683,6 +683,25 @@ const headers = computed(() => [
 
 const dateWindow = computed(() => getDateWindow(timeRangeModel.value, anchorDateModel.value))
 
+const currencyFormatter = computed(() => new Intl.NumberFormat(locale.value === "fr"
+  ? "fr-FR"
+  : "en-US", {
+  style: "currency",
+  currency: locale.value === "fr"
+    ? "EUR"
+    : "USD",
+  currencyDisplay: "narrowSymbol",
+}))
+
+const dateFormatter = computed(() => new Intl.DateTimeFormat(locale.value === "fr"
+  ? "fr-FR"
+  : "en-US", {
+  day: "2-digit",
+  weekday: "long",
+  month: "long",
+  year: "numeric",
+}))
+
 const filteredSpendings = computed(() => {
   const win = dateWindow.value
 
@@ -693,15 +712,25 @@ const filteredSpendings = computed(() => {
   return props.spendings.filter((s) => s.date >= win.start && s.date < win.end)
 })
 
+const spendingSearchText = computed(() => {
+  const rows = new Map<string, string>()
+
+  for (const row of props.spendings) {
+    rows.set(row.id, [
+      row.name,
+      row.category_name,
+      row.date,
+      String(row.value),
+    ]
+      .join(" ")
+      .toLowerCase())
+  }
+
+  return rows
+})
+
 function buildSearchText(row: Spending) {
-  return [
-    row.name,
-    row.category_name,
-    row.date,
-    String(row.value),
-  ]
-    .join(" ")
-    .toLowerCase()
+  return spendingSearchText.value.get(row.id) ?? ""
 }
 
 function searchFilter(_value: string | number | boolean | null, _query: string, item: unknown) {
@@ -920,16 +949,7 @@ const requiredFieldRules = [(v: unknown) => !!v || t("rules.common.required")]
 const positiveAmountRules = [(v: unknown) => Number(v) > 0 || t("rules.number.positive")]
 
 function formatCurrency(value: number) {
-  return new Intl.NumberFormat(locale.value === "fr"
-    ? "fr-FR"
-    : "en-US", {
-    style: "currency",
-    currency: locale.value === "fr"
-      ? "EUR"
-      : "USD",
-    currencyDisplay: "narrowSymbol",
-  })
-    .format(value)
+  return currencyFormatter.value.format(value)
 }
 
 function formatDate(dateStr: string) {
@@ -939,14 +959,7 @@ function formatDate(dateStr: string) {
 
   const date = new Date(`${dateStr}T00:00:00Z`)
 
-  return date.toLocaleDateString(locale.value === "fr"
-    ? "fr-FR"
-    : "en-US", {
-    day: "2-digit",
-    weekday: "long",
-    month: "long",
-    year: "numeric",
-  })
+  return dateFormatter.value.format(date)
 }
 
 function openEditDialog(spending: Spending) {

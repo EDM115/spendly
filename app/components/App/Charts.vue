@@ -358,6 +358,7 @@
       <v-tabs-window v-model="activeTab">
         <v-tabs-window-item value="area">
           <div
+            v-if="activeTab === 'area'"
             ref="areaChartRef"
             :class="['chart-container', 'mt-4', 'glass-panel', smAndUp ? 'pa-4' : 'pa-3', 'rounded-xl', 'border-thin', 'bg-transparent']"
           >
@@ -369,7 +370,10 @@
           </div>
         </v-tabs-window-item>
         <v-tabs-window-item value="pie">
-          <div :class="['pie-grid', 'mt-4', !smAndUp ? 'pie-grid--stack' : '']">
+          <div
+            v-if="activeTab === 'pie'"
+            :class="['pie-grid', 'mt-4', !smAndUp ? 'pie-grid--stack' : '']"
+          >
             <div
               v-if="showExpensePie"
               ref="pieChartRef"
@@ -396,6 +400,7 @@
         </v-tabs-window-item>
         <v-tabs-window-item value="bar">
           <div
+            v-if="activeTab === 'bar'"
             ref="barChartRef"
             :class="['chart-container', 'mt-4', 'glass-panel', smAndUp ? 'pa-4' : 'pa-3', 'rounded-xl', 'border-thin', 'bg-transparent']"
           >
@@ -408,6 +413,7 @@
         </v-tabs-window-item>
         <v-tabs-window-item value="doughnut">
           <div
+            v-if="activeTab === 'doughnut'"
             ref="doughnutChartRef"
             :class="['chart-container', 'mt-4', 'glass-panel', smAndUp ? 'pa-4' : 'pa-3', 'rounded-xl', 'border-thin', 'bg-transparent']"
           >
@@ -584,6 +590,30 @@ const effectiveShowPoints = computed(() => (simplifiedMode.value
   ? false
   : showPoints.value))
 
+const areaDateFormatter = computed(() => new Intl.DateTimeFormat(locale.value, {
+  day: "2-digit",
+  month: "short",
+  year: "numeric",
+}))
+
+const areaShortDateFormatter = computed(() => new Intl.DateTimeFormat(locale.value, {
+  day: "2-digit",
+  month: "short",
+}))
+
+const barFullDateFormatter = computed(() => new Intl.DateTimeFormat(locale.value, {
+  day: "2-digit",
+  month: "long",
+  year: "numeric",
+}))
+
+const barMonthFormatter = computed(() => new Intl.DateTimeFormat(locale.value, { month: "long" }))
+
+const barYearMonthFormatter = computed(() => new Intl.DateTimeFormat(locale.value, {
+  month: "long",
+  year: "numeric",
+}))
+
 function formatAreaLabel(rawLabel: unknown) {
   const label = typeof rawLabel === "string"
     ? rawLabel
@@ -604,19 +634,10 @@ function formatAreaLabel(rawLabel: unknown) {
   const range = timeRangeModel.value
 
   if (range === "day" || range === "all") {
-    return new Intl.DateTimeFormat(locale.value, {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    })
-      .format(date)
+    return areaDateFormatter.value.format(date)
   }
 
-  return new Intl.DateTimeFormat(locale.value, {
-    day: "2-digit",
-    month: "short",
-  })
-    .format(date)
+  return areaShortDateFormatter.value.format(date)
 }
 
 function getWeekStartAndEnd(date: Date): {
@@ -657,11 +678,6 @@ function formatBarLabel(rawLabel: unknown) {
   const date = new Date(y, m - 1, d || 1)
   const range = timeRangeModel.value
 
-  function fmt(dt: Date, options: Intl.DateTimeFormatOptions) {
-    return new Intl.DateTimeFormat(locale.value, options)
-      .format(dt)
-  }
-
   if (range === "day") {
     const [ ay, am, ad ] = (anchorDateModel.value || "").split("-")
       .map(Number)
@@ -669,11 +685,7 @@ function formatBarLabel(rawLabel: unknown) {
       ? new Date(ay, am - 1, ad)
       : date
 
-    return fmt(anchor, {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    })
+    return barFullDateFormatter.value.format(anchor)
   }
 
   if (range === "week") {
@@ -681,25 +693,14 @@ function formatBarLabel(rawLabel: unknown) {
       start, end,
     } = getWeekStartAndEnd(date)
 
-    const options: Intl.DateTimeFormatOptions = {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    }
-
-    return `${fmt(start, options)} - ${fmt(end, options)}`
+    return `${barFullDateFormatter.value.format(start)} - ${barFullDateFormatter.value.format(end)}`
   }
 
   if (range === "month") {
-    return fmt(date, {
-      month: "long",
-    })
+    return barMonthFormatter.value.format(date)
   }
 
-  return fmt(date, {
-    month: "long",
-    year: "numeric",
-  })
+  return barYearMonthFormatter.value.format(date)
 }
 
 const pieAnimation = computed(() => ({
@@ -2183,29 +2184,27 @@ async function exportPNG() {
   }
 
   isExporting.value = true
-  await nextFrame()
-  await new Promise((resolve) => setTimeout(resolve, 0))
-  const svgResult = await buildExportSvg(1)
+  try {
+    await nextFrame()
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    const svgResult = await buildExportSvg(1)
 
-  if (!svgResult) {
+    if (!svgResult) {
+      return
+    }
+
+    const filename = `${props.budgetTrackerName}_-_chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.png`
+    const dataUrl = await svgToPngDataUrl(svgResult.svg, svgResult.width, svgResult.height, 6)
+
+    if (!dataUrl) {
+      return
+    }
+
+    downloadDataUrl(dataUrl, filename)
+    downloadMenu.value = false
+  } finally {
     isExporting.value = false
-
-    return
   }
-
-  const filename = `${props.budgetTrackerName}_-_chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.png`
-  const dataUrl = await svgToPngDataUrl(svgResult.svg, svgResult.width, svgResult.height, 6)
-
-  if (!dataUrl) {
-    isExporting.value = false
-
-    return
-  }
-
-  downloadDataUrl(dataUrl, filename)
-
-  isExporting.value = false
-  downloadMenu.value = false
 }
 
 async function exportSVG() {
@@ -2214,27 +2213,28 @@ async function exportSVG() {
   }
 
   isExporting.value = true
-  await nextFrame()
-  await new Promise((resolve) => setTimeout(resolve, 0))
-  const svgResult = await buildExportSvg(1)
+  try {
+    await nextFrame()
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    const svgResult = await buildExportSvg(1)
 
-  if (!svgResult) {
+    if (!svgResult) {
+      return
+    }
+
+    const svgData = svgResult.svg
+    const blob = new Blob([svgData], { type: "image/svg+xml" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+
+    link.download = `${props.budgetTrackerName}_-_chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.svg`
+    link.href = url
+    link.click()
+    URL.revokeObjectURL(url)
+    downloadMenu.value = false
+  } finally {
     isExporting.value = false
-
-    return
   }
-
-  const svgData = svgResult.svg
-  const blob = new Blob([svgData], { type: "image/svg+xml" })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement("a")
-
-  link.download = `${props.budgetTrackerName}_-_chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.svg`
-  link.href = url
-  link.click()
-  URL.revokeObjectURL(url)
-  isExporting.value = false
-  downloadMenu.value = false
 }
 
 async function exportPDF() {
@@ -2243,39 +2243,38 @@ async function exportPDF() {
   }
 
   isExporting.value = true
-  await nextFrame()
-  await new Promise((resolve) => setTimeout(resolve, 0))
-  const svgResult = await buildExportSvg(1)
+  try {
+    await nextFrame()
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    const svgResult = await buildExportSvg(1)
 
-  if (!svgResult) {
+    if (!svgResult) {
+      return
+    }
+
+    const imgData = await svgToPngDataUrl(svgResult.svg, svgResult.width, svgResult.height, 6)
+
+    if (!imgData) {
+      return
+    }
+
+    const { jsPDF } = await import("jspdf")
+    const pdf = new jsPDF({
+      orientation: svgResult.width > svgResult.height
+        ? "landscape"
+        : "portrait",
+      unit: "px",
+      format: [ Math.round(svgResult.width * 6), Math.round(svgResult.height * 6) ],
+      putOnlyUsedFonts: true,
+      compress: true,
+    })
+
+    pdf.addImage(imgData, "PNG", 0, 0, Math.round(svgResult.width * 6), Math.round(svgResult.height * 6))
+    pdf.save(`${props.budgetTrackerName}_-_chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.pdf`)
+    downloadMenu.value = false
+  } finally {
     isExporting.value = false
-
-    return
   }
-
-  const imgData = await svgToPngDataUrl(svgResult.svg, svgResult.width, svgResult.height, 6)
-
-  if (!imgData) {
-    isExporting.value = false
-
-    return
-  }
-
-  const { jsPDF } = await import("jspdf")
-  const pdf = new jsPDF({
-    orientation: svgResult.width > svgResult.height
-      ? "landscape"
-      : "portrait",
-    unit: "px",
-    format: [ Math.round(svgResult.width * 6), Math.round(svgResult.height * 6) ],
-    putOnlyUsedFonts: true,
-    compress: true,
-  })
-
-  pdf.addImage(imgData, "PNG", 0, 0, Math.round(svgResult.width * 6), Math.round(svgResult.height * 6))
-  pdf.save(`${props.budgetTrackerName}_-_chart-${activeTab.value}-${anchorDateModel.value}-${timeRangeModel.value}.pdf`)
-  isExporting.value = false
-  downloadMenu.value = false
 }
 </script>
 

@@ -37,7 +37,13 @@ export default defineEventHandler(async (event) => {
       } = getQuery(event)
 
       if (category_id) {
-        const dbCategory = await db.select()
+        const dbCategory = await db.select({
+          id: category.id,
+          name: category.name,
+          icon: category.icon,
+          color: category.color,
+          budget_tracker_id: category.budget_tracker_id,
+        })
           .from(category)
           .where(eq(category.id, category_id))
           .limit(1)
@@ -102,7 +108,13 @@ export default defineEventHandler(async (event) => {
           })
         }
 
-        const categories = await db.select()
+        const categories = await db.select({
+          id: category.id,
+          name: category.name,
+          icon: category.icon,
+          color: category.color,
+          budget_tracker_id: category.budget_tracker_id,
+        })
           .from(category)
           .where(eq(category.budget_tracker_id, budget_tracker_id))
 
