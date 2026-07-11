@@ -390,8 +390,6 @@ async function submit() {
 }
 
 watchEffect(() => {
-  const _l = locale.value
-
   if (invalidToken.value && !requestSent.value) {
     messageColor.value = "error"
     errorMessage.value = t("reset-password.invalid-token")

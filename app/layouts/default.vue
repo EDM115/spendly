@@ -284,7 +284,7 @@ useHead({
   ],
   link: [
     {
-      rel: "icon", type: "image/webp", href: "/images/logo.webp",
+      rel: "icon", type: "image/png", href: "/images/logo.png",
     },
   ],
   htmlAttrs: {

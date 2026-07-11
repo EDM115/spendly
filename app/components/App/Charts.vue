@@ -2184,6 +2184,7 @@ async function exportPNG() {
   }
 
   isExporting.value = true
+
   try {
     await nextFrame()
     await new Promise((resolve) => setTimeout(resolve, 0))
@@ -2213,6 +2214,7 @@ async function exportSVG() {
   }
 
   isExporting.value = true
+
   try {
     await nextFrame()
     await new Promise((resolve) => setTimeout(resolve, 0))
@@ -2243,6 +2245,7 @@ async function exportPDF() {
   }
 
   isExporting.value = true
+
   try {
     await nextFrame()
     await new Promise((resolve) => setTimeout(resolve, 0))

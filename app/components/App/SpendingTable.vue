@@ -23,7 +23,7 @@
             prepend-icon="mdi-plus"
             rounded="lg"
             :block="false"
-            @click="showAddDialog = true"
+            @click="openAddDialog"
           >
             {{ t("app.spending.add") }}
           </v-btn>
@@ -391,16 +391,16 @@
               cols="12"
               sm="6"
             >
-              <v-number-input
-                v-model="spendingForm.value"
+              <v-text-field
+                v-model="amountInput"
                 :label="t('app.spending.amount')"
+                inputmode="decimal"
                 inset
                 variant="outlined"
                 autocomplete="suppress"
                 rounded="lg"
-                :min="0"
-                :precision="2"
                 :rules="positiveAmountRules"
+                @blur="formatAmountInput"
               />
             </v-col>
             <v-col
@@ -629,6 +629,7 @@ const spendingForm = ref({
     .toISOString()
     .split("T")[0],
 })
+const amountInput = ref("")
 const timeRangeModel = computed({
   get: () => props.timeRange,
   set: (v: string) => emit("update:time-range", v),
@@ -946,7 +947,74 @@ const isFormValid = computed(() => Boolean(spendingForm.value.name.trim()
 
 const requiredFieldRules = [(v: unknown) => !!v || t("rules.common.required")]
 
-const positiveAmountRules = [(v: unknown) => Number(v) > 0 || t("rules.number.positive")]
+const positiveAmountRules = [
+  (v: unknown) => {
+    const parsed = parseAmountInput(String(v ?? ""))
+
+    return (parsed !== null && parsed > 0) || t("rules.number.positive")
+  },
+]
+
+function parseAmountInput(rawValue: string) {
+  const normalized = rawValue
+    .trim()
+    .replace(/\s/g, "")
+    .replace(",", ".")
+
+  if (
+    normalized === ""
+    || normalized === "."
+    || normalized === "-"
+    || normalized === "-."
+  ) {
+    return null
+  }
+
+  if (!(/^\d*(?:\.\d{0,2})?$/).test(normalized)) {
+    return null
+  }
+
+  const parsed = Number(normalized)
+
+  return Number.isFinite(parsed)
+    ? parsed
+    : null
+}
+
+function formatAmountInput() {
+  const value = spendingForm.value.value
+
+  if (!Number.isFinite(value) || value <= 0) {
+    amountInput.value = ""
+
+    return
+  }
+
+  const separator = locale.value === "fr"
+    ? ","
+    : "."
+
+  amountInput.value = value
+    .toFixed(2)
+    .replace(".", separator)
+}
+
+function openAddDialog() {
+  editingSpending.value = null
+
+  spendingForm.value = {
+    name: "",
+    value: 0,
+    is_spending: true,
+    category_id: null,
+    date: new Date()
+      .toISOString()
+      .split("T")[0],
+  }
+
+  amountInput.value = ""
+  showAddDialog.value = true
+}
 
 function formatCurrency(value: number) {
   return currencyFormatter.value.format(value)
@@ -976,6 +1044,7 @@ function openEditDialog(spending: Spending) {
     category_id: spending.category_id,
     date: spending.date.split("T")[0],
   }
+  formatAmountInput()
   showAddDialog.value = true
 }
 
@@ -1001,6 +1070,7 @@ function closeDialog() {
       .toISOString()
       .split("T")[0],
   }
+  amountInput.value = ""
 }
 
 async function saveSpending() {
@@ -1174,6 +1244,12 @@ async function exportCSV() {
   isExporting.value = false
   downloadMenu.value = false
 }
+
+watch(amountInput, (rawValue) => {
+  const parsed = parseAmountInput(rawValue)
+
+  spendingForm.value.value = parsed ?? 0
+})
 
 watch(() => store.getHasInitialized, (initialized) => {
   if (!initialized) {

@@ -25,7 +25,7 @@ const DEFAULTS: DisabledFeatures = {
 
 export function disabledFeatures(): DisabledFeatures {
   const config = useRuntimeConfig()
-  const env = config.public.disabledFeatures
+  const env = config["public"]["disabledFeatures"]
   const features: DisabledFeatures = { ...DEFAULTS }
 
   if (!env) {
@@ -33,7 +33,7 @@ export function disabledFeatures(): DisabledFeatures {
   }
 
   const disabled = new Set(env.split(",")
-    .map((f) => f.trim())
+    .map((feature: string) => feature.trim())
     .filter(Boolean))
 
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion

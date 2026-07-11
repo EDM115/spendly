@@ -6,7 +6,7 @@ import globals from "globals"
 import vueParser from "vue-eslint-parser"
 
 export default withNuxt(
-  { ignores: [ "**/.nuxt/", "**/.output/", "**/dist/", "**/node_modules/" ] },
+  { ignores: [ "**/.nuxt/", "**/.output/", "**/dist/", "**/node_modules/", "**/public/" ] },
   ...pluginVue.configs["flat/recommended"],
   {
     files: ["**/*.{js,ts,vue}"],

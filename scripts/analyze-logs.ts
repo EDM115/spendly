@@ -4,14 +4,14 @@ import { stdin } from "node:process"
 import type {
   Filters,
   Report,
-} from "./log-analyzer/core"
+} from "./log-analyzer/core.ts"
 
 import {
   buildReport,
   filterRecords,
   normalizeDurationKind,
   readLogRecords,
-} from "./log-analyzer/core"
+} from "./log-analyzer/core.ts"
 
 type CliOptions = {
   file?: string;

@@ -6,7 +6,7 @@ import { isFeatureDisabled } from "#shared/utils/disabledFeatures"
 import { logger } from "#server/utils/logger"
 import { addWide } from "#server/utils/wide"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(process.env["RESEND_API_KEY"])
 
 export async function sendEmail(
   to: string,
@@ -47,8 +47,8 @@ export async function sendEmail(
       attachments: content.attachments,
     })
 
-    if (process.env.ALERT_API) {
-      await $fetch(`${process.env.ALERT_API}${encodeURIComponent(`[SPENDLY] Email sent to ${to} with template ${content.template}`)}`)
+    if (process.env["ALERT_API"]) {
+      await $fetch(`${process.env["ALERT_API"]}${encodeURIComponent(`[SPENDLY] Email sent to ${to} with template ${content.template}`)}`)
     }
 
     const emailWide = {

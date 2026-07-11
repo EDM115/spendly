@@ -1,3 +1,6 @@
+// oxlint-disable-next-line import/no-unassigned-import
+import "pino-pretty"
+
 import pino from "pino"
 
 import { envConfig } from "#server/utils/commons"

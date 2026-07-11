@@ -30,7 +30,7 @@ export const auth = betterAuth({
   baseURL: {
     allowedHosts: [ "localhost:*", "spendly.edm115.dev" ],
     fallback: "https://spendly.edm115.dev",
-    protocol: process.env.NODE_ENV === "development"
+    protocol: process.env["NODE_ENV"] === "development"
       ? "http"
       : "https",
   },
@@ -75,7 +75,7 @@ export const auth = betterAuth({
           variables: {
             account_name: user.name,
             reset_link: url,
-            spendly_home: process.env.BETTER_AUTH_URL!,
+            spendly_home: process.env["BETTER_AUTH_URL"]!,
           },
         },
       )
@@ -105,7 +105,7 @@ export const auth = betterAuth({
           variables: {
             account_name: user.name,
             verify_link: url,
-            spendly_home: process.env.BETTER_AUTH_URL!,
+            spendly_home: process.env["BETTER_AUTH_URL"]!,
           },
         },
       )
@@ -145,10 +145,10 @@ export const auth = betterAuth({
       provider: "cloudflare-turnstile",
       secretKey: isFeatureDisabled("turnstile")
         ? "1x0000000000000000000000000000000AA"
-        : process.env.TURNSTILE_SECRET_KEY!,
+        : process.env["TURNSTILE_SECRET_KEY"]!,
     }),
     i18n({
-      defaultLocale: process.env.DEFAULT_UI_LANG ?? "en",
+      defaultLocale: process.env["DEFAULT_UI_LANG"] ?? "en",
       detection: [ "cookie", "header" ],
       localeCookie: "i18n",
       translations: {
@@ -357,7 +357,7 @@ export const auth = betterAuth({
             variables: {
               account_email: email,
               connect_link: url,
-              spendly_home: process.env.BETTER_AUTH_URL!,
+              spendly_home: process.env["BETTER_AUTH_URL"]!,
             },
           },
         )
@@ -379,12 +379,12 @@ export const auth = betterAuth({
   },
   socialProviders: {
     github: {
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      clientId: process.env["GITHUB_CLIENT_ID"]!,
+      clientSecret: process.env["GITHUB_CLIENT_SECRET"]!,
     },
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env["GOOGLE_CLIENT_ID"]!,
+      clientSecret: process.env["GOOGLE_CLIENT_SECRET"]!,
       prompt: "select_account",
     },
   },

@@ -77,17 +77,17 @@ function buildBaseWide(event: H3Event): WideEvent {
 }
 
 export function getWide(event: H3Event): WideEvent {
-  if (!event.context.wide) {
-    event.context.wide = buildBaseWide(event)
+  if (!event.context["wide"]) {
+    event.context["wide"] = buildBaseWide(event)
   }
 
-  return event.context.wide
+  return event.context["wide"]
 }
 
 export function addWide(event: H3Event, partial: Partial<WideEvent>): WideEvent {
   const wide = getWide(event)
 
-  mergeDeep(wide as PlainRecord, partial as PlainRecord)
+  mergeDeep(wide, partial)
 
   return wide
 }

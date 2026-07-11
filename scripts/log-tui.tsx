@@ -26,7 +26,7 @@ import {
   filterRecords,
   normalizeDurationKind,
   readLogRecords,
-} from "./log-analyzer/core"
+} from "./log-analyzer/core.ts"
 
 type Tab = "overview" | "filters" | "drilldown"
 
@@ -601,6 +601,10 @@ function getVisibleSections(sections: OverviewSection[], startIndex: number, ava
   for (let index = startIndex; index < sections.length; index += 1) {
     const next = sections[index]
 
+    if (!next) {
+      continue
+    }
+
     if (visible.length > 0 && usedHeight + next.height > availableHeight) {
       break
     }
@@ -636,7 +640,7 @@ function Table({
     : rows
 
   const header = columns
-    .map((column, index) => padCell(column.label, columnWidths[index], "left"))
+    .map((column, index) => padCell(column.label, columnWidths[index] ?? 0, "left"))
     .join("  ")
 
   return (
@@ -677,7 +681,7 @@ function Table({
                 color={theme.text}
                 wrap="truncate"
               >
-                {row.map((cell, cellIndex) => padCell(cell, columnWidths[cellIndex], columns[cellIndex]?.align ?? "left"))
+                {row.map((cell, cellIndex) => padCell(cell, columnWidths[cellIndex] ?? 0, columns[cellIndex]?.align ?? "left"))
                   .join("  ")}
               </Text>
             ))

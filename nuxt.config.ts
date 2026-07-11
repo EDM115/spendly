@@ -66,7 +66,7 @@ export default defineNuxtConfig({
     viewTransition: true,
     viteEnvironmentApi: false,
   },
-  compatibilityDate: "2026-04-01",
+  compatibilityDate: "2026-07-01",
   nitro: {
     compressPublicAssets: {
       brotli: true,
@@ -215,7 +215,10 @@ export default defineNuxtConfig({
       fallbackLocale: process.env.DEFAULT_UI_LANG as Language | undefined,
       useCookie: true,
     },
-    experimental: { typedOptionsAndMessages: "all" },
+    experimental: {
+      prerenderMessages: true,
+      typedOptionsAndMessages: "all",
+    },
     locales: [
       {
         code: "en",
@@ -236,7 +239,7 @@ export default defineNuxtConfig({
       installPrompt: true,
       periodicSyncForUpdates: 3600,
     },
-    includeAssets: [ "images/logo.webp", "images/logo_alt.webp" ],
+    includeAssets: [ "images/logo.png", "images/logo_alt.png" ],
     injectRegister: "script-defer",
     manifest: {
       name: "Spendly",
@@ -274,7 +277,7 @@ export default defineNuxtConfig({
       ],
     },
     pwaAssets: {
-      image: "public/images/logo.webp",
+      image: "public/images/logo.png",
     },
     registerType: "prompt",
     workbox: {

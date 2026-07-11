@@ -1,0 +1,4 @@
+- [ ] Refresh queries when transferring ownership of a budget
+- [ ] Oauth on signup (?)
+- [ ] DB complete restoration from backup (replace .db file) or SQL dump (close db connexion, run migrations, insert data, relaunch app)
+- [ ] Admin user list rework with pagination and search

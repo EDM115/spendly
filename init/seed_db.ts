@@ -1,9 +1,9 @@
-import type { UserType } from "../shared/types/main"
+import type { UserType } from "../shared/types/main.ts"
 
-import { auth } from "../server/utils/auth"
-import { db } from "../shared/db/drizzle"
-import { schema } from "../shared/db/schema"
-import { logger } from "../server/utils/logger"
+import { auth } from "../server/utils/auth.ts"
+import { db } from "../shared/db/drizzle.ts"
+import { schema } from "../shared/db/schema.ts"
+import { logger } from "../server/utils/logger.ts"
 import { eq } from "drizzle-orm"
 
 type SeedUser = {
@@ -14,7 +14,7 @@ type SeedUser = {
 }
 
 function parseSeedUsers(): SeedUser[] {
-  const raw = (process.env.SEED_USERS ?? "[]")
+  const raw = (process.env["SEED_USERS"] ?? "[]")
     .replace("\\'", "'")
     .replace("\\\"", "\"")
 
@@ -99,7 +99,7 @@ async function seedUsers() {
 }
 
 async function main() {
-  if (process.env.SEED !== "true") {
+  if (process.env["SEED"] !== "true") {
     logger.info({
       kind: "system",
       op: {
