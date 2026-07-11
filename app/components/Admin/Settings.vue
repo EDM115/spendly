@@ -597,7 +597,8 @@
           rounded="lg"
           variant="elevated"
           :text="isCreating ? t('admin.users.create-confirm') : t('admin.users.edit-confirm')"
-          :loading="dialogLoading"
+          :loading="isSubmitting"
+          :disabled="isSubmitting"
           @click="submitUser"
         />
       </v-card-actions>
@@ -661,7 +662,7 @@ const { smAndUp } = useVDisplay()
 const users = ref<AdminUser[]>([])
 const userRequests = ref<AdminUserRequest[]>([])
 const exporting = ref(false)
-const dialogLoading = ref(false)
+const isSubmitting = ref(false)
 const deleteLoading = ref(false)
 const busyAction = ref<{
   id: string; action: string;
@@ -1160,12 +1161,12 @@ async function closeUserDialog() {
 
 async function submitUser() {
   resetFeedback()
-  dialogLoading.value = true
+  isSubmitting.value = true
 
   await userFormRef.value?.validate()
 
   if (userFormRef.value?.isValid === false) {
-    dialogLoading.value = false
+    isSubmitting.value = false
 
     return
   }
@@ -1265,7 +1266,7 @@ async function submitUser() {
       message?: string; statusText?: string;
     })
   } finally {
-    dialogLoading.value = false
+    isSubmitting.value = false
   }
 }
 

@@ -108,7 +108,7 @@
         type="submit"
         variant="flat"
         :loading="loading"
-        :disabled="!form?.isValid"
+        :disabled="!form?.isValid || loading"
         prepend-icon="mdi-lock-reset"
         class="text-none font-weight-bold glow-button"
       >

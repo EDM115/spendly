@@ -279,7 +279,7 @@
               type="submit"
               variant="flat"
               :loading="passwordLoading"
-              :disabled="!passwordForm?.isValid"
+              :disabled="!passwordForm?.isValid || passwordLoading"
               prepend-icon="mdi-lock-reset"
               class="text-none font-weight-bold"
             >

@@ -521,7 +521,8 @@
           color="primary"
           rounded="lg"
           variant="elevated"
-          :disabled="!isFormValid"
+          :loading="isSubmitting"
+          :disabled="!isFormValid || isSubmitting"
           @click="saveSpending"
         >
           {{ editingSpending ? t("app.spending.edit") : t("app.spending.add") }}
@@ -630,6 +631,7 @@ const spendingForm = ref({
     .split("T")[0],
 })
 const amountInput = ref("")
+const isSubmitting = ref(false)
 const timeRangeModel = computed({
   get: () => props.timeRange,
   set: (v: string) => emit("update:time-range", v),
@@ -1081,6 +1083,7 @@ async function saveSpending() {
   if (!isFormValid.value) {
     return
   }
+  isSubmitting.value = true
 
   const start = performance.now()
   const action = editingSpending.value
@@ -1135,6 +1138,8 @@ async function saveSpending() {
             budget_tracker_id: props.budgetTrackerId,
           },
     })
+  } finally {
+    isSubmitting.value = false
   }
 }
 

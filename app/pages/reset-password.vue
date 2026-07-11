@@ -194,7 +194,7 @@
                   type="submit"
                   variant="flat"
                   :loading="loading"
-                  :disabled="btnDisabled || !form?.isValid"
+                  :disabled="btnDisabled || !form?.isValid || loading"
                   prepend-icon="mdi-email-fast-outline"
                   class="text-none font-weight-bold glow-button"
                 >

@@ -130,7 +130,7 @@
         type="submit"
         variant="flat"
         :loading="loading"
-        :disabled="btnDisabled || !form?.isValid"
+        :disabled="btnDisabled || !form?.isValid || loading"
         prepend-icon="mdi-login-variant"
         class="text-none font-weight-bold glow-button"
       >

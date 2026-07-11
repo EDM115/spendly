@@ -216,7 +216,7 @@
           type="submit"
           variant="flat"
           :loading="loading"
-          :disabled="btnDisabled || !form?.isValid"
+          :disabled="btnDisabled || !form?.isValid || loading"
           :prepend-icon="loginMethod === 'magic-link' ? 'mdi-mailbox-open-up-outline' : 'mdi-login'"
           class="text-none font-weight-bold glow-button"
         >
