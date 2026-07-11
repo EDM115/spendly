@@ -16,7 +16,7 @@ WORKDIR /app/
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 ENV PNPM_HOME=/root/.local/share/pnpm
-ENV PATH=$PNPM_HOME:/app/node_modules/.bin:$PATH
+ENV PATH="${PNPM_HOME}:${PNPM_HOME}/bin:/app/node_modules/.bin:${PATH}"
 
 RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash - && \
     pnpm i --frozen-lockfile
@@ -26,7 +26,8 @@ COPY .env /app/.env
 
 ENV NODE_ENV=production
 
-RUN pnpm build
+RUN mkdir -p /app/db && \
+    SEED=false pnpm build
 
 ###
 
@@ -53,15 +54,8 @@ WORKDIR /app/
 
 COPY package.json ./
 
-ENV PNPM_HOME=/root/.local/share/pnpm
-ENV PATH=$PNPM_HOME:$PATH
-
-RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash - && \
-    pnpm add -g dotenv-cli
-
 COPY --from=builder /app/.output /app/.output
 COPY --from=builder /app/drizzle /app/drizzle
-COPY --from=builder /app/.env /app/.env
 
 RUN mkdir -p /app/db
 
@@ -69,5 +63,4 @@ VOLUME ["/app/db"]
 
 EXPOSE ${PORT}
 
-ENTRYPOINT ["dotenv", "--"]
 CMD ["node", "/app/.output/server/index.mjs"]

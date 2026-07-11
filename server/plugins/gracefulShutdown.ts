@@ -3,7 +3,10 @@ import { logger } from "#server/utils/logger"
 
 export default defineNitroPlugin((nitroApp) => {
   nitroApp.hooks.hook("close", () => {
-    db.$client.close()
+    if (db.$client.open) {
+      db.$client.close()
+    }
+
     logger.info({
       kind: "system",
       op: {

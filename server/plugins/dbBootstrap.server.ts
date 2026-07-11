@@ -13,6 +13,8 @@ type SeedUser = {
   role: UserType;
 }
 
+let bootstrapPromise: Promise<void> | undefined
+
 function parseSeedUsers(): SeedUser[] {
   const raw = (process.env.SEED_USERS ?? "[]")
     .replace("\\'", "'")
@@ -100,7 +102,7 @@ async function seedUsers(): Promise<void> {
   }
 }
 
-export default defineNitroPlugin(async () => {
+async function bootstrapDatabase(): Promise<void> {
   try {
     migrate(db, { migrationsFolder: "drizzle" })
     logger.info({
@@ -172,5 +174,16 @@ export default defineNitroPlugin(async () => {
       entity: "database",
     },
     outcome: "success",
+  })
+}
+
+export default defineNitroPlugin((nitroApp) => {
+  if (import.meta.prerender) {
+    return
+  }
+
+  nitroApp.hooks.hook("request", async () => {
+    bootstrapPromise ??= bootstrapDatabase()
+    await bootstrapPromise
   })
 })
