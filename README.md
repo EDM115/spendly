@@ -105,7 +105,7 @@ SEED=false
 DEFAULT_UI_LANG=en
 DB_FILE_NAME=db/data.db
 BETTER_AUTH_SECRET=x0x0x0
-BETTER_AUTH_URL=http://localhost:8888
+BETTER_AUTH_URL=http://localhost:8880
 RESEND_API_KEY=re_xxxxxxxxx
 GITHUB_CLIENT_ID=xxxx
 GITHUB_CLIENT_SECRET=xxxx0000
@@ -130,7 +130,7 @@ DISABLED_FEATURES=magic-link,turnstile
 - `DEFAULT_UI_LANG` : the default language of the UI (either `en` or `fr`)
 - `DB_FILE_NAME` : the path to the SQLite database file, please keep as-is
 - `BETTER_AUTH_SECRET` : generate with `node -e "import('crypto').then(crypto => console.log(crypto.randomBytes(64).toString('hex')))"`
-- `BETTER_AUTH_URL` : the base URL of Spendly, port 8888 in dev and 60000 by default in prod, change with the proper URL
+- `BETTER_AUTH_URL` : the base URL of Spendly, port 8880 in dev and 60000 by default in prod, change with the proper URL
 - `RESEND_API_KEY` : to send emails
 - `GITHUB_CLIENT_ID` & `GITHUB_CLIENT_SECRET` : for GitHub OAuth
 - `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET` : for Google OAuth
@@ -157,7 +157,7 @@ pnpm db:migrate
 pnpm db:seed
 pnpm dev
 ```
-Congrats ! Go now to [`localhost:8888`](http://localhost:8888) to check the UI.
+Congrats ! Go now to [`localhost:8880`](http://localhost:8880) to check the UI.
 
 ### Third-party setup
 #### Turnstile
@@ -201,7 +201,7 @@ Congrats ! Go now to [`localhost:8888`](http://localhost:8888) to check the UI.
 1. Go to https://github.com/settings/developers
 2. Click on `New OAuth App`
 3. Give it any name, homepage
-4. Authorization callback URL is `http://localhost:8888/api/auth/callback/github` (**note** : you cannot setup multiple callback URLs, so you will need to create multiple Apps for dev and prod, which is recommended anyway. make sure to switch to `https` with the prod URL !)
+4. Authorization callback URL is `http://localhost:8880/api/auth/callback/github` (**note** : you cannot setup multiple callback URLs, so you will need to create multiple Apps for dev and prod, which is recommended anyway. make sure to switch to `https` with the prod URL !)
 5. Leave `Enable Device Flow` disabled
 6. Once registered, add a logo/badge color if you want
 7. You now have your `Client ID` and you can create here the `Client secret`
@@ -211,8 +211,8 @@ Congrats ! Go now to [`localhost:8888`](http://localhost:8888) to check the UI.
 2. Check that you selected the right project at the top (or create one if needed)
 3. Click on `+ Create Credentials` -> `OAuth client ID`
 4. Application type is `Web application`
-5. Authorized JavaScript origins is `http://localhost:8888` (and your prod domain, ex `https://spendly.edm115.dev`)
-6. Authorized redirect URIs is `http://localhost:8888/api/auth/callback/google` (and the prod one, ex `https://spendly.edm115.dev/api/auth/callback/google`)
+5. Authorized JavaScript origins is `http://localhost:8880` (and your prod domain, ex `https://spendly.edm115.dev`)
+6. Authorized redirect URIs is `http://localhost:8880/api/auth/callback/google` (and the prod one, ex `https://spendly.edm115.dev/api/auth/callback/google`)
 7. Save. You now have the `Client ID` (looking like an URL), and you can generate a `Client secret`
 8. Go to Branding and add a logo if you want. You can also add your prod domain, exempt of any subdomain in the Authorized domains field (ex `edm115.dev` but not `www.edm115.dev` nor `spendly.edm115.dev`)
 9. Go to Data access, and enable the following fields :

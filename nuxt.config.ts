@@ -35,7 +35,7 @@ export default defineNuxtConfig({
     server: false,
   },
   devServer: {
-    port: 8888,
+    port: 8880,
   },
   future: { typescriptBundlerResolution: true },
   experimental: {
@@ -60,11 +60,13 @@ export default defineNuxtConfig({
     normalizeComponentNames: true,
     normalizePageNames: true,
     parseErrorData: true,
+    prefetchPreloadTags: true,
     sharedPrerenderData: true,
     typedPages: true,
     typescriptPlugin: true,
     viewTransition: true,
     viteEnvironmentApi: false,
+    watcher: "builder",
   },
   compatibilityDate: "2026-07-01",
   nitro: {

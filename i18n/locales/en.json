@@ -387,7 +387,7 @@
         "category-title": "Security & privacy",
         "points": [
           "Authentication uses Better Auth with email/password, username login, and optional social providers",
-          "Cloudflare Turnstile protects key auth endpoints (sign-up, sign-in, and reset-password request)",
+          "Cloudflare Turnstile protects key auth endpoints (sign-up and reset-password request)",
           "Write operations are permission-checked server-side against budget tracker role",
           "Data is stored in SQLite via typed Drizzle schemas with UUID identifiers and role-linked relations",
           "Privacy flows are explicit : users create export/delete requests, then admins resolve them"

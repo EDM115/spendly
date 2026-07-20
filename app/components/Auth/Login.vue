@@ -19,7 +19,6 @@
         rounded="xl"
         variant="tonal"
         :loading="loading"
-        :disabled="btnDisabled"
         class="login-btn text-none font-weight-bold mb-4"
         elevation="4"
         prepend-icon="mdi-google"
@@ -45,7 +44,6 @@
         rounded="xl"
         variant="tonal"
         :loading="loading"
-        :disabled="btnDisabled"
         class="login-btn text-none font-weight-bold mb-4"
         elevation="4"
         prepend-icon="mdi-github"
@@ -193,21 +191,6 @@
           </v-text-field>
         </div>
 
-        <VueTurnstile
-          v-show="!disabledFeaturesList['turnstile']"
-          ref="turnstileRef"
-          :site-key="turnstileKey"
-          :language="storeLang ?? 'auto'"
-          :theme="storeTheme ?? 'auto'"
-          appearance="execute"
-          size="flexible"
-          :tabindex="-1"
-          @success="onTurnstileSuccess"
-          @error="onTurnstileError"
-          @expired="onTurnstileExpired"
-          @timeout="onTurnstileTimeout"
-        />
-
         <v-btn
           block
           color="primary"
@@ -216,7 +199,7 @@
           type="submit"
           variant="flat"
           :loading="loading"
-          :disabled="btnDisabled || !form?.isValid || loading"
+          :disabled="!form?.isValid || loading"
           :prepend-icon="loginMethod === 'magic-link' ? 'mdi-mailbox-open-up-outline' : 'mdi-login'"
           class="text-none font-weight-bold glow-button"
         >
@@ -266,15 +249,9 @@ import type {
   Raw,
 } from "vue"
 
-import { VueTurnstile } from "vue-cloudflare-turnstile"
-
-const config = useRuntimeConfig()
-const store = useMainStore()
 const { t } = useI18n()
 const { logUiEvent } = useUiEventLogger()
 
-const storeLang = computed(() => store.getI18n)
-const storeTheme = computed(() => store.getTheme)
 const lastUsedMethod = computed(() => authClient.getLastUsedLoginMethod())
 const disabledFeaturesList = computed(() => disabledFeatures())
 const errorMessage = ref("")
@@ -282,10 +259,6 @@ const issueMessage = ref("")
 const messageColor = ref("error")
 const showPassword = ref(false)
 const loading = ref(false)
-const btnDisabled = ref(true)
-const turnstileRef = ref<InstanceType<typeof VueTurnstile> | null>(null)
-const lastErrorTurnstile = ref(false)
-const turnstileToken = ref("")
 const form = ref<{
   id: number | string;
   validate: () => Promise<string[]>;
@@ -314,10 +287,6 @@ const passwordRules = ref([
   (v: string) => (v && v.length >= 8) || t("rules.password.min", { min: 8 }),
 ])
 
-const turnstileKey = disabledFeaturesList.value["turnstile"]
-  ? "1x00000000000000000000AA"
-  : config.public.turnstileSiteKey
-
 function togglePasswordVisibility() {
   showPassword.value = !showPassword.value
 }
@@ -333,13 +302,6 @@ const state = reactive({ ...initialState })
 async function clear() {
   Object.assign(state, initialState)
   await form.value?.reset()
-  turnstileRef.value?.reset()
-
-  if (!disabledFeaturesList.value["turnstile"]) {
-    btnDisabled.value = true
-  }
-
-  turnstileToken.value = ""
 }
 
 function handleError(error: {
@@ -353,47 +315,6 @@ function handleError(error: {
   issueMessage.value = error.statusText
 }
 
-function onTurnstileSuccess(token: string) {
-  if (lastErrorTurnstile.value) {
-    lastErrorTurnstile.value = false
-    errorMessage.value = ""
-    issueMessage.value = ""
-  }
-
-  btnDisabled.value = false
-  turnstileToken.value = token
-}
-
-function onTurnstileError(errorCode: string | undefined) {
-  lastErrorTurnstile.value = true
-  handleError({
-    code: errorCode,
-    message: t("turnstile.error"),
-    statusText: t("turnstile.refresh"),
-  })
-  btnDisabled.value = true
-}
-
-function onTurnstileExpired() {
-  lastErrorTurnstile.value = true
-  handleError({
-    message: t("turnstile.expired"),
-    statusText: t("turnstile.wait"),
-    color: "warning",
-  })
-  btnDisabled.value = true
-}
-
-function onTurnstileTimeout() {
-  lastErrorTurnstile.value = true
-  handleError({
-    message: t("turnstile.timeout"),
-    statusText: t("turnstile.wait"),
-    color: "warning",
-  })
-  btnDisabled.value = true
-}
-
 async function usernameLogin() {
   errorMessage.value = ""
   issueMessage.value = ""
@@ -404,16 +325,10 @@ async function usernameLogin() {
   const { error } = await authClient.signIn.username({
     username: state.username,
     password: state.password,
-    fetchOptions: {
-      headers: {
-        "x-captcha-response": turnstileToken.value,
-      },
-    },
     callbackURL: "/app",
   })
 
   if (error) {
-    lastErrorTurnstile.value = false
     handleError(error)
     loading.value = false
 
@@ -442,16 +357,10 @@ async function emailLogin() {
   const { error } = await authClient.signIn.email({
     email: state.email,
     password: state.password,
-    fetchOptions: {
-      headers: {
-        "x-captcha-response": turnstileToken.value,
-      },
-    },
     callbackURL: "/app",
   })
 
   if (error) {
-    lastErrorTurnstile.value = false
     handleError(error)
     loading.value = false
 
@@ -479,16 +388,10 @@ async function socialLogin(provider: "google" | "github") {
 
   const { error } = await authClient.signIn.social({
     provider,
-    fetchOptions: {
-      headers: {
-        "x-captcha-response": turnstileToken.value,
-      },
-    },
     callbackURL: "/app",
   })
 
   if (error) {
-    lastErrorTurnstile.value = false
     handleError(error)
     loading.value = false
 
@@ -523,18 +426,12 @@ async function magicLinkLogin() {
     data, error,
   } = await authClient.signIn.magicLink({
     email: state.email,
-    fetchOptions: {
-      headers: {
-        "x-captcha-response": turnstileToken.value,
-      },
-    },
     callbackURL: "/app",
     newUserCallbackURL: "/app",
     errorCallbackURL: "/error",
   })
 
   if (error) {
-    lastErrorTurnstile.value = false
     handleError(error)
 
     void logUiEvent({
@@ -580,20 +477,9 @@ async function submit() {
 
   await clear()
 }
-
-onMounted(() => {
-  if (disabledFeaturesList.value["turnstile"]) {
-    btnDisabled.value = false
-  }
-})
 </script>
 
 <style lang="scss" scoped>
-.vue-turnstile {
-  justify-self: center;
-  margin-bottom: 16px;
-}
-
 .login-root {
   position: relative;
   padding-top: 8px;

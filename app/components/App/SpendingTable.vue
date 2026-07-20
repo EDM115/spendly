@@ -1083,6 +1083,7 @@ async function saveSpending() {
   if (!isFormValid.value) {
     return
   }
+
   isSubmitting.value = true
 
   const start = performance.now()

@@ -126,7 +126,7 @@ function sanitizeRouteHash(hash: string): string {
 
 function sanitizeUiRoute(route: string): string {
   try {
-    const url = new URL(route, "http://localhost:8888")
+    const url = new URL(route, "http://localhost:8880")
 
     url.pathname = sanitizeUiPath(url.pathname)
 

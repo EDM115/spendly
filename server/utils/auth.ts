@@ -138,8 +138,6 @@ export const auth = betterAuth({
     captcha({
       endpoints: [
         "/sign-up/email",
-        "/sign-in/email",
-        "/sign-in/username",
         "/request-password-reset",
       ],
       provider: "cloudflare-turnstile",

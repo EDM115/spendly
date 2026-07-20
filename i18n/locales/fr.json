@@ -387,7 +387,7 @@
         "category-title": "Sécurité & confidentialité",
         "points": [
           "L'authentification utilise Better Auth avec e-mail/mot de passe, nom d'utilisateur et fournisseurs sociaux optionnels",
-          "Cloudflare Turnstile protège les endpoints d'auth clés (inscription, connexion, demande de réinitialisation)",
+          "Cloudflare Turnstile protège les endpoints d'auth clés (inscription et demande de réinitialisation de mot de passe)",
           "Les opérations d'écriture sont vérifiées côté serveur selon le rôle du budget",
           "Les données sont stockées en SQLite via des schémas Drizzle typés, avec UUID et relations par rôles",
           "Les flux de confidentialité sont explicites : l'utilisateur crée une demande, puis un admin la traite"

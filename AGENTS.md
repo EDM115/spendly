@@ -11,8 +11,8 @@ Spendly is a free, open-source personal finance tracker. Users create budget tra
 - i18n via `@nuxtjs/i18n` with `en`/`fr` messages; Vuetify locales merged in `i18n/locales/*.ts`.
 
 ## Key workflows & commands
-- Dev server: `pnpm dev` (port 8888). Also `pnpm dev:expose:local` / `pnpm dev:expose:global`.
-- Build/preview/start: `pnpm build`, `pnpm preview` (port 8888), `pnpm start` (dotenvx with `PORT=8888`).
+- Dev server: `pnpm dev` (port 8880). Also `pnpm dev:expose:local` / `pnpm dev:expose:global`.
+- Build/preview/start: `pnpm build`, `pnpm preview` (port 8880), `pnpm start` (dotenvx with `PORT=8880`).
 - DB: `pnpm db:generate`, `pnpm db:migrate`, `pnpm db:seed` (seed uses `init/seed_db.ts`).
 - Auth schema changes: `pnpm better-auth:generate` → diff `shared/db/auth.schema.ts` vs `shared/db/schema.ts` → `pnpm db:generate` + `pnpm db:migrate`.
 - Lint/format/typecheck: `pnpm lint`, `pnpm lint:fix`, `pnpm format`, `pnpm typecheck`.
@@ -88,7 +88,7 @@ All API handlers return `{ status, body }` and use `requireUserId(event.context.
 - `i18n/locales/en.ts`, `fr.ts`: merge Vuetify locales (`$vuetify`) with app strings.
 
 ## Config & tooling
-- `nuxt.config.ts`: SSR, i18n, Vuetify themes, fonts, dev server port (8888), runtime config for Turnstile site key, and PWA options (`pwa.manifest`, `pwa.pwaAssets`, `workbox`).
+- `nuxt.config.ts`: SSR, i18n, Vuetify themes, fonts, dev server port (8880), runtime config for Turnstile site key, and PWA options (`pwa.manifest`, `pwa.pwaAssets`, `workbox`).
 - `drizzle.config.ts`: DB connection via `DB_FILE_NAME`.
 - `Dockerfile`: multi-stage build, seeds DB, runs Nuxt output with dotenv.
 

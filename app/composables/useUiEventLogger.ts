@@ -121,7 +121,7 @@ function sanitizeRouteHash(hash: string): string {
 
 function sanitizeUiRoute(route: string): string {
   try {
-    const base = globalThis.location?.origin ?? "http://localhost:8888"
+    const base = globalThis.location?.origin ?? "http://localhost:8880"
     const url = new URL(route, base)
 
     url.pathname = sanitizeUiPath(url.pathname)
