@@ -47,6 +47,13 @@
       "unlink": "Dissocier",
       "unlinked": "Compte dissocié"
     },
+    "profile": {
+      "description": "Mettez à jour votre nom d'utilisateur",
+      "success": "Nom d'utilisateur mis à jour",
+      "title": "Profil",
+      "update": "Mettre à jour le nom d'utilisateur",
+      "username": "Nom d'utilisateur"
+    },
     "pwa": {
       "available": "Spendly peut être installé sur cet appareil",
       "available-dismissed": "Vous aviez masqué la suggestion d'installation. Réactivez-la ici pour permettre à Spendly de proposer l'installation à nouveau.",
@@ -56,13 +63,6 @@
       "reset-install-prompt": "Réafficher l'invite d'installation",
       "title": "Installation de l'application",
       "unavailable": "L'installation n'est pas disponible actuellement dans ce navigateur ou cette session"
-    },
-    "profile": {
-      "description": "Mettez à jour votre nom d'utilisateur",
-      "success": "Nom d'utilisateur mis à jour",
-      "title": "Profil",
-      "update": "Mettre à jour le nom d'utilisateur",
-      "username": "Nom d'utilisateur"
     },
     "security": {
       "confirm-password": "Confirmer le nouveau mot de passe",
@@ -267,6 +267,499 @@
       "month": "Mois",
       "week": "Semaine",
       "year": "Année"
+    }
+  },
+  "changelog": {
+    "description": "Suivez l'évolution de Spendly grâce aux nouvelles fonctionnalités, aux améliorations et aux correctifs réguliers qui rendent cette application meilleure pour tout le monde",
+    "eyebrow": "Mises à jour du produit",
+    "link": "Voir les nouveautés",
+    "releases": [
+      {
+        "title": "ajout d'une page dédiée au journal des modifications",
+        "type": "feat",
+        "version": "1.5.3"
+      },
+      {
+        "title": "désactivation de Turnstile sur la connexion, mise à jour des dépendances et changement du port de développement pour qu'il diffère de celui d'EDM115/website",
+        "type": "chore",
+        "version": "1.5.2"
+      },
+      {
+        "title": "modifications de la compilation",
+        "type": "fix"
+      },
+      {
+        "description": "trop la flemme d'ajouter une vraie idempotence par contre",
+        "title": "empêcher les soumissions multiples de formulaires",
+        "type": "fix",
+        "version": "1.5.1"
+      },
+      {
+        "title": "mise à jour de toutes les dépendances (Vite 8.1 attendra la prochaine version de Nuxt à cause du problème avec server.hmr), prise en charge des deux séparateurs décimaux dans le champ du montant et rétroportage de modifications comme le favicon PNG pour éviter les problèmes sur Firefox",
+        "type": "fix",
+        "version": "1.5.0"
+      },
+      {
+        "description": "- chargement différé des onglets graphiques et catégories, et chargement forcé du tableau des dépenses en premier\n- protection contre les réponses obsolètes grâce à la vérification de l'identifiant de requête\n- récupération des dépenses selon une plage de dates au lieu de récupérer tout l'historique\n- mise en cache des opérations de formatage des nombres et des dates\n- ne plus afficher les 4 graphiques en même temps\n- ajout d'un finally pour réactiver les boutons lorsqu'un export de graphique échoue\n- calcul des caractères en minuscules une seule fois lors de la recherche de dépenses\n- vérification moins fragile de la validité des icônes et recherche avec temporisation\n- recherche de dates plus stricte dans l'API des dépenses afin de correspondre à celle du frontend\n- suppression de l'option \"tout sélectionner\" dans l'API des catégories",
+        "title": "améliorations des performances et de la sécurité",
+        "type": "fix",
+        "version": "1.4.3"
+      },
+      {
+        "title": "meilleure mise en page de la page du compte et mise à jour des dépendances",
+        "type": "fix",
+        "version": "1.4.2"
+      },
+      {
+        "title": "passage à Vite 8 après avoir vérifié qu'il ne causait aucun problème",
+        "type": "chore"
+      },
+      {
+        "description": "- faire également défiler le sélecteur d'années dans la zone visible\n- couleurs d'alertes plus tranchées\n- suppression des conneries liées à la PWA dans le store et ajout du type manquant",
+        "title": "permettre l'installation en tant que PWA depuis la page du compte, même après que l'utilisateur a refusé",
+        "type": "feat",
+        "version": "1.4.1"
+      },
+      {
+        "description": "- correction de la sélection des mois en faisant défiler l'année dans la zone visible\n- possibilité de rendre les alertes non fermables\n- meilleures configurations de lint et de formatage\n- désactivation des sourcemaps\n- mise à jour des dépendances (impossible d'utiliser Vite 8 à cause de problèmes de PWA ??)\n- précision que nous utilisons Vuetify 3 pendant que l'autre branche est en préparation\n- meilleurs réglages des polices, WOFF2 et préoptimisation des dépendances\n- utilisation exclusive de Jiti\n- déduplication des dépendances homologues dans le lockfile\n- suppression d'une commande obsolète\n- actualisation des paramètres de VS Code\n- actualisation des instructions pour l'IA",
+        "title": "conserver la période sélectionnée",
+        "type": "feat",
+        "version": "1.4.0"
+      },
+      {
+        "title": "mise à jour des dépendances, correction du problème de type avec tm, internationalisation de Better Auth et verrouillage de Vuetify sur la version 3 tant que les problèmes persistent (aucun style appliqué)",
+        "type": "chore",
+        "version": "1.3.4"
+      },
+      {
+        "description": "- empêcher le texte des boutons s'étendant sur plus de 2 lignes de dépasser\n- meilleur affichage du menu de partage sur mobile\n- alignement à droite du bouton de liaison/dissociation OAuth sur mobile\n- correction d'un problème de casse pour plus de cohérence\n- ne plus journaliser les requêtes i18n\n- meilleurs boutons d'export et comptage des requêtes",
+        "title": "petites améliorations pratiques",
+        "type": "fix",
+        "version": "1.3.3"
+      },
+      {
+        "title": "ajout des traductions de validation manquantes, ajout du propriétaire du gestionnaire de budget aux métadonnées d'export, espacement des icônes de tri du tableau, refactorisation en fonctions et réorganisation des imports",
+        "type": "fix",
+        "version": "1.3.2"
+      },
+      {
+        "title": "modification des utilisateurs par les administrateurs et meilleure vérification des noms d'utilisateur",
+        "type": "fix"
+      },
+      {
+        "title": "améliorations pratiques, possibilité de rechercher des catégories lors de l'ajout d'une transaction et de rechercher un gestionnaire de budget, repositionnement correct des puces",
+        "type": "feat",
+        "version": "1.3.1"
+      },
+      {
+        "description": "mise à jour des dépendances\nréduction du contexte chargé dans le builder Docker",
+        "title": "ajout du texte manquant de b46a98a",
+        "type": "fix"
+      },
+      {
+        "title": "documentation utilisateur",
+        "type": "chore"
+      },
+      {
+        "title": "prise en charge d'une limite inférieure dans le solde des dépenses",
+        "type": "fix"
+      },
+      {
+        "title": "empilement des puces de budget sur mobile pour laisser plus de place au nom",
+        "type": "fix"
+      },
+      {
+        "title": "vérification de condition incorrecte",
+        "type": "fix"
+      },
+      {
+        "description": "- possibilité de désactiver les e-mails, les journaux, les liens magiques, OAuth (Google/GitHub) et Turnstile\n- ajout d'une documentation expliquant le fonctionnement de tout cela et la manière d'obtenir les clés d'API nécessaires\n- utilitaire unifié pour obtenir les informations sur les fonctionnalités désactivées\n- blocage des utilisateurs lorsqu'une fonctionnalité n'est pas disponible\n- ajout d'un préfixe aux modèles d'e-mails\n- suppression d'une variable d'environnement inutilisée",
+        "title": "permettre la désactivation de fonctionnalités",
+        "type": "feat",
+        "version": "1.3.0"
+      },
+      {
+        "title": "réintroduction du changement de titre internationalisé",
+        "type": "chore"
+      },
+      {
+        "title": "annulation de 9c1143c sur 2 pages, car cela les avait cassées",
+        "type": "fix"
+      },
+      {
+        "title": "simplification de l'internationalisation",
+        "type": "chore"
+      },
+      {
+        "description": "- ajout d'une puce indiquant le propriétaire du budget, ajout d'une marge à droite, refonte des couleurs de partage et meilleur tri des utilisateurs\n- suppression de la propriété clearable du sélecteur de budget\n- refonte du style à certains endroits\n- nombre d'utilisateurs pour les administrateurs, tri correct des utilisateurs et ajout de l'affichage des utilisateurs sur mobile\n- meilleur tri partout\n- ne pas mettre en cache les fichiers JS/CSS/JSON dans la PWA\n- remplacement correct du texte de Roboto",
+        "title": "améliorations pratiques",
+        "type": "fix",
+        "version": "1.2.0"
+      },
+      {
+        "title": "correction de la navigation vers l'accueil depuis les URL non canoniques",
+        "type": "fix",
+        "version": "1.1.1"
+      },
+      {
+        "title": "mise à jour des dépendances (corrige les bizarreries de Vuetify), désactivation des fournisseurs de polices non locaux, suppression du plugin ESLint de Drizzle, simplification des fichiers VS Code et correction des problèmes de lint",
+        "type": "chore"
+      },
+      {
+        "title": "?: tentative de correction du problème de cache de la PWA",
+        "type": "fix"
+      },
+      {
+        "title": "affichage d'une invite d'installation pour la PWA, car Chrome mobile, par exemple, ne l'affiche pas tout seul pour une raison quelconque",
+        "type": "fix"
+      },
+      {
+        "description": "- installation de Spendly en tant qu'\"application\"\n- fonctionnalité hors ligne non implémentée parce que je ne suis pas fou\n- désactivation nécessaire de l'API d'environnement de Vite pour que la PWA fonctionne, pour une raison quelconque\n- démarrage du serveur compilé sur le port 8888 également\n- annulation d'une modification de la dernière méthode de connexion utilisée qui provoquait un mauvais comportement des formulaires en cas d'erreur OAuth",
+        "title": "prise en charge de la PWA",
+        "type": "feat",
+        "version": "1.1.0"
+      },
+      {
+        "description": "- page d'accueil améliorée et plus détaillée (bonjour les validateurs OAuth de Google)\n- Nunito s'applique enfin à tous les titres\n- application de l'effet de texte en dégradé à toutes les occurrences de Spendly sur la page d'accueil et dans la barre de navigation\n- ajout de l'API d'alertes par e-mail\n- ajout d'un bouton de retour à la connexion sur la page de réinitialisation du mot de passe\n- mise à jour des dépendances",
+        "title": "prêt",
+        "type": "chore",
+        "version": "1.0.0"
+      },
+      {
+        "title": "garder le menu d'export/téléchargement ouvert pour afficher l'état de chargement",
+        "type": "feat"
+      },
+      {
+        "title": "Turnstile et la recherche de dépenses occupent moins de largeur sur mobile",
+        "type": "chore"
+      },
+      {
+        "title": "dépendances",
+        "type": "chore"
+      },
+      {
+        "description": "- envoi enfin des e-mails pour toutes les actions qui le nécessitent\n- journalisation correcte des dernières requêtes restantes\n- bannissement correct de l'utilisateur lors d'une demande de suppression de compte\n- ne plus afficher de mauvais messages et déconnecter correctement l'utilisateur après une demande de suppression de compte\n- compression des PDF exportés pour réduire leur taille abominable\n- utilisation de la couleur de réussite du dernier fournisseur utilisé sur le bouton de liaison OAuth\n- le dossier d'export du budget de l'utilisateur porte désormais son vrai nom\n- correction du tabindex manquant\n- vérification de la disponibilité du nom d'utilisateur également dans l'administration\n- interdiction des noms d'utilisateur non valides",
+        "title": "e-mails",
+        "type": "feat",
+        "version": "0.18.0"
+      },
+      {
+        "title": "vérification des mises à jour toutes les heures et actualisation facilitée",
+        "type": "feat",
+        "version": "0.17.1"
+      },
+      {
+        "title": "permettre aux administrateurs de refuser une demande et ajout de confirmations",
+        "type": "feat"
+      },
+      {
+        "title": "nom du conteneur",
+        "type": "chore"
+      },
+      {
+        "description": "- les demandes d'exportation des données ou de suppression du compte des utilisateurs sont stockées dans la base de données, visibles et traitables côté administration\n- correction d'un problème empêchant l'initialisation correcte de la couleur des catégories\n- correction d'un mauvais type de propriétés\n- centralisation des exports utilisateur dans un utilitaire",
+        "title": "demandes des utilisateurs",
+        "type": "feat",
+        "version": "0.17.0"
+      },
+      {
+        "description": "- ajout d'un système de journalisation dans toute l'application afin de bien comprendre ce qui se passe\n- utilisation d'événements larges pour obtenir de meilleurs indices (cf. loggingsucks.com)\n- validation des journaux selon un schéma\n- création d'un foutu CLI et d'une TUI complets pour interpréter, filtrer et visualiser les journaux, entre autres\n- nouvelles variables d'environnement entièrement facultatives pour faciliter la journalisation\n- préchargement avec NuxtLink de tous les boutons comportant des liens\n- empêcher l'affichage du mot de passe et Turnstile de recevoir le focus au clavier\n- amélioration du travail des agents sur les tâches de longue durée\n- empêcher les agents de charger la démo dans leur contexte",
+        "title": "événements larges et explorateur de journaux",
+        "type": "feat",
+        "version": "0.16.0"
+      },
+      {
+        "title": "meilleur déploiement, Docker Compose et migrations/initialisation automatisées au démarrage du serveur",
+        "type": "chore"
+      },
+      {
+        "title": "améliorations des performances",
+        "type": "fix",
+        "version": "0.15.2"
+      },
+      {
+        "title": "ajout d'instructions pour l'IA, mise à jour des dépendances et suppression des vérifications de l'utilisateur de démonstration dans l'API, puisqu'il ne s'agit plus d'un véritable utilisateur connecté",
+        "type": "chore"
+      },
+      {
+        "description": "- devrait fonctionner parfaitement, sans aucun problème de synchronisation (ça a pris tellement de temps)\n- apparemment, les transactions asynchrones ne sont pas possibles ? pour une raison étrange\n- ajout d'une confirmation avant de supprimer un utilisateur partagé\n- tri des gestionnaires de budget par nom",
+        "title": "transfert de propriété des gestionnaires de budget",
+        "type": "feat",
+        "version": "0.15.1"
+      },
+      {
+        "title": "problème de casse causé par un replace_all",
+        "type": "chore"
+      },
+      {
+        "description": "- liste des utilisateurs existants (limitée à 200 pour le moment, on n'atteindra jamais ce nombre de toute façon mdr. si cela arrive, il faudra refaire ça avec une recherche et une pagination)\n- possibilité de modifier les utilisateurs et d'en créer de nouveaux\n- implémentation de l'usurpation d'identité, avec rechargement forcé de la page pour actualiser la session\n- export des données utilisateur (archive ZIP complète), fenêtre modale d'envoi par e-mail à faire\n- suppression d'un utilisateur (demandes à faire)\n- ne pas précharger les données d'administration dans la page. la protection est probablement redondante avec le middleware, mais ça ne fait pas de mal",
+        "title": "section d'administration",
+        "type": "feat",
+        "version": "0.15.0"
+      },
+      {
+        "title": "renommage de Error en LayoutAlert, mise à jour du nom lors du changement de nom d'utilisateur et correction du libellé",
+        "type": "chore"
+      },
+      {
+        "title": "rendre la sélection du budget repliable pour libérer de l'espace sur mobile et éviter les clics accidentels",
+        "type": "feat"
+      },
+      {
+        "description": "- possibilité de modifier le nom d'utilisateur, l'adresse e-mail et le mot de passe, de lier/dissocier OAuth, de demander l'exportation des données et la suppression du compte (À FAIRE, tout comme le transfert de propriété), et ajout de liens de don. pas besoin de Turnstile ici puisque l'utilisateur est déjà connecté\n- permettre aux utilisateurs de modifier leur adresse e-mail et implémenter la vérification de l'adresse e-mail, requise lors d'un changement d'adresse mais sans vérification forcée\n- ajout des données manquantes dans le store\n- ajout d'un indicateur de page active dans le menu et d'un lien vers l'application\n- conservation de l'état de chargement pour OAuth, par exemple, puisque ces opérations rechargent entièrement la page\n- limitation correcte du contenu des boutons sur mobile\n- affichage d'un texte correct de réinitialisation du mot de passe au retour depuis l'e-mail\n- annulation des imports manuels introduits dans cd3b8b8 pour contourner un problème de Nuxt (nuxt/nuxt#34140)\n- réinitialisation correcte de la couleur des catégories avec celle du thème\n- affichage du pied de page sur la page du compte\n- suppression d'éléments inutilisés dans les configurations VS Code et ESLint",
+        "title": "page du compte fonctionnelle",
+        "type": "feat",
+        "version": "0.14.0"
+      },
+      {
+        "description": "- nouvelle page de réinitialisation du mot de passe fonctionnant en 2 étapes : envoi de l'e-mail puis modification du mot de passe, avec gestion des erreurs\n- permettre à Error d'être un succès (mdr)\n- ajout du nom du gestionnaire de budget comme préfixe des exports\n- ajout d'un avertissement concernant les liens magiques\n- l'icône GitHub en bas n'est plus aussi éloignée du reste du pied de page\n- titres de pages corrects\n- journalisation temporaire des requêtes d'e-mails\n- enregistrement correct du nom d'utilisateur et du lien magique comme dernière méthode utilisée",
+        "title": "réinitialisation du mot de passe",
+        "type": "feat",
+        "version": "0.13.0"
+      },
+      {
+        "title": "await manquant, suppression des imports superflus, import nommé et déplacement de l'extension de type du contexte d'authentification vers le dossier partagé afin qu'elle soit utilisée par le backend et le frontend sans duplication",
+        "type": "chore"
+      },
+      {
+        "title": "utilisation du t exporté et déplacement des clés juridiques dans leur page pour ne pas polluer les fichiers i18n",
+        "type": "chore"
+      },
+      {
+        "description": "- middlewares corrects pour l'application et le serveur afin de vérifier l'authentification, et utilisation correcte du système de session (~enfin je crois ? il faut revérifier le store et tout ça)\n- retrait de l'authentification et de l'utilisateur du store, avec uniquement des getters réactifs autour des données\n- menu correct dans la barre de navigation, contenant le changement de thème/langue, la connexion/déconnexion, la gestion du compte et le panneau d'administration. il pourra également afficher à l'avenir l'avertissement d'usurpation d'identité\n- prise en compte correcte des modifications dans le composable du thème\n- déplacement du pied de page vers le layout, sauf dans l'application/la démo, l'administration et le compte (ce dernier pourra changer plus tard), avec ajout des CGU et de la politique de confidentialité\n- cohérence de l'arrondi de tous les boutons\n- toutes les fenêtres modales ont un effet de verre\n- les dégradés ne sont plus coupés\n- déplacement de rounded vers les propriétés lorsque c'est possible\n- meilleur bouton d'appel à l'action sur la page d'accueil, suppression du bouton GitHub et de la section d'inscription\n- suppression de l'OTP par e-mail (pour l'instant, j'ai l'impression qu'on a assez de méthodes de connexion)\n- correction de l'absence de la dernière méthode de connexion utilisée\n- Turnstile essaiera de correspondre à la langue et au thème de l'interface\n- réinitialisation correcte du jeton Turnstile en cas d'échec du formulaire et absence de remplacement des messages d'erreur existants\n- titres corrects pour les fenêtres modales\n- correction de l'utilisation du bouton lumineux\n- ajout d'un préfixe au script d'initialisation et vérification que les utilisateurs initialisés sont vérifiés (même si nous ne le contrôlons jamais)\n- ! correctif temporaire des types de paramètres tant que la route n'existe pas\n- à faire : modifier le titre pour chaque page sauf dans l'application, et faire la page du compte",
+        "title": "nettoyage de la migration vers Better Auth",
+        "type": "feat",
+        "version": "0.12.0"
+      },
+      {
+        "description": " - e-mail/mot de passe\n - nom d'utilisateur\n - administration (rôle, usurpation d'identité)\n - OTP par e-mail et lien magique (à déterminer)\n - dernière méthode de connexion\n - Google\n - GitHub\n - CAPTCHA (Turnstile)\n - autoriser les adresses e-mail OAuth à différer de l'adresse principale\n - assouplissement des limites concernant les noms d'utilisateur et les mots de passe\n- amélioration du script d'initialisation de la base de données\n- suppression du middleware de l'API\n- utilisation de Resend pour les e-mails (à déterminer)\n- suppression des dépendances bcryptjs et jsonwebtoken, ajout de Resend et vue-cloudflare-turnstile, sortie temporaire de la version bêta de Drizzle et ajout d'alias d'import pour exécuter correctement le script d'initialisation\n- refonte du fichier .env dans le README et ajout de toutes les nouvelles variables requises\n- noms de tables en minuscules pour plus de cohérence\n- meilleur composant de connexion\n - nom d'utilisateur/mot de passe(/lien magique ? si tu arrives à le trouver mdr)\n - OAuth Google/GitHub\n - Cloudflare Turnstile avec gestion des avertissements et des erreurs\n - validation correcte du formulaire\n - dernière méthode utilisée\n- composant d'inscription !\n - e-mail/nom d'utilisateur\n - pas d'OAuth, oui je pourrais le lier à un autre compte plus tard mais j'ai la flemme\n - vérification de l'existence du nom d'utilisateur\n- permettre au composant d'erreur d'afficher également des avertissements\n- suppression temporaire de l'authentification Bearer sur les requêtes API, jusqu'à ce que j'aie compris la gestion des sessions. la route administration/utilisateur reviendra également plus tard\n- ne pas charger dotenv pour Drizzle, puisque drizzle-kit le charge automatiquement\n- chargement correct du nom de l'application depuis l'i18n\n- politique de confidentialité et conditions d'utilisation entièrement traduites (obligé à cause de Google OAuth)\n- déplacement de certaines fonctionnalités hors du store\n- ajout de la date au nom de fichier de l'export de la base de données\n- page d'erreur dédiée aux problèmes de Better Auth (skill)\n- rendre ssrSafe fini\n- ajustement des types, store.user reste à déterminer, particulièrement pour la démo\n- toujours à faire : déplacer les éléments de la barre de navigation vers le menu, créer la page des paramètres utilisateur (modification du nom d'utilisateur, de l'adresse e-mail et du mot de passe, liaison/dissociation des réseaux sociaux), ajouter les liens vers les pages juridiques dans le pied de page, réinitialisation du mot de passe, implémentation des e-mails, y compris les liens magiques, refonte de la page d'administration (ajout/modification/suppression d'un utilisateur, usurpation d'identité, export des données utilisateur et envoi par e-mail ?), nom du budget dans les exports, modification du texte de la fusée et suppression de l'adresse e-mail de la section \"prêt à nous rejoindre\"",
+        "title": "migration vers Better Auth",
+        "type": "feat",
+        "version": "0.11.0"
+      },
+      {
+        "description": "- ne plus manipuler aveuglément les requêtes avec better-sqlite3 brut\n- vérification correcte des types\n- extension des véritables outils\n- SQLite reste utilisable !\n- création d'un véritable schéma de référence et d'une instance de base de données à utiliser\n- intégration de la démo dans l'application pour éviter d'encombrer la base de données, avec ajout de l'i18n ! réduction également de la charge de l'API et simplification du script d'initialisation\n- restriction de l'accès au chemin de l'application aux utilisateurs qui ne sont pas en mode démo\n- modification du type BudgetTrackerRole afin de supprimer null et d'éviter d'avoir \"Exclude\" partout\n- correction du type de rôle de User et de l'utilisateur du Store, qui était totalement faux mdr, et typage correct de Spending.is_spending en booléen grâce à Drizzle\n- ajout des règles ESLint de Drizzle",
+        "title": "migration vers Drizzle ORM",
+        "type": "feat",
+        "version": "0.10.0"
+      },
+      {
+        "description": "- affichage d'une liste virtuelle de cartes au lieu d'un tableau virtuel, inspirée des applications bancaires et séparée par des éléments de date\n- barres de défilement plus petites\n- désactivation des boutons au lieu de les masquer\n- texte correct lorsqu'aucune catégorie ou icône n'est sélectionnée\n- ne pas afficher les graphiques lorsqu'il n'y a aucune donnée\n- agrandissement du champ de recherche sur mobile\n- suppression du message de bienvenue\n- teinte colorée de la barre de navigation inférieure",
+        "title": "adaptation aux mobiles, partie 1",
+        "type": "feat",
+        "version": "0.9.0"
+      },
+      {
+        "title": "dépendances et formatage (plus ou moins avec oxfmt)",
+        "type": "chore"
+      },
+      {
+        "title": "ajout de davantage de balises Open Graph",
+        "type": "chore"
+      },
+      {
+        "title": "nouvelle image Open Graph et meilleure description",
+        "type": "chore"
+      },
+      {
+        "title": "affichage des boutons de catégorie, mais désactivés en lecture seule",
+        "type": "fix"
+      },
+      {
+        "title": "possibilité d'ajuster le solde total pour inclure les enregistrements passés et futurs, et garantie d'un espace minimal à côté des interrupteurs",
+        "type": "feat",
+        "version": "0.8.3"
+      },
+      {
+        "description": "- export en meilleure qualité (x6 pixels sur le contenu rastérisé) et création d'un véritable SVG comme base au lieu d'utiliser un PNG\n- export systématique avec le thème clair pour assurer la compatibilité\n- correction d'une quantité monstrueuse de bugs liés à l'export dont je ne veux même plus me souvenir. oui, il reste des erreurs dans la console. est-ce que l'export fonctionne quand même parfaitement ? oui. donc je m'en fous + personne n'a demandé\n- ajout de la période aux noms de fichiers\n- ajout de la troisième partie du flux de trésorerie dans la légende\n- affichage permanent de la légende du flux de trésorerie en bas\n- suppression des conversions de types inutiles\n- ajout d'un indicateur de chargement pendant la génération du fichier\n- affichage en continu des sorties des commandes parallèles pour éviter qu'elles soient repliées",
+        "title": "meilleurs exports de graphiques",
+        "type": "feat",
+        "version": "0.8.2"
+      },
+      {
+        "description": "- affichage uniquement des options pertinentes pour le graphique visible\n- meilleur choix des couleurs\n- affichage séparé des axes X et Y\n- meilleur affichage des dates pour éviter des YYYY-MM-DD trop serrés\n- affichage du solde en dernier afin qu'il apparaisse au-dessus des autres zones",
+        "title": "meilleurs graphiques",
+        "type": "feat",
+        "version": "0.8.1"
+      },
+      {
+        "title": "l'import des métadonnées explose sous forme de promesse",
+        "type": "fix"
+      },
+      {
+        "title": "utilisation d'imports dynamiques pour les énormes métadonnées MDI",
+        "type": "chore"
+      },
+      {
+        "description": "- recherche des icônes par nom, alias et catégorie\n- changement correct de la couleur par défaut des catégories lors du changement de thème\n- masquage des boutons lorsqu'il n'y a aucune donnée\n- masquage des options de simplification lorsque le mode simplifié est déjà actif\n- liaison correcte des points en mode simplifié\n- correction de la recherche sur mobile\n- correction, encore une fois, du tableau lorsqu'il n'y a aucune donnée\n- squelettes de chargement plus proches de ceux d'une véritable application\n- désactivation de l'autocomplétion pour tous les champs, sauf le nom d'utilisateur et le mot de passe\n- documentation des changements apportés aux variables d'environnement",
+        "title": "recherche d'icônes intégrée",
+        "type": "feat",
+        "version": "0.8.0"
+      },
+      {
+        "description": "- démo complète sans droits, mais avec un accès en lecture à une vue complète de 150 transactions\n- renforcement de l'API contre les privilèges incorrects, avec exposition du nom d'utilisateur dans le contexte\n- désactivation des boutons au lieu de les masquer\n- possibilité de désactiver les points du graphique en aires pour un affichage plus épuré\n- affichage également de la répartition des catégories de revenus, avec possibilité de désactiver l'une ou l'autre\n- nouveau style pour les diagrammes circulaires des catégories afin d'améliorer leur lisibilité sur mobile et d'éviter le rognage\n- recherche également parmi les catégories dans le tableau, possibilité d'effacement, centrage et limitation de la largeur\n- désactivation des ligatures de fractions pour améliorer la lisibilité\n- la commande d'initialisation définit automatiquement la variable d'environnement",
+        "title": "profil de démonstration",
+        "type": "feat",
+        "version": "0.7.0"
+      },
+      {
+        "title": "déplacement des types vers le dossier partagé avec importation automatique, utilisation du nouvel alias correct d'importation serveur, mise à jour des dépendances, suppression de l'appel de fonction du graphique, imports forcés dans les composables et le store puisque Nuxt ne les reconnaît apparemment plus (?) et type d'API forcé (??), utilisation des paramètres non obsolètes de createError",
+        "type": "chore"
+      },
+      {
+        "description": "- meilleur aspect général, boutons plus espacés et moins d'espace inutilisé\n- barre de navigation inférieure sur mobile pour libérer de l'espace\n- ajout d'un mode simplifié aux graphiques, avec possibilité de désactiver manuellement le titre, la légende, les axes, la grille et chacune des 3 zones\n- correction de certaines modifications qui ne se propageaient pas dans l'application\n- correction des points de suspension sur la date\n- correction du sélecteur de couleurs écrasé sur mobile\n- masquage de l'intersection des barres de défilement\n- nouvelle suppression des ressources provisoires",
+        "title": "améliorations de l'affichage mobile",
+        "type": "feat",
+        "version": "0.6.0"
+      },
+      {
+        "title": "l'image de Node 25 n'inclut plus Corepack ni Yarn, affichage du message d'absence de dépenses sans défilement",
+        "type": "fix"
+      },
+      {
+        "title": "le préfixe MDI n'est plus requis pour les icônes, utilisation de la couleur principale par défaut, nettoyage des classes inutilisées et passage de formatage",
+        "type": "fix",
+        "version": "0.5.1"
+      },
+      {
+        "description": "- adoption plus marquée d'un style en verre\n- utilisation correcte du logo alternatif avec le thème clair et ajustement supplémentaire de ses couleurs pour qu'elles correspondent\n- amélioration globale des couleurs, espacements et autres éléments\n- transitions du composant d'erreur\n- paramètres d'administration beaucoup plus propres\n- apparence plus épurée des icônes de catégories\n- graphiques normalement plus lisibles\n- meilleurs boutons d'export, avec style tonal et coloré\n- cartes récapitulatives basées sur des dégradés\n- barre de navigation n'occupant pas 100 % de la largeur\n- slogan plus marquant et meilleure incitation au défilement\n- simplification de la page de connexion\n- enfin, nettoyage de la sûreté des types des requêtes de base de données et suppression de nombreuses désactivations d'Oxlint\n- utilisation de Node 25\n- remplacement des logos par de meilleures versions sans arrière-plan, également plus petites",
+        "title": "nouvelle conception (oui, encore)",
+        "type": "feat",
+        "version": "0.5.0"
+      },
+      {
+        "title": "passage à un tableau virtuel, ajout d'un champ de recherche, arrondis plus prononcés, puces de libellé pour les catégories, suppression du petit texte dans le tableau, tri par défaut, correction du dégradé du séparateur sur mobile, meilleur affichage des catégories avec davantage d'éléments lorsque l'espace horizontal le permet, et couleur de contour issue de l'icône",
+        "type": "feat",
+        "version": "0.4.2"
+      },
+      {
+        "title": "limitation des catégories aux gestionnaires de budget afin de ne pas les partager avec d'autres comptes",
+        "type": "fix",
+        "version": "0.4.1"
+      },
+      {
+        "description": "- page d'accueil plus intéressante et plus ludique\n- mise en page enfin correcte sur la connexion, avec indicateur de chargement\n- ajout de variations de couleurs\n- nettoyage de l'internationalisation",
+        "title": "refonte des pages d'accueil et de connexion",
+        "type": "feat",
+        "version": "0.4.0"
+      },
+      {
+        "title": "tri du JSON d'internationalisation",
+        "type": "chore"
+      },
+      {
+        "description": "- utilisation d'un sélecteur sur mobile et simplification de la création des boutons\n- plage de dates et rangée de boutons plus cohérentes entre les pages\n- espacement de la plage de dates et des boutons sur mobile\n- affichage de flèches sur mobile lorsque l'espace disponible pour les onglets est insuffisant\n- taille de police plus lisible pour les graphiques\n- redirection automatique vers l'application depuis la page d'accueil lorsque l'utilisateur est déjà connecté\n- meilleur positionnement des squelettes de chargement sur mobile\n- journaux cohérents\n- balises cohérentes",
+        "title": "meilleurs sélecteurs de plage de dates",
+        "type": "feat",
+        "version": "0.3.4"
+      },
+      {
+        "title": "documentation de développement",
+        "type": "chore"
+      },
+      {
+        "title": "Docker: utilisation d'images non renforcées et d'un port autorisé (32768-61000)",
+        "type": "fix"
+      },
+      {
+        "description": "- le diagramme en anneau affiche désormais des informations réellement utiles, à savoir le flux de trésorerie\n- pourcentages dans certaines infobulles\n- correction de la police bancale des graphiques\n- meilleurs noms pour les fichiers téléchargés, reflétant la période sélectionnée",
+        "title": "véritable quatrième graphique",
+        "type": "feat"
+      },
+      {
+        "title": "sélection automatique de tous les jours de la semaine en mode de filtrage hebdomadaire et utilisation de la même couleur pour l'impact",
+        "type": "feat"
+      },
+      {
+        "description": "- déplacement de la logique de filtrage dans son propre composant\n- nouvelle mise en forme\n- correction de plusieurs erreurs de logique\n- possibilité de sélectionner un autre jour, une autre semaine, un autre mois ou une autre année que la période actuelle, avec indication de la période actuelle à l'aide d'une infobulle\n- correction des titres qui n'utilisaient pas la bonne police\n- ajout de scripts de développement exposés",
+        "title": "refonte des filtres de dates",
+        "type": "feat",
+        "version": "0.3.3"
+      },
+      {
+        "title": "tri correct par semaine",
+        "type": "fix"
+      },
+      {
+        "title": "ne pas charger les valeurs vides, filtrage correct par date, correction d'une erreur et sélection du bon jour",
+        "type": "fix"
+      },
+      {
+        "title": "limitation effective de la taille de la description",
+        "type": "fix"
+      },
+      {
+        "title": "utilisation de polices locales, Inter partout sauf dans les titres, ligatures et Fira Code sur les éléments mis en évidence",
+        "type": "feat",
+        "version": "0.3.2"
+      },
+      {
+        "description": "- espacement des éléments\n- refonte des icônes\n- affichage des détails des champs, par exemple les erreurs\n- page d'administration plus esthétique\n- effacement du budget sélectionné pour faciliter l'actualisation\n- simplification de l'internationalisation\n- garantie que l'option d'annulation dans les fenêtres modales se trouve toujours à gauche\n- icônes différentes selon les rôles\n- ajout d'infobulles pour les actions sans libellé\n- passage à un véritable champ numérique pour le montant et à un véritable calendrier pour le sélecteur de date\n- squelettes de chargement plus propres\n- utilisation d'onglets pour les sections principales, comme pour les graphiques",
+        "title": "nouveau style",
+        "type": "feat",
+        "version": "0.3.1"
+      },
+      {
+        "description": "- mise à jour des types et des routes de l'API\n- suppression de la section des icônes dans les paramètres d'administration\n- garantie que les noms d'icônes comportent toujours le bon préfixe\n- véritable page d'erreur\n- typage correct de l'export d'administration",
+        "title": "suppression de la table Icon, fusion avec Category et possibilité pour les utilisateurs de créer leurs propres icônes liées à leurs BudgetTrackers",
+        "type": "feat",
+        "version": "0.3.0"
+      },
+      {
+        "title": "page d'accueil",
+        "type": "feat"
+      },
+      {
+        "title": "meilleures couleurs et page de connexion",
+        "type": "feat"
+      },
+      {
+        "title": "renforcement de l'API d'administration et correction du gestionnaire de budget qui n'était pas correctement sélectionné lors de sa création",
+        "type": "fix"
+      },
+      {
+        "title": "passage aux UUID pour les identifiants et centralisation des types",
+        "type": "fix",
+        "version": "0.2.0"
+      },
+      {
+        "description": "- véritables composants avec sélecteur de budgets, tableau, filtrage et tri, graphiques, droits, catégories et bien plus\n- correction de l'agaçant problème de \"déconnexion\"\n- renforcement des images Docker",
+        "title": "preuve de concept plus ou moins fonctionnelle",
+        "type": "feat",
+        "version": "0.1.0"
+      },
+      {
+        "title": "dernières modifications de better-maps et du site, désormais prêt à lancer le projet",
+        "type": "chore"
+      },
+      {
+        "title": "documentation: ébauche approximative de la base de données",
+        "type": "chore"
+      },
+      {
+        "title": "plantage, ajustements d'Inter, suppression des styles inutilisés, redirection correcte et absence de renvoi vers la page d'accueil lorsque l'utilisateur est connecté",
+        "type": "fix"
+      },
+      {
+        "title": "passage à un store basé sur setup",
+        "type": "chore"
+      },
+      {
+        "description": "- revérifier EDM115/better-maps@9253d53 pour en savoir plus sur les astuces de récupération SSR en une seule fois dans le fichier de l'application\n- ajout d'une bibliothèque de graphiques",
+        "title": "portage des dernières modifications de better-maps comme base",
+        "type": "chore"
+      },
+      {
+        "description": "la majeure partie du code a été portée depuis EDM115/better-maps",
+        "title": "initialisation",
+        "type": "chore"
+      }
+    ],
+    "title": "Nouveautés de Spendly",
+    "types": {
+      "chore": "maintenance",
+      "feat": "fonctionnalité",
+      "fix": "correctif"
     }
   },
   "error": {
@@ -504,6 +997,7 @@
   "main": {
     "account": "Compte - Spendly",
     "admin": "Admin - Spendly",
+    "changelog": "Nouveautés - Spendly",
     "demo": "Démo - Spendly",
     "description": "Suivi budgétaire simple, puissant et gratuit pour tous, avec tableaux, statistiques et graphiques",
     "install": "Vous pouvez installer Spendly comme une application pour une expérience plus rapide et plus fluide. Voulez-vous l'installer ?",

@@ -648,6 +648,20 @@
               {{ t("account.donation.github") }}
             </v-btn>
           </div>
+
+          <div class="d-flex flex-column flex-md-row justify-center gap-4 align-center">
+            <NuxtLink to="/changelog">
+              <v-btn
+                color="info"
+                variant="tonal"
+                prepend-icon="mdi-history"
+                rounded="xl"
+                class="text-none font-weight-bold mt-4 "
+              >
+                {{ t("changelog.link") }}
+              </v-btn>
+            </NuxtLink>
+          </div>
         </v-card>
       </v-col>
     </v-row>

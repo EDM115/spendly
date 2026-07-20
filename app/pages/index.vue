@@ -562,6 +562,19 @@
                 {{ t('landing.details.cta.viewDemo') }}
               </v-btn>
             </NuxtLink>
+
+            <NuxtLink to="/changelog">
+              <v-btn
+                color="info"
+                variant="tonal"
+                size="x-large"
+                prepend-icon="mdi-history"
+                rounded="xl"
+                class="px-8"
+              >
+                {{ t("changelog.link") }}
+              </v-btn>
+            </NuxtLink>
           </div>
         </v-card>
       </v-container>

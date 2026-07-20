@@ -123,3 +123,17 @@ export type AppPreferencesState = {
   balanceOptions: BalanceOptionsState;
   chartOptions: ChartOptionsState;
 }
+
+export type ChangelogReleaseType = "feat" | "fix" | "chore"
+
+export interface ChangelogRelease {
+  type: ChangelogReleaseType;
+  title: string;
+  description?: string;
+  version?: string;
+}
+
+export interface ReleasePresentation {
+  color: string;
+  icon: string;
+}

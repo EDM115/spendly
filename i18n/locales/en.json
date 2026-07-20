@@ -47,6 +47,13 @@
       "unlink": "Unlink",
       "unlinked": "Account unlinked"
     },
+    "profile": {
+      "description": "Update your username",
+      "success": "Username updated successfully",
+      "title": "Profile",
+      "update": "Update username",
+      "username": "Username"
+    },
     "pwa": {
       "available": "Spendly can be installed on this device",
       "available-dismissed": "You previously hid the install suggestion. Re-enable it here to allow Spendly to offer installation again.",
@@ -56,13 +63,6 @@
       "reset-install-prompt": "Show install prompt again",
       "title": "App installation",
       "unavailable": "Installation is not currently available in this browser or session"
-    },
-    "profile": {
-      "description": "Update your username",
-      "success": "Username updated successfully",
-      "title": "Profile",
-      "update": "Update username",
-      "username": "Username"
     },
     "security": {
       "confirm-password": "Confirm new password",
@@ -267,6 +267,499 @@
       "month": "Month",
       "week": "Week",
       "year": "Year"
+    }
+  },
+  "changelog": {
+    "description": "Follow Spendly's evolution through new features, improvements and the regular fixes that make this app better for everyone",
+    "eyebrow": "Product updates",
+    "link": "See what's new",
+    "releases": [
+      {
+        "title": "add a dedicated Changelog page",
+        "type": "feat",
+        "version": "1.5.3"
+      },
+      {
+        "title": "disable turnstile on login, bump deps, change dev port to be different from EDM115/website",
+        "type": "chore",
+        "version": "1.5.2"
+      },
+      {
+        "title": "build changes",
+        "type": "fix"
+      },
+      {
+        "description": "too lazy to add proper idempotency tho",
+        "title": "don't allow multiple form submissions",
+        "type": "fix",
+        "version": "1.5.1"
+      },
+      {
+        "title": "bump all deps (vite 8.1 will wait for next nuxt due to server.hmr issue), allow both decimal separators in amount field, backport changes like png favicon to avoid issues on firefox",
+        "type": "fix",
+        "version": "1.5.0"
+      },
+      {
+        "description": "- lazy-load charts & categories tabs, force spending table as first loaded\n- guard stale responses with request ID checking\n- fetch spendings with date window instead of retreiving the full history\n- cache number & date format operations\n- don't render all 4 charts at once\n- add a finally to re-enable buttons when a chart export have failed\n- compute lowercase chars only once when searching spendings\n- less brittle icon validity check + debounced search\n- stricter date search in spending api to match frontend one\n- no select all in category api",
+        "title": "perf & safety improvements",
+        "type": "fix",
+        "version": "1.4.3"
+      },
+      {
+        "title": "better account page layout, bump deps",
+        "type": "fix",
+        "version": "1.4.2"
+      },
+      {
+        "title": "bump to vite 8 after verifying it doesn't cause any issue",
+        "type": "chore"
+      },
+      {
+        "description": "- also scroll into view the years selector\n- more resolved alert colors\n- removed pwa bullshit from store and add missing type",
+        "title": "allow to install as PWA even after the user dismissed, through the account page",
+        "type": "feat",
+        "version": "1.4.1"
+      },
+      {
+        "description": "- fix month selection by scrolling year into view\n- allow alerts to not be closable\n- better lint/format configs\n- disable sourcemaps\n- bump deps (can't use vite 8 due to PWA issues ??)\n- specify that we use Vuetify 3 while the other branch is getting ready\n- better font settings, woff2, pre-optimize deps\n- use jiti only\n- dedupe lockfile peers\n- remove outdated command\n- refresh vs code settings\n- refresh ai guidance",
+        "title": "retain selected date period",
+        "type": "feat",
+        "version": "1.4.0"
+      },
+      {
+        "title": "bump deps, fixed the type issue with tm, better-auth i18n, lock vuetify to 3 while issues are still present (no styles applied)",
+        "type": "chore",
+        "version": "1.3.4"
+      },
+      {
+        "description": "- avoid buttons that span on more than 2 lines to have the text go out of bounds\n- better display of the share menu on mobile\n- align link/unlink oauth button on right on mobile\n- fixed a casing issue for consistency\n- don't log i18n requests\n- better export buttons & requests count",
+        "title": "small QoL",
+        "type": "fix",
+        "version": "1.3.3"
+      },
+      {
+        "title": "missing validation i18n, add budget tracker owner in the export metadata, space out a bit the table sort icons, refactor to functions, rework imports",
+        "type": "fix",
+        "version": "1.3.2"
+      },
+      {
+        "title": "admin edit user, better username check",
+        "type": "fix"
+      },
+      {
+        "title": "QoL, allow to search for categories when adding a transaction & search for a budget tracker, reposition the chips properly",
+        "type": "feat",
+        "version": "1.3.1"
+      },
+      {
+        "description": "bump deps\nreduce context loaded in docker builder",
+        "title": "add missing text from b46a98a",
+        "type": "fix"
+      },
+      {
+        "title": "user doc",
+        "type": "chore"
+      },
+      {
+        "title": "allow lower-bound limit in spendings balance",
+        "type": "fix"
+      },
+      {
+        "title": "stack the budget chips on mobile to leave more space for the name",
+        "type": "fix"
+      },
+      {
+        "title": "bogus condition check",
+        "type": "fix"
+      },
+      {
+        "description": "- can disable emails, logs, magic-link, oauth (google/github) & turnstile\n- added documentation on how all that works and how to get api keys for everything\n- unified helper to get the disabled features info\n- prevent users when a feature is not available\n- prefix email templates\n- remove unused env var",
+        "title": "allow to disable features",
+        "type": "feat",
+        "version": "1.3.0"
+      },
+      {
+        "title": "reintroduce i18n title change",
+        "type": "chore"
+      },
+      {
+        "title": "revert 9c1143c for 2 pages as it broke",
+        "type": "fix"
+      },
+      {
+        "title": "simplify i18n",
+        "type": "chore"
+      },
+      {
+        "description": "- add a chip for who owns the budget, pad to right, rework shared colors, sort users better\n- remove clearable prop from budget selector\n- rework styling in some places\n- admins user count, properly sort users, add user display onn mobile\n- better sorting everywhere\n- don't cache js/css/json in the pwa\n- text is properly overriten from Roboto",
+        "title": "QoL",
+        "type": "fix",
+        "version": "1.2.0"
+      },
+      {
+        "title": "fix navigate to home on non-canonical urls",
+        "type": "fix",
+        "version": "1.1.1"
+      },
+      {
+        "title": "bump deps (fixes Vuetify quirks), disable non-local font providers, remove drizzle eslint plugin, simplify vs code files, fixes lint issues",
+        "type": "chore"
+      },
+      {
+        "title": "?: try to fix PWA caching issue",
+        "type": "fix"
+      },
+      {
+        "title": "show an install prompt for the PWA because ie. Chrome mobile doesn't show it on its own for some reason",
+        "type": "fix"
+      },
+      {
+        "description": "- install Spendly as an \"app\"\n- didn't implemented Offline functionnality because i'm not crazy\n- had to disable Vite Env API for PWA to work for some reason\n- start the built server on 8888 too\n- revert a change on last used login method that caused forms to misbehave on oauth error",
+        "title": "PWA support",
+        "type": "feat",
+        "version": "1.1.0"
+      },
+      {
+        "description": "- enhanced and more detailed landing page (hello google oauth validators)\n- Nunito finally applies on all titles\n- apply the gradient-text effect to all occurences of Spendly in the home page, and the navbar\n- email alert api added\n- added a back to login button on the password reset page\n- bump deps",
+        "title": "ready",
+        "type": "chore",
+        "version": "1.0.0"
+      },
+      {
+        "title": "keep the export/dl menu open to show the loading state",
+        "type": "feat"
+      },
+      {
+        "title": "turnstile and spendings search take less width on mobile",
+        "type": "chore"
+      },
+      {
+        "title": "deps",
+        "type": "chore"
+      },
+      {
+        "description": "- finally send emails on all actions that require it\n- properly log the last remaining requests\n- properly ban the user on account deletion request\n- don't display wrong messages, properly disconnect the user after account deletion request\n- compress the exported PDFs to overcome their abysmal size\n- make the last used provider success color on oauth btn link\n- user budget export folder have its actual name now\n- fixed missing tabindex\n- check for username availability in admin too\n- don't allow illegal usernames",
+        "title": "email",
+        "type": "feat",
+        "version": "0.18.0"
+      },
+      {
+        "title": "check for updates every hour and easier refresh",
+        "type": "feat",
+        "version": "0.17.1"
+      },
+      {
+        "title": "allow admins to reject a request, add confirmations",
+        "type": "feat"
+      },
+      {
+        "title": "container name",
+        "type": "chore"
+      },
+      {
+        "description": "- users request to export data or delete their accounts is stored in db, visible admin side and actionnable\n- fixed an issue with the category color not initializing properly\n- fixed wrong props type\n- centralize user exports in an util",
+        "title": "user requests",
+        "type": "feat",
+        "version": "0.17.0"
+      },
+      {
+        "description": "- add app-wide logger to properly understand what's happening\n- use wide-events to have better clues (cf. loggingsucks.com)\n- validate the logs against a schema\n- created an entire freaking CLI & TUI for interpretation of logs, filtering, vizualization and more\n- new (entirely optional) env vars to help with logging\n- make all buttons with links preload with NuxtLink\n- don't allow password-show & turnstile to be tab-focused\n- enhance agent work on long-lasting tasks\n- avoid agents loading the demo in context",
+        "title": "wide events and logs explorer",
+        "type": "feat",
+        "version": "0.16.0"
+      },
+      {
+        "title": "better deployment, docker compose and automated migrations/seeding on server startup",
+        "type": "chore"
+      },
+      {
+        "title": "perf improvements",
+        "type": "fix",
+        "version": "0.15.2"
+      },
+      {
+        "title": "add AI guidance, bump deps, remove demo user checks in API as it's no longer a real logged-in user",
+        "type": "chore"
+      },
+      {
+        "description": "- should be flawless with no sync issues whatsoever (took so long)\n- also we can't do async transactions ? for some odd reason\n- add a confirmation before deleting a shared user\n- sort budget trackers by name",
+        "title": "transfer ownership of budget trackers",
+        "type": "feat",
+        "version": "0.15.1"
+      },
+      {
+        "title": "casing issue from a replace_all",
+        "type": "chore"
+      },
+      {
+        "description": "- list existing users (limited to 200 for now, we'll never reach that anyway lol. if we do, rework with a search and pagination)\n- allow to edit users, create new ones\n- impersonation implemented, force page reload to refresh session\n- export user data (complete zip), send email modal todo\n- delete user (requests todo)\n- don't prefetch admin data in the page. the guard is probably redundant from the middleware but it doesn't hurt",
+        "title": "admin section",
+        "type": "feat",
+        "version": "0.15.0"
+      },
+      {
+        "title": "rename Error to LayoutAlert, also update the name on username change, fix wording",
+        "type": "chore"
+      },
+      {
+        "title": "make the budget selection foldable to free space on mobile and avoid misclicks",
+        "type": "feat"
+      },
+      {
+        "description": "- ability to change username/email/password, link/unlink oauth, request data export and account deletion (TODO, as well as ownership transfer), add donate links. no need for turnstile here since the user is already logged in\n- enable users to change their emails & implement email verification (required for email change) without forced verification\n- add missing data in store\n- add current page indicator in the menu and a link to the app\n- keep the loading state for oauth for example as they do a full reload\n- clamp properly button's content on mobile\n- display a proper reset password text when coming back from the email\n- revert the manual imports introduced in cd3b8b8 to work around a Nuxt issue (nuxt/nuxt#34140)\n- properly reset the category color to the theme's one\n- show the footer on the account page\n- remove unused stuff from vs code & eslint config",
+        "title": "working account page",
+        "type": "feat",
+        "version": "0.14.0"
+      },
+      {
+        "description": "- new page to reset the password, works in 2 steps, send email then change the pass, handle errors\n- allow the Error to be success (lol)\n- exports have the budget tracker name as a prefix\n- add a notice for magic links\n- the github icon at the bottom isn't as far from the rest of the footer\n- proper page titles\n- log the email requests for now\n- properly save username and magic link for last used method",
+        "title": "reset password",
+        "type": "feat",
+        "version": "0.13.0"
+      },
+      {
+        "title": "missing await, remove superfluous imports, named import and move the auth context type extension to shared to be consumed by both back & front without duplication",
+        "type": "chore"
+      },
+      {
+        "title": "use exported t and move legal keys in their page to not pollute the i18n files",
+        "type": "chore"
+      },
+      {
+        "description": "- proper middlewares (app & server) to check for auth, proper use of the session system (~ish ? have to double check the store and those)\n- move the auth/user out of the store and only get reactive getters around data\n- proper menu in the navbar, houses theme/lang switch, connect/disconnect, account management and admin panel. might also show the impersonation notice in the future\n- properly reflect changes in the theme composable\n- move the footer to the layout, except in app/demo, admin and account (might change that one later), include ToS & PP in there\n- make sure the rounding of all buttons is consistent\n- all modals are glassy\n- gradients don't get cut\n- move rounded to props when possible\n- better landing cta button, remove the github one and join section\n- remove the Email OTP (for now, i feel like we have enough login methods)\n- fix the last used login method not appearing\n- turnstile will try to match the UI lang/theme\n- properly reset the turnstile token on form failure + don't override existing error messages\n- proper modal titles\n- fixed the glow button usage\n- prefix the seed script, ensure seeded users are verified (even though we never check for that)\n- ! hotpatch the settings types while the route is nonexistent\n- todo : change title per page except in app, do the acc page",
+        "title": "tidy up the better-auth migration",
+        "type": "feat",
+        "version": "0.12.0"
+      },
+      {
+        "description": "  - email/password\n  - username\n  - admin (role, impersonate)\n  - email otp & magic link (tbd)\n  - last login method\n  - google\n  - github\n  - captcha (turnstile)\n  - allow oauth emails to be different than primary email\n  - relax username/password limits\n- enhanced seed db script\n- drop the api middleware\n- resend for emails (tbd)\n- drop the dep on bcryptjs, jsonwebtoken, add resend and vue-cloudflare-turnstile, move out of drizzle beta for now and add imports aliases for proper execution of the seed script\n- readme .env revamp, add all new required vars\n- lowercase table names for consistency\n- better login component\n  - username/password(/magic link ? if you can find it lol)\n  - google/github oauth\n  - cloudflare turnstile with warnings and errors handling\n  - proper form validation\n  - last used method\n- signup component !\n  - email/username\n  - no oauth, yes i could link it to another account later but i'm lazy\n  - existing username check\n- allow the error component to display warnings too\n- removed Bearer Auth on api requests **for now**, until i figured out sessions management. the admin/user route will also come back later\n- don't load dotenv for drizzle as drizzle-kit auto-loads them\n- proper app name loading from i18n\n- fully localized privacy policy and terms of use (had to bcz google oauth)\n- move some features out of the store\n- db export have date in the filename\n- dedicated error page for better-auth (skill) issues\n- make ssrSafe finite\n- tweak types, store.user is still to be determined (especially for the demo)\n- still todo : move navbar items to menu, user settings page (username/email/password change, link/unlink social), link legal pages on the footer, password reset, implement emails (including magic link), admin page revamp (add/edit/delete user, impersonate, export user data (and send to email ?)), budget name in exports, change the rocketship text, remove the email from \"ready to join\" section",
+        "title": "move to Better Auth",
+        "type": "feat",
+        "version": "0.11.0"
+      },
+      {
+        "description": "- no longer manipulate queries blindly with raw better-sqlite3\n- proper type checking\n- actually extends the actual tools\n- still allows for SQLite to be used !\n- created a proper schema to reference and db instance to use\n- store the demo in-app so no db clutter and added i18n ! also reduce api load and simplify the seed script\n- gate the app path to non-demo users\n- flip the BudgetTrackerRole type to not have null in order to avoid having \"Exclude\" everywhere\n- fix the role type of User and Store user which was totally wrong lol, properly type Spending.is_spending as boolean thanks to Drizzle\n- added drizzle eslint rules",
+        "title": "move to Drizzle ORM",
+        "type": "feat",
+        "version": "0.10.0"
+      },
+      {
+        "description": "- show a virtual list of cards instead of a virtual table, inspired by banking apps and separated by date elements\n- smaller scrollbars\n- disable buttons instead of hiding them\n- proper text when there's no category/no icon selected\n- don't display charts when there's no data\n- enlarge the search field on mobile\n- remove the welcome message\n- color tint the bottom navbar",
+        "title": "mobile friendlyness part 1",
+        "type": "feat",
+        "version": "0.9.0"
+      },
+      {
+        "title": "deps & format (oxfmt-ish)",
+        "type": "chore"
+      },
+      {
+        "title": "add more opentags",
+        "type": "chore"
+      },
+      {
+        "title": "new OG image and better description",
+        "type": "chore"
+      },
+      {
+        "title": "show the category buttons but disabled in view-only",
+        "type": "fix"
+      },
+      {
+        "title": "allow to tweak the total balance to include past and future records, ensure minimum space next to switches",
+        "type": "feat",
+        "version": "0.8.3"
+      },
+      {
+        "description": "- export at higher quality (x6 pixels on rasterized content), create a proper SVG as a base instead of having PNG as a base\n- export always in light theme for compatibility\n- fix a shit ton of bugs related to export that i don't wanna remember. yes there's some errors in the console. does it still export just fine ? yeah. so don't care + didn't asked\n- filenames include the timerange\n- add the 3rd part of the cashflow in the legend\n- always show the cashflow legend at the bottom\n- remove unnecessary type casts\n- add a loading indicator while the file is generated\n- stream the parallel commands outputs to not collapse them",
+        "title": "better charts exports",
+        "type": "feat",
+        "version": "0.8.2"
+      },
+      {
+        "description": "- only display the options relevant to the visible chart\n- better color choice\n- separate X & Y axis display\n- better date display to avoid crammed YYYY-MM-DD\n- show the balance last so it is above the other areas",
+        "title": "better charts",
+        "type": "feat",
+        "version": "0.8.1"
+      },
+      {
+        "title": "meta import blowing up as a promise",
+        "type": "fix"
+      },
+      {
+        "title": "use dynamic imports for the huge mdi metadata",
+        "type": "chore"
+      },
+      {
+        "description": "- search icons with their name, aliases and categories\n- properly switch the default category color on theme change\n- hide buttons when there's no data\n- hide simplifiers when already in simplified mode\n- properly tie points in simplified mode\n- fix the search on mobile\n- fix (again) the table when no data\n- closer to real-app skeleton loaders\n- don't autocomplete any field apart from username and password\n- document the env var changes",
+        "title": "built-in icon search",
+        "type": "feat",
+        "version": "0.8.0"
+      },
+      {
+        "description": "- complete demo with no rights, but read access to a complete 150 transactions view\n- strenghten the api against wrong privileges (expose the username in the context)\n- disable buttons instead of hiding them\n- ability to disable points in the area graph for cleaner look\n- show also income category repartition and disable either\n- restyle category pies for mobile readability and avoid cropping\n- also search for categories in the table + clear it, center and limit width\n- disabled fractions ligatures for readability\n- seed command auto-sets the env var",
+        "title": "demo profile",
+        "type": "feat",
+        "version": "0.7.0"
+      },
+      {
+        "title": "move types to shared folder (autoimport) + use new proper server import alias, bump deps, remove chart function call, force imports in composables and store since nuxt just no longer recognize them (?) and force an api type (??), use non-deprecated createError params",
+        "type": "chore"
+      },
+      {
+        "description": "- overall looks better, more spaced buttons, less unused space\n- bottom navbar on mobile to cleanup the space\n- charts get a simplified mode, ability to manually disable title, legend, axes and grid, and the 3 individual areas\n- fix some edits not propagating through the app\n- fix the date getting ellipsis\n- fix the color picker getting squished on mobile\n- hide the scrollbar junction\n- removed the draft assets again",
+        "title": "mobile view enhancements",
+        "type": "feat",
+        "version": "0.6.0"
+      },
+      {
+        "title": "node 25 image no longer includes corepack nor yarn, display the no spendings message without scroll",
+        "type": "fix"
+      },
+      {
+        "title": "no longer requires users to use the mdi prefix for icons, use the primary color by default, cleanup unused classes, format pass",
+        "type": "fix",
+        "version": "0.5.1"
+      },
+      {
+        "description": "- commit more to a glass style\n- properly use the alt logo in light theme + tweak a bit more its colors to match that\n- globally refine colors, padding and more\n- error component transitions\n- admin settings are much cleaner\n- categories get a cleaner icon look\n- charts should be more readable\n- better export buttons (tonal and colored)\n- gradient-based summary cards\n- non-100% width navbar\n- more impactful tagline, better scroll incentive\n- simplify the login page\n- finally tidy up the type safety of DB queries, remove a lot of oxlint disable\n- use node 25\n- swap the logos with better bg-removed ones, smaller as a bonus",
+        "title": "redesign (yes, again)",
+        "type": "feat",
+        "version": "0.5.0"
+      },
+      {
+        "title": "switch to a virtual table, add a search field, more rounded, label chips for categories, no more small text in table, default sort, fixed the divider gradient on mobile, better display of categories (more when space is available horizontally) + outlined color from the icon",
+        "type": "feat",
+        "version": "0.4.2"
+      },
+      {
+        "title": "make categories limited to budget trackers to not share them to other accounts",
+        "type": "fix",
+        "version": "0.4.1"
+      },
+      {
+        "description": "- more interesting landing, more playful\n- actually okay layout on login with loading indicator\n- added color variations\n- i18n cleanup",
+        "title": "rework the landing and login pages",
+        "type": "feat",
+        "version": "0.4.0"
+      },
+      {
+        "title": "sort JSON i18n",
+        "type": "chore"
+      },
+      {
+        "description": "- use a select in mobile view & simplify the button creation\n- more consistent date range + buttons row between pages\n- space out the date range from buttons on mobile\n- show arrows on mobile when not enough space is available for the tabs\n- more readable font size for the charts\n- auto redirect to the app on homepage if already logged in\n- better skeleton loader placement on mobile\n- consistent logs\n- consistent tags",
+        "title": "better date range selectors",
+        "type": "feat",
+        "version": "0.3.4"
+      },
+      {
+        "title": "dev docs",
+        "type": "chore"
+      },
+      {
+        "title": "docker: use non hardened images and use an allowed port (32768-61000)",
+        "type": "fix"
+      },
+      {
+        "description": "- doughnut now displays actually useful information (cashflow)\n- percentages in some tooltips\n- fixed the charts font being wanky\n- better downloaded filenames, reflects the selected date period",
+        "title": "proper 4th chart",
+        "type": "feat"
+      },
+      {
+        "title": "auto select all days of the week in week filtering mode, use the same color for impact",
+        "type": "feat"
+      },
+      {
+        "description": "- move the filtering logic to its own component\n- restyle\n- fixed some logic bugs\n- ability to select other day/week/month/year than the current one with an indicator of the current one using a tooltip\n- fixed titles not getting the right font\n- add expose dev scripts",
+        "title": "rework the date filters",
+        "type": "feat",
+        "version": "0.3.3"
+      },
+      {
+        "title": "properly sort by week",
+        "type": "fix"
+      },
+      {
+        "title": "don't load empty values, properly filter by date, fix an error and select the right day",
+        "type": "fix"
+      },
+      {
+        "title": "actually limit description size",
+        "type": "fix"
+      },
+      {
+        "title": "use local fonts, inter everywhere except titles, ligatures and fira code on the highlights",
+        "type": "feat",
+        "version": "0.3.2"
+      },
+      {
+        "description": "- space out things\n- rework icons\n- display input details (ex errors)\n- better looking admin page\n- clear the selected budget for an easy refresh\n- simplify i18n\n- make sure the cancel in modals is always the left option\n- different icons per role\n- added tooltips for unlabled actions\n- switch to a proper number input for the amount, proper calendar for the date picker too\n- cleaner skeleton loaders\n- use tabs for the main sections, like for the charts",
+        "title": "restyle",
+        "type": "feat",
+        "version": "0.3.1"
+      },
+      {
+        "description": "- updated types and api routes\n- remove the icon section in the admin settings\n- make sure that icon names are always correctly prefixed\n- proper error page\n- properly type the admin export",
+        "title": "remove the Icon table, merge with Category, allow users to create their own icons tied to their BudgetTrackers",
+        "type": "feat",
+        "version": "0.3.0"
+      },
+      {
+        "title": "landing page",
+        "type": "feat"
+      },
+      {
+        "title": "better colors, login page",
+        "type": "feat"
+      },
+      {
+        "title": "strengthen the admin API, fix the budget tracker not being properly selected on creation",
+        "type": "fix"
+      },
+      {
+        "title": "switch to UUID for identifiers, centralize types",
+        "type": "fix",
+        "version": "0.2.0"
+      },
+      {
+        "description": "- actual components with budgets selector, table, filtering & sorting, charts, rights, categories and more\n- fixed the annoying \"disconnect\" issue\n- hardened docker images",
+        "title": "working-ish PoC",
+        "type": "feat",
+        "version": "0.1.0"
+      },
+      {
+        "title": "latest better-maps & website changes, now ready to kickstart the project",
+        "type": "chore"
+      },
+      {
+        "title": "docs: rough sketch of the db",
+        "type": "chore"
+      },
+      {
+        "title": "crash, inter tweaks, remove unused styles, properly redirect, don't send to homepage when logged in",
+        "type": "fix"
+      },
+      {
+        "title": "switch to a setup-based store",
+        "type": "chore"
+      },
+      {
+        "description": "- recheck EDM115/better-maps@9253d53 to see more about the SSR fetch-once tricks in the app file\n- added a charting lib",
+        "title": "port the latest changes from better-maps as a base",
+        "type": "chore"
+      },
+      {
+        "description": "most of the code has been ported from EDM115/better-maps",
+        "title": "init",
+        "type": "chore"
+      }
+    ],
+    "title": "What's new in Spendly",
+    "types": {
+      "chore": "chore",
+      "feat": "feat",
+      "fix": "fix"
     }
   },
   "error": {
@@ -504,6 +997,7 @@
   "main": {
     "account": "Account - Spendly",
     "admin": "Admin - Spendly",
+    "changelog": "Changelog - Spendly",
     "demo": "Demo - Spendly",
     "description": "Simple, powerful, and free budget tracking for everyone with tables, stats and charts",
     "install": "You can install Spendly as an app for a faster and smoother experience. Do you want to install it ?",
