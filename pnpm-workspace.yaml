@@ -1,7 +1,7 @@
 allowBuilds:
   "@parcel/watcher": true
   "@prisma/engines": false
-  better-sqlite3: true
+  better-sqlite3: false
   core-js: true
   esbuild: true
   prisma: false
@@ -15,6 +15,7 @@ lockfileIncludeTarballUrl: true
 minimumReleaseAge: 120
 
 publicHoistPattern:
+  - "*sharp*"
   - "*vuetify*"
 
 resolutionMode: highest

@@ -6,6 +6,16 @@ import { toAuthContext } from "#server/utils/session"
 function shouldSkipAuth(pathname: string): boolean {
   return pathname === "/api/auth"
     || pathname.startsWith("/api/auth/")
+    || pathname.startsWith("/_nuxt/")
+    || pathname.startsWith("/_ipx/")
+    || pathname.startsWith("/_i18n/")
+    || pathname.startsWith("/fonts/")
+    || pathname.startsWith("/images/")
+    || pathname === "/favicon.ico"
+    || pathname === "/robots.txt"
+    || pathname === "/manifest.webmanifest"
+    || pathname === "/sw.js"
+    || pathname.startsWith("workbox-")
 }
 
 async function applyAuthContext(

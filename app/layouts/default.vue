@@ -20,7 +20,7 @@
       >
         <v-icon
           icon="mdi-update"
-          color="success"
+          color="primary"
           class="mr-2"
         />
         <span class="font-weight-bold">
@@ -28,7 +28,7 @@
         </span>
         <template #actions>
           <v-btn
-            color="success"
+            color="primary"
             class="pr-2"
             variant="elevated"
             @click="refreshToUpdate"
@@ -49,7 +49,7 @@
       >
         <v-icon
           :icon="mdAndUp ? 'mdi-monitor-arrow-down-variant' : 'mdi-cellphone-arrow-down-variant'"
-          color="success"
+          color="primary"
           class="mr-2"
         />
         <span class="font-weight-bold">

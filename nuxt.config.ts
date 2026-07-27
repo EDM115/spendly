@@ -18,6 +18,14 @@ export default defineNuxtConfig({
     timeline: { enabled: true },
   },
   app: {
+    head: {
+      style: [
+        {
+          innerHTML: "@layer vuetify-core,vuetify-components,vuetify-overrides,vuetify-utilities,vuetify-final;",
+          tagPriority: -100,
+        },
+      ],
+    },
     pageTransition: {
       name: "page",
       mode: "out-in",

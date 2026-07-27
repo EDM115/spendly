@@ -275,6 +275,10 @@
     "link": "Voir les nouveautés",
     "releases": [
       {
+        "title": "échec du build (WiseLibs/better-sqlite3#1503), course du middleware, thème cassé (vuetifyjs/vuetify#22752 + vuetifyjs/nuxt-module#381), meilleure coloration de la mise à jour de la PWA",
+        "type": "fix"
+      },
+      {
         "title": "migration vers Vuetify 4",
         "type": "feat",
         "version": "1.6.0"
