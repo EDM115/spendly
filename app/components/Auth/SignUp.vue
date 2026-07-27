@@ -12,7 +12,7 @@
     <v-alert
       v-if="!disabledFeaturesList['oauth-github'] && !disabledFeaturesList['oauth-google']"
       color="info"
-      elevation="4"
+      elevation="2"
       icon="mdi-lightbulb-outline"
       icon-size="default"
       variant="outlined"

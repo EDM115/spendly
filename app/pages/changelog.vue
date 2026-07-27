@@ -10,10 +10,10 @@
       >
         {{ t("changelog.eyebrow") }}
       </v-chip>
-      <h1 class="text-h3 text-md-h2 font-weight-black pb-4">
+      <h3 class="text-display-medium font-weight-black pb-4">
         {{ t("changelog.title") }}
-      </h1>
-      <p class="text-h6 text-medium-emphasis font-weight-light mx-auto changelog-description">
+      </h3>
+      <p class="text-title-large text-medium-emphasis font-weight-light mx-auto changelog-description">
         {{ t("changelog.description") }}
       </p>
     </header>
@@ -41,7 +41,7 @@
 
         <div class="release-content">
           <div class="d-flex flex-wrap align-center ga-2 mb-3">
-            <span class="release-type text-caption font-weight-black">
+            <span class="release-type text-body-small font-weight-black">
               {{ t(`changelog.types.${release.type}`) }}
             </span>
             <v-chip
@@ -56,12 +56,12 @@
             </v-chip>
           </div>
 
-          <h2 class="text-h5 text-md-h4 font-weight-bold mb-2">
+          <h2 class="text-headline-small text-md-headline-large font-weight-bold mb-2">
             {{ release.title }}
           </h2>
           <p
             v-if="release.description"
-            class="text-body-1 text-medium-emphasis mb-0 release-description"
+            class="text-body-large text-medium-emphasis mb-0 release-description"
           >
             {{ release.description }}
           </p>
@@ -125,7 +125,7 @@ function getReleaseStyle(type: ChangelogReleaseType): Record<string, string> {
   margin: 0 auto 72px;
   z-index: 1;
 
-  h1 {
+  h3 {
     background: linear-gradient(115deg, rgb(var(--v-theme-primary)), rgb(var(--v-theme-secondary)));
     background-clip: text;
     color: transparent;

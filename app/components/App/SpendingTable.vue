@@ -152,10 +152,10 @@
           >
             <div class="summary-bg bg-success" />
             <v-card-text class="text-center position-relative z-10">
-              <div class="text-caption font-weight-bold text-uppercase mb-1 opacity-70">
+              <div class="text-body-small font-weight-bold text-uppercase mb-1 opacity-70">
                 {{ t("app.spending.total-income") }}
               </div>
-              <div :class="['font-weight-black', 'text-code', 'text-success', smAndUp ? 'text-h4' : 'text-h5']">
+              <div :class="['font-weight-black', 'text-code', 'text-success', smAndUp ? 'text-headline-large' : 'text-headline-small']">
                 {{ formatCurrency(totalIncome) }}
               </div>
             </v-card-text>
@@ -173,10 +173,10 @@
           >
             <div class="summary-bg bg-error" />
             <v-card-text class="text-center position-relative z-10">
-              <div class="text-caption font-weight-bold text-uppercase mb-1 opacity-70">
+              <div class="text-body-small font-weight-bold text-uppercase mb-1 opacity-70">
                 {{ t("app.spending.total-expense") }}
               </div>
-              <div :class="['font-weight-black', 'text-code', 'text-error', smAndUp ? 'text-h4' : 'text-h5']">
+              <div :class="['font-weight-black', 'text-code', 'text-error', smAndUp ? 'text-headline-large' : 'text-headline-small']">
                 {{ formatCurrency(totalExpense) }}
               </div>
             </v-card-text>
@@ -194,10 +194,10 @@
           >
             <div :class="['summary-bg', balance >= 0 ? 'bg-info' : 'bg-warning']" />
             <v-card-text class="text-center position-relative z-10">
-              <div class="text-caption font-weight-bold text-uppercase mb-1 opacity-70">
+              <div class="text-body-small font-weight-bold text-uppercase mb-1 opacity-70">
                 {{ balanceLabel }}
               </div>
-              <div :class="[smAndUp ? 'text-h4' : 'text-h5', 'font-weight-black', 'text-code', balance >= 0 ? 'text-info' : 'text-warning']">
+              <div :class="[smAndUp ? 'text-headline-large' : 'text-headline-small', 'font-weight-black', 'text-code', balance >= 0 ? 'text-info' : 'text-warning']">
                 {{ formatCurrency(balance) }}
               </div>
             </v-card-text>
@@ -253,7 +253,7 @@
           </span>
         </template>
         <template #[`item.date`]="{ item }">
-          <span class="text-medium-emphasis text-body-2 date-cell">{{ formatDate(item.date) }}</span>
+          <span class="text-medium-emphasis text-body-medium date-cell">{{ formatDate(item.date) }}</span>
         </template>
         <template #[`item.actions`]="{ item }">
           <v-tooltip
@@ -309,7 +309,7 @@
         >
           <template #default="{ item }">
             <div class="spending-date-block">
-              <h3 class="text-h6 font-weight-bold mb-2">
+              <h3 class="text-title-large font-weight-bold mb-2">
                 {{ formatDate(item.date) }}
               </h3>
               <v-card
@@ -434,19 +434,19 @@
                   <v-list-item v-bind="itemProps">
                     <template #prepend>
                       <v-icon
-                        :icon="item.raw.icon"
-                        :color="item.raw.color"
+                        :icon="item.icon"
+                        :color="item.color"
                       />
                     </template>
                   </v-list-item>
                 </template>
                 <template #selection="{ item }">
                   <v-icon
-                    :icon="item.raw.icon"
-                    :color="item.raw.color"
+                    :icon="item.icon"
+                    :color="item.color"
                     class="mr-2"
                   />
-                  {{ item.raw.name }}
+                  {{ item.name }}
                 </template>
               </v-autocomplete>
             </v-col>
@@ -537,7 +537,7 @@
     persistent
   >
     <v-card class="glass-card pa-1">
-      <v-card-title class="text-h5">
+      <v-card-title class="text-headline-small">
         {{ t("app.spending.delete-title") }}
       </v-card-title>
       <v-card-text>

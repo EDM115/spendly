@@ -275,6 +275,11 @@
     "link": "See what's new",
     "releases": [
       {
+        "title": "migrate to Vuetify 4",
+        "type": "feat",
+        "version": "1.6.0"
+      },
+      {
         "title": "add a dedicated Changelog page",
         "type": "feat",
         "version": "1.5.3"
@@ -913,7 +918,7 @@
           "chips": [
             "Nuxt 4 SSR",
             "Vue 3",
-            "Vuetify 3",
+            "Vuetify 4",
             "Pinia"
           ],
           "desc": "A modern SSR frontend with glassmorphism-inspired Material Design UI and reactive state management",

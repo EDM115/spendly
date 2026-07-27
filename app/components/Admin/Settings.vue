@@ -6,7 +6,7 @@
       color="primary"
       class="mr-3"
     />
-    <h1 class="text-h4 font-weight-bold gradient-text pb-0">
+    <h1 class="text-headline-large font-weight-bold gradient-text pb-0">
       {{ t("admin.title") }}
     </h1>
   </div>
@@ -19,7 +19,7 @@
       class="glass-panel rounded-xl overflow-hidden transparent-panel"
       elevation="0"
     >
-      <v-expansion-panel-title class="font-weight-bold text-h6 py-4">
+      <v-expansion-panel-title class="font-weight-bold text-title-large py-4">
         <v-icon
           icon="mdi-account-group-outline"
           class="mr-3"
@@ -30,6 +30,7 @@
         <v-btn
           color="primary"
           class="mr-4 text-none"
+          style="font-size: large;"
           :rounded="smAndUp ? 'lg' : 'full'"
           variant="tonal"
           :prepend-icon="smAndUp ? 'mdi-account-plus-outline' : undefined"
@@ -53,7 +54,7 @@
             </div>
             <div
               v-if="feedback.issue"
-              class="text-body-2"
+              class="text-body-medium"
             >
               {{ feedback.issue }}
             </div>
@@ -68,7 +69,7 @@
           >
             <v-container class="pa-0">
               <v-row
-                align="center"
+                class="align-center"
                 no-gutters
               >
                 <v-col
@@ -84,7 +85,7 @@
                     />
                     {{ formatUserLabel(userItem) }}
                   </v-list-item-title>
-                  <v-list-item-subtitle class="text-body-2">
+                  <v-list-item-subtitle class="text-body-medium">
                     {{ userItem.email || t("admin.users.no-email") }}
                   </v-list-item-subtitle>
                 </v-col>
@@ -188,7 +189,7 @@
       class="glass-panel rounded-xl overflow-hidden transparent-panel"
       elevation="0"
     >
-      <v-expansion-panel-title class="font-weight-bold text-h6 py-4">
+      <v-expansion-panel-title class="font-weight-bold text-title-large py-4">
         <v-icon
           icon="mdi-database-outline"
           color="secondary"
@@ -275,7 +276,7 @@
       class="glass-panel rounded-xl overflow-hidden transparent-panel"
       elevation="0"
     >
-      <v-expansion-panel-title class="font-weight-bold text-h6 py-4">
+      <v-expansion-panel-title class="font-weight-bold text-title-large py-4">
         <v-icon
           icon="mdi-inbox-arrow-down-outline"
           :color="userRequestsIconColor"
@@ -309,7 +310,7 @@
           >
             <v-container class="pa-0">
               <v-row
-                align="center"
+                class="align-center"
                 no-gutters
               >
                 <v-col
@@ -325,10 +326,10 @@
                     />
                     {{ formatRequestUser(request) }}
                   </v-list-item-title>
-                  <v-list-item-subtitle class="text-body-2">
+                  <v-list-item-subtitle class="text-body-medium">
                     {{ request.user_email || t("admin.users.no-email") }}
                   </v-list-item-subtitle>
-                  <div class="text-caption text-medium-emphasis mt-1">
+                  <div class="text-body-small text-medium-emphasis mt-1">
                     {{ formatRequestDate(request.request_date) }}
                   </div>
                 </v-col>
@@ -412,7 +413,7 @@
     persistent
   >
     <v-card class="glass-card pa-1 border-thin">
-      <v-card-title class="text-h6 font-weight-bold">
+      <v-card-title class="text-title-large font-weight-bold">
         {{ t("admin.user-requests.resolve-title") }}
       </v-card-title>
       <v-card-text>
@@ -447,7 +448,7 @@
     persistent
   >
     <v-card class="glass-card pa-1 border-thin">
-      <v-card-title class="text-h6 font-weight-bold">
+      <v-card-title class="text-title-large font-weight-bold">
         {{ t("admin.user-requests.dismiss-title") }}
       </v-card-title>
       <v-card-text>
@@ -482,7 +483,7 @@
     persistent
   >
     <v-card class="glass-card pa-1 border-thin">
-      <v-card-title class="text-h6 font-weight-bold">
+      <v-card-title class="text-title-large font-weight-bold">
         {{ isCreating ? t("admin.users.create-title") : t("admin.users.edit-title") }}
       </v-card-title>
       <v-card-text>
@@ -611,7 +612,7 @@
     max-width="500"
   >
     <v-card class="glass-card pa-1 border-thin">
-      <v-card-title class="text-h5 text-error font-weight-bold">
+      <v-card-title class="text-headline-small text-error font-weight-bold">
         {{ t("admin.users.delete-title") }}
       </v-card-title>
       <v-card-text>

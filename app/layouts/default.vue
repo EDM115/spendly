@@ -95,10 +95,10 @@
           color="secondary"
         />
       </div>
-      <div class="text-body-2 text-medium-emphasis mb-2">
+      <div class="text-body-medium text-medium-emphasis mb-2">
         {{ new Date().getFullYear() }} - <strong class="gradient-text">{{ t('main.title') }}</strong>
       </div>
-      <div class="text-body-2 text-medium-emphasis mb-2">
+      <div class="text-body-medium text-medium-emphasis mb-2">
         <NuxtLink
           to="/privacy-policy"
           style="color: rgb(var(--v-theme-secondary))"

@@ -130,10 +130,10 @@
                 color="primary"
                 class="mb-4"
               />
-              <h2 class="text-h5 mb-2">
+              <h2 class="text-headline-small mb-2">
                 {{ t("app.budget-tracker.no-tracker") }}
               </h2>
-              <p class="text-body-1 text-medium-emphasis">
+              <p class="text-body-large text-medium-emphasis">
                 {{ t("app.budget-tracker.select") }}
               </p>
             </v-card-text>

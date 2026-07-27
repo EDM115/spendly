@@ -52,7 +52,7 @@
                   />
                 </v-avatar>
                 <div
-                  class="text-body-1 font-weight-medium text-high-emphasis"
+                  class="text-body-large font-weight-medium text-high-emphasis"
                   style="word-break: break-all;"
                 >
                   {{ category.name }}
@@ -117,7 +117,7 @@
     persistent
   >
     <v-card class="glass-card pa-1 border-thin">
-      <v-card-title class="text-h6 font-weight-bold">
+      <v-card-title class="text-title-large font-weight-bold">
         {{ editingCategory ? t("app.category.edit-title") : t("app.category.add-title") }}
       </v-card-title>
       <v-card-text>
@@ -136,7 +136,7 @@
               :color="categoryForm.color"
               size="large"
               variant="tonal"
-              class="elevation-2"
+              class="elevation-1"
             >
               <v-icon
                 :icon="categoryForm.icon"
@@ -168,15 +168,15 @@
                 <v-list-item v-bind="itemProps">
                   <template #prepend>
                     <v-icon
-                      :icon="`mdi-${item.raw.name}`"
+                      :icon="`mdi-${item.name}`"
                       class="mr-n4"
                     />
                   </template>
                   <v-list-item-subtitle
-                    v-if="item.raw.aliases && item.raw.aliases.length > 0"
+                    v-if="item.aliases && item.aliases.length > 0"
                     style="max-width: 250px;"
                   >
-                    {{ item.raw.aliases.map(alias => alias.split("-").join(" ")).join(", ") }}
+                    {{ item.aliases.map(alias => alias.split("-").join(" ")).join(", ") }}
                   </v-list-item-subtitle>
                 </v-list-item>
               </template>
@@ -222,7 +222,7 @@
     persistent
   >
     <v-card class="glass-card pa-1 border-thin">
-      <v-card-title class="text-h5 text-error font-weight-bold">
+      <v-card-title class="text-headline-small text-error font-weight-bold">
         {{ t("app.category.delete-title") }}
       </v-card-title>
       <v-card-text>
@@ -275,7 +275,13 @@ const showAddDialog = ref(false)
 const showDeleteDialog = ref(false)
 const editingCategory = ref<Category | null>(null)
 const deletingCategory = ref<Category | null>(null)
-const defaultColor = computed(() => theme.current.value.colors.primary)
+const defaultColor = computed(() => {
+  const primary = theme.current.value.colors.primary
+
+  return typeof primary === "string"
+    ? primary
+    : ""
+})
 const categoryForm = ref({
   name: "",
   icon: "mdi-",

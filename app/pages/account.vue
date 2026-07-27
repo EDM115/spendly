@@ -7,10 +7,10 @@
       <v-col cols="12">
         <div class="d-flex flex-column flex-md-row align-start align-md-center justify-space-between gap-4 mx-8">
           <div>
-            <h1 class="text-h4 font-weight-bold mb-1">
+            <h1 class="text-headline-large font-weight-bold mb-1">
               {{ t("account.title") }}
             </h1>
-            <p class="text-body-1 text-medium-emphasis">
+            <p class="text-body-large text-medium-emphasis">
               {{ t("account.subtitle") }}
             </p>
           </div>
@@ -48,10 +48,10 @@
           elevation="0"
         >
           <div class="mb-4">
-            <h2 class="text-h5 font-weight-bold">
+            <h2 class="text-headline-small font-weight-bold">
               {{ t("account.profile.title") }}
             </h2>
-            <p class="text-body-2 text-medium-emphasis">
+            <p class="text-body-medium text-medium-emphasis">
               {{ t("account.profile.description") }}
             </p>
           </div>
@@ -108,10 +108,10 @@
           elevation="0"
         >
           <div class="mb-4">
-            <h2 class="text-h5 font-weight-bold">
+            <h2 class="text-headline-small font-weight-bold">
               {{ t("account.email.title") }}
             </h2>
-            <p class="text-body-2 text-medium-emphasis">
+            <p class="text-body-medium text-medium-emphasis">
               {{ t("account.email.description") }}
             </p>
           </div>
@@ -178,10 +178,10 @@
           elevation="0"
         >
           <div class="mb-4">
-            <h2 class="text-h5 font-weight-bold">
+            <h2 class="text-headline-small font-weight-bold">
               {{ t("account.security.title") }}
             </h2>
-            <p class="text-body-2 text-medium-emphasis">
+            <p class="text-body-medium text-medium-emphasis">
               {{ t("account.security.description") }}
             </p>
           </div>
@@ -308,10 +308,10 @@
           elevation="0"
         >
           <div class="mb-4">
-            <h2 class="text-h5 font-weight-bold">
+            <h2 class="text-headline-small font-weight-bold">
               {{ t("account.oauth.title") }}
             </h2>
-            <p class="text-body-2 text-medium-emphasis">
+            <p class="text-body-medium text-medium-emphasis">
               {{ t("account.oauth.description") }}
             </p>
           </div>
@@ -419,10 +419,10 @@
           elevation="0"
         >
           <div class="mb-4">
-            <h2 class="text-h5 font-weight-bold">
+            <h2 class="text-headline-small font-weight-bold">
               {{ t("account.pwa.title") }}
             </h2>
-            <p class="text-body-2 text-medium-emphasis">
+            <p class="text-body-medium text-medium-emphasis">
               {{ t("account.pwa.description") }}
             </p>
           </div>
@@ -471,10 +471,10 @@
           elevation="0"
         >
           <div class="mb-4">
-            <h2 class="text-h5 font-weight-bold">
+            <h2 class="text-headline-small font-weight-bold">
               {{ t("account.data.title") }}
             </h2>
-            <p class="text-body-2 text-medium-emphasis">
+            <p class="text-body-medium text-medium-emphasis">
               {{ t("account.data.description") }}
             </p>
           </div>
@@ -524,7 +524,7 @@
       persistent
     >
       <v-card class="glass-card pa-1 border-thin">
-        <v-card-title class="text-h6 font-weight-bold">
+        <v-card-title class="text-title-large font-weight-bold">
           {{ t("account.data.export-dialog.title") }}
         </v-card-title>
         <v-card-text>
@@ -558,7 +558,7 @@
       persistent
     >
       <v-card class="glass-card pa-1 border-thin">
-        <v-card-title class="text-h6 text-error font-weight-bold">
+        <v-card-title class="text-title-large text-error font-weight-bold">
           {{ t("account.data.delete-dialog.title") }}
         </v-card-title>
         <v-card-text>
@@ -602,10 +602,10 @@
           elevation="0"
         >
           <div class="mb-4 text-center">
-            <h2 class="text-h5 font-weight-bold mb-4">
+            <h2 class="text-headline-small font-weight-bold mb-4">
               {{ t("account.donation.title") }}
             </h2>
-            <p class="text-body-2 text-medium-emphasis">
+            <p class="text-body-medium text-medium-emphasis">
               {{ t("account.donation.description") }}
             </p>
           </div>
@@ -916,7 +916,7 @@ const usernameRules = ref([
   (v: string) => (v && v.trim().length >= 3) || t("rules.username.min", { min: 3 }),
   (v: string) => (v && v.trim().length <= 128) || t("rules.username.max", { max: 128 }),
   (v: string) => (v && (/^[a-zA-Z0-9_]+$/).test(v.trim())) || t("rules.username.alphanumeric"),
-  async (v: string) => (v && await usernameAvailable(v)) || t("rules.username.already-taken"),
+  async (v: string) => (v && (await usernameAvailable(v))) || t("rules.username.already-taken"),
 ])
 
 const passwordRules = ref([

@@ -316,7 +316,7 @@
       >
         <v-tab
           value="area"
-          class="text-body-1"
+          class="text-body-large"
         >
           <v-icon
             icon="mdi-chart-areaspline-variant"
@@ -326,7 +326,7 @@
         </v-tab>
         <v-tab
           value="pie"
-          class="text-body-1"
+          class="text-body-large"
         >
           <v-icon
             icon="mdi-chart-pie-outline"
@@ -336,7 +336,7 @@
         </v-tab>
         <v-tab
           value="bar"
-          class="text-body-1"
+          class="text-body-large"
         >
           <v-icon
             icon="mdi-chart-bar"
@@ -346,7 +346,7 @@
         </v-tab>
         <v-tab
           value="doughnut"
-          class="text-body-1"
+          class="text-body-large"
         >
           <v-icon
             icon="mdi-chart-donut"
@@ -1389,7 +1389,7 @@ const doughnutChartOptions = computed(() => ({
             const label = ctx.label ?? ""
             const value = Number(ctx.raw ?? 0)
 
-            return `${label}: ${value.toFixed(2)}`
+            return `${label} : ${value.toFixed(2)}`
           }
 
           if (datasetIndex === 1) {

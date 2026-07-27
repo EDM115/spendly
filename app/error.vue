@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout>
     <v-container
-      class="fill-height justify-center"
+      class="d-flex fill-height flex-wrap align-center justify-center"
     >
       <v-card
         class="glass-panel rounded-xl pa-8 text-center position-relative"
@@ -12,7 +12,7 @@
         <div class="error-glow" />
 
         <h1
-          class="text-h1 font-weight-black gradient-text mb-4"
+          class="text-display-large font-weight-black gradient-text mb-4"
           style="font-size: 8rem !important; line-height: 1;"
         >
           {{ error.status }}
@@ -25,7 +25,7 @@
           class="mb-8 text-left glass-error"
           border="start"
         >
-          <div class="text-h6 font-weight-bold mb-1">
+          <div class="text-title-large font-weight-bold mb-1">
             {{ t('error.title') }}
           </div>
           {{ error.message }}

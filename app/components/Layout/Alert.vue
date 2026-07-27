@@ -33,14 +33,14 @@
         </div>
       </template>
 
-      <div class="text-body-1 font-weight-bold">
+      <div class="text-body-large font-weight-bold">
         {{ message }}
       </div>
 
       <v-expand-transition>
         <div
           v-if="more"
-          class="mt-2 text-body-2 text-medium-emphasis code-font pa-2 rounded bg-surface-light"
+          class="mt-2 text-body-medium text-medium-emphasis code-font pa-2 rounded bg-surface-light"
         >
           {{ issue }}
         </div>

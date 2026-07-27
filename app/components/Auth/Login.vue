@@ -20,7 +20,7 @@
         variant="tonal"
         :loading="loading"
         class="login-btn text-none font-weight-bold mb-4"
-        elevation="4"
+        elevation="2"
         prepend-icon="mdi-google"
         @click="socialLogin('google')"
       >
@@ -45,7 +45,7 @@
         variant="tonal"
         :loading="loading"
         class="login-btn text-none font-weight-bold mb-4"
-        elevation="4"
+        elevation="2"
         prepend-icon="mdi-github"
         @click="socialLogin('github')"
       >

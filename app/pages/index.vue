@@ -7,9 +7,7 @@
 
       <v-container class="mt-8">
         <v-row
-          align="center"
-          justify="center"
-          class="text-center text-md-left"
+          class="text-center text-md-left align-center justify-center"
         >
           <v-col
             cols="12"
@@ -36,14 +34,15 @@
             class="position-relative z-10 order-md-1"
           >
             <h1
-              class="text-h2 text-md-h1 font-weight-black pb-6 mt-n12 mt-md-4 lh-tight"
+              class="text-display-large font-weight-black pb-6 mt-n12 mt-md-4 lh-tight"
+              style="font-size: 80px"
             >
               {{ t('landing.hero.tagline.0') }}<span class="gradient-text">{{ t('landing.hero.tagline.1') }}</span><br>
               {{ t('landing.hero.tagline.2') }}<span class="text-stroke">{{ t('landing.hero.tagline.3') }}</span>{{ t('landing.hero.tagline.4') }}
             </h1>
 
             <p
-              class="text-h6 text-medium-emphasis mb-10 font-weight-light"
+              class="text-title-large text-medium-emphasis mb-10 font-weight-light"
               style="max-width: 600px"
             >
               {{ t('landing.hero.subtitle') }}
@@ -85,13 +84,13 @@
 
     <section class="py-16 position-relative">
       <v-container>
-        <v-row justify="center">
+        <v-row class="justify-center">
           <v-col
             cols="12"
             md="8"
             class="text-center mb-16"
           >
-            <h2 class="text-h3 font-weight-bold mb-4 gradient-text">
+            <h2 class="text-display-medium font-weight-bold mb-4 gradient-text">
               {{ t('landing.features.title') }}
             </h2>
             <div class="divider-glow mx-auto" />
@@ -118,10 +117,10 @@
                   size="40"
                 />
               </div>
-              <h3 class="text-h5 font-weight-bold mb-3">
+              <h3 class="text-headline-small font-weight-bold mb-3">
                 {{ feature.title }}
               </h3>
-              <p class="text-body-1 text-medium-emphasis">
+              <p class="text-body-large text-medium-emphasis">
                 {{ feature.desc }}
               </p>
             </v-card>
@@ -132,13 +131,13 @@
 
     <section class="py-10 py-md-16 position-relative">
       <v-container>
-        <v-row justify="center">
+        <v-row class="justify-center">
           <v-col
             cols="12"
             md="8"
             class="text-center mb-8"
           >
-            <h2 class="text-h3 font-weight-bold mb-8">
+            <h2 class="text-display-medium font-weight-bold mb-8">
               <span class="gradient-text">{{ t('landing.details.title') }}</span>
             </h2>
             <div class="divider-glow mx-auto" />
@@ -150,13 +149,13 @@
             cols="12"
             md="7"
           >
-            <h2 class="text-h3 text-md-h2 font-weight-bold mb-4">
+            <h2 class="text-display-medium text-md-display-large font-weight-bold mb-4">
               {{ t('landing.details.goal.title') }}
             </h2>
-            <p class="text-h6 text-medium-emphasis font-weight-light mb-4">
+            <p class="text-title-large text-medium-emphasis font-weight-light mb-4">
               {{ t('landing.details.goal.description') }}
             </p>
-            <p class="text-body-1 text-medium-emphasis mb-6">
+            <p class="text-body-large text-medium-emphasis mb-6">
               {{ t('landing.details.goal.secondary') }}
             </p>
 
@@ -187,7 +186,7 @@
               class="glass-card h-100 px-4 py-4"
               rounded="xl"
             >
-              <p class="text-overline text-medium-emphasis mb-3">
+              <p class="text-label-medium text-medium-emphasis mb-3">
                 {{ t('landing.details.quickFacts.title') }}
               </p>
 
@@ -197,10 +196,10 @@
                   :key="i"
                   class="stat-item"
                 >
-                  <p class="text-h5 font-weight-bold mb-1">
+                  <p class="text-headline-small font-weight-bold mb-1">
                     {{ stat.value }}
                   </p>
-                  <p class="text-body-2 text-medium-emphasis mb-0">
+                  <p class="text-body-medium text-medium-emphasis mb-0">
                     {{ stat.label }}
                   </p>
                 </div>
@@ -231,10 +230,10 @@
                 />
               </div>
 
-              <h3 class="text-h6 font-weight-bold mb-2">
+              <h3 class="text-title-large font-weight-bold mb-2">
                 {{ item.title }}
               </h3>
-              <p class="text-body-2 text-medium-emphasis mb-0">
+              <p class="text-body-medium text-medium-emphasis mb-0">
                 {{ item.desc }}
               </p>
             </v-card>
@@ -251,10 +250,10 @@
             md="9"
             class="mx-auto text-center"
           >
-            <h2 class="text-h3 font-weight-bold mb-4">
+            <h2 class="text-display-medium font-weight-bold mb-4">
               {{ t('landing.details.workflow.title') }}
             </h2>
-            <p class="text-h6 text-medium-emphasis font-weight-light">
+            <p class="text-title-large text-medium-emphasis font-weight-light">
               {{ t('landing.details.workflow.subtitle') }}
             </p>
           </v-col>
@@ -280,13 +279,13 @@
                   variant="tonal"
                   size="42"
                 />
-                <span class="text-overline text-medium-emphasis">{{ step.step }}</span>
+                <span class="text-label-medium text-medium-emphasis">{{ step.step }}</span>
               </div>
 
-              <h3 class="text-h6 font-weight-bold mb-2">
+              <h3 class="text-title-large font-weight-bold mb-2">
                 {{ step.title }}
               </h3>
-              <p class="text-body-2 text-medium-emphasis mb-0">
+              <p class="text-body-medium text-medium-emphasis mb-0">
                 {{ step.desc }}
               </p>
             </v-card>
@@ -302,10 +301,10 @@
             cols="12"
             class="mx-auto text-center"
           >
-            <h2 class="text-h3 font-weight-bold mb-3">
+            <h2 class="text-display-medium font-weight-bold mb-3">
               {{ t('landing.details.capabilities.title') }}
             </h2>
-            <p class="text-h6 text-medium-emphasis font-weight-light">
+            <p class="text-title-large text-medium-emphasis font-weight-light">
               {{ t('landing.details.capabilities.subtitle') }}
             </p>
           </v-col>
@@ -328,12 +327,12 @@
                   color="primary"
                   size="26"
                 />
-                <h3 class="text-h6 font-weight-bold mb-0">
+                <h3 class="text-title-large font-weight-bold mb-0">
                   {{ capability.title }}
                 </h3>
               </div>
 
-              <p class="text-body-2 text-medium-emphasis mb-4">
+              <p class="text-body-medium text-medium-emphasis mb-4">
                 {{ capability.desc }}
               </p>
 
@@ -341,7 +340,7 @@
                 <li
                   v-for="(item, itemIndex) in capability.items"
                   :key="itemIndex"
-                  class="text-body-2"
+                  class="text-body-medium"
                 >
                   {{ item }}
                 </li>
@@ -359,7 +358,7 @@
             cols="12"
             class="mx-auto text-center"
           >
-            <h2 class="text-h3 font-weight-bold mb-3">
+            <h2 class="text-display-medium font-weight-bold mb-3">
               {{ t('landing.details.security.category-title') }}
             </h2>
           </v-col>
@@ -380,12 +379,12 @@
                   color="success"
                   size="28"
                 />
-                <h2 class="text-h5 font-weight-bold mb-0">
+                <h2 class="text-headline-small font-weight-bold mb-0">
                   {{ t('landing.details.security.title') }}
                 </h2>
               </div>
 
-              <p class="text-body-1 text-medium-emphasis mb-4">
+              <p class="text-body-large text-medium-emphasis mb-4">
                 {{ t('landing.details.security.subtitle') }}
               </p>
 
@@ -393,7 +392,7 @@
                 <li
                   v-for="(point, i) in tm('landing.details.security.points') as VueMessageType"
                   :key="i"
-                  class="text-body-2"
+                  class="text-body-medium"
                 >
                   {{ point }}
                 </li>
@@ -415,12 +414,12 @@
                   color="secondary"
                   size="28"
                 />
-                <h2 class="text-h5 font-weight-bold mb-0">
+                <h2 class="text-headline-small font-weight-bold mb-0">
                   {{ t('landing.details.api.title') }}
                 </h2>
               </div>
 
-              <p class="text-body-1 text-medium-emphasis mb-4">
+              <p class="text-body-large text-medium-emphasis mb-4">
                 {{ t('landing.details.api.subtitle') }}
               </p>
 
@@ -428,7 +427,7 @@
                 <li
                   v-for="(endpoint, i) in tm('landing.details.api.endpoints') as VueMessageType"
                   :key="i"
-                  class="text-body-2"
+                  class="text-body-medium"
                 >
                   {{ endpoint }}
                 </li>
@@ -446,10 +445,10 @@
             cols="12"
             class="text-center"
           >
-            <h2 class="text-h3 font-weight-bold mb-3">
+            <h2 class="text-display-medium font-weight-bold mb-3">
               {{ t('landing.details.stack.title') }}
             </h2>
-            <p class="text-h6 text-medium-emphasis font-weight-light mx-auto stack-subtitle">
+            <p class="text-title-large text-medium-emphasis font-weight-light mx-auto stack-subtitle">
               {{ t('landing.details.stack.subtitle') }}
             </p>
           </v-col>
@@ -472,12 +471,12 @@
                   color="accent"
                   size="26"
                 />
-                <h3 class="text-h6 font-weight-bold mb-0">
+                <h3 class="text-title-large font-weight-bold mb-0">
                   {{ pillar.title }}
                 </h3>
               </div>
 
-              <p class="text-body-2 text-medium-emphasis mb-4">
+              <p class="text-body-medium text-medium-emphasis mb-4">
                 {{ pillar.desc }}
               </p>
 
@@ -509,12 +508,12 @@
                   color="accent"
                   size="26"
                 />
-                <h3 class="text-h6 font-weight-bold mb-0">
+                <h3 class="text-title-large font-weight-bold mb-0">
                   {{ t('landing.details.stack.implementation.title') }}
                 </h3>
               </div>
 
-              <p class="text-body-2 text-medium-emphasis mb-0">
+              <p class="text-body-medium text-medium-emphasis mb-0">
                 {{ t('landing.details.stack.implementation.description') }}
               </p>
             </v-card>
@@ -529,10 +528,10 @@
           class="glass-card cta-card px-6 px-md-10 py-8 py-md-10 text-center"
           rounded="xl"
         >
-          <h2 class="text-h4 text-md-h3 font-weight-bold mb-3">
+          <h2 class="text-headline-large text-md-display-medium font-weight-bold mb-3">
             {{ t('landing.details.cta.title') }}
           </h2>
-          <p class="text-h6 text-medium-emphasis font-weight-light mb-8 mx-auto cta-subtitle">
+          <p class="text-title-large text-medium-emphasis font-weight-light mb-8 mx-auto cta-subtitle">
             {{ t('landing.details.cta.subtitle') }}
           </p>
 

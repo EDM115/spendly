@@ -275,6 +275,11 @@
     "link": "Voir les nouveautés",
     "releases": [
       {
+        "title": "migration vers Vuetify 4",
+        "type": "feat",
+        "version": "1.6.0"
+      },
+      {
         "title": "ajout d'une page dédiée au journal des modifications",
         "type": "feat",
         "version": "1.5.3"
@@ -913,7 +918,7 @@
           "chips": [
             "Nuxt 4 SSR",
             "Vue 3",
-            "Vuetify 3",
+            "Vuetify 4",
             "Pinia"
           ],
           "desc": "Frontend SSR moderne avec UI Material Design inspirée glassmorphism et état réactif",

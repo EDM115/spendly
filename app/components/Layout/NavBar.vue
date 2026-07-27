@@ -1,7 +1,6 @@
 <template>
   <v-app-bar
     :class="['force-ssr', smAndUp ? 'nav-desktop' : 'nav-mobile', 'glass-panel']"
-    color="transparent"
     :elevation="0"
     floating
     rounded="b-xl"
@@ -29,7 +28,7 @@
       <NuxtLink
         v-if="smAndUp"
         :to="connected && !store.getIsDemo ? '/app' : '/'"
-        class="text-h6 font-weight-bold gradient-text"
+        class="text-title-large font-weight-bold gradient-text"
       >
         {{ t('main.title') }}
       </NuxtLink>

@@ -1,7 +1,7 @@
 <template>
   <v-container
     fluid
-    class="fill-height pa-0 login-container"
+    class="d-flex fill-height flex-wrap align-center pa-0 login-container"
   >
     <div class="ambient-bg" />
 
@@ -46,11 +46,11 @@
             </div>
           </div>
 
-          <h1 class="text-h2 font-weight-black mb-4 gradient-text">
+          <h1 class="text-display-large font-weight-black mb-4 gradient-text">
             {{ t('main.title') }}
           </h1>
           <p
-            class="text-h5 font-weight-light"
+            class="text-headline-small font-weight-light"
             style="opacity: 0.9"
           >
             {{ t('landing.hero.subtitle') }}
@@ -80,13 +80,13 @@
                 :alt="t('main.title')"
                 class="mb-4"
               />
-              <h2 class="text-h4 font-weight-bold gradient-text">
+              <h2 class="text-headline-large font-weight-bold gradient-text">
                 {{ t('main.title') }}
               </h2>
             </div>
 
             <div class="mb-8">
-              <h2 class="text-h4 font-weight-bold mb-2">
+              <h2 class="text-headline-large font-weight-bold mb-2">
                 {{ t('login.title') }}
               </h2>
               <p class="text-medium-emphasis">

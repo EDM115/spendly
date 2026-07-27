@@ -2,14 +2,14 @@
 
 <template>
   <v-container class="py-8">
-    <v-row justify="center">
+    <v-row class="justify-center">
       <v-col
         cols="12"
         md="8"
         lg="7"
       >
         <div class="mb-6">
-          <h1 class="text-h4 font-weight-bold mb-4">
+          <h1 class="text-headline-large font-weight-bold mb-4">
             {{ t('privacy-policy.title') }}
           </h1>
 
@@ -38,7 +38,7 @@
             variant="tonal"
             rounded="lg"
           >
-            <v-card-title class="text-h6 font-weight-semibold">
+            <v-card-title class="text-title-large font-weight-semibold">
               {{ t('privacy-policy.' + sectionNumber + '.title') }}
             </v-card-title>
 
@@ -52,7 +52,7 @@
                   class="mb-6"
                 >
                   <h3
-                    class="text-subtitle-1 font-weight-medium mb-2"
+                    class="text-body-large font-weight-medium mb-2"
                     v-html="richText('privacy-policy.' + sectionNumber + '.' + subSection + '.title')"
                   />
 

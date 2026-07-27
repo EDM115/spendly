@@ -1,11 +1,7 @@
 <template>
   <v-container class="flex-column justify-center h-100 py-8">
     <div class="ambient-bg" />
-    <v-row
-      align="start"
-      justify="center"
-      class="h-100"
-    >
+    <v-row class="h-100 align-start justify-center">
       <v-col
         cols="12"
         lg="10"
@@ -57,5 +53,4 @@ await useAsyncData("admin-page-guard", async () => {
 
   return true
 })
-
 </script>

@@ -14,9 +14,6 @@ lockfileIncludeTarballUrl: true
 
 minimumReleaseAge: 120
 
-minimumReleaseAgeExclude:
-  - '@dotenvx/dotenvx@2.15.0'
-
 publicHoistPattern:
   - "*vuetify*"
 

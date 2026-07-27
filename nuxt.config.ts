@@ -297,21 +297,23 @@ export default defineNuxtConfig({
   vuetify: {
     moduleOptions: {
       prefixComposables: true,
+      styles: {
+        colors: false,
+      },
       ssrClientHints: {
         reloadOnFirstRequest: true,
         viewportSize: true,
         prefersColorScheme: true,
-        prefersColorSchemeOptions: { cookieName: "theme" },
+        prefersColorSchemeOptions: {
+          cookie: {
+            name: "theme",
+          },
+        },
       },
     },
     vuetifyOptions: {
       directives: true,
       labComponents: true,
-      locale: {
-        fallback: "en",
-        locale: "fr",
-      },
-      localeMessages: [ "en", "fr" ],
       theme: {
         defaultTheme: "dark",
         themes: {

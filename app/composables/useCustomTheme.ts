@@ -4,14 +4,16 @@ export function useCustomTheme() {
 
   watch(
     () => store.getTheme,
-    (t) => vtheme.change(t),
+    (t) => {
+      void vtheme.change(t)
+    },
     { immediate: true },
   )
 
   const currentTheme = computed(() => store.getTheme)
 
   function changeTheme(theme: Theme) {
-    vtheme.change(theme)
+    void vtheme.change(theme)
     store.setTheme(theme)
   }
 

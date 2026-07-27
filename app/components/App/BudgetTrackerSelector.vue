@@ -7,7 +7,7 @@
       class="glass-panel rounded-xl overflow-hidden transparent-panel"
       elevation="0"
     >
-      <v-expansion-panel-title class="font-weight-bold text-h6 py-4">
+      <v-expansion-panel-title class="font-weight-bold text-title-large py-4">
         <v-icon
           icon="mdi-wallet-bifold-outline"
           class="mr-2"
@@ -16,7 +16,7 @@
         <span class="font-weight-bold">{{ t("app.budget-tracker.title") }}</span>
       </v-expansion-panel-title>
       <v-expansion-panel-text class="pa-4">
-        <v-row align="center">
+        <v-row class="align-center">
           <v-col
             cols="12"
             sm="6"
@@ -45,28 +45,28 @@
                     <div :class="smAndUp ? undefined : 'd-flex flex-column'">
                       <v-chip
                         size="x-small"
-                        :color="getRoleColor(item.raw.role)"
+                        :color="getRoleColor(item.role)"
                         class="elevation-1"
                         variant="flat"
                       >
-                        {{ t(`app.budget-tracker.roles.${item.raw.role}`) }}
+                        {{ t(`app.budget-tracker.roles.${item.role}`) }}
                       </v-chip>
                       <v-chip
-                        v-if="item.raw.owner_name"
+                        v-if="item.owner_name"
                         size="x-small"
                         color="primary"
                         class="ml-2 elevation-1 mt-1 mt-sm-0"
                         variant="tonal"
                         prepend-icon="mdi-account-multiple-outline"
                       >
-                        {{ item.raw.owner_name }}
+                        {{ item.owner_name }}
                       </v-chip>
                     </div>
                   </template>
                 </v-list-item>
               </template>
               <template #selection="{ item }">
-                <span class="text-high-emphasis font-weight-medium">{{ item.raw.name }}</span>
+                <span class="text-high-emphasis font-weight-medium">{{ item.name }}</span>
               </template>
 
               <template #append-inner>
@@ -162,7 +162,7 @@
     persistent
   >
     <v-card class="glass-card pa-1 border-thin">
-      <v-card-title class="text-h6 font-weight-bold">
+      <v-card-title class="text-title-large font-weight-bold">
         {{ t("app.budget-tracker.add-title") }}
       </v-card-title>
       <v-card-text>
@@ -206,7 +206,7 @@
     persistent
   >
     <v-card class="glass-card pa-1 border-thin">
-      <v-card-title class="text-h6 font-weight-bold">
+      <v-card-title class="text-title-large font-weight-bold">
         {{ t("app.budget-tracker.edit-title") }}
       </v-card-title>
       <v-card-text>
@@ -250,7 +250,7 @@
     persistent
   >
     <v-card class="glass-card pa-1 border-thin">
-      <v-card-title class="text-h5 text-error font-weight-bold">
+      <v-card-title class="text-headline-small text-error font-weight-bold">
         {{ t("app.budget-tracker.delete-title") }}
       </v-card-title>
       <v-card-text>
@@ -284,7 +284,7 @@
     persistent
   >
     <v-card class="glass-card pa-1 border-thin">
-      <v-card-title class="text-h6 font-weight-bold">
+      <v-card-title class="text-title-large font-weight-bold">
         {{ t("app.budget-tracker.users") }}
       </v-card-title>
       <v-card-text>
@@ -462,7 +462,7 @@
         <v-divider class="my-4" />
         <v-row
           v-if="smAndUp"
-          align="center"
+          class="align-center"
         >
           <v-col cols="6">
             <v-text-field
@@ -559,7 +559,7 @@
     persistent
   >
     <v-card class="glass-card pa-1 border-thin">
-      <v-card-title class="text-h5 text-warning font-weight-bold">
+      <v-card-title class="text-headline-small text-warning font-weight-bold">
         {{ t("app.budget-tracker.transfer-title") }}
       </v-card-title>
       <v-card-text>
@@ -593,7 +593,7 @@
     persistent
   >
     <v-card class="glass-card pa-1 border-thin">
-      <v-card-title class="text-h5 text-error font-weight-bold">
+      <v-card-title class="text-headline-small text-error font-weight-bold">
         {{ t("app.budget-tracker.remove-user-title") }}
       </v-card-title>
       <v-card-text>
