@@ -15,7 +15,6 @@ lockfileIncludeTarballUrl: true
 minimumReleaseAge: 120
 
 publicHoistPattern:
-  - "*sharp*"
   - "*vuetify*"
 
 resolutionMode: highest
