@@ -5,7 +5,7 @@ allowBuilds:
   core-js: true
   esbuild: true
   prisma: false
-  sharp: true
+  sharp: false
   unrs-resolver: true
 
 dedupePeers: true
@@ -14,8 +14,8 @@ lockfileIncludeTarballUrl: true
 
 minimumReleaseAge: 120
 
-publicHoistPattern:
-  - "*vuetify*"
+overrides:
+  sharp: 0.35.3
 
 resolutionMode: highest
 
