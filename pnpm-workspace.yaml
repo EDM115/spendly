@@ -1,10 +1,8 @@
 allowBuilds:
   "@parcel/watcher": true
-  "@prisma/engines": false
   better-sqlite3: false
   core-js: true
   esbuild: true
-  prisma: false
   sharp: false
   unrs-resolver: true
 
@@ -19,4 +17,4 @@ overrides:
 
 resolutionMode: highest
 
-savePrefix: ""
+savePrefix: "~"

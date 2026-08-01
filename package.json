@@ -12,7 +12,7 @@
     "@mdi/svg": "~7.4.47",
     "@nuxt/fonts": "~0.14.0",
     "@nuxt/image": "~2.1.0",
-    "@nuxtjs/i18n": "~10.5.0",
+    "@nuxtjs/i18n": "~10.6.0",
     "@pinia/nuxt": "~1.0.1",
     "@vite-pwa/nuxt": "~1.1.1",
     "@vueuse/core": "~14.4.0",
@@ -37,12 +37,12 @@
     "zod": "~4.4.3"
   },
   "devDependencies": {
-    "@dotenvx/dotenvx": "~2.19.0",
+    "@dotenvx/dotenvx": "~2.19.1",
     "@nuxt/eslint": "~1.16.0",
     "@stylistic/eslint-plugin": "~5.10.0",
-    "@types/better-sqlite3": "^7.6.13",
+    "@types/better-sqlite3": "^9.6.0",
     "@types/node": "latest",
-    "@types/react": "~19.2.17",
+    "@types/react": "~19.2.18",
     "@typescript-eslint/parser": "~8.65.0",
     "@vite-pwa/assets-generator": "~1.0.2",
     "country-flag-emoji-polyfill": "~0.1.8",
@@ -64,8 +64,8 @@
     "sharp": "~0.35.3",
     "typescript": "~6.0.3",
     "vue-eslint-parser": "~10.4.1",
-    "vue-tsc": "~3.3.8",
-    "vuetify": "~4.1.6"
+    "vue-tsc": "~3.3.9",
+    "vuetify": "~4.1.7"
   },
   "imports": {
     "#shared/*": "./shared/*",
